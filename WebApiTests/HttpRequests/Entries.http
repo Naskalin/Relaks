@@ -1,0 +1,22 @@
+POST https://localhost:7125/api/entry/person
+Content-Type: application/json
+
+{
+  "Name": "Jerry",
+  "Reputation": 3
+}
+
+
+###
+POST https://localhost:7125/api/entry/company
+Content-Type: application/json
+
+{
+  "Name": "ABCDE@COMPANY",
+  "Reputation": 5
+}
+
+###
+GET https://localhost:7125/api/entry
+Accept: application/json
+###
