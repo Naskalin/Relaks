@@ -11,10 +11,12 @@ public class ApplicationContext : DbContext
     public DbSet<Person> Persons { get; set; } = null!;
     public DbSet<Meet> Meets { get; set; } = null!;
     public DbSet<Company> Companies { get; set; } = null!;
+    public DbSet<Note> Notes { get; set; } = null!;
 
     public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
     {
-        Database.EnsureCreated();
+        // Database.EnsureDeleted();
+        // Database.EnsureCreated();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,7 +27,7 @@ public class ApplicationContext : DbContext
             .HasValue<Meet>(EntryTypeEnum.Meet)
             .HasValue<Company>(EntryTypeEnum.Company)
             ;
-        
+
         modelBuilder.Entity<BaseEntry>()
             .Property(x => x.EntryType)
             .HasConversion(new EnumToStringConverter<EntryTypeEnum>());

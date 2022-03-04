@@ -1,4 +1,4 @@
-POST https://localhost:7125/api/entry/person
+POST https://localhost:7125/api/person
 Content-Type: application/json
 
 {
@@ -17,6 +17,13 @@ Content-Type: application/json
 }
 
 ###
-GET https://localhost:7125/api/entry
-Accept: application/json
+
+#GET https://localhost:7125/api/persons?page[size]=30&page[number]=1
+#https://localhost:7125/api/persons?page[number]=1&page[size]=10
+#GET https://localhost:7125/api/persons?page[offset]=0&page[limit]=50
+#https://localhost:7125/api/persons?page[offset]=0&size=50
+# НЕ ВЕРНО https://localhost:7125/api/persons?page[offset]=0&page[limit]=30
+#ВЕРНо 
+GET https://localhost:7125/api/persons?page[size]=30&page[number]=1
+Accept: application/vnd.api+json
 ###
