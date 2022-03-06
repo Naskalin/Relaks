@@ -1,8 +1,10 @@
 ﻿<template>
-  <h1><span class="text-primary">Ras</span> - <span class="text-primary">R</span>elationships, c<span class="text-primary">a</span>lculations and ta<span class="text-primary">s</span>ks</h1>
-  stats
+  <h1>Ras</h1>
+  <h2><span class="text-weight-medium text-secondary">R</span>elationships, 
+    c<span class="text-weight-medium text-secondary">a</span>lculations 
+    and ta<span class="text-weight-medium text-secondary">s</span>ks</h2>
+  <h2>Взаимоотношения, расчёты и задачи</h2>
 </template>
-
 <script>
 export default {
   name: "Home",

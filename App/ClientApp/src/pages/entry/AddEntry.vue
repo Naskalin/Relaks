@@ -13,8 +13,8 @@
       <q-rating :max="10"
                 v-model="model.reputation"
                 color="secondary"
-                icon="star_border"
-                icon-selected="star"
+                icon="lar la-star"
+                icon-selected="las la-star"
                 size="3em">
       </q-rating>
     </div>
@@ -26,7 +26,6 @@
 <script lang="ts">
 import {defineComponent, ref, onMounted} from "vue";
 import {entryTypeTrans} from "../../localize/default";
-import {ApiPerson} from "../../types/api";
 
 export default defineComponent({
   name: "CreateEntry",
@@ -49,10 +48,10 @@ export default defineComponent({
     onMounted(async () => {
       
       addPersonAsync.value = async () => {
-          const person = new ApiPerson();
-          person.setAttr('name', model.value.name);
-          person.setAttr('reputation', model.value.reputation);
-          await person.save();
+          // const person = new ApiPerson();
+          // person.setAttr('name', model.value.name);
+          // person.setAttr('reputation', model.value.reputation);
+          // await person.save();
       }
       // await ApiPerson
       //     .orderBy('name', 'desc')

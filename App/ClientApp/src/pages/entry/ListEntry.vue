@@ -1,46 +1,59 @@
 <template>
-  <div>
-    <p>
-      <q-btn :to="{ name: 'entries-add' }" color="primary">Добавть entry</q-btn>
-    </p>
 
-    <q-table
-        class="list-table"
-        :title="'Люди (' + totalResources + ')'"
-        :rows="rows"
-        :columns="columns"
-        :loading="isLoading"
-        row-key="id"
-        :pagination="pagination"
-        :virtual-scroll-item-size="48"
-        :virtual-scroll-sticky-size-start="48"
-        virtual-scroll
-        :rows-per-page-options="[0]"
-        @virtual-scroll="loadData"
-    >
+  <div class="row">
+    <div class="col-3">
+      <p><q-btn :to="{ name: 'entries-add' }" color="primary">Добавть entry</q-btn></p>
+      <p>фильтры...</p>
+      <div class="q-pa-md q-gutter-sm">
+        <q-btn color="white" text-color="black" label="Standard" />
+        <q-btn color="primary" label="Primary" />
+        <q-btn color="secondary" label="Secondary" />
+        <q-btn color="amber" glossy label="Amber" />
+        <q-btn color="brown-5" label="Brown 5" />
+        <q-btn color="deep-orange" glossy label="Deep Orange" />
+        <q-btn color="purple" label="Purple" />
+        <q-btn color="black" label="Black" />
+      </div>
+    </div>
+    <div class="col-9">
+      <q-table
+          class="list-table"
+          :title="'Люди (' + totalResources + ')'"
+          :rows="rows"
+          :columns="columns"
+          :loading="isLoading"
+          row-key="id"
+          :pagination="pagination"
+          :virtual-scroll-item-size="48"
+          :virtual-scroll-sticky-size-start="48"
+          virtual-scroll
+          :rows-per-page-options="[0]"
+          @virtual-scroll="loadData"
+      >
 
-      <template v-slot:top-right="props">
-        <q-input borderless dense debounce="300" v-model="filter" placeholder="Поиск...">
-          <template v-slot:append>
-            <q-icon name="search"/>
-          </template>
-        </q-input>
+        <template v-slot:top-right="props">
+          <q-input borderless dense debounce="300" v-model="filter" placeholder="Поиск...">
+            <template v-slot:append>
+              <q-icon name="las la-search"/>
+            </template>
+          </q-input>
 
-        <q-btn
-            flat round dense
-            :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-            @click="props.toggleFullscreen"
-            class="q-ml-md"
-        ></q-btn>
-      </template>
-    </q-table>
+          <q-btn
+              flat round dense
+              :icon="props.inFullscreen ? 'las la-compress-arrows-alt' : 'las la-arrows-alt'"
+              @click="props.toggleFullscreen"
+              class="q-ml-md"
+          ></q-btn>
+        </template>
+      </q-table>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent, ref, Ref, onMounted, computed, reactive} from "vue";
-import {ApiPerson} from "../../types/api";
 import {date} from 'quasar';
+import {jsonApi} from './../../api/index';
 
 const columns = [
   {name: 'id', label: 'Id', field: 'id'},
@@ -84,18 +97,32 @@ export default defineComponent({
         // https://localhost:7125/api/persons?filter[name]=tom&page[number]=1&page[size]=50
         // console.log(ApiPerson.getJsonApiUrl());
 
-        await ApiPerson
-            .get(pageNumber.value)
-            .then(resp => {
-              rows.value = rows.value.concat(resp.getHttpClientResponse().getData().data);
-              pageNumber.value += 1;
-              totalResources.value = resp.getHttpClientResponse().getData().meta.totalResources;
-            }).finally(() => {
-              isLoading.value = false;
-            })
+        await jsonApi.getAll('/persons', {
+          pagination: {
+            number: pageNumber.value,
+            size: 50
+          }
+        }).then(resp => {
+            rows.value = rows.value.concat(resp.data as any);
+            pageNumber.value += 1;
+            totalResources.value = resp.meta.total;
+        }).finally(() => {
+          isLoading.value = false;
+        });
+        
+        // await ApiPerson
+        //     .get(pageNumber.value)
+        //     .then(resp => {
+        //       rows.value = rows.value.concat(resp.getHttpClientResponse().getData().data);
+        //       pageNumber.value += 1;
+        //       totalResources.value = resp.getHttpClientResponse().getData().meta.total;
+        //       console.log('totalResources', totalResources.value);
+        //     }).finally(() => {
+        //       isLoading.value = false;
+        //     })
       }
     }
-    
+
     onMounted(async () => {
       // https://localhost:7125/api/persons?filter[name]=eq(tom)&page[number]=1&page[size]=50
       // await ApiPerson.where('name', 'eq(tom)').get();
@@ -117,7 +144,7 @@ export default defineComponent({
 
 <style lang="scss">
 .list-table {
-  max-height: 80vh;
+  max-height: 96vh;
 
   thead tr > * {
     position: sticky;

@@ -1,20 +1,20 @@
 ﻿<template>
-  <q-layout view="lHh Lpr lFf" class="bg-white">
-    <q-header elevated>
-      <q-toolbar class="bg-blue-grey-7">
-        <q-btn
-            flat
-            dense
-            round
-            @click="toggleLeftDrawer"
-            aria-label="Menu"
-            icon="menu"
-            class="lt-md"
-        />
+  <q-layout view="hHh lpR fFf" class="bg-grey-8">
+<!--    <q-header elevated>-->
+<!--      <q-toolbar class="bg-blue-grey-7">-->
+<!--        <q-btn-->
+<!--            flat-->
+<!--            dense-->
+<!--            round-->
+<!--            @click="toggleLeftDrawer"-->
+<!--            aria-label="Menu"-->
+<!--            icon="menu"-->
+<!--            class="lt-md"-->
+<!--        />-->
 
-        <q-toolbar-title>Ras</q-toolbar-title>
-      </q-toolbar>
-    </q-header>
+<!--        <q-toolbar-title>Ras</q-toolbar-title>-->
+<!--      </q-toolbar>-->
+<!--    </q-header>-->
 
     <q-drawer
         v-model="leftDrawerOpen"
@@ -22,7 +22,7 @@
         bordered
         behavior="desktop"
         side="left"
-        class="bg-grey-2"
+        class="bg-grey-10"
     >
       <q-list separator>
 
@@ -30,14 +30,9 @@
           <q-item-section>Home</q-item-section>
         </q-item>
 
-<!--        <q-item to="/about" clickable v-ripple>-->
-<!--          <q-item-section>About</q-item-section>-->
-<!--        </q-item>-->
-
         <q-item to="/entries" clickable v-ripple>
           <q-item-section>Объединения</q-item-section>
         </q-item>
-
       </q-list>
     </q-drawer>
 
@@ -83,7 +78,7 @@ export default  defineComponent({
 .doc-page {
   margin-left: auto;
   margin-right: auto;
-  max-width: 900px;
+  //max-width: 900px;
   padding: 16px 46px;
 }
 </style>

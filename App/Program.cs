@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using App.Data;
+// using App.ResourceDefinitions;
 using App.Seeders;
 using JsonApiDotNetCore.Configuration;
 using Microsoft.EntityFrameworkCore;
@@ -52,6 +53,7 @@ builder.Services.AddCors(options =>
             ;
     });
 });
+// builder.Services.AddResourceDefinition<EntryDefinition>();
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
