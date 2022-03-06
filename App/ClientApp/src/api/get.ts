@@ -15,13 +15,17 @@ export declare type ApiGetAllResponse = {
         total: number
     }
 }
-
-export declare type ApiGetAllRequest = {
+export declare type ApiGetRequest = {
+    include?: string[]
+}
+export declare type ApiGetAllRequest = ApiGetRequest & {
     pagination: {
         number: number,
         size: number
     },
+    sort?: Array<{resource?: string, fields: string[]}>,
     like?: string,
+    fields?: Array<{key: string, val: string[]}>
     filter?: {
         startsWith?: { key: string, val: string },
         endsWith?: { key: string, val: string },
@@ -43,6 +47,28 @@ const strAddQuotes = (str: string):string => {
 const strAddBrackets = (str: string):string => {
     return "(" + str + ")";
 }
+const strAddSquareBrackets = (str: string):string => {
+    return "[" + str + "]";
+}
+export const getToUrl = (endPoint: string, apiRequest?: ApiGetRequest): string => {
+    let url = new URL(apiUrl + endPoint),
+        query: Array<[string, string]> = []
+    ;
+
+    if (apiRequest?.include) {
+        apiRequest.include.forEach(attr => {
+            query.push(['include', attr])
+        })
+    }
+
+    query.forEach(qItem => {
+        const key = qItem[0];
+        const val = qItem[1];
+        url.searchParams.append(key, val)
+    })
+    
+    return url.toString();
+}
 export const getAllToUrl = (endPoint: string, apiRequest: ApiGetAllRequest) : string => {
     let url = new URL(apiUrl + endPoint),
         query: Array<[string, string]> = []
@@ -53,7 +79,32 @@ export const getAllToUrl = (endPoint: string, apiRequest: ApiGetAllRequest) : st
 
     if (apiRequest?.like) {
         // ?like=cats
-        query.push(['like', apiRequest.like])
+        query.push(['like', apiRequest.like]);
+    }
+    
+    if (apiRequest?.include) {
+        apiRequest.include.forEach(attr => {
+            query.push(['include', attr])
+        })
+    }
+    
+    if (apiRequest?.sort) {
+        apiRequest.sort.forEach(el => {
+            // ?sort=title,createdAt...
+            let sortName = 'sort';
+            if (el?.resource) {
+                // ?sort[articles]=title,createdAt...
+                sortName += strAddSquareBrackets(el.resource);    
+            }
+
+            query.push([sortName, el.fields.join(',')]);
+        })
+    }
+    
+    if (apiRequest?.fields) {
+        apiRequest.fields.forEach(el => {
+            query.push(['fields' + strAddSquareBrackets(el.key), el.val.join(',')]);
+        })
     }
 
     if (apiRequest.filter) {

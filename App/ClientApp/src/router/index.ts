@@ -3,6 +3,7 @@ import Home from '../pages/Home.vue';
 import About from '../pages/About.vue';
 import ListEntry from '../pages/entry/ListEntry.vue';
 import AddEntry from '../pages/entry/AddEntry.vue';
+import ProfileEntry from "../pages/entry/ProfileEntry.vue";
 
 import Page from '../layouts/Page.vue';
 
@@ -32,6 +33,11 @@ const routes = [
                 path: '/entries/add',
                 name: 'entries-add',
                 component: AddEntry,
+            },
+            {
+                path: '/entries/:id',
+                name: 'entries-profile',
+                component: ProfileEntry,
             }
         ]
     },

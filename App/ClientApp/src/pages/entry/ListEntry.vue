@@ -2,8 +2,11 @@
 
   <div class="row">
     <div class="col-3">
+      <div class="q-pa-md">
+        <p>фильтры...</p>
+
+      </div>
       <p><q-btn :to="{ name: 'entries-add' }" color="primary">Добавть entry</q-btn></p>
-      <p>фильтры...</p>
       <div class="q-pa-md q-gutter-sm">
         <q-btn color="white" text-color="black" label="Standard" />
         <q-btn color="primary" label="Primary" />
@@ -29,8 +32,22 @@
           virtual-scroll
           :rows-per-page-options="[0]"
           @virtual-scroll="loadData"
+          @row-click="onRowClick"
       >
 
+        
+        <template v-slot:body="props">
+          <q-tr :props="props" :key="`m_${props.row.index}`" @click.native="onRowClick(props.row.id)">
+            <q-td
+                v-for="col in props.cols"
+                :key="col.name"
+                :props="props"
+            >
+              {{ col.name === 'id' ? props.rowIndex + 1 : col.value }}
+            </q-td>
+          </q-tr>
+        </template>
+        
         <template v-slot:top-right="props">
           <q-input borderless dense debounce="300" v-model="filter" placeholder="Поиск...">
             <template v-slot:append>
@@ -52,13 +69,14 @@
 
 <script lang="ts">
 import {defineComponent, ref, Ref, onMounted, computed, reactive} from "vue";
+import { useRouter } from 'vue-router'
 import {date} from 'quasar';
 import {jsonApi} from './../../api/index';
 
 const columns = [
-  {name: 'id', label: 'Id', field: 'id'},
+  {name: 'id', label: '#', field: 'id', style: 'width: 70px'},
   {name: 'name', label: 'Имя', field: (row: any) => row.attributes.name},
-  {name: 'reputation', label: 'Репутация', field: (row: any) => row.attributes.reputation},
+  {name: 'reputation', label: 'Репутация', field: (row: any) => row.attributes.reputation, style: 'width: 70px'},
   {
     name: 'birthDay',
     label: 'День рождения',
@@ -68,7 +86,6 @@ const columns = [
 ]
 
 export default defineComponent({
-  name: "ListEntry",
   setup() {
     const rows = ref([]);
     const isLoading = ref(false);
@@ -129,6 +146,7 @@ export default defineComponent({
       // console.log(ApiPerson.where('name', 'eq(tom)').getQuery());
     })
 
+    const router = useRouter();
     return {
       columns,
       rows,
@@ -136,7 +154,10 @@ export default defineComponent({
       loadData,
       isLoading,
       totalResources,
-      filter
+      filter,
+      onRowClick: (id: string) => {
+        router.push({name: 'entries-profile', params: {id: id}});
+      }
     }
   }
 })
@@ -145,12 +166,16 @@ export default defineComponent({
 <style lang="scss">
 .list-table {
   max-height: 96vh;
+  td, th {
+    text-align: left;
+  }
 
+  tfoot tr > *,
   thead tr > * {
     position: sticky;
     opacity: 1;
     z-index: 1;
-    background-color: black;
+    background-color: $grey-9;
     color: white;
   }
 

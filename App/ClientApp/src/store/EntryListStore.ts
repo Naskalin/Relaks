@@ -5,7 +5,7 @@ export declare interface PersonCreateDto {
     rating: number
 }
 
-export const useEntryStore = defineStore('entries', {
+export const useEntryListStore = defineStore('entryList', {
     state: () => {
         return {
             persons: {}

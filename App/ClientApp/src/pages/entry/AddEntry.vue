@@ -28,7 +28,6 @@ import {defineComponent, ref, onMounted} from "vue";
 import {entryTypeTrans} from "../../localize/default";
 
 export default defineComponent({
-  name: "CreateEntry",
   setup() {
     const model = ref({
       name: '',

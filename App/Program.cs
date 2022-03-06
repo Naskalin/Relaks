@@ -62,8 +62,7 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
     if (app.Environment.IsDevelopment())
     {
-        new EntrySeeder(db).Seed();
-        await db.SaveChangesAsync();   
+        await new DatabaseSeeder(db).seed();
     }
 }
 // Configure the HTTP request pipeline.
