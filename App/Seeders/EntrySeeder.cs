@@ -1,10 +1,11 @@
-﻿using App.Models.Entry;
+﻿using App.Data;
+using App.Models;
 
 namespace App.Seeders;
 
 public class EntrySeeder : DatabaseSeeder
 {
-    public EntrySeeder(ApplicationContext db) : base(db)
+    public EntrySeeder(AppDbContext db) : base(db)
     {
     }
 

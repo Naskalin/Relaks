@@ -20,12 +20,12 @@
     >
 
       <template v-slot:top-right="props">
-        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+        <q-input borderless dense debounce="300" v-model="filter" placeholder="Поиск...">
           <template v-slot:append>
-            <q-icon name="search" />
+            <q-icon name="search"/>
           </template>
         </q-input>
-        
+
         <q-btn
             flat round dense
             :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
@@ -75,14 +75,16 @@ export default defineComponent({
           return;
         }
         isLoading.value = true;
-        
-        const q = ApiPerson;
-        
-        if (filter.value !== '') {
-          q.where('name', filter.value);
-        }
 
-        await q
+        // const apiPerson = ApiPerson;
+        //
+        // if (filter.value !== '') {
+        //   apiPerson.where('name', filter.value);
+        // }
+        // https://localhost:7125/api/persons?filter[name]=tom&page[number]=1&page[size]=50
+        // console.log(ApiPerson.getJsonApiUrl());
+
+        await ApiPerson
             .get(pageNumber.value)
             .then(resp => {
               rows.value = rows.value.concat(resp.getHttpClientResponse().getData().data);
@@ -93,6 +95,12 @@ export default defineComponent({
             })
       }
     }
+    
+    onMounted(async () => {
+      // https://localhost:7125/api/persons?filter[name]=eq(tom)&page[number]=1&page[size]=50
+      // await ApiPerson.where('name', 'eq(tom)').get();
+      // console.log(ApiPerson.where('name', 'eq(tom)').getQuery());
+    })
 
     return {
       columns,
@@ -111,7 +119,6 @@ export default defineComponent({
 .list-table {
   max-height: 80vh;
 
-  thead tr > *,
   thead tr > * {
     position: sticky;
     opacity: 1;

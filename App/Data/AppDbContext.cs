@@ -1,11 +1,10 @@
 ﻿using App.Models;
-using App.Models.Entry;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace App;
+namespace App.Data;
 
-public class ApplicationContext : DbContext
+public class AppDbContext : DbContext
 {
     public virtual DbSet<BaseEntry> Entries { get; set; } = null!;
     public DbSet<Person> Persons { get; set; } = null!;
@@ -13,7 +12,7 @@ public class ApplicationContext : DbContext
     public DbSet<Company> Companies { get; set; } = null!;
     public DbSet<Note> Notes { get; set; } = null!;
 
-    public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
         // Database.EnsureDeleted();
         // Database.EnsureCreated();
@@ -21,6 +20,11 @@ public class ApplicationContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // modelBuilder.Entity<BaseEntry>()
+        //     .Property(x => x.Name)
+        //     .UseCollation("NOCASE")
+        //     ;
+        
         modelBuilder.Entity<BaseEntry>()
             .HasDiscriminator(x => x.EntryType)
             .HasValue<Person>(EntryTypeEnum.Person)

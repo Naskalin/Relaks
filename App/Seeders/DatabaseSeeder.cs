@@ -1,10 +1,12 @@
-﻿namespace App.Seeders;
+﻿using App.Data;
+
+namespace App.Seeders;
 
 public class DatabaseSeeder
 {
-    protected readonly ApplicationContext Db;
+    protected readonly AppDbContext Db;
 
-    protected DatabaseSeeder(ApplicationContext db)
+    protected DatabaseSeeder(AppDbContext db)
     {
         Db = db;
     }

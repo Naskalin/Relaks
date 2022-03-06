@@ -1,4 +1,4 @@
-﻿using App.Models.Entry;
+﻿using App.Models;
 using JsonApiDotNetCore.Resources;
 using JsonApiDotNetCore.Resources.Annotations;
 
