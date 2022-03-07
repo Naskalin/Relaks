@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using App.Data;
+using App.DbConfigurations;
 // using App.ResourceDefinitions;
 using App.Seeders;
 using JsonApiDotNetCore.Configuration;
@@ -59,11 +59,16 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
+
+    var vars = Environment.GetEnvironmentVariables();
+    
     if (app.Environment.IsDevelopment())
     {
-        await new DatabaseSeeder(db).seed();
+        db.Database.EnsureDeleted();
+        db.Database.EnsureCreated();
+        await new DatabaseSeeder(db).SeedAll();
     }
+    db.Database.Migrate();
 }
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -1,46 +1,52 @@
-﻿using JsonApiDotNetCore.Resources;
+﻿using System.ComponentModel.DataAnnotations;
+using JsonApiDotNetCore.Resources;
 using JsonApiDotNetCore.Resources.Annotations;
 
 namespace App.Models;
 
-public abstract class BaseEntry : Identifiable<Guid>
+public abstract class Entry : Identifiable<Guid>, ITimestampResource
 {
     [Attr]
+    [MaxLength(150)]
     public string Name { get; set; } = null!;
 
     [Attr]
+    [MaxLength(200)]
+    public string? Description { get; set; }
+
+    [Attr(Capabilities = AttrCapabilities.AllowView)]
     public EntryTypeEnum EntryType { get; set; }
 
     [Attr]
+    [Range(0, 10)]
     public int Reputation { get; set; } = 5;
 
     [Attr]
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public List<EntryTag> Tags { get; set; } = new();
+    
+    [Attr]
+    public List<EntryInfo> Infos { get; set; } = new();
+
+    [Attr(Capabilities = AttrCapabilities.AllowView)]
+    public DateTime CreatedAt { get; set; }
+
+    [Attr(Capabilities = AttrCapabilities.AllowView)]
+    public DateTime UpdatedAt { get; set; }
 }
 
 [Resource(PublicName = "persons")]
-public class Person : BaseEntry
+public class Person : Entry
 {
-    [Attr]
-    public DateTime? BirthDay { get; set; }
 }
 
 [Resource(PublicName = "companies")]
-public class Company : BaseEntry
+public class Company : Entry
 {
 }
 
 [Resource(PublicName = "meets")]
-public class Meet : BaseEntry
+public class Meet : Entry
 {
-    [Attr]
-    public DateTime StartAt { get; set; }
-
-    [Attr]
-    public DateTime? EndAt { get; set; }
-
-    [Attr]
-    public string? Address { get; set; }
 }
 
 public enum EntryTypeEnum
