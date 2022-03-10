@@ -1,31 +1,13 @@
 ﻿<template>
-  <q-layout view="hHh lpR fFf" class="bg-grey-8">
-<!--    <q-header elevated>-->
-<!--      <q-toolbar class="bg-blue-grey-7">-->
-<!--        <q-btn-->
-<!--            flat-->
-<!--            dense-->
-<!--            round-->
-<!--            @click="toggleLeftDrawer"-->
-<!--            aria-label="Menu"-->
-<!--            icon="menu"-->
-<!--            class="lt-md"-->
-<!--        />-->
-
-<!--        <q-toolbar-title>Ras</q-toolbar-title>-->
-<!--      </q-toolbar>-->
-<!--    </q-header>-->
-
+  <q-layout view="hHh lpR fFf">
     <q-drawer
         v-model="leftDrawerOpen"
         show-if-above
         bordered
         behavior="desktop"
         side="left"
-        class="bg-grey-10"
     >
       <q-list separator>
-
         <q-item to="/" clickable v-ripple exact>
           <q-item-section>Home</q-item-section>
         </q-item>

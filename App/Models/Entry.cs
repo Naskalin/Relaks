@@ -13,7 +13,7 @@ public class Entry : Identifiable<Guid>, ITimestampResource
     public string Name { get; set; } = null!;
 
     [Attr]
-    [MaxLength(200)]
+    [MaxLength(300)]
     public string? Description { get; set; }
 
     [Attr(Capabilities = ~AttrCapabilities.AllowChange)]

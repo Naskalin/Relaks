@@ -1,5 +1,5 @@
 <template>
-
+  <add-entry></add-entry>
   <div class="row">
     <div class="col-3">
       <div class="q-pa-md">
@@ -55,7 +55,7 @@
 <!--          </q-input>-->
 
           <q-btn icon="las la-plus-circle"
-                 :to="{ name: 'entries-add' }"
+                 @click="addEntryStore.isShowModal = true"
                  label="Добавить"
                  color="primary"
           />
@@ -70,6 +70,8 @@ import {defineComponent, ref, Ref, onMounted, computed, reactive} from "vue";
 import { useRouter } from 'vue-router'
 import {date} from 'quasar';
 import {jsonApi} from "../../api";
+import AddEntry from "./AddEntry.vue";
+import {useEntryAddStore} from "../../store/entry/EntryAddStore";
 
 const columns = [
   {name: 'id', label: '#', field: 'id', style: 'width: 70px'},
@@ -84,7 +86,9 @@ const columns = [
 ]
 
 export default defineComponent({
+  components: {AddEntry},
   setup() {
+    const addEntryStore = useEntryAddStore();
     const rows = ref([]);
     const isLoading = ref(false);
 
@@ -146,6 +150,7 @@ export default defineComponent({
 
     const router = useRouter();
     return {
+      addEntryStore,
       columns,
       rows,
       pagination: {rowsPerPage: 0},
@@ -155,7 +160,7 @@ export default defineComponent({
       filter,
       onRowClick: (id: string) => {
         router.push({name: 'entries-profile', params: {id: id}});
-      }
+      },
     }
   }
 })

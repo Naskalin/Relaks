@@ -1,82 +1,106 @@
 ﻿<template>
-  <h1>Добавление объединения</h1>
+  <q-dialog v-model="store.isShowModal" persistent>
+    <q-card style="width: 700px; max-width: 80vw;">
+      <q-card-section class="row items-center q-pb-none">
+        <div class="text-h6">Добавление объединения</div>
+        <q-space/>
+        <q-btn icon="close" flat round dense v-close-popup/>
+      </q-card-section>
 
-<!--  <q-dialog v-model="icon">-->
-<!--    <q-card>-->
-<!--      <q-card-section class="row items-center q-pb-none">-->
-<!--        <div class="text-h6">Close icon</div>-->
-<!--        <q-space />-->
-<!--        <q-btn icon="close" flat round dense v-close-popup />-->
-<!--      </q-card-section>-->
+      <q-form autocorrect="off"
+              autocapitalize="off"
+              autocomplete="off"
+              spellcheck="false"
+              @submit.prevent="addEntry">
+        <q-card-section>
+          <div class="q-gutter-lg">
+            <div>
+              <p class="q-mb-sm text-white">Тип</p>
+              <q-radio v-for="(name, key) in entryTypeTrans"
+                       color="secondary"
+                       v-model="model.entryType"
+                       :val="key"
+                       :label="name"/>
+            </div>
 
-<!--      <q-card-section>-->
-<!--        Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum repellendus sit voluptate voluptas eveniet porro. Rerum blanditiis perferendis totam, ea at omnis vel numquam exercitationem aut, natus minima, porro labore.-->
-<!--      </q-card-section>-->
-<!--    </q-card>-->
-<!--  </q-dialog>-->
-  
-  <q-card class="q-pa-md">
-    <q-form class="q-gutter-md" @submit.prevent="addEntry">
-      <q-btn-toggle
-          v-model="model.entryType"
-          toggle-color="secondary"
-          :options="entryTypeSelect"
-      />
-      <q-input filled v-model="model.name" :label="model.entryType === 'Person' ? 'Ф.И.О.' : 'Название'"/>
-      <div class="bg-grey-2 q-pa-sm rounded-borders">
-        <p class="q-mb-xs text-grey-7">Рейтинг
-          <q-badge class="bg-grey-7">{{ model.reputation }}</q-badge>
-        </p>
-        <q-rating :max="10"
-                  v-model="model.reputation"
-                  color="secondary"
-                  icon="lar la-star"
-                  icon-selected="las la-star"
-                  size="3em">
-        </q-rating>
-      </div>
+            <q-input filled
+                     clearable
+                     color="secondary"
+                     label-color="gold"
+                     v-model="model.name"
+                     :label="model.entryType === 'Person' ? 'Ф.И.О.' : 'Название'"/>
+            <q-input
+                v-model="model.description"
+                filled
+                counter
+                color="secondary"
+                label="Краткое описание"
+                :hint="'Пример: ' + descHelpers[model.entryType]"
+                type="textarea"
+                rows="3"
+            />
+            <div>
+              <p class="q-mb-sm text-white">
+                Рейтинг
+                <span class="text-white bg-brown q-pa-xs rounded-borders">{{ model.reputation }}</span>
+              </p>
+              <q-rating :max="10"
+                        v-model="model.reputation"
+                        color="secondary"
+                        icon="lar la-star"
+                        icon-selected="las la-star"
+                        size="2.2em">
+              </q-rating>
+            </div>
+          </div>
+        </q-card-section>
 
-      <q-btn label="Добавить" type="submit" color="primary" icon="las la-plus-circle">
-      </q-btn>
-    </q-form>
-
-  </q-card>
+        <q-card-actions align="right">
+          <q-btn flat label="Закрыть" color="white" icon="las la-times" v-close-popup/>
+          <q-btn label="Добавить" type="submit" color="primary" icon="las la-plus-circle"/>
+        </q-card-actions>
+      </q-form>
+    </q-card>
+  </q-dialog>
 </template>
 
-<script lang="ts">
-import {defineComponent, ref, onMounted} from "vue";
+<script setup lang="ts">
+import {ref, defineEmits, defineProps, withDefaults} from "vue";
 import {entryTypeTrans} from "../../localize/default";
 import {EntryAddModel, useEntryAddStore} from "../../store/entry/EntryAddStore";
 import {useRouter} from "vue-router";
+import {ApiGetResponse} from "../../api/get";
 
-export default defineComponent({
-  setup() {
-    const model = ref<EntryAddModel>({
-      name: '',
-      reputation: 5,
-      entryType: 'Person'
-    });
-    
+const emit = defineEmits<{
+  (e: 'created', entry: ApiGetResponse): void
+}>()
 
-    // const entryType = ref('person');
-    const store = useEntryAddStore();
-    const router = useRouter();
-
-    let entryTypeSelect = [];
-    for (const [value, label] of Object.entries(entryTypeTrans)) {
-      entryTypeSelect.push({label, value})
-    }
-
-    const addEntry = async () => {
-      const resource = await store.addEntry(model.value);
-      await router.push({name: 'entries-profile', params: {id: resource.id}});
-    }
-
-    return {
-      addEntry,
-      model,
-      entryTypeSelect
-    }
-  }
+const props = withDefaults(defineProps<{ hasRedirect?: boolean }>(), {
+  hasRedirect: true,
 })
+
+const model = ref<EntryAddModel>({
+  name: '',
+  reputation: 5,
+  entryType: 'Person',
+  description: '',
+});
+
+const store = useEntryAddStore();
+const router = useRouter();
+
+const addEntry = async () => {
+  const entry = await store.addEntry(model.value);
+  emit('created', entry);
+  if (props.hasRedirect) {
+    await router.push({name: 'entries-profile', params: {id: entry.id}});
+  }
+  store.isShowModal = false;
+}
+
+const descHelpers = {
+  'Person': 'Хороший ветеринар',
+  'Company': 'Ветеринарная клиника доктора Айболита',
+  'Meet': 'Осмотр щенка у доктора Айболита',
+}
 </script>

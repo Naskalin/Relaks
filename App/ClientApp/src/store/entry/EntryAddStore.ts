@@ -7,6 +7,7 @@ export declare type EntryAddModel = {
     entryType: EntryType,
     name: string,
     reputation: number,
+    description?: string
 }
 
 declare type EntryAddStoreState = {
