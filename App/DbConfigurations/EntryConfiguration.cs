@@ -15,12 +15,12 @@ public class EntryConfiguration : IEntityTypeConfiguration<Entry>
         //     .UsingEntity(j => j.ToTable("EntryEntryTag"))
         //     ;
         
-        builder
-            .HasDiscriminator(x => x.EntryType)
-            .HasValue<Person>(EntryTypeEnum.Person)
-            .HasValue<Meet>(EntryTypeEnum.Meet)
-            .HasValue<Company>(EntryTypeEnum.Company)
-            ;
+        // builder
+        //     .HasDiscriminator(x => x.EntryType)
+        //     .HasValue<Person>(EntryTypeEnum.Person)
+        //     .HasValue<Meet>(EntryTypeEnum.Meet)
+        //     .HasValue<Company>(EntryTypeEnum.Company)
+        //     ;
 
         builder
             .Property(x => x.EntryType)

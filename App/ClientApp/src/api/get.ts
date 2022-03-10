@@ -1,6 +1,6 @@
 ﻿import {apiUrl} from "../default";
 
-export declare type JsonApiResource = {
+export declare type ApiGetResponse = {
     id: string,
     links: { self: string },
     type: string,
@@ -9,7 +9,7 @@ export declare type JsonApiResource = {
     }
 }
 export declare type ApiGetAllResponse = {
-    data: JsonApiResource[],
+    data: ApiGetResponse[],
     links: { [index: string]: string },
     meta: {
         total: number
@@ -23,9 +23,9 @@ export declare type ApiGetAllRequest = ApiGetRequest & {
         number: number,
         size: number
     },
-    sort?: Array<{resource?: string, fields: string[]}>,
+    sort?: Array<{ resource?: string, fields: string[] }>,
     like?: string,
-    fields?: Array<{key: string, val: string[]}>
+    fields?: Array<{ key: string, val: string[] }>
     filter?: {
         startsWith?: { key: string, val: string },
         endsWith?: { key: string, val: string },
@@ -41,16 +41,16 @@ export declare type ApiGetAllRequest = ApiGetRequest & {
         and?: { key: string, val: string[] },
     }
 }
-const strAddQuotes = (str: string):string => {
+const strAddQuotes = (str: string): string => {
     return "'" + str + "'";
 }
-const strAddBrackets = (str: string):string => {
+const strAddBrackets = (str: string): string => {
     return "(" + str + ")";
 }
-const strAddSquareBrackets = (str: string):string => {
+const strAddSquareBrackets = (str: string): string => {
     return "[" + str + "]";
 }
-export const getToUrl = (endPoint: string, apiRequest?: ApiGetRequest): string => {
+export const getUrlBuilder = (endPoint: string, apiRequest?: ApiGetRequest): string => {
     let url = new URL(apiUrl + endPoint),
         query: Array<[string, string]> = []
     ;
@@ -66,10 +66,10 @@ export const getToUrl = (endPoint: string, apiRequest?: ApiGetRequest): string =
         const val = qItem[1];
         url.searchParams.append(key, val)
     })
-    
+
     return url.toString();
 }
-export const getAllToUrl = (endPoint: string, apiRequest: ApiGetAllRequest) : string => {
+export const getAllUrlBuilder = (endPoint: string, apiRequest: ApiGetAllRequest): string => {
     let url = new URL(apiUrl + endPoint),
         query: Array<[string, string]> = []
     ;
@@ -81,26 +81,26 @@ export const getAllToUrl = (endPoint: string, apiRequest: ApiGetAllRequest) : st
         // ?like=cats
         query.push(['like', apiRequest.like]);
     }
-    
+
     if (apiRequest?.include) {
         apiRequest.include.forEach(attr => {
             query.push(['include', attr])
         })
     }
-    
+
     if (apiRequest?.sort) {
         apiRequest.sort.forEach(el => {
             // ?sort=title,createdAt...
             let sortName = 'sort';
             if (el?.resource) {
                 // ?sort[articles]=title,createdAt...
-                sortName += strAddSquareBrackets(el.resource);    
+                sortName += strAddSquareBrackets(el.resource);
             }
 
             query.push([sortName, el.fields.join(',')]);
         })
     }
-    
+
     if (apiRequest?.fields) {
         apiRequest.fields.forEach(el => {
             query.push(['fields' + strAddSquareBrackets(el.key), el.val.join(',')]);
@@ -121,7 +121,7 @@ export const getAllToUrl = (endPoint: string, apiRequest: ApiGetAllRequest) : st
                 let value = itemValue as any as string[];
                 // ?filter=or(has(orders),has(invoices))
                 query.push(['filter', operation + strAddBrackets(value.join(','))])
-            } else if (operation === 'has'){
+            } else if (operation === 'has') {
                 let value = itemValue as any as string;
                 // ?filter=has(articles)
                 query.push(['filter', operation + strAddBrackets(value)])

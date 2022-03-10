@@ -4,17 +4,19 @@ using JsonApiDotNetCore.Resources.Annotations;
 
 namespace App.Models;
 
-public abstract class Entry : Identifiable<Guid>, ITimestampResource
+[Resource(PublicName = "entries")]
+public class Entry : Identifiable<Guid>, ITimestampResource
 {
     [Attr]
     [MaxLength(150)]
+    [MinLength(2)]
     public string Name { get; set; } = null!;
 
     [Attr]
     [MaxLength(200)]
     public string? Description { get; set; }
 
-    [Attr(Capabilities = AttrCapabilities.AllowView)]
+    [Attr(Capabilities = ~AttrCapabilities.AllowChange)]
     public EntryTypeEnum EntryType { get; set; }
 
     [Attr]
@@ -34,20 +36,20 @@ public abstract class Entry : Identifiable<Guid>, ITimestampResource
     public DateTime UpdatedAt { get; set; }
 }
 
-[Resource(PublicName = "persons")]
-public class Person : Entry
-{
-}
-
-[Resource(PublicName = "companies")]
-public class Company : Entry
-{
-}
-
-[Resource(PublicName = "meets")]
-public class Meet : Entry
-{
-}
+// [Resource(PublicName = "persons")]
+// public class Person : Entry
+// {
+// }
+//
+// [Resource(PublicName = "companies")]
+// public class Company : Entry
+// {
+// }
+//
+// [Resource(PublicName = "meets")]
+// public class Meet : Entry
+// {
+// }
 
 public enum EntryTypeEnum
 {

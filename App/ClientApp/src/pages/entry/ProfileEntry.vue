@@ -1,38 +1,31 @@
 ﻿<template>
-  
   <div class="row">
     <div class="col-3">
-      <entry-card></entry-card>
+      <profile-card></profile-card>
     </div>
     <div class="col">
       <div class="q-ml-lg bg-grey-9">
-        tabs...
+        <profile-tabs></profile-tabs>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import EntryCard from "./_EntryCard.vue";
+import ProfileCard from "./_profile/ProfileCard.vue";
 import {defineComponent, onMounted, ref, computed} from "vue";
-import {jsonApi} from "../../api";
-import { useRoute } from 'vue-router'
-import {useEntryProfileStore} from "../../store/EntryProfileStore";
+import {useRoute} from 'vue-router'
+import {useEntryProfileStore} from "../../store/entry/EntryProfileStore";
+import ProfileTabs from "./_profile/ProfileTabs.vue";
 
 export default defineComponent({
-  components: {EntryCard},
-  setup(props) {
+  components: {ProfileCard, EntryCard: ProfileCard, ProfileTabs},
+  setup() {
     const store = useEntryProfileStore();
-    
     const route = useRoute();
     onMounted(async () => {
-      // entry.value = await jsonApi.get('/persons/' + route.params.id);
-      await store.getEntry('/persons/' + route.params.id);
-      // console.log(store.entry)
+      await store.getEntry(route.params.id as string);
     })
-    
-    return {
-    }
   }
 })
 </script>

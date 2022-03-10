@@ -31,7 +31,7 @@ public abstract class EntryInfo : Identifiable<Guid>, ITimestampResource, IActua
 
     [Attr]
     [MaxLength(200)]
-    public string? Description { get; set; } = null!;
+    public string? About { get; set; } = null!;
     
     [Attr(Capabilities = AttrCapabilities.AllowView)]
     public EntryInfoTypeEnum InfoType { get; set; }
@@ -49,13 +49,19 @@ public class InfoDate : EntryInfo
     public DateTime Date { get; set; }
 
     [Attr]
+    [MaxLength(30)]
     public InfoDateTypeEnum? DateType { get; set; }
 }
 
 public enum InfoDateTypeEnum
 {
-    Birthday,
-    DeathDate
+    PersonBirthday,
+    PersonDeath,
+    FirstMeet,
+    MeetStart,
+    MeetEnd,
+    CompanyCreation,
+    CompanyClosing,
 }
 
 public class InfoText : EntryInfo
@@ -64,7 +70,8 @@ public class InfoText : EntryInfo
     [MaxLength(5000)]
     public string Text { get; set; } = null!;
 
-    [Attr(Capabilities = AttrCapabilities.AllowView)]
+    [Attr]
+    [MaxLength(30)]
     public InfoTextTypeEnum TextType { get; set; }
 }
 

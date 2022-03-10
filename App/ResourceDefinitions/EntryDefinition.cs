@@ -16,7 +16,10 @@ public class EntryDefinition : JsonApiResourceDefinition<Entry, Guid>
         return new QueryStringParameterHandlers<Entry>
         {
             ["like"] = (source, parameterValue) => source
-                .Where(item => EF.Functions.Like(item.Name, "%" + parameterValue + "%"))
+                .Where(item => 
+                    EF.Functions.Like(item.Name, "%" + parameterValue + "%")
+                    || item.Description != null && EF.Functions.Like(item.Description, "%" + parameterValue + "%")
+                )
         };
     }
 }

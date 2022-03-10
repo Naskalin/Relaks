@@ -8,12 +8,18 @@ Content-Type: application/json
 
 
 ###
-POST https://localhost:7125/api/entry/company
-Content-Type: application/json
+POST https://localhost:7125/api/entries
+Content-Type: application/vnd.api+json
 
 {
-  "Name": "ABCDE@COMPANY",
-  "Reputation": 5
+  "data": {
+    "type": "entries",
+    "attributes": {
+      "name": "Вася Пупкин",
+      "entryType": "Company",
+      "reputation": 8
+    }
+  }
 }
 
 ###

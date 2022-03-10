@@ -10,9 +10,9 @@ public class AppDbContext : DbContext
     // public DbSet<Author> Authors { get; set; } = null!;
     
     public DbSet<Entry> Entries { get; set; } = null!;
-    public DbSet<Person> Persons { get; set; } = null!;
-    public DbSet<Meet> Meets { get; set; } = null!;
-    public DbSet<Company> Companies { get; set; } = null!;
+    // public DbSet<Person> Persons { get; set; } = null!;
+    // public DbSet<Meet> Meets { get; set; } = null!;
+    // public DbSet<Company> Companies { get; set; } = null!;
     
     public DbSet<EntryInfo> EntryInfos { get; set; } = null!;
     public DbSet<InfoDate> InfoDates { get; set; } = null!;

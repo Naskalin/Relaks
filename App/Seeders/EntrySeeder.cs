@@ -13,15 +13,21 @@ public class EntrySeeder : DatabaseSeeder
     {
         var names = new[] {"Tom", "Bob", "Mike", "Frida"};
         var random = new Random();
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 100; i++)
         {
-            var person = new Person()
+            var person = new Entry()
             {
                 Name = names[random.Next(names.Length)],
                 Reputation = random.Next(0, 10),
+                EntryType = EntryTypeEnum.Person,
             };
 
-            Db.Persons.Add(person);
+            if (i % random.Next(1, 3) == 0)
+            {
+                person.Description = "At vero eos et accusamus et iusto odio dignissimos ducimus";
+            }
+
+            Db.Entries.Add(person);
         }
         
         await Db.SaveChangesAsync();

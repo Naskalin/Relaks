@@ -6,17 +6,17 @@
         <p>фильтры...</p>
 
       </div>
-      <p><q-btn :to="{ name: 'entries-add' }" color="primary">Добавть entry</q-btn></p>
-      <div class="q-pa-md q-gutter-sm">
-        <q-btn color="white" text-color="black" label="Standard" />
-        <q-btn color="primary" label="Primary" />
-        <q-btn color="secondary" label="Secondary" />
-        <q-btn color="amber" glossy label="Amber" />
-        <q-btn color="brown-5" label="Brown 5" />
-        <q-btn color="deep-orange" glossy label="Deep Orange" />
-        <q-btn color="purple" label="Purple" />
-        <q-btn color="black" label="Black" />
-      </div>
+<!--      <p><q-btn :to="{ name: 'entries-add' }" color="primary">Добавть entry</q-btn></p>-->
+<!--      <div class="q-pa-md q-gutter-sm">-->
+<!--        <q-btn color="white" text-color="black" label="Standard" />-->
+<!--        <q-btn color="primary" label="Primary" />-->
+<!--        <q-btn color="secondary" label="Secondary" />-->
+<!--        <q-btn color="amber" glossy label="Amber" />-->
+<!--        <q-btn color="brown-5" label="Brown 5" />-->
+<!--        <q-btn color="deep-orange" glossy label="Deep Orange" />-->
+<!--        <q-btn color="purple" label="Purple" />-->
+<!--        <q-btn color="black" label="Black" />-->
+<!--      </div>-->
     </div>
     <div class="col-9">
       <q-table
@@ -34,7 +34,6 @@
           @virtual-scroll="loadData"
           @row-click="onRowClick"
       >
-
         
         <template v-slot:body="props">
           <q-tr :props="props" :key="`m_${props.row.index}`" @click.native="onRowClick(props.row.id)">
@@ -49,18 +48,17 @@
         </template>
         
         <template v-slot:top-right="props">
-          <q-input borderless dense debounce="300" v-model="filter" placeholder="Поиск...">
-            <template v-slot:append>
-              <q-icon name="las la-search"/>
-            </template>
-          </q-input>
+<!--          <q-input borderless dense debounce="300" v-model="filter" placeholder="Поиск...">-->
+<!--            <template v-slot:append>-->
+<!--              <q-icon name="las la-search"/>-->
+<!--            </template>-->
+<!--          </q-input>-->
 
-          <q-btn
-              flat round dense
-              :icon="props.inFullscreen ? 'las la-compress-arrows-alt' : 'las la-arrows-alt'"
-              @click="props.toggleFullscreen"
-              class="q-ml-md"
-          ></q-btn>
+          <q-btn icon="las la-plus-circle"
+                 :to="{ name: 'entries-add' }"
+                 label="Добавить"
+                 color="primary"
+          />
         </template>
       </q-table>
     </div>
@@ -71,7 +69,7 @@
 import {defineComponent, ref, Ref, onMounted, computed, reactive} from "vue";
 import { useRouter } from 'vue-router'
 import {date} from 'quasar';
-import {jsonApi} from './../../api/index';
+import {jsonApi} from "../../api";
 
 const columns = [
   {name: 'id', label: '#', field: 'id', style: 'width: 70px'},
@@ -114,7 +112,7 @@ export default defineComponent({
         // https://localhost:7125/api/persons?filter[name]=tom&page[number]=1&page[size]=50
         // console.log(ApiPerson.getJsonApiUrl());
 
-        await jsonApi.getAll('/persons', {
+        await jsonApi.getAll({resource: 'entries'}, {
           pagination: {
             number: pageNumber.value,
             size: 50

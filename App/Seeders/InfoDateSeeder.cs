@@ -12,21 +12,26 @@ public class InfoDateSeeder : DatabaseSeeder
 
     public async Task Seed()
     {
-        var persons = Db.Persons.Where(x => true).ToList();
+        var persons = Db.Entries.Where(x => true).ToList();
+        var dates = new[] {"1988-05-04 00:00:00", "1984-10-06 00:00:00", "1988-08-03 00:00:00", "2007-10-30 00:00:00"};
 
         var i = 0;
+        var random = new Random();
         foreach (var person in persons)
         {
-            if (i % 2 == 0)
+            if (i % random.Next(1, 5) == 0)
             {
-                var infoDate = new InfoDate()
+                for (int j = 0; j < random.Next(1, 5); j++)
                 {
-                    DateType = InfoDateTypeEnum.Birthday,
-                    Date = DateTime.Parse("1988-05-04 00:00:00")
-                };
-                
-                infoDate.Entries.Add(person);
-                Db.InfoDates.Add(infoDate);
+                    var infoDate = new InfoDate()
+                    {
+                        DateType = InfoDateTypeEnum.PersonBirthday,
+                        Date = DateTime.Parse(dates[random.Next(dates.Length)])
+                    };
+                    
+                    infoDate.Entries.Add(person);
+                    Db.InfoDates.Add(infoDate);
+                }
             }
 
             i++;

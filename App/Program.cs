@@ -1,30 +1,12 @@
 using System.Text.Json.Serialization;
 using App.DbConfigurations;
-// using App.ResourceDefinitions;
 using App.Seeders;
 using JsonApiDotNetCore.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-    .AddControllers()
-    // .AddNewtonsoftJson(setupAction =>
-    // {
-    //     setupAction.SerializerSettings.Converters.Add(new StringEnumConverter());
-    // })
-    // .AddNewtonsoftJson()
-    // .AddOData(
-    //     options => options
-    //         .EnableQueryFeatures()
-    //         .Select()
-    //         .Filter()
-    //         .OrderBy()
-    //         .Count()
-    // )
-    .AddJsonOptions(o => { o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); })
-    
-    ;
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -37,6 +19,7 @@ builder.Services.AddJsonApi<AppDbContext>(options =>
 {
     options.Namespace = "api";
     options.IncludeTotalResourceCount = true;
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
 
 });
 
