@@ -6,8 +6,8 @@ public interface IActualResource
 {
     public DateTime ActualFrom { get; set; }
     public DateTime? ActualTo { get; set; }
-    public string? ActualToReason { get; set; }
     public string? ActualFromReason { get; set; }
+    public string? ActualToReason { get; set; }
 }
 
 public interface ITimestampResource

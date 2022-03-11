@@ -55,13 +55,13 @@ public class InfoDate : EntryInfo
 
 public enum InfoDateTypeEnum
 {
-    PersonBirthday,
-    PersonDeath,
+    // PersonBirthday,
+    // PersonDeath,
     FirstMeet,
-    MeetStart,
-    MeetEnd,
-    CompanyCreation,
-    CompanyClosing,
+    // MeetStart,
+    // MeetEnd,
+    // CompanyCreation,
+    // CompanyClosing,
 }
 
 public class InfoText : EntryInfo

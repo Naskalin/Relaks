@@ -13,4 +13,13 @@ public class EntryTag : Identifiable<Guid>
 
     [Attr]
     public List<Entry> Entries { get; set; } = new();
+    
+    [Attr]
+    public TagTypeEnum TagType { get; set; }
+}
+
+public enum TagTypeEnum
+{
+    Skills,
+    Location
 }

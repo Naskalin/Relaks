@@ -2,26 +2,14 @@
   <add-entry></add-entry>
   <div class="row">
     <div class="col-3">
-      <div class="q-pa-md">
-        <p>фильтры...</p>
-
-      </div>
-<!--      <p><q-btn :to="{ name: 'entries-add' }" color="primary">Добавть entry</q-btn></p>-->
-<!--      <div class="q-pa-md q-gutter-sm">-->
-<!--        <q-btn color="white" text-color="black" label="Standard" />-->
-<!--        <q-btn color="primary" label="Primary" />-->
-<!--        <q-btn color="secondary" label="Secondary" />-->
-<!--        <q-btn color="amber" glossy label="Amber" />-->
-<!--        <q-btn color="brown-5" label="Brown 5" />-->
-<!--        <q-btn color="deep-orange" glossy label="Deep Orange" />-->
-<!--        <q-btn color="purple" label="Purple" />-->
-<!--        <q-btn color="black" label="Black" />-->
-<!--      </div>-->
+      <q-card class="q-pa-md">
+        <list-filter></list-filter>
+      </q-card>
     </div>
     <div class="col-9">
       <q-table
-          class="list-table"
-          :title="'Люди (' + totalResources + ')'"
+          class="list-table q-ml-md"
+          :title="'Объединения (' + totalResources + ')'"
           :rows="rows"
           :columns="columns"
           :loading="isLoading"
@@ -34,7 +22,6 @@
           @virtual-scroll="loadData"
           @row-click="onRowClick"
       >
-        
         <template v-slot:body="props">
           <q-tr :props="props" :key="`m_${props.row.index}`" @click.native="onRowClick(props.row.id)">
             <q-td
@@ -42,18 +29,14 @@
                 :key="col.name"
                 :props="props"
             >
-              {{ col.name === 'id' ? props.rowIndex + 1 : col.value }}
+              <template v-if="col.name === 'id'">{{ props.rowIndex + 1 }}</template>
+              <template v-else-if="col.name === 'entryType'">{{ entryTypeTrans[col.value] }}</template>
+              <template v-else>{{ col.value }}</template>
             </q-td>
           </q-tr>
         </template>
-        
-        <template v-slot:top-right="props">
-<!--          <q-input borderless dense debounce="300" v-model="filter" placeholder="Поиск...">-->
-<!--            <template v-slot:append>-->
-<!--              <q-icon name="las la-search"/>-->
-<!--            </template>-->
-<!--          </q-input>-->
 
+        <template v-slot:top-right="props">
           <q-btn icon="las la-plus-circle"
                  @click="addEntryStore.isShowModal = true"
                  label="Добавить"
@@ -66,15 +49,18 @@
 </template>
 
 <script lang="ts">
+import ListFilter from './_list/ListFilter.vue';
 import {defineComponent, ref, Ref, onMounted, computed, reactive} from "vue";
-import { useRouter } from 'vue-router'
+import {useRouter} from 'vue-router'
 import {date} from 'quasar';
 import {jsonApi} from "../../api";
 import AddEntry from "./AddEntry.vue";
 import {useEntryAddStore} from "../../store/entry/EntryAddStore";
+import {entryTypeTrans} from "../../localize/default";
 
 const columns = [
   {name: 'id', label: '#', field: 'id', style: 'width: 70px'},
+  {name: 'entryType', label: 'Тип', field: (row: any) => row.attributes.entryType},
   {name: 'name', label: 'Имя', field: (row: any) => row.attributes.name},
   {name: 'reputation', label: 'Репутация', field: (row: any) => row.attributes.reputation, style: 'width: 70px'},
   {
@@ -86,7 +72,7 @@ const columns = [
 ]
 
 export default defineComponent({
-  components: {AddEntry},
+  components: {AddEntry, ListFilter},
   setup() {
     const addEntryStore = useEntryAddStore();
     const rows = ref([]);
@@ -122,13 +108,13 @@ export default defineComponent({
             size: 50
           }
         }).then(resp => {
-            rows.value = rows.value.concat(resp.data as any);
-            pageNumber.value += 1;
-            totalResources.value = resp.meta.total;
+          rows.value = rows.value.concat(resp.data as any);
+          pageNumber.value += 1;
+          totalResources.value = resp.meta.total;
         }).finally(() => {
           isLoading.value = false;
         });
-        
+
         // await ApiPerson
         //     .get(pageNumber.value)
         //     .then(resp => {
@@ -158,6 +144,7 @@ export default defineComponent({
       isLoading,
       totalResources,
       filter,
+      entryTypeTrans,
       onRowClick: (id: string) => {
         router.push({name: 'entries-profile', params: {id: id}});
       },
@@ -169,6 +156,7 @@ export default defineComponent({
 <style lang="scss">
 .list-table {
   max-height: 96vh;
+
   td, th {
     text-align: left;
   }

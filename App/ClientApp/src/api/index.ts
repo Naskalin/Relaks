@@ -1,10 +1,24 @@
-﻿import {ApiGetAllRequest, ApiGetAllResponse, ApiGetRequest, getAllUrlBuilder, getUrlBuilder, ApiGetResponse} from "./get";
+﻿import {
+    ApiGetAllRequest,
+    ApiGetAllResponse,
+    ApiGetRequest,
+    getAllUrlBuilder,
+    getUrlBuilder,
+    ApiGetResponse
+} from "./get";
 import axios, {AxiosRequestConfig} from "axios";
 import {apiUrl} from "../default";
+import {useQuasar} from "quasar";
+
+// const quasar = useQuasar();
 
 axios.interceptors.response.use((resp) => resp, (error) => {
     // show popup
     console.log(error);
+    // quasar.notify({
+    //     message: 'Jim pinged you.',
+    //     color: 'purple'
+    // })
     throw error;
 })
 const defaultHeadersFormat = {
@@ -25,7 +39,7 @@ const defaultHeadersFormat = {
 // }
 
 export const jsonApi = {
-    getAll: async (endPoint: EndpointParams, apiRequest: ApiGetAllRequest) : Promise<ApiGetAllResponse> => {
+    getAll: async (endPoint: EndpointParams, apiRequest: ApiGetAllRequest): Promise<ApiGetAllResponse> => {
         // https://www.jsonapi.net/usage/reading/filtering.html
         const endpointPath = endpointBuilder(endPoint);
         const url = getAllUrlBuilder(endpointPath, apiRequest);

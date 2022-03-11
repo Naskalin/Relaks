@@ -17,7 +17,7 @@ import { createPinia } from 'pinia';
 const myApp = createApp(App)
 myApp.use(Quasar, {
     // plugins: {},
-    // config: {
+    config: {
         // iconSet: 'line-awesome',
         
         // brand: {
@@ -28,7 +28,7 @@ myApp.use(Quasar, {
         // loading: {...}, // default set of options for Loading Quasar plugin
         // loadingBar: { ... }, // settings for LoadingBar Quasar plugin
         // // ..and many more (check Installation card on each Quasar component/directive/plugin)
-    // }
+    }
 });
 myApp.use(router);
 myApp.use(createPinia());

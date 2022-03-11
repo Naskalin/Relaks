@@ -1,13 +1,16 @@
 ﻿import { defineStore } from 'pinia';
-import {EntryType} from "../../types/types";
+import {EntryType, Nullable} from "../../types/types";
 import {jsonApi} from "../../api";
 import {ApiGetResponse} from "../../api/get";
+import {date} from "quasar";
 
 export declare type EntryAddModel = {
     entryType: EntryType,
     name: string,
     reputation: number,
-    description?: string
+    description?: Nullable<string>,
+    startAt?: Nullable<string>,
+    endAt?: Nullable<string>
 }
 
 declare type EntryAddStoreState = {
@@ -21,14 +24,17 @@ export const useEntryAddStore = defineStore('entryAddStore', {
             model: {
                 name: '',
                 reputation: 5,
-                entryType: 'Person'
+                entryType: 'Person',
+                description: null,
+                startAt: null,
+                endAt: null,
             },
             isCreating: false,
             isShowModal: false,
         }
     },
     actions: {
-        async addEntry(data: EntryAddModel) : Promise<ApiGetResponse> {
+        async addEntry() : Promise<ApiGetResponse> {
             if (this.isCreating) {
                 return Promise.reject();
             }
@@ -36,6 +42,10 @@ export const useEntryAddStore = defineStore('entryAddStore', {
             this.isCreating = true;
             
             try {
+                const data = Object.assign({}, this.model);
+                if (data.startAt && data.startAt !== '') {
+                    data.startAt = date.extractDate(data.startAt, 'YYYY/MM/DD').toISOString()
+                }
                 return await jsonApi.post({resource: 'entries'}, {
                     data: {
                         type: 'entries',

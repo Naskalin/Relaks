@@ -16,8 +16,8 @@ Content-Type: application/vnd.api+json
     "type": "entries",
     "attributes": {
       "name": "Вася Пупкин",
-      "entryType": "Company",
-      "reputation": 8
+      "reputation": 8,
+      "description": ""
     }
   }
 }

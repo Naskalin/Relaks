@@ -34,22 +34,15 @@ public class Entry : Identifiable<Guid>, ITimestampResource
 
     [Attr(Capabilities = AttrCapabilities.AllowView)]
     public DateTime UpdatedAt { get; set; }
+    
+    [Attr]
+    // Дата рождения/начала встречи/создания компании
+    public DateTime? StartAt { get; set; }
+    
+    [Attr]
+    // Дата смерти/окончания встречи/закрытия компании
+    public DateTime? EndAt { get; set; }
 }
-
-// [Resource(PublicName = "persons")]
-// public class Person : Entry
-// {
-// }
-//
-// [Resource(PublicName = "companies")]
-// public class Company : Entry
-// {
-// }
-//
-// [Resource(PublicName = "meets")]
-// public class Meet : Entry
-// {
-// }
 
 public enum EntryTypeEnum
 {
