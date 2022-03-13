@@ -20,7 +20,7 @@ public class Entry : Identifiable<Guid>, ITimestampResource
     public EntryTypeEnum EntryType { get; set; }
 
     [Attr]
-    [Range(0, 10)]
+    [Range(1, 10)]
     public int Reputation { get; set; } = 5;
 
     [Attr]

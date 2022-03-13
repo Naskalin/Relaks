@@ -1,11 +1,11 @@
 ﻿import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../pages/Home.vue';
-import About from '../pages/About.vue';
-import ListEntry from '../pages/entry/ListEntry.vue';
-import AddEntry from '../pages/entry/AddEntry.vue';
-import ProfileEntry from "../pages/entry/ProfileEntry.vue";
+import Home from '../views/pages/Home.vue';
+import About from '../views/pages/About.vue';
+import ListEntry from '../views/pages/entry/ListEntry.vue';
+import AddEntry from '../views/pages/entry/AddEntry.vue';
+import ProfileEntry from "../views/pages/entry/ProfileEntry.vue";
 
-import Page from '../layouts/Page.vue';
+import Page from '../views/layouts/Page.vue';
 
 // const isServer = typeof window === 'undefined';
 const history = createWebHistory();

@@ -22,15 +22,15 @@ public class EntryDefinition : JsonApiResourceDefinition<Entry, Guid>
         {
             resource.Description = null;
             
-            throw new JsonApiException(new ErrorObject(HttpStatusCode.BadRequest)
-            {
-                Title = "Target resource was modified by another user.",
-                Detail = "User resource.",
-                Source = new ErrorSource()
-                {
-                    Pointer = "/data/attribute/my-attr"
-                }
-            });
+            // throw new JsonApiException(new ErrorObject(HttpStatusCode.BadRequest)
+            // {
+            //     Title = "Target resource was modified by another user.",
+            //     Detail = "User resource.",
+            //     Source = new ErrorSource()
+            //     {
+            //         Pointer = "/data/attribute/my-attr"
+            //     }
+            // });
         }
 
         return base.OnWritingAsync(resource, writeOperation, cancellationToken);

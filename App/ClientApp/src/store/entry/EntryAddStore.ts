@@ -3,14 +3,15 @@ import {EntryType, Nullable} from "../../types/types";
 import {jsonApi} from "../../api";
 import {ApiGetResponse} from "../../api/get";
 import {date} from "quasar";
+import {dateStrToISOStr} from "../../utils/utils";
 
 export declare type EntryAddModel = {
     entryType: EntryType,
     name: string,
     reputation: number,
-    description?: Nullable<string>,
-    startAt?: Nullable<string>,
-    endAt?: Nullable<string>
+    description: Nullable<string>,
+    startAt: Nullable<string>,
+    endAt: Nullable<string>
 }
 
 declare type EntryAddStoreState = {
@@ -43,9 +44,8 @@ export const useEntryAddStore = defineStore('entryAddStore', {
             
             try {
                 const data = Object.assign({}, this.model);
-                if (data.startAt && data.startAt !== '') {
-                    data.startAt = date.extractDate(data.startAt, 'YYYY/MM/DD').toISOString()
-                }
+                data.startAt = dateStrToISOStr(data.startAt);
+                data.endAt = dateStrToISOStr(data.endAt);
                 return await jsonApi.post({resource: 'entries'}, {
                     data: {
                         type: 'entries',

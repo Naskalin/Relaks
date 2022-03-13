@@ -4,6 +4,7 @@ import {Quasar} from 'quasar';
 // import '@quasar/extras/roboto-font-latin-ext/roboto-font-latin-ext.css'
 import '@quasar/extras/material-icons/material-icons.css'
 import '@quasar/extras/line-awesome/line-awesome.css'
+import langRu from 'quasar/lang/ru'
 
 import 'quasar/src/css/index.sass'
 import './css/misc.sass';
@@ -17,7 +18,9 @@ import { createPinia } from 'pinia';
 const myApp = createApp(App)
 myApp.use(Quasar, {
     // plugins: {},
-    config: {
+    lang: langRu,
+    // config: {
+    //     lang: langRu,
         // iconSet: 'line-awesome',
         
         // brand: {
@@ -28,7 +31,7 @@ myApp.use(Quasar, {
         // loading: {...}, // default set of options for Loading Quasar plugin
         // loadingBar: { ... }, // settings for LoadingBar Quasar plugin
         // // ..and many more (check Installation card on each Quasar component/directive/plugin)
-    }
+    // }
 });
 myApp.use(router);
 myApp.use(createPinia());

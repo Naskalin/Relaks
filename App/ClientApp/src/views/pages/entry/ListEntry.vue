@@ -53,10 +53,10 @@ import ListFilter from './_list/ListFilter.vue';
 import {defineComponent, ref, Ref, onMounted, computed, reactive} from "vue";
 import {useRouter} from 'vue-router'
 import {date} from 'quasar';
-import {jsonApi} from "../../api";
+import {jsonApi} from "../../../api";
 import AddEntry from "./AddEntry.vue";
-import {useEntryAddStore} from "../../store/entry/EntryAddStore";
-import {entryTypeTrans} from "../../localize/default";
+import {useEntryAddStore} from "../../../store/entry/EntryAddStore";
+import {entryTypeTrans} from "../../../localize/messages";
 
 const columns = [
   {name: 'id', label: '#', field: 'id', style: 'width: 70px'},

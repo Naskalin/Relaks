@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import {ref} from "vue";
-import {entryTypesSelectOptions} from "../../../localize/default";
+import {entryTypesSelectOptions} from "../../../../localize/messages";
 const entryType = ref('Person');
 
 </script>

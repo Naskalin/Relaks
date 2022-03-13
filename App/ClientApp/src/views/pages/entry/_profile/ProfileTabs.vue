@@ -28,9 +28,9 @@
 
 <script lang="ts">
 import {defineComponent, watch} from "vue";
-import {useEntryProfileStore} from "../../../store/entry/EntryProfileStore";
+import {useEntryProfileStore} from "../../../../store/entry/EntryProfileStore";
 import {useRouter} from "vue-router";
-import {entryProfileTabsTrans} from "../../../localize/default";
+import {entryProfileTabsTrans} from "../../../../localize/messages";
 import Notes from "./_tabs/Notes.vue";
 import Dates from "./_tabs/Dates.vue";
 import Files from "./_tabs/Files.vue";

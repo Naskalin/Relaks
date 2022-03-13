@@ -13,9 +13,9 @@
 
 <script lang="ts">
 import ProfileCard from "./_profile/ProfileCard.vue";
-import {defineComponent, onMounted, ref, computed} from "vue";
+import {defineComponent, onMounted} from "vue";
 import {useRoute} from 'vue-router'
-import {useEntryProfileStore} from "../../store/entry/EntryProfileStore";
+import {useEntryProfileStore} from "../../../store/entry/EntryProfileStore";
 import ProfileTabs from "./_profile/ProfileTabs.vue";
 
 export default defineComponent({

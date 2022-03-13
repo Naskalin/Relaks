@@ -26,34 +26,13 @@
   </q-layout>
 </template>
 
-<script lang="ts">
-import { ref, defineComponent } from 'vue'
-import { useQuasar } from 'quasar';
+<script setup lang="ts">
+import { ref } from 'vue'
 
-export default  defineComponent({
-  name: 'PageLayout',
-  setup () {
-    // const $q = useQuasar()
-
-    // // get status
-    // console.log($q.dark.isActive) // true, false
-    //
-    // // get configured status
-    // console.log($q.dark.mode) // "auto", true, false
-    //
-    // // set status
-    // $q.dark.set(true) // or false or "auto"
-
-    const leftDrawerOpen = ref(false)
-    function toggleLeftDrawer () {
-      leftDrawerOpen.value = !leftDrawerOpen.value
-    }
-    return {
-      leftDrawerOpen,
-      toggleLeftDrawer
-    }
-  }
-})
+const leftDrawerOpen = ref(false);
+const toggleLeftDrawer = () => {
+  leftDrawerOpen.value = !leftDrawerOpen.value
+}
 </script>
 
 <style lang="scss">
