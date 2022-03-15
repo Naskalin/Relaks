@@ -22,7 +22,7 @@ public class EntrySeeder : DatabaseSeeder
                 EntryType = EntryTypeEnum.Person,
             };
 
-            if (i % random.Next(1, 3) == 0)
+            if (i % 2 == 0)
             {
                 person.Description = "At vero eos et accusamus et iusto odio dignissimos ducimus";
             }

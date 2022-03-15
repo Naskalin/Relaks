@@ -1,3 +1,11 @@
+#https://localhost:7125/api/WeatherForecast
+https://localhost:5001/api/WeatherForecast
+#https://localhost:7064/WeatherForecast
+#https://localhost:3000/api/WeatherForecast
+Accept: application/json
+
+###
+
 POST https://localhost:7125/api/person
 Content-Type: application/json
 

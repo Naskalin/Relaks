@@ -26,20 +26,20 @@ public class InfoTextSeeder : DatabaseSeeder
         var random = new Random();
         foreach (var person in persons)
         {
-            if (i % random.Next(1, 5) == 0)
-            {
+            // if (i % random.Next(1, 5) == 0)
+            // {
                 for (int j = 0; j < 10; j++)
                 {
-                    var infoText = new InfoText()
+                    var entryText = new EntryText()
                     {
-                        TextType = InfoTextTypeEnum.Note,
-                        Text = texts[random.Next(texts.Length)]
+                        TextType = EntryTextTypeEnum.Note,
+                        Val = texts[random.Next(texts.Length)]
                     };
 
-                    infoText.Entries.Add(person);
-                    Db.InfoTexts.Add(infoText);
+                    entryText.Entry = person;
+                    Db.EntryTexts.Add(entryText);
                 }
-            }
+            // }
 
             i++;
         }

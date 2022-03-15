@@ -1,5 +1,4 @@
-﻿using JsonApiDotNetCore.Resources.Annotations;
-
+﻿
 namespace App.Models;
 
 public interface IActualResource

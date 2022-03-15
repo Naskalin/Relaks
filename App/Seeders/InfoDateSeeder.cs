@@ -1,6 +1,5 @@
 ﻿using App.DbConfigurations;
 using App.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace App.Seeders;
 
@@ -23,14 +22,14 @@ public class InfoDateSeeder : DatabaseSeeder
             {
                 for (int j = 0; j < random.Next(1, 5); j++)
                 {
-                    var infoDate = new InfoDate()
+                    var entryDate = new EntryDate()
                     {
-                        DateType = InfoDateTypeEnum.FirstMeet,
-                        Date = DateTime.Parse(dates[random.Next(dates.Length)])
+                        DateType = EntryDateTypeEnum.FirstMeet,
+                        Val = DateTime.Parse(dates[random.Next(dates.Length)])
                     };
                     
-                    infoDate.Entries.Add(person);
-                    Db.InfoDates.Add(infoDate);
+                    entryDate.Entry = person;
+                    Db.EntryDates.Add(entryDate);
                 }
             }
 
