@@ -13,15 +13,15 @@ public class EntryText : ITimestampResource, IActualResource
 
     public DateTime UpdatedAt { get; set; }
 
-    public DateTime ActualFrom { get; set; }
+    public DateTime ActualStartAt { get; set; }
 
-    public DateTime? ActualTo { get; set; }
+    public DateTime? ActualEndAt { get; set; }
 
-    [MaxLength(200)]
-    public string? ActualToReason { get; set; }
+    [MaxLength(500)]
+    public string? ActualEndAtReason { get; set; }
 
-    [MaxLength(200)]
-    public string? ActualFromReason { get; set; }
+    [MaxLength(500)]
+    public string? ActualStartAtReason { get; set; }
 
     [MaxLength(200)]
     public string? About { get; set; } = null!;

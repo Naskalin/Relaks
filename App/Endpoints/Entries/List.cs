@@ -1,8 +1,7 @@
-﻿using App.DbConfigurations;
-using App.Models;
+﻿using App.Models;
+using App.Repository;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace App.Endpoints.Entries;
 
@@ -10,17 +9,19 @@ public class List : EndpointBaseAsync
     .WithRequest<ListRequest>
     .WithActionResult<List<Entry>>
 {
-    private readonly AppDbContext _db;
+    private readonly EntryRepository _entryRepository;
 
-    public List(AppDbContext db)
+    public List(EntryRepository entryRepository)
     {
-        _db = db;
+        _entryRepository = entryRepository;
     }
-    
+
     [HttpGet("/api/entries")]
-    public override async Task<ActionResult<List<Entry>>> HandleAsync([FromQuery] ListRequest request, CancellationToken cancellationToken = new())
+    public override async Task<ActionResult<List<Entry>>> HandleAsync(
+        [FromQuery] ListRequest listRequest,
+        CancellationToken cancellationToken = new())
     {
-        var entries = await _db.Entries.Take(50).ToListAsync(cancellationToken: cancellationToken);
+        var entries = await _entryRepository.GetAllAsync(listRequest);
         return Ok(entries);
     }
 }

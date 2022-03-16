@@ -1,14 +1,29 @@
-#https://localhost:7125/api/WeatherForecast
-https://localhost:7125/api/entries
-#https://localhost:5001/api/WeatherForecast
-#https://localhost:7064/WeatherForecast
-#https://localhost:3000/api/WeatherForecast
+
+PATCH https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4
+Accept: application/json
+Content-Type: application/json
+
+{
+  
+}
+
+###
+
+// SINGLE
+GET https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4
 Accept: application/json
 Content-Type: application/json
 
 ###
+// ALL
+GET https://localhost:7125/api/entries?perPage=2
+Accept: application/json
+Content-Type: application/json
 
-POST https://localhost:7125/api/person
+###
+// CREATE
+POST https://localhost:7125/api/entries
+Accept: application/json
 Content-Type: application/json
 
 {
@@ -16,30 +31,4 @@ Content-Type: application/json
   "Reputation": 3
 }
 
-
-###
-POST https://localhost:7125/api/entries
-Content-Type: application/vnd.api+json
-
-{
-  "data": {
-    "type": "entries",
-    "attributes": {
-      "name": "Вася Пупкин",
-      "reputation": 8,
-      "description": ""
-    }
-  }
-}
-
-###
-
-#GET https://localhost:7125/api/persons?page[size]=30&page[number]=1
-#https://localhost:7125/api/persons?page[number]=1&page[size]=10
-#GET https://localhost:7125/api/persons?page[offset]=0&page[limit]=50
-#https://localhost:7125/api/persons?page[offset]=0&size=50
-# НЕ ВЕРНО https://localhost:7125/api/persons?page[offset]=0&page[limit]=30
-#ВЕРНо 
-GET https://localhost:7125/api/persons?page[size]=30&page[number]=1
-Accept: application/vnd.api+json
 ###

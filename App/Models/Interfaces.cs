@@ -3,10 +3,10 @@ namespace App.Models;
 
 public interface IActualResource
 {
-    public DateTime ActualFrom { get; set; }
-    public DateTime? ActualTo { get; set; }
-    public string? ActualFromReason { get; set; }
-    public string? ActualToReason { get; set; }
+    public DateTime ActualStartAt { get; set; }
+    public DateTime? ActualEndAt { get; set; }
+    public string? ActualStartAtReason { get; set; }
+    public string? ActualEndAtReason { get; set; }
 }
 
 public interface ITimestampResource

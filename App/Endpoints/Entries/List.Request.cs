@@ -3,7 +3,7 @@ using App.Models;
 
 namespace App.Endpoints.Entries;
 
-public class ListRequest : BaseRequest
+public class ListRequest : BaseListRequest
 {
     public EntryTypeEnum? EntryType { get; set; }
 }
