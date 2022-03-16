@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using App.DbConfigurations;
 using App.Seeders;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,10 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    // c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+});
 
 string sqliteConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(
@@ -50,6 +54,7 @@ if (app.Environment.IsDevelopment())
     app.UseHsts();
     app.UseSwagger();
     app.UseSwaggerUI();
+    
 }
 app.UseCors(corsSpaName);
 app.UseHttpsRedirection();

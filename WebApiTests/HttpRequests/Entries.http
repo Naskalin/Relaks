@@ -1,8 +1,10 @@
 #https://localhost:7125/api/WeatherForecast
-https://localhost:5001/api/WeatherForecast
+https://localhost:7125/api/entries
+#https://localhost:5001/api/WeatherForecast
 #https://localhost:7064/WeatherForecast
 #https://localhost:3000/api/WeatherForecast
 Accept: application/json
+Content-Type: application/json
 
 ###
 
