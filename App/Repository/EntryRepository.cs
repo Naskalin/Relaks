@@ -43,18 +43,26 @@ public class EntryRepository : BaseRepository
         return await query.ToListAsync();
     }
 
-    public async Task<Entry?> FindSingleAsync(Guid id)
+    public async Task<Entry?> FindSingleAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await Db.Entries.FirstOrDefaultAsync(x => x.Id == id);
+        return await Db.Entries.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: cancellationToken);
     }
 
-    public void Create(Entry entry)
+    public async Task CreateAsync(Entry entry)
     {
         Db.Entries.Add(entry);
+        await Db.SaveChangesAsync();
     }
 
-    public void Update(Entry entry)
+    public async Task UpdateAsync(Entry entry, CancellationToken cancellationToken)
     {
         Db.Entry(entry).State = EntityState.Modified;
+        await Db.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeleteAsync(Entry entry, CancellationToken cancellationToken)
+    {
+        Db.Entries.Remove(entry);
+        await Db.SaveChangesAsync(cancellationToken);
     }
 }

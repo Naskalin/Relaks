@@ -1,10 +1,22 @@
-
-PATCH https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4
+DELETE https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4
 Accept: application/json
 Content-Type: application/json
+###
+
+PUT https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4
+Accept: application/json
+Content-Type: application/json
+#"description": "asd"
+#"startAt": "2022-03-17T12:11:35.798Z"
 
 {
-  
+  "name": "Test",
+  "description": "",
+  "actualStartAt": "2022-03-17T12:11:35.798Z",
+  "ActualEndAtReason": "aaa",
+  "ActualStartAtReason": "asd",
+  "entryType": "Company",
+  "StartAt": null
 }
 
 ###
@@ -28,7 +40,12 @@ Content-Type: application/json
 
 {
   "Name": "Jerry",
-  "Reputation": 3
+  "Reputation": 8,
+  "description": "",
+  "actualStartAt": "2022-03-17T12:11:35.798Z",
+  "ActualEndAtReason": "aaa",
+  "ActualStartAtReason": "asd",
+  "entryType": "Company"
 }
 
 ###

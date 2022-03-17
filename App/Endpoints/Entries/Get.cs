@@ -16,10 +16,12 @@ public class Get : EndpointBaseAsync
         _entryRepository = entryRepository;
     }
 
-    [HttpGet("/api/entries/{id}", Name = "entries_get")]
-    public override async Task<ActionResult<Entry>> HandleAsync(Guid id, CancellationToken cancellationToken = new())
+    [HttpGet("/api/entries/{id}", Name = "Entries_Get")]
+    public override async Task<ActionResult<Entry>> HandleAsync(
+        [FromRoute] Guid id, 
+        CancellationToken cancellationToken = new())
     {
-        var entry = await _entryRepository.FindSingleAsync(id);
+        var entry = await _entryRepository.FindSingleAsync(id, cancellationToken);
 
         if (entry == null) return NotFound();
 

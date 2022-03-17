@@ -24,7 +24,7 @@ public class InfoDateSeeder : DatabaseSeeder
                 {
                     var entryDate = new EntryDate()
                     {
-                        DateType = EntryDateTypeEnum.FirstMeet,
+                        About = "Первая встреча",
                         Val = DateTime.Parse(dates[random.Next(dates.Length)])
                     };
                     

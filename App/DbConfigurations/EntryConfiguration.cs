@@ -23,7 +23,7 @@ public class EntryConfiguration : IEntityTypeConfiguration<Entry>
         //     ;
 
         builder
-            .Property(x => x.EntryType)
-            .HasConversion(new EnumToStringConverter<EntryTypeEnum>());
+        .Property(x => x.EntryType)
+        .HasConversion(new EnumToStringConverter<EntryTypeEnum>());
     }
 }

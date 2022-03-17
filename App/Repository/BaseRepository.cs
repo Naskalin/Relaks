@@ -11,8 +11,8 @@ public abstract class BaseRepository
         Db = db;
     }
 
-    public async Task SaveChangesAsync()
-    {
-        await Db.SaveChangesAsync();
-    }
+    // public async Task SaveChangesAsync()
+    // {
+    //     await Db.SaveChangesAsync();
+    // }
 }

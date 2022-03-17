@@ -19,20 +19,20 @@ public class Create : EndpointBaseAsync
 
     [HttpPost("/api/entries")]
     public override async Task<ActionResult<Entry>> HandleAsync(
-        CreateRequest createRequest,
+        [FromBody] CreateRequest createRequest,
         CancellationToken cancellationToken = new())
     {
-        var entry = new Entry()
+        var validation = await new CreateRequestValidator().ValidateAsync(createRequest, cancellationToken);
+        if (!validation.IsValid)
         {
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
-        };
+            return BadRequest(validation.Errors);
+        }
 
+        var entry = new Entry() {CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow};
         createRequest.MapTo(entry);
 
-        _entryRepository.Create(entry);
-        await _entryRepository.SaveChangesAsync();
+        await _entryRepository.CreateAsync(entry);
 
-        return CreatedAtRoute("entries_get", new {id = entry.Id}, entry);
+        return CreatedAtRoute("Entries_Get", new {id = entry.Id}, entry);
     }
 }

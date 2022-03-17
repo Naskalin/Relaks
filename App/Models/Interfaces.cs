@@ -5,8 +5,8 @@ public interface IActualResource
 {
     public DateTime ActualStartAt { get; set; }
     public DateTime? ActualEndAt { get; set; }
-    public string? ActualStartAtReason { get; set; }
-    public string? ActualEndAtReason { get; set; }
+    public string ActualStartAtReason { get; set; }
+    public string ActualEndAtReason { get; set; }
 }
 
 public interface ITimestampResource

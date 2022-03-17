@@ -15,7 +15,7 @@ public class DatabaseSeeder
     public async Task SeedAll()
     {
         await new EntrySeeder(Db).Seed();
-        await new InfoDateSeeder(Db).Seed();
-        await new InfoTextSeeder(Db).Seed();
+        // await new InfoDateSeeder(Db).Seed();
+        // await new InfoTextSeeder(Db).Seed();
     }
 }
