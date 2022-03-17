@@ -28,7 +28,7 @@ public class Put : EndpointBaseAsync
             return BadRequest(validation.Errors);
         }
         
-        var entry = await _entryRepository.FindSingleAsync(putRequest.Id, cancellationToken);
+        var entry = await _entryRepository.FindByIdAsync(putRequest.Id, cancellationToken);
         if (entry == null) return NotFound();
         
         putRequest.MapTo(entry);

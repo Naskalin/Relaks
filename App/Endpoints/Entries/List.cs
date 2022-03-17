@@ -21,7 +21,7 @@ public class List : EndpointBaseAsync
         [FromQuery] ListRequest listRequest,
         CancellationToken cancellationToken = new())
     {
-        var entries = await _entryRepository.GetAllAsync(listRequest);
+        var entries = await _entryRepository.FindByRequestAsync(listRequest);
         return Ok(entries);
     }
 }

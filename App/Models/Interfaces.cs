@@ -1,6 +1,11 @@
 ﻿
 namespace App.Models;
 
+public interface IBaseEntity
+{
+    public Guid Id { get; set; }
+}
+
 public interface IActualResource
 {
     public DateTime ActualStartAt { get; set; }

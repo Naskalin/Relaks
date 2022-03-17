@@ -21,7 +21,7 @@ public class Get : EndpointBaseAsync
         [FromRoute] Guid id, 
         CancellationToken cancellationToken = new())
     {
-        var entry = await _entryRepository.FindSingleAsync(id, cancellationToken);
+        var entry = await _entryRepository.FindByIdAsync(id, cancellationToken);
 
         if (entry == null) return NotFound();
 

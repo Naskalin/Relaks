@@ -3,11 +3,8 @@ using System.Reflection;
 
 namespace App.Models;
 
-public class Entry : ITimestampResource, IActualResource
+public class Entry : BaseEntity, ITimestampResource, IActualResource
 {
-    [Key]
-    public Guid Id { get; set; }
-
     public string Name { get; set; } = null!;
     public EntryTypeEnum EntryType { get; set; }
     public string Description { get; set; } = null!;

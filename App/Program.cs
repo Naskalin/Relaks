@@ -42,6 +42,7 @@ builder.Services.Configure<ApiBehaviorOptions>(o =>
 {
     o.SuppressInferBindingSourcesForParameters = true;
 });
+
 builder.Services.AddTransient<EntryRepository>();
 
 var app = builder.Build();
