@@ -7,7 +7,7 @@ public class PutRequest
 {
     [FromRoute]
     [Required]
-    public Guid Id { get; set; }
+    public Guid EntryId { get; set; }
 
     [FromBody]
     public CreateRequest Details { get; set; } = null!;

@@ -28,7 +28,7 @@ Content-Type: application/json
 
 ###
 // ALL
-GET https://localhost:7125/api/entries?perPage=2
+GET https://localhost:7125/api/entries?perPage=1?page=2
 Accept: application/json
 Content-Type: application/json
 

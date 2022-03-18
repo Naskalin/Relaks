@@ -6,20 +6,20 @@ namespace App.Mappers;
 
 public static class EntryMapper
 {
-    public static void MapTo(this CreateRequest createRequest, Entry entry)
+    public static void MapTo(this CreateRequest req, Entry entry)
     {
 
-        Enum.TryParse(createRequest.EntryType, true, out EntryTypeEnum entryTypeEnum);
+        Enum.TryParse(req.EntryType, true, out EntryTypeEnum entryTypeEnum);
         entry.EntryType = entryTypeEnum;
-        entry.Name = createRequest.Name;
-        entry.Description = createRequest.Description;
-        entry.Reputation = createRequest.Reputation;
-        entry.StartAt = createRequest.StartAt;
-        entry.EndAt = createRequest.EndAt;
-        entry.ActualStartAt = createRequest.ActualStartAt;
-        entry.ActualStartAtReason = createRequest.ActualStartAtReason;
-        entry.ActualEndAt = createRequest.ActualEndAt;
-        entry.ActualEndAtReason = createRequest.ActualEndAtReason;
+        entry.Name = req.Name;
+        entry.Description = req.Description;
+        entry.Reputation = req.Reputation;
+        entry.StartAt = req.StartAt;
+        entry.EndAt = req.EndAt;
+        entry.ActualStartAt = req.ActualStartAt;
+        entry.ActualStartAtReason = req.ActualStartAtReason;
+        entry.ActualEndAt = req.ActualEndAt;
+        entry.ActualEndAtReason = req.ActualEndAtReason;
     }
 
     public static void MapTo(this PutRequest req, Entry entry)

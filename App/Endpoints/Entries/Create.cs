@@ -28,11 +28,14 @@ public class Create : EndpointBaseAsync
             return BadRequest(validation.Errors);
         }
 
-        var entry = new Entry() {CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow};
+        var entry = new Entry()
+        {
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
         createRequest.MapTo(entry);
 
         await _entryRepository.CreateAsync(entry, cancellationToken);
-
         return CreatedAtRoute("Entries_Get", new {id = entry.Id}, entry);
     }
 }

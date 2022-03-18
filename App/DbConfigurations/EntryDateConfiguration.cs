@@ -9,6 +9,6 @@ public class EntryDateConfiguration : IEntityTypeConfiguration<EntryDate>
 {
     public void Configure(EntityTypeBuilder<EntryDate> builder)
     {
-        builder.HasOne(x => x.Entry).WithMany(x => x.Dates);
+        builder.HasOne(x => x.Entry).WithMany(x => x.Dates).HasForeignKey(x => x.EntryId);
     }
 }

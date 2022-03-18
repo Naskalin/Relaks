@@ -17,7 +17,7 @@ public class Put : EndpointBaseAsync
         _entryRepository = entryRepository;
     }
 
-    [HttpPut("/api/entries/{id}")]
+    [HttpPut("/api/entries/{EntryId}")]
     public override async Task<ActionResult> HandleAsync(
         [FromMultiSource] PutRequest putRequest,
         CancellationToken cancellationToken = new())
@@ -28,7 +28,7 @@ public class Put : EndpointBaseAsync
             return BadRequest(validation.Errors);
         }
         
-        var entry = await _entryRepository.FindByIdAsync(putRequest.Id, cancellationToken);
+        var entry = await _entryRepository.FindByIdAsync(putRequest.EntryId, cancellationToken);
         if (entry == null) return NotFound();
         
         putRequest.MapTo(entry);

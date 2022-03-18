@@ -7,6 +7,6 @@ namespace App.Utils;
 public sealed class FromMultiSourceAttribute : Attribute, IBindingSourceMetadata
 {
     public BindingSource BindingSource { get; } = CompositeBindingSource.Create(
-        new[] { BindingSource.Path, BindingSource.Query },
+        new[] { BindingSource.Path, BindingSource.Query},
         nameof(FromMultiSourceAttribute));
 }

@@ -25,7 +25,12 @@ public class InfoDateSeeder : DatabaseSeeder
                     var entryDate = new EntryDate()
                     {
                         About = "Первая встреча",
-                        Val = DateTime.Parse(dates[random.Next(dates.Length)])
+                        Val = DateTime.Parse(dates[random.Next(dates.Length)]),
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow,
+                        ActualStartAt = DateTime.UtcNow,
+                        ActualEndAtReason = "",
+                        ActualStartAtReason = ""
                     };
                     
                     entryDate.Entry = person;
@@ -35,7 +40,25 @@ public class InfoDateSeeder : DatabaseSeeder
 
             i++;
         }
-        
+
+        var entryId = Guid.Parse("01FBDDDD-1D69-4757-A8D2-5050A1AED4D4");
+        var entryDateId = Guid.Parse("F6B4E7B6-A7E4-4CDB-8EFF-68BB30FAA392");
+
+        var eDate = new EntryDate()
+        {
+            About = "Birthday of creator",
+            EntryId = entryId,
+            Id = entryDateId,
+            Val = DateTime.Parse("1988-05-04 00:00:00"),
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+            ActualStartAt = DateTime.UtcNow,
+            ActualEndAtReason = "",
+            ActualStartAtReason = ""
+        };
+
+        Db.EntryDates.Add(eDate);
+
         await Db.SaveChangesAsync();
     }
 }

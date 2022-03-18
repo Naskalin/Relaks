@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 using App.DbConfigurations;
-using App.Models;
 using App.Repository;
 using App.Seeders;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -44,6 +44,7 @@ builder.Services.Configure<ApiBehaviorOptions>(o =>
 });
 
 builder.Services.AddTransient<EntryRepository>();
+builder.Services.AddTransient<EntryDateRepository>();
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())

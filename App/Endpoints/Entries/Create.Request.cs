@@ -1,6 +1,8 @@
-﻿namespace App.Endpoints.Entries;
+﻿using App.Models;
 
-public class CreateRequest
+namespace App.Endpoints.Entries;
+
+public class CreateRequest : IActualResource
 {
     public string Name { get; set; } = null!;
     public string EntryType { get; set; } = null!;

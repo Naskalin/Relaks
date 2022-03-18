@@ -1,4 +1,5 @@
 ﻿using App.DbConfigurations;
+using App.Endpoints;
 using App.Endpoints.Entries;
 using App.Models;
 using App.Utils.Database;
@@ -12,15 +13,15 @@ public class EntryRepository : BaseRepository<Entry>
     {
     }
     
-    public async Task<IEnumerable<Entry>> FindByRequestAsync(ListRequest listRequest)
+    public async Task<IEnumerable<Entry>> PaginateListAsync(ListRequest listRequest, CancellationToken cancellationToken)
     {
-        var query = PaginateQuery(listRequest.PerPage, listRequest.Page);
+        var query = PaginateQuery(listRequest.Page ?? 1, listRequest.PerPage ?? 50);
 
         if (listRequest.EntryType != null)
         {
             query = query.Where(x => x.EntryType == listRequest.EntryType);
         }
-
+        
         if (listRequest.Search != null)
         {
             query = query.Where(x =>
@@ -28,14 +29,14 @@ public class EntryRepository : BaseRepository<Entry>
                 || (EF.Functions.Like(x.Description, "%" + listRequest.Search + "%"))
             );
         }
-
+        
         if (listRequest.OrderBy != null)
         {
             query = query.OrderBy(listRequest.OrderBy, listRequest.OrderByDesc ?? false);
         }
-
+        
         query = query.OrderByDescending(x => x.UpdatedAt);
 
-        return await query.ToListAsync();
+        return await query.ToListAsync(cancellationToken);
     }
 }

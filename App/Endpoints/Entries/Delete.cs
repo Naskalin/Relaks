@@ -15,12 +15,12 @@ public class Delete : EndpointBaseAsync
         _entryRepository = entryRepository;
     }
 
-    [HttpDelete("/api/entries/{id}")]
+    [HttpDelete("/api/entries/{entryId}")]
     public override async Task<ActionResult> HandleAsync(
-        [FromRoute] Guid id,
+        [FromRoute] Guid entryId,
         CancellationToken cancellationToken = new())
     {
-        var entry = await _entryRepository.FindByIdAsync(id, cancellationToken);
+        var entry = await _entryRepository.FindByIdAsync(entryId, cancellationToken);
         if (entry == null)
         {
             return NotFound();

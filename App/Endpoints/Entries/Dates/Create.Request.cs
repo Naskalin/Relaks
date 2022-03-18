@@ -1,17 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using App.Models;
+using Microsoft.AspNetCore.Mvc;
 
-namespace App.Models;
+namespace App.Endpoints.Entries.Dates;
 
-public class EntryDate : BaseEntity, ITimestampResource, IActualResource
+public class CreateRequest
 {
+    [FromRoute]
+    [Required]
     public Guid EntryId { get; set; }
-    public Entry Entry { get; set; } = null!;
-    
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+
+    [FromBody]
+    public CreateRequestDetails Details { get; set; } = null!;
+}
+
+public class CreateRequestDetails : IActualResource
+{
     public string About { get; set; } = null!;
     public DateTime Val { get; set; }
-    
     public DateTime ActualStartAt { get; set; }
     public DateTime? ActualEndAt { get; set; }
     public string ActualEndAtReason { get; set; } = null!;

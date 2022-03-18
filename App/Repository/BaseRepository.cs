@@ -16,17 +16,17 @@ public class BaseRepository<TEntity> where TEntity : BaseEntity
         Entities = db.Set<TEntity>();
     }
 
-    public virtual async Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await Entities.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
-    
-    public IQueryable<TEntity> PaginateQuery(int perPage, int page)
+
+    protected IQueryable<TEntity> PaginateQuery(int page, int perPage)
     {
         return Entities.Skip(perPage * (page - 1)).Take(perPage);
     }
 
-    public async Task<List<TEntity>> PaginateListAsync(int perPage, int page, CancellationToken cancellationToken)
+    public virtual async Task<List<TEntity>> PaginateListAsync(int perPage, int page, CancellationToken cancellationToken)
     {
         return await PaginateQuery(perPage, page).ToListAsync(cancellationToken);
     }
