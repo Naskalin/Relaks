@@ -10,6 +10,6 @@ public class EntryTextConfiguration : IEntityTypeConfiguration<EntryText>
     public void Configure(EntityTypeBuilder<EntryText> builder)
     {
         builder.Property(x => x.TextType).HasConversion(new EnumToStringConverter<EntryTextTypeEnum>());
-        builder.HasOne(x => x.Entry).WithMany(x => x.Texts);
+        builder.HasOne(x => x.Entry).WithMany(x => x.Texts).HasForeignKey(x => x.EntryId);
     }
 }

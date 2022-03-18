@@ -8,7 +8,6 @@ public static class EntryMapper
 {
     public static void MapTo(this CreateRequest req, Entry entry)
     {
-
         Enum.TryParse(req.EntryType, true, out EntryTypeEnum entryTypeEnum);
         entry.EntryType = entryTypeEnum;
         entry.Name = req.Name;

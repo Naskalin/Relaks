@@ -45,6 +45,7 @@ builder.Services.Configure<ApiBehaviorOptions>(o =>
 
 builder.Services.AddTransient<EntryRepository>();
 builder.Services.AddTransient<EntryDateRepository>();
+builder.Services.AddTransient<EntryTextRepository>();
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())

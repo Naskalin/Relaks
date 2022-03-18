@@ -1,27 +1,27 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using App.Models;
+using Microsoft.AspNetCore.Mvc;
 
-namespace App.Models;
+namespace App.Endpoints.Entries.Texts;
 
-public class EntryText : BaseEntity, ITimestampResource, IActualResource
+public class CreateRequest
 {
-    public Entry Entry { get; set; } = null!;
+    [FromRoute]
+    [Required]
     public Guid EntryId { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+
+    [FromBody]
+    public CreateRequestDetails Details { get; set; } = null!;
+}
+
+public class CreateRequestDetails : IActualResource
+{
     public string About { get; set; } = null!;
     public string Val { get; set; } = null!;
-    public EntryTextTypeEnum TextType { get; set; }
+    public string TextType { get; set; } = null!;
     
     public DateTime ActualStartAt { get; set; }
     public DateTime? ActualEndAt { get; set; }
     public string ActualEndAtReason { get; set; } = null!;
     public string ActualStartAtReason { get; set; } = null!;
-}
-
-public enum EntryTextTypeEnum
-{
-    Phone,
-    Email,
-    Url,
-    Note,
 }
