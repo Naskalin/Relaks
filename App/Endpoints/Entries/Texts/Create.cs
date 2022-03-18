@@ -31,7 +31,7 @@ public class Create : EndpointBaseAsync
         {
             return BadRequest(validation.Errors);
         }
-        
+
         var entry = await _entryRepository.FindByIdAsync(request.EntryId, cancellationToken);
         if (entry == null)
         {
