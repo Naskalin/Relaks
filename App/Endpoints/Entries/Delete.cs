@@ -1,6 +1,7 @@
 ﻿using App.Repository;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace App.Endpoints.Entries;
 
@@ -16,6 +17,7 @@ public class Delete : EndpointBaseAsync
     }
 
     [HttpDelete("/api/entries/{entryId}")]
+    [SwaggerOperation(OperationId = "Entry.Delete", Tags = new[] {"Entry"})]
     public override async Task<ActionResult> HandleAsync(
         [FromRoute] Guid entryId,
         CancellationToken cancellationToken = new())

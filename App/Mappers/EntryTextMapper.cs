@@ -6,7 +6,7 @@ namespace App.Mappers;
 
 public static class EntryTextMapper
 {
-    private static void MapToCreateDetails(CreateRequestDetails req, EntryText entryText)
+    private static void MapToCreateDetails(EntryTextDetails req, EntryText entryText)
     {
         Enum.TryParse(req.TextType, true, out TextTypeEnum textTypeEnum);
         entryText.TextType = textTypeEnum;

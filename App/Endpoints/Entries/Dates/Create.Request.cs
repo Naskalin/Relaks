@@ -11,10 +11,10 @@ public class CreateRequest
     public Guid EntryId { get; set; }
 
     [FromBody]
-    public CreateRequestDetails Details { get; set; } = null!;
+    public EntryDateDetails Details { get; set; } = null!;
 }
 
-public class CreateRequestDetails : IActualResource
+public class EntryDateDetails : IActualResource
 {
     public string About { get; set; } = null!;
     public DateTime Val { get; set; }

@@ -5,6 +5,7 @@ using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace App.Endpoints.Entries.Texts;
 
@@ -17,7 +18,7 @@ public class Create : EndpointBaseAsync
     private readonly IOptions<ApiBehaviorOptions> _apiOptions;
 
     public Create(
-        EntryRepository entryRepository, 
+        EntryRepository entryRepository,
         EntryTextRepository entryTextRepository,
         IOptions<ApiBehaviorOptions> apiOptions)
     {
@@ -27,6 +28,7 @@ public class Create : EndpointBaseAsync
     }
 
     [HttpPost("/api/entries/{EntryId}/texts")]
+    [SwaggerOperation(OperationId = "EntryText.Create", Tags = new[] {"EntryText"})]
     public override async Task<ActionResult> HandleAsync(
         [FromMultiSource] CreateRequest request,
         CancellationToken cancellationToken = new()
@@ -37,6 +39,7 @@ public class Create : EndpointBaseAsync
         {
             validation.Errors.ForEach(e => { ModelState.AddModelError(e.PropertyName, e.ErrorMessage); });
             return (ActionResult) _apiOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+            // return BadRequest(validation);
         }
 
         var entry = await _entryRepository.FindByIdAsync(request.EntryId, cancellationToken);

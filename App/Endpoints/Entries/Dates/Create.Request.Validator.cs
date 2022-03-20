@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace App.Endpoints.Entries.Dates;
 
-public class CreateRequestValidator : AbstractValidator<CreateRequestDetails>
+public class CreateRequestValidator : AbstractValidator<EntryDateDetails>
 {
     public CreateRequestValidator()
     {

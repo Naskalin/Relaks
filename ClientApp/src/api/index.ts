@@ -1,96 +1,68 @@
-﻿import {
-    ApiGetAllRequest,
-    ApiGetAllResponse,
-    ApiGetRequest,
-    getAllUrlBuilder,
-    getUrlBuilder,
-    ApiGetResponse
-} from "./get";
-import axios, {AxiosRequestConfig} from "axios";
+﻿import axios, {AxiosResponse} from "axios";
 import {apiUrl} from "../default";
-import {useQuasar} from "quasar";
-
-// const quasar = useQuasar();
-
 axios.interceptors.response.use((resp) => resp, (error) => {
     // show popup
     console.log(error);
-    // quasar.notify({
-    //     message: 'Jim pinged you.',
-    //     color: 'purple'
-    // })
     throw error;
 })
-const defaultHeadersFormat = {
-    'Accept': 'application/vnd.api+json',
-    'Content-Type': 'application/vnd.api+json',
-}
-// axios.defaults.headers.common = {
-//     ...defaultHeadersFormat
-// }
-// axios.defaults.headers.post = defaultHeadersFormat
-// axios.defaults.headers.common = {
-//     'Accept': 'application/vnd.api+json',
-//     'Content-Type': 'application/vnd.api+json',
-// }
-// axios.defaults.headers.post = {
-//     'Accept': 'application/vnd.api+json',
-//     'Content-Type': 'application/vnd.api+json',
-// }
 
-export const jsonApi = {
-    getAll: async (endPoint: EndpointParams, apiRequest: ApiGetAllRequest): Promise<ApiGetAllResponse> => {
-        // https://www.jsonapi.net/usage/reading/filtering.html
-        const endpointPath = endpointBuilder(endPoint);
-        const url = getAllUrlBuilder(endpointPath, apiRequest);
+export const appApi = {
+    list: async (endPoint: EndpointParams, apiRequest?: ApiListRequest | ApiAnyRequest): Promise<AxiosResponse> => {
+        const url = apiUrl + endpointBuilder(endPoint);
+        return (await axios.get(url, {params: apiRequest})).data;
+    },
+    get: async (endPoint: EndpointParams): Promise<AxiosResponse> => {
+        const url = apiUrl + endpointBuilder(endPoint);
         return (await axios.get(url)).data;
     },
-    get: async (endPoint: EndpointParams, apiRequest?: ApiGetRequest): Promise<ApiGetResponse> => {
-        const endpointPath = endpointBuilder(endPoint);
-        const url = getUrlBuilder(endpointPath, apiRequest);
-        return (await axios.get(url)).data;
+    post: async (endPoint: EndpointParams, createRequest: ApiCreateRequest): Promise<AxiosResponse> => {
+        const url = apiUrl + endpointBuilder(endPoint);
+        return (await axios.post(url, createRequest)).data;
     },
-    post: async (endPoint: EndpointParams, apiPostData: ApiPostData): Promise<ApiGetResponse> => {
-        // https://www.jsonapi.net/usage/writing/creating.html
-        const endpointPath = endpointBuilder(endPoint);
-        const url = apiUrl + endpointPath;
-        return (await axios.post(url, apiPostData, {
-            headers: defaultHeadersFormat
-        })).data?.data;
+    put: async (endPoint: EndpointParams, createRequest: ApiUpdateRequest): Promise<AxiosResponse> => {
+        const url = apiUrl + endpointBuilder(endPoint);
+        return (await axios.put(url, createRequest)).data;
+    },
+    delete: async (endPoint: EndpointParams): Promise<AxiosResponse> => {
+        const url = apiUrl + endpointBuilder(endPoint);
+        return (await axios.delete(url)).data;
     }
 }
 
-export declare type ApiRequestRelationItem = {
-    type: string,
-    id: string
+export declare type ApiListRequest = {
+    page?: number
+    perPage?: number
+    search?: string
+    orderBy?: string
+    orderByDesc?: string
 }
-export declare type ApiPostData = {
-    data: {
-        type: string
-        attributes: {
-            [index: string]: string | number | null
-        }
-        relationships?: {
-            [index: string]: {
-                data: ApiRequestRelationItem | Array<ApiRequestRelationItem>
-            }
-        }
-    }
+
+export declare type ApiAnyRequest = {
+    [index: string]: string | number | null
 }
+
+export declare type ApiCreateRequest = {
+    [index: string]: string | number | null
+}
+export declare type ApiUpdateRequest = {} & ApiCreateRequest;
+
 export declare type EndpointParams = {
     resource: string
     resourceId?: string
-    relation?: string
+    subResource?: string
+    subResourceId?: string
 }
-export const endpointBuilder = (params: EndpointParams): string => {
-
-    let urlPart = '/' + params.resource;
-    if (params?.resourceId) {
-        urlPart += '/' + params.resourceId;
+export const endpointBuilder = ({resource, resourceId, subResource, subResourceId}: EndpointParams): string => {
+    let urlParts = [resource];
+    if (resourceId) {
+        urlParts.push(resourceId);
     }
-    if (params?.relation) {
-        urlPart += '/' + params.relation;
+    if (subResource) {
+        urlParts.push(subResource);
+    }
+    if (subResourceId) {
+        urlParts.push(subResourceId)
     }
 
-    return urlPart;
+    return '/' + urlParts.join('/');
 }

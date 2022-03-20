@@ -2,6 +2,7 @@
 using App.Repository;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace App.Endpoints.Entries.Texts;
 
@@ -17,6 +18,7 @@ public class Get : EndpointBaseAsync
     }
 
     [HttpGet("/api/entries/{EntryId}/texts/{EntryTextId}", Name = "Entries_Texts_Get")]
+    [SwaggerOperation(OperationId = "EntryText.Get", Tags = new[] {"EntryText"})]
     public override async Task<ActionResult<EntryText>> HandleAsync(
         [FromRoute] GetRequest request,
         CancellationToken cancellationToken = new())

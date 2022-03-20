@@ -3,6 +3,7 @@ using App.Repository;
 using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace App.Endpoints.Entries.Dates;
 
@@ -19,6 +20,7 @@ public class Put : EndpointBaseAsync
     }
 
     [HttpPut("/api/entries/{EntryId}/dates/{EntryDateId}")]
+    [SwaggerOperation(OperationId = "EntryDate.Put", Tags = new[] {"EntryDate"})]
     public override async Task<ActionResult> HandleAsync(
         [FromMultiSource] PutRequest request,
         CancellationToken cancellationToken = new())

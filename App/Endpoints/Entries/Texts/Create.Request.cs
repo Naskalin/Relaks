@@ -11,10 +11,10 @@ public class CreateRequest
     public Guid EntryId { get; set; }
 
     [FromBody]
-    public CreateRequestDetails Details { get; set; } = null!;
+    public EntryTextDetails Details { get; set; } = null!;
 }
 
-public class CreateRequestDetails : IActualResource
+public class EntryTextDetails : IActualResource
 {
     public string About { get; set; } = null!;
     public string Val { get; set; } = null!;

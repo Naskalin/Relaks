@@ -5,12 +5,12 @@ namespace App.Utils;
 
 public class Phone
 {
-    public string E164 { get; set; } = null!;
+    public string Number { get; set; } = null!;
     public string Region { get; set; } = null!;
 
     public override string ToString()
     {
-        return Region + "|" + E164;
+        return Region + "|" + Number;
     }
 }
 
@@ -31,7 +31,7 @@ public static class PhoneHelper
                 throw new ArgumentException();
             }
 
-            phone.E164 = phoneNumberUtil.Format(phoneNumber, PhoneNumberFormat.E164);
+            phone.Number = phoneNumberUtil.Format(phoneNumber, PhoneNumberFormat.E164);
             return phone;
         }
         catch (Exception)

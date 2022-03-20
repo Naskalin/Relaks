@@ -5,7 +5,7 @@ namespace App.Mappers;
 
 public static class EntryDateMapper
 {
-    private static void MapToCreateDetails(CreateRequestDetails req, EntryDate entryDate)
+    private static void MapToCreateDetails(EntryDateDetails req, EntryDate entryDate)
     {
         entryDate.About = req.About.Trim();
         entryDate.Val = req.Val;

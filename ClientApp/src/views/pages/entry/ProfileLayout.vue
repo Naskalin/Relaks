@@ -11,21 +11,21 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import ProfileCard from "./_profile/ProfileCard.vue";
-import {defineComponent, onMounted} from "vue";
-import {useRoute} from 'vue-router'
-import {useEntryProfileStore} from "../../../store/entry/EntryProfileStore";
+// import {defineComponent, onMounted} from "vue";
+// import {useRoute} from 'vue-router'
+// import {useEntryProfileStore} from "../../../store/entry/EntryProfileStore";
 import ProfileTabs from "./_profile/ProfileTabs.vue";
 
-export default defineComponent({
-  components: {ProfileCard, EntryCard: ProfileCard, ProfileTabs},
-  setup() {
-    const store = useEntryProfileStore();
-    const route = useRoute();
-    onMounted(async () => {
-      await store.getEntry(route.params.id as string);
-    })
-  }
-})
+// export default defineComponent({
+//   components: {ProfileCard, ProfileTabs},
+//   setup() {
+//     // const store = useEntryProfileStore();
+//     const route = useRoute();
+//     onMounted(async () => {
+//       // await store.getEntry(route.params.id as string);
+//     })
+//   }
+// })
 </script>

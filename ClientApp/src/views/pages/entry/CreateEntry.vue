@@ -23,7 +23,23 @@
                      clearable
                      color="secondary"
                      v-model="store.model.name"
+                     required="required"
                      :label="store.model.entryType === 'Person' ? 'Ф.И.О.' : 'Название'"/>
+
+            <div class="q-mt-md">
+              <p class="q-mb-sm text-secondary">
+                Рейтинг
+                <span class="text-white bg-grey-8 q-pa-xs rounded-borders">{{ store.model.reputation }}</span>
+              </p>
+              <q-rating :max="10"
+                        v-model="store.model.reputation"
+                        color="secondary"
+                        icon="lar la-star"
+                        icon-selected="las la-star"
+                        size="2em">
+              </q-rating>
+            </div>
+            
             <q-input
                 v-model="store.model.description"
                 counter
@@ -50,20 +66,6 @@
                           @input="val => store.model.endAt = val"></date-field>
             </div>
           </div>
-          
-          <div class="q-mt-md">
-            <p class="q-mb-sm text-secondary">
-              Рейтинг
-              <span class="text-white bg-grey-8 q-pa-xs rounded-borders">{{ store.model.reputation }}</span>
-            </p>
-            <q-rating :max="10"
-                      v-model="store.model.reputation"
-                      color="secondary"
-                      icon="lar la-star"
-                      icon-selected="las la-star"
-                      size="2em">
-            </q-rating>
-          </div>
         </q-card-section>
 
         <q-card-actions align="right" class="q-pa-md">
@@ -79,16 +81,12 @@
 import DateField from './../../fields/DateField.vue';
 import {withDefaults} from "vue";
 import {entryTypeTrans, entryDescriptionHelpers, entryDateFields} from "../../../localize/messages";
-import {useEntryAddStore} from "../../../store/entry/EntryAddStore";
+import {useEntryCreateStore} from "../../../store/entry/entry_create_store";
 import {useRouter} from "vue-router";
-import {ApiGetResponse} from "../../../api/get";
-import {EntryType} from "../../../types/types";
-import {useQuasar} from "quasar";
-const $q = useQuasar();
-console.log($q.lang);
+import {Entry, EntryType} from "../../../api/resource_types";
 
 const emit = defineEmits<{
-  (e: 'created', entry: ApiGetResponse): void
+  (e: 'created', entry: Entry): void
 }>()
 
 type PropsType = { 
@@ -101,12 +99,16 @@ const props = withDefaults(defineProps<PropsType>(), {
   entryType: 'Person'
 })
 
-const store = useEntryAddStore();
-store.model.entryType = props.entryType
+const store = useEntryCreateStore();
+// if entryType in define props
+store.model.entryType = props.entryType;
 
 const router = useRouter();
 const addEntry = async () => {
-  const entry = await store.addEntry();
+  store.model.actualStartAt = new Date().toISOString()
+  const entry = await store.createEntry();
+  store.$reset();
+  
   emit('created', entry);
   if (props.hasRedirect) {
     await router.push({name: 'entries-profile', params: {id: entry.id}});

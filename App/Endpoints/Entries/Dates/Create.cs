@@ -4,6 +4,7 @@ using App.Repository;
 using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace App.Endpoints.Entries.Dates;
 
@@ -21,6 +22,7 @@ public class Create : EndpointBaseAsync
     }
 
     [HttpPost("/api/entries/{EntryId}/dates")]
+    [SwaggerOperation(OperationId = "EntryDate.Create", Tags = new[] {"EntryDate"})]
     public override async Task<ActionResult<EntryDate>> HandleAsync(
         [FromMultiSource] CreateRequest createRequest,
         CancellationToken cancellationToken = new())
@@ -46,7 +48,6 @@ public class Create : EndpointBaseAsync
 
         createRequest.MapTo(entryDate);
         await _entryDateRepository.CreateAsync(entryDate, cancellationToken);
-
 
         return CreatedAtRoute("Entries_Dates_Get",
             new {EntryId = entryDate.EntryId, EntryDateId = entryDate.Id}, entryDate);

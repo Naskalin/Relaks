@@ -1,5 +1,5 @@
 ﻿<template>
-  <q-card v-if="entry" class="q-pa-md text-center">
+  <q-card class="q-pa-md text-center">
     <q-avatar size="150px" class="q-mb-md">
       <img
           src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80">
@@ -24,17 +24,17 @@
   </q-card>
 </template>
 
-<script lang="ts">
-import {defineComponent, computed} from "vue";
-import {useEntryProfileStore} from "../../../../store/entry/EntryProfileStore";
+<!--<script lang="ts">-->
+<!--import {defineComponent, computed} from "vue";-->
+<!--import {useEntryProfileStore} from "../../../../store/entry/EntryProfileStore";-->
 
-export default defineComponent({
-  setup() {
-    const store = useEntryProfileStore();
+<!--export default defineComponent({-->
+<!--  setup() {-->
+<!--    const store = useEntryProfileStore();-->
 
-    return {
-      entry: computed(() => store.entry),
-    }
-  }
-})
-</script>
+<!--    return {-->
+<!--      entry: computed(() => store.entry),-->
+<!--    }-->
+<!--  }-->
+<!--})-->
+<!--</script>-->

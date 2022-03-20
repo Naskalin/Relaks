@@ -35,9 +35,11 @@
 
 <script setup lang="ts">
 import {withDefaults} from "vue";
+import {dateToISONormalizer} from "../../utils/utils";
+import {Nullable} from "../../types/types";
 
 const emit = defineEmits<{
-  (e: 'input', value: string): void
+  (e: 'input', value: Nullable<string>): void
 }>()
 
 const props = withDefaults(defineProps<{
@@ -49,7 +51,7 @@ const props = withDefaults(defineProps<{
 })
 
 const onUpdate = (e: any) => {
-  emit('input', e as any as string);
+  emit('input', e);
 }
 const mask = props.withTime ? '##.##.#### ##:##' : '##.##.####'
 const format = props.withTime ? 'DD.MM.YYYY HH:mm' : 'DD.MM.YYYY'

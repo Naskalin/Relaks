@@ -2,7 +2,7 @@
 import Home from '../views/pages/Home.vue';
 import About from '../views/pages/About.vue';
 import ListEntry from '../views/pages/entry/ListEntry.vue';
-import AddEntry from '../views/pages/entry/AddEntry.vue';
+// import CreateEntry from '../views/pages/entry/CreateEntry.vue';
 import ProfileLayout from "../views/pages/entry/ProfileLayout.vue";
 
 import Page from '../views/layouts/Page.vue';
@@ -33,11 +33,11 @@ const routes = [
                 name: 'entries',
                 component: ListEntry,
             },
-            {
-                path: '/entries/add',
-                name: 'entries-add',
-                component: AddEntry,
-            },
+            // {
+            //     path: '/entries/create',
+            //     name: 'entries-create',
+            //     component: CreateEntry,
+            // },
             {
                 path: '/entries/:id',
                 name: 'entries-profile',

@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace App.Endpoints.Entries.Texts;
 
-public class CreateRequestValidator : AbstractValidator<CreateRequestDetails>
+public class CreateRequestValidator : AbstractValidator<EntryTextDetails>
 {
     public CreateRequestValidator()
     {

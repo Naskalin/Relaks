@@ -2,6 +2,7 @@
 using App.Repository;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace App.Endpoints.Entries;
 
@@ -17,6 +18,7 @@ public class List : EndpointBaseAsync
     }
 
     [HttpGet("/api/entries")]
+    [SwaggerOperation(OperationId = "Entry.List", Tags = new[] {"Entry"})]
     public override async Task<ActionResult<List<Entry>>> HandleAsync(
         [FromQuery] ListRequest listRequest,
         CancellationToken cancellationToken = new())
