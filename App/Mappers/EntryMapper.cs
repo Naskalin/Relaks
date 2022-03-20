@@ -10,15 +10,15 @@ public static class EntryMapper
     {
         Enum.TryParse(req.EntryType, true, out EntryTypeEnum entryTypeEnum);
         entry.EntryType = entryTypeEnum;
-        entry.Name = req.Name;
-        entry.Description = req.Description;
+        entry.Name = req.Name.Trim();
+        entry.Description = req.Description.Trim();
         entry.Reputation = req.Reputation;
         entry.StartAt = req.StartAt;
         entry.EndAt = req.EndAt;
         entry.ActualStartAt = req.ActualStartAt;
-        entry.ActualStartAtReason = req.ActualStartAtReason;
+        entry.ActualStartAtReason = req.ActualStartAtReason.Trim();
         entry.ActualEndAt = req.ActualEndAt;
-        entry.ActualEndAtReason = req.ActualEndAtReason;
+        entry.ActualEndAtReason = req.ActualEndAtReason.Trim();
     }
 
     public static void MapTo(this PutRequest req, Entry entry)

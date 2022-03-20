@@ -3,9 +3,9 @@ using App.Models;
 
 namespace App.Seeders;
 
-public class InfoDateSeeder : DatabaseSeeder
+public class EntryDateSeeder : DatabaseSeeder
 {
-    public InfoDateSeeder(AppDbContext db) : base(db)
+    public EntryDateSeeder(AppDbContext db) : base(db)
     {
     }
 

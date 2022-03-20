@@ -4,21 +4,20 @@ using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
 
-namespace App.Endpoints.Entries.Dates;
+namespace App.Endpoints.Entries.Texts;
 
 public class Put : EndpointBaseAsync
     .WithRequest<PutRequest>
     .WithActionResult
-
 {
-    private readonly EntryDateRepository _entryDateRepository;
+    private readonly EntryTextRepository _entryTextRepository;
 
-    public Put(EntryDateRepository entryDateRepository)
+    public Put(EntryTextRepository entryTextRepository)
     {
-        _entryDateRepository = entryDateRepository;
+        _entryTextRepository = entryTextRepository;
     }
 
-    [HttpPut("/api/entries/{EntryId}/dates/{EntryDateId}")]
+    [HttpPut("/api/entries/{EntryId}/texts/{EntryTextId}")]
     public override async Task<ActionResult> HandleAsync(
         [FromMultiSource] PutRequest request,
         CancellationToken cancellationToken = new())
@@ -29,15 +28,15 @@ public class Put : EndpointBaseAsync
             return BadRequest(validation);
         }
         
-        var entryDate = await _entryDateRepository.FindByIdAsync(request.EntryDateId, cancellationToken);
-        if (entryDate == null || entryDate.EntryId != request.EntryId)
+        var entryText = await _entryTextRepository.FindByIdAsync(request.EntryTextId, cancellationToken);
+        if (entryText == null || entryText.EntryId != request.EntryId)
         {
             return NotFound();
         }
         
-        request.MapTo(entryDate);
-        entryDate.UpdatedAt = DateTime.UtcNow;
-        await _entryDateRepository.UpdateAsync(entryDate, cancellationToken);
+        request.MapTo(entryText);
+        entryText.UpdatedAt = DateTime.UtcNow;
+        await _entryTextRepository.UpdateAsync(entryText, cancellationToken);
 
         return NoContent();
     }

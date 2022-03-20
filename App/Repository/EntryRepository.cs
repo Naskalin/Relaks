@@ -1,8 +1,7 @@
 ﻿using App.DbConfigurations;
-using App.Endpoints;
 using App.Endpoints.Entries;
 using App.Models;
-using App.Utils.Database;
+using App.Utils.Extensions.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace App.Repository;
@@ -15,7 +14,7 @@ public class EntryRepository : BaseRepository<Entry>
     
     public async Task<IEnumerable<Entry>> PaginateListAsync(ListRequest listRequest, CancellationToken cancellationToken)
     {
-        var query = PaginateQuery(listRequest.Page ?? 1, listRequest.PerPage ?? 50);
+        var query = PaginateQuery(listRequest);
 
         if (listRequest.EntryType != null)
         {

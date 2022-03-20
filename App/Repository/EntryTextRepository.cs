@@ -1,5 +1,8 @@
 ﻿using App.DbConfigurations;
+using App.Endpoints.Entries.Texts;
 using App.Models;
+using Microsoft.EntityFrameworkCore;
+using App.Utils.Extensions.Database;
 
 namespace App.Repository;
 
@@ -7,5 +10,33 @@ public class EntryTextRepository : BaseRepository<EntryText>
 {
     public EntryTextRepository(AppDbContext db) : base(db)
     {
+    }
+
+    public async Task<List<EntryText>> PaginateListAsync(ListRequest request, CancellationToken cancellationToken)
+    {
+        Enum.TryParse(request.TextType, true, out TextTypeEnum textTypeEnum);
+        
+        var query = PaginateQuery(request)
+            .Where(x => x.EntryId == request.EntryId)
+            .Where(x => x.TextType == textTypeEnum)
+            ;
+
+        if (request.Search != null)
+        {
+            query = query.Where(x => 
+                    EF.Functions.Like(x.About, "%" + request.Search + "%")
+                    || EF.Functions.Like(x.Val, "%" + request.Search + "%")
+                    )
+                ;
+        }
+        
+        if (request.OrderBy != null)
+        {
+            query = query.OrderBy(request.OrderBy, request.OrderByDesc ?? false);
+        }
+
+        query = query.OrderByDescending(x => x.UpdatedAt);
+
+        return await query.ToListAsync(cancellationToken);
     }
 }

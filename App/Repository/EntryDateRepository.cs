@@ -2,7 +2,7 @@
 using App.Endpoints.Entries.Dates;
 using App.Models;
 using Microsoft.EntityFrameworkCore;
-using App.Utils.Database;
+using App.Utils.Extensions.Database;
 
 namespace App.Repository;
 
@@ -16,7 +16,7 @@ public class EntryDateRepository : BaseRepository<EntryDate>
         ListRequest listRequest,
         CancellationToken cancellationToken)
     {
-        var query = PaginateQuery(listRequest.Page ?? 1, listRequest.PerPage ?? 50)
+        var query = PaginateQuery(listRequest)
             .Where(x => x.Entry.Id == listRequest.EntryId);
 
         if (listRequest.Search != null)

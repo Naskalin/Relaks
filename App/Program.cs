@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using App.DbConfigurations;
 using App.Repository;
 using App.Seeders;
+using App.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,6 +49,8 @@ builder.Services.AddTransient<EntryDateRepository>();
 builder.Services.AddTransient<EntryTextRepository>();
 
 var app = builder.Build();
+
+
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();

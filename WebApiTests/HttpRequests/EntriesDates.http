@@ -35,7 +35,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "val": "2022-03-17T12:11:35.798Z",
+  "val": "2022-03-17T",
   "About": "My custom date",
   "actualStartAt": "2022-03-17T12:11:35.798Z",
   "ActualEndAtReason": "",

@@ -25,7 +25,7 @@ public class Put : EndpointBaseAsync
         var validation = await new CreateRequestValidator().ValidateAsync(putRequest.Details, cancellationToken);
         if (!validation.IsValid)
         {
-            return BadRequest(validation.Errors);
+            return BadRequest(validation);
         }
         
         var entry = await _entryRepository.FindByIdAsync(putRequest.EntryId, cancellationToken);

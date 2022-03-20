@@ -10,11 +10,13 @@ public class List : EndpointBaseAsync
     .WithRequest<ListRequest>
     .WithActionResult<List<EntryDate>>
 {
-    private readonly EntryDateRepository _repository;
+    private readonly EntryDateRepository _entryDateRepository;
+    private readonly EntryRepository _entryRepository;
 
-    public List(EntryDateRepository repository)
+    public List(EntryDateRepository entryDateRepository, EntryRepository entryRepository)
     {
-        _repository = repository;
+        _entryDateRepository = entryDateRepository;
+        _entryRepository = entryRepository;
     }
 
     [HttpGet("/api/entries/{EntryId}/dates")]
@@ -22,7 +24,13 @@ public class List : EndpointBaseAsync
         [FromMultiSource] ListRequest listRequest,
         CancellationToken cancellationToken = new())
     {
-        var dates = await _repository.PaginateListAsync(listRequest, cancellationToken);
+        var entry = await _entryRepository.FindByIdAsync(listRequest.EntryId, cancellationToken);
+        if (entry == null)
+        {
+            return NotFound();
+        }
+        
+        var dates = await _entryDateRepository.PaginateListAsync(listRequest, cancellationToken);
         return Ok(dates);
     }
 }

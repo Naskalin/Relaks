@@ -7,13 +7,13 @@ public static class EntryDateMapper
 {
     private static void MapToCreateDetails(CreateRequestDetails req, EntryDate entryDate)
     {
-        entryDate.About = req.About;
+        entryDate.About = req.About.Trim();
         entryDate.Val = req.Val;
         
         entryDate.ActualStartAt = req.ActualStartAt;
-        entryDate.ActualStartAtReason = req.ActualStartAtReason;
+        entryDate.ActualStartAtReason = req.ActualStartAtReason.Trim();
         entryDate.ActualEndAt = req.ActualEndAt;
-        entryDate.ActualEndAtReason = req.ActualEndAtReason;
+        entryDate.ActualEndAtReason = req.ActualEndAtReason.Trim();
     }
     public static void MapTo(this CreateRequest req, EntryDate entryDate)
     {

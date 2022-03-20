@@ -1,4 +1,5 @@
-﻿using PhoneNumbers;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using PhoneNumbers;
 
 namespace App.Utils;
 
@@ -6,6 +7,11 @@ public class Phone
 {
     public string E164 { get; set; } = null!;
     public string Region { get; set; } = null!;
+
+    public override string ToString()
+    {
+        return Region + "|" + E164;
+    }
 }
 
 public static class PhoneHelper
@@ -18,8 +24,8 @@ public static class PhoneHelper
         try
         {
             var phone = new Phone();
-            phone.Region = phoneArr[1].ToUpper();
-            var phoneNumber = phoneNumberUtil.Parse(phoneArr[0], phone.Region);
+            phone.Region = phoneArr[0].ToUpper();
+            var phoneNumber = phoneNumberUtil.Parse(phoneArr[1], phone.Region);
             if (!phoneNumberUtil.IsValidNumber(phoneNumber))
             {
                 throw new ArgumentException();

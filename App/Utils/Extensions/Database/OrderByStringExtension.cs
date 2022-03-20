@@ -1,9 +1,9 @@
 ﻿using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 
-namespace App.Utils.Database;
+namespace App.Utils.Extensions.Database;
 
-public static class OrderByStringExtention
+public static class OrderByStringExtension
 {
     public static IOrderedQueryable<TEntity> OrderBy<TEntity>(this IQueryable<TEntity> source, string orderByProperty, bool desc)
     {

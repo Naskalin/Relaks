@@ -10,7 +10,7 @@ public class EntryText : BaseEntity, ITimestampResource, IActualResource
     public DateTime UpdatedAt { get; set; }
     public string About { get; set; } = null!;
     public string Val { get; set; } = null!;
-    public EntryTextTypeEnum TextType { get; set; }
+    public TextTypeEnum TextType { get; set; }
     
     public DateTime ActualStartAt { get; set; }
     public DateTime? ActualEndAt { get; set; }
@@ -18,7 +18,7 @@ public class EntryText : BaseEntity, ITimestampResource, IActualResource
     public string ActualStartAtReason { get; set; } = null!;
 }
 
-public enum EntryTextTypeEnum
+public enum TextTypeEnum
 {
     Phone,
     Email,

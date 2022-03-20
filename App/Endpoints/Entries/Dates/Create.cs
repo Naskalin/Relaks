@@ -28,7 +28,7 @@ public class Create : EndpointBaseAsync
         var validation = await new CreateRequestValidator().ValidateAsync(createRequest.Details, cancellationToken);
         if (!validation.IsValid)
         {
-            return BadRequest(validation.Errors);
+            return BadRequest(validation);
         }
 
         var entry = await _entryRepository.FindByIdAsync(createRequest.EntryId, cancellationToken);

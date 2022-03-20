@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace App.Seeders;
 
-public class InfoTextSeeder : DatabaseSeeder
+public class EntryTextSeeder : DatabaseSeeder
 {
-    public InfoTextSeeder(AppDbContext db) : base(db)
+    public EntryTextSeeder(AppDbContext db) : base(db)
     {
     }
 
     public async Task Seed()
     {
-        var persons = Db.Entries.Where(x => true).ToList();
+        var entries = Db.Entries.Where(x => true).ToList();
         var texts = new[]
         {
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
@@ -22,27 +22,64 @@ public class InfoTextSeeder : DatabaseSeeder
             "Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?",
         };
 
-        var i = 0;
         var random = new Random();
-        foreach (var person in persons)
+        foreach (var entry in entries)
         {
-            // if (i % random.Next(1, 5) == 0)
-            // {
-                for (int j = 0; j < 10; j++)
+            for (int j = 0; j < random.Next(2, 10); j++)
+            {
+                var entryText = new EntryText()
                 {
-                    var entryText = new EntryText()
-                    {
-                        TextType = EntryTextTypeEnum.Note,
-                        Val = texts[random.Next(texts.Length)]
-                    };
+                    EntryId = entry.Id,
+                    TextType = TextTypeEnum.Note,
+                    About = "",
+                    Val = texts[random.Next(texts.Length)],
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    ActualStartAt = DateTime.UtcNow,
+                    ActualEndAtReason = "",
+                    ActualStartAtReason = ""
+                };
+                
+                Db.EntryTexts.Add(entryText);
+            }
 
-                    entryText.Entry = person;
-                    Db.EntryTexts.Add(entryText);
-                }
-            // }
-
-            i++;
+            for (int i = 0; i < random.Next(1, 5); i++)
+            {
+                var textPhone = new EntryText()
+                {
+                    EntryId = entry.Id,
+                    TextType = TextTypeEnum.Phone,
+                    Val = "RU|+7812000000" + i,
+                    About = "",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    ActualStartAt = DateTime.UtcNow,
+                    ActualEndAtReason = "",
+                    ActualStartAtReason = ""
+                };
+                
+                Db.EntryTexts.Add(textPhone);
+            }
         }
+        
+        var entryId = Guid.Parse("01FBDDDD-1D69-4757-A8D2-5050A1AED4D4");
+        var entryTextId = Guid.Parse("1C9C78A7-07E7-441D-A09D-551EE68E2616");
+        
+        var eText = new EntryText()
+        {
+            About = "The best of the best email",
+            EntryId = entryId,
+            Id = entryTextId,
+            Val = "1acco@mail.ru",
+            TextType = TextTypeEnum.Email,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+            ActualStartAt = DateTime.UtcNow,
+            ActualEndAtReason = "",
+            ActualStartAtReason = ""
+        };
+
+        Db.EntryTexts.Add(eText);
 
         await Db.SaveChangesAsync();
     }

@@ -29,7 +29,7 @@ public class Create : EndpointBaseAsync
         var validation = await new CreateRequestValidator().ValidateAsync(request.Details, cancellationToken);
         if (!validation.IsValid)
         {
-            return BadRequest(validation.Errors);
+            return BadRequest(validation);
         }
 
         var entry = await _entryRepository.FindByIdAsync(request.EntryId, cancellationToken);
@@ -47,6 +47,6 @@ public class Create : EndpointBaseAsync
         request.MapTo(entryText);
 
         await _entryTextRepository.CreateAsync(entryText, cancellationToken);
-        return Ok(entryText);
+        return CreatedAtRoute("Entries_Texts_Get", new {EntryId = entryText.EntryId, EntryTextId = entryText.Id}, entryText);
     }
 }
