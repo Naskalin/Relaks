@@ -2,7 +2,9 @@
 using App.Models;
 using App.Repository;
 using Ardalis.ApiEndpoints;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace App.Endpoints.Entries;
 
@@ -25,6 +27,7 @@ public class Create : EndpointBaseAsync
         var validation = await new CreateRequestValidator().ValidateAsync(createRequest, cancellationToken);
         if (!validation.IsValid)
         {
+            validation.AddToModelState(ModelState, "errors");
             return BadRequest(validation);
         }
 

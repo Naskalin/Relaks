@@ -5,7 +5,7 @@
 }
 export const entryDescriptionHelpers = {
     Person: 'Бородатый программист',
-    Company: 'Занимаются крупногабаритными перевозками',
+    Company: 'Крупногабаритные перевозки',
     Meet: 'Ежегодное совещание с коллегами по работе',
 }
 export const entryDateFields = {

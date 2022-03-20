@@ -4,24 +4,30 @@ using App.Repository;
 using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace App.Endpoints.Entries.Texts;
 
 public class Create : EndpointBaseAsync
     .WithRequest<CreateRequest>
-    .WithActionResult<EntryText>
+    .WithActionResult
 {
     private readonly EntryRepository _entryRepository;
     private readonly EntryTextRepository _entryTextRepository;
+    private readonly IOptions<ApiBehaviorOptions> _apiOptions;
 
-    public Create(EntryRepository entryRepository, EntryTextRepository entryTextRepository)
+    public Create(
+        EntryRepository entryRepository, 
+        EntryTextRepository entryTextRepository,
+        IOptions<ApiBehaviorOptions> apiOptions)
     {
         _entryRepository = entryRepository;
         _entryTextRepository = entryTextRepository;
+        _apiOptions = apiOptions;
     }
 
     [HttpPost("/api/entries/{EntryId}/texts")]
-    public override async Task<ActionResult<EntryText>> HandleAsync(
+    public override async Task<ActionResult> HandleAsync(
         [FromMultiSource] CreateRequest request,
         CancellationToken cancellationToken = new()
     )
@@ -29,7 +35,8 @@ public class Create : EndpointBaseAsync
         var validation = await new CreateRequestValidator().ValidateAsync(request.Details, cancellationToken);
         if (!validation.IsValid)
         {
-            return BadRequest(validation);
+            validation.Errors.ForEach(e => { ModelState.AddModelError(e.PropertyName, e.ErrorMessage); });
+            return (ActionResult) _apiOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
         }
 
         var entry = await _entryRepository.FindByIdAsync(request.EntryId, cancellationToken);

@@ -36,8 +36,8 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "val": "asd+_1...asd@mail.ru",
-  "textType": "email",
+  "val": "",
+  "textType": "phone",
   "About": "My custom date",
   "actualStartAt": "2022-03-17T12:11:35.798Z",
   "ActualEndAtReason": "",
