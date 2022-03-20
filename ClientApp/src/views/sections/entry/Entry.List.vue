@@ -49,8 +49,8 @@
 </template>
 
 <script setup lang="ts">
-import CreateEntry from "./CreateEntry.vue";
-import {useEntryCreateStore} from "../../../store/entry/entry_create_store";
+import CreateEntry from "./Entry.Create.vue";
+import {useEntryCreateStore} from "../../../store/entry/entry.create.store";
 const entryCreateStore = useEntryCreateStore();
 
 // import ListFilter from './_list/ListFilter.vue';

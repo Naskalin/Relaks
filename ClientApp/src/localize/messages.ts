@@ -33,8 +33,8 @@ export const entryTypesSelectOptions = () => {
 }
 
 export const entryProfileTabs = {
-    notes: 'Заметки',
-    files: 'Файлы',
+    'entry-note-list': 'Заметки',
+    'entry-file-list': 'Файлы',
     // dates: 'Даты',
     // kinship: 'Родство',
     // structures: 'Структуры',

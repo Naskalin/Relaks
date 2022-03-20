@@ -70,7 +70,7 @@
 
         <q-card-actions align="right" class="q-pa-md">
           <q-btn flat label="Закрыть" icon="las la-times" v-close-popup/>
-          <q-btn label="Добавить" type="submit" color="primary" icon="las la-plus-circle"/>
+          <q-btn label="Добавить" type="submit" color="primary" icon="las la-plus-circle" :loading="store.isCreating"/>
         </q-card-actions>
       </q-form>
     </q-card>
@@ -81,7 +81,7 @@
 import DateField from './../../fields/DateField.vue';
 import {withDefaults} from "vue";
 import {entryTypeTrans, entryDescriptionHelpers, entryDateFields} from "../../../localize/messages";
-import {useEntryCreateStore} from "../../../store/entry/entry_create_store";
+import {useEntryCreateStore} from "../../../store/entry/entry.create.store";
 import {useRouter} from "vue-router";
 import {Entry, EntryType} from "../../../api/resource_types";
 
@@ -107,11 +107,11 @@ const router = useRouter();
 const addEntry = async () => {
   store.model.actualStartAt = new Date().toISOString()
   const entry = await store.createEntry();
-  store.$reset();
   
   emit('created', entry);
   if (props.hasRedirect) {
-    await router.push({name: 'entries-profile', params: {id: entry.id}});
+    await router.push({name: 'entry-profile', params: {entryId: entry.id}});
+    store.$reset();
   }
   store.isShowModal = false;
 }

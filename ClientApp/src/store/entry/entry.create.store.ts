@@ -2,14 +2,14 @@
 import {CreateEntryRequest, apiEntry} from "../../api/rerources/api_entry";
 import {Entry} from "../../api/resource_types";
 
-declare type EntryAddStoreState = {
+declare type EntryCreateStoreState = {
     model: CreateEntryRequest,
     isCreating: boolean,
     isShowModal: boolean,
 }
 
-export const useEntryCreateStore = defineStore('entryAddStore', {
-    state: (): EntryAddStoreState => {
+export const useEntryCreateStore = defineStore('entryCreateStore', {
+    state: (): EntryCreateStoreState => {
         return {
             model: {
                 name: '',
