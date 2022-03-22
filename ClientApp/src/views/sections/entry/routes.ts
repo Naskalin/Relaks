@@ -6,9 +6,9 @@ import Profile from './Entry.Profile.vue';
 import {entryNoteRoutes} from "../entry_note/routes";
 
 export const entryRoutes: RouteRecordRaw[] = [
-    {path: '/entries', name: 'entry-list', component: ListEntry},
+    {path: '/entries', component: ListEntry, name: 'entry-list'},
     {
-        path: '/entries/:entryId', component: Profile,
+        path: '/entries/:entryId', component: Profile, name: 'entry-profile',
         redirect: (to: any) => {
             return {name: 'entry-note-list', params: {entryId: to.params.entryId}}
         },

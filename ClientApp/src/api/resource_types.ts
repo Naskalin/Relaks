@@ -1,14 +1,14 @@
 ﻿export declare type EntryType = 'Person' | 'Company' | 'Meet';
 export declare type TextType = 'Note' | 'Phone' | 'Email' | 'Url';
 
-export declare type ActualPart = {
+export declare type ActualTypes = {
     actualStartAt: string
     actualEndAt: string | null
     actualStartAtReason: string
     actualEndAtReason: string
 }
 
-export declare type CreatedUpdatedPart = {
+export declare type TimestampTypes = {
     createdAt: string
     updatedAt: string
 }
@@ -22,7 +22,7 @@ export declare type Entry = {
 
     startAt: string | null
     endAt: string | null
-} & ActualPart & CreatedUpdatedPart;
+} & ActualTypes & TimestampTypes;
 
 export declare type EntryDate = {
     id: string
@@ -35,4 +35,4 @@ export declare type EntryDate = {
 
 export declare type EntryText = {
     textType: TextType
-} & EntryDate & ActualPart & CreatedUpdatedPart;
+} & EntryDate & ActualTypes & TimestampTypes;

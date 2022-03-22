@@ -1,4 +1,4 @@
-﻿import {ActualPart, EntryText, TextType} from "../resource_types";
+﻿import {ActualTypes, EntryText, TextType} from "../resource_types";
 
 import {ApiListRequest, appApi} from "../index";
 
@@ -6,7 +6,7 @@ export declare type CreateEntryTextRequest = {
     about: string
     val: string
     textType: TextType
-} & ActualPart
+} & ActualTypes
 
 export declare type UpdateEntryTextRequest = {} & CreateEntryTextRequest
 

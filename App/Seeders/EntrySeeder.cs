@@ -45,6 +45,7 @@ public class EntrySeeder : DatabaseSeeder
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             ActualStartAt = DateTime.UtcNow,
+            StartAt = DateTime.Parse("1988-04-05").ToUniversalTime()
         };
         
         Db.Entries.Add(creator);

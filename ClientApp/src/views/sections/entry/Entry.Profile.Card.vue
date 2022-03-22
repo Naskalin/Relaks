@@ -1,40 +1,104 @@
 ﻿<template>
-  <q-card class="q-pa-md text-center">
-    <q-avatar size="150px" class="q-mb-md">
-      <img
-          src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80">
-    </q-avatar>
+  <q-card v-if="entry" class="profile-card">
+    <q-card-section class="text-center">
+      <div class="q-mb-md">
+        <q-avatar size="150px" rounded>
+          <img
+              src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80">
+        </q-avatar>
+      </div>
+      
+      <div class="text-h6">{{entry.name}}</div>
+      <div v-if="entry.description" class="text-subtitle2">{{entry.description}}</div>
+      <div class="items-center flex justify-center q-gutter-sm q-mt-xs">
+        <small class="text-grey-7 text-uppercase">репутация</small>
+        <strong>{{entry.reputation}}</strong>
+        <q-icon name="star" size="1.5em" />
+      </div>
+    </q-card-section>
+
+    <q-card-section>
+      <div class="row">
+        <div v-if="entry.startAt" class="col text-left">
+          <small class="text-grey-7 text-uppercase">{{entryMessages.startAt[entry.entryType]}}</small>
+          <br>
+          {{ dateHelper.utcFormat(entry.startAt) }}
+        </div>
+        <div v-if="entry.endAt" class="col text-right">
+          <small class="text-grey-7 text-uppercase">{{entryMessages.endAt[entry.entryType]}}</small>
+          <br>
+          {{ dateHelper.utcFormat(entry.endAt) }}
+        </div>
+      </div>
+    </q-card-section>
+
+    <q-separator/>
     
-<!--    <div v-if="entry?.data" class="text-h5 q-mb-sm">-->
-<!--      {{ entry.data.attributes.name }}-->
-<!--      <q-popup-edit buttons v-model="entry?.data?.attributes?.name" class="bg-dark text-white" v-slot="scope">-->
-<!--        <q-input color="secondary" label="Ф.И.О." v-model="scope.value" autofocus @keyup.enter="scope.set">-->
-<!--          <template v-slot:append>-->
-<!--            <q-icon name="edit" />-->
-<!--          </template>-->
-<!--        </q-input>-->
-<!--&lt;!&ndash;        <q-input filled&ndash;&gt;-->
-<!--&lt;!&ndash;                 clearable&ndash;&gt;-->
-<!--&lt;!&ndash;                 color="secondary"&ndash;&gt;-->
-<!--&lt;!&ndash;                 v-model="store.model.name"&ndash;&gt;-->
-<!--&lt;!&ndash;                 :label="store.model.entryType === 'Person' ? 'Ф.И.О.' : 'Название'"/>&ndash;&gt;-->
-<!--      </q-popup-edit>-->
-<!--    </div>-->
-<!--    <p v-if="entry?.data.attributes.description">{{entry?.data.attributes.description}}</p>-->
+    <q-card-section>
+      <small class="text-grey-7 text-uppercase q-mr-xs">{{actualMessages.actualStartAt.name}}</small>
+      {{ dateHelper.utcFormat(entry.actualStartAt) }}
+      <div v-if="entry.actualStartAtReason">
+        <small class="text-grey-7 text-uppercase q-mr-xs">{{actualMessages.actualStartAtReason.name}}</small>
+        {{entry.actualStartAtReason}}
+      </div>
+    </q-card-section>
+
+    <template v-if="entry.actualEndAt || entry.actualEndAtReason">
+      <q-separator/>
+      <q-card-section>
+        <template v-if="entry.actualEndAt">
+          <small class="text-grey-7 text-uppercase q-mr-xs">{{actualMessages.actualEndAt.name}}</small>
+          {{ dateHelper.utcFormat(entry.actualEndAt) }}
+        </template>
+        <div v-if="entry.actualEndAtReason">
+          <small class="text-grey-7 text-uppercase q-mr-xs">{{actualMessages.actualEndAtReason.name}}</small>
+          {{entry.actualEndAtReason}}
+        </div>
+      </q-card-section>
+    </template>
+    
+    <q-separator/>
+
+    <q-card-section>
+      <div class="row">
+        <div class="col text-left text-grey-7">
+          <small class="text-uppercase">создано</small>
+          <br>
+          {{ dateHelper.utcFormat(entry.createdAt) }}
+        </div>
+        <div class="col text-right text-grey-7">
+          <small class="text-uppercase">обновлено</small>
+          <br>
+          {{ dateHelper.utcFormat(entry.updatedAt) }}
+        </div>
+      </div>
+    </q-card-section>
+
+    <entry-edit-modal></entry-edit-modal>
+    <q-card-actions>
+      <q-btn flat @click="showEditForm">Изменить</q-btn>
+    </q-card-actions>
   </q-card>
 </template>
 
-<!--<script lang="ts">-->
-<!--import {defineComponent, computed} from "vue";-->
-<!--import {useEntryProfileStore} from "../../../../store/entry/EntryProfileStore";-->
+<script setup lang="ts">
+import {useEntryProfileStore} from "../../../store/entry/entry.profile.store";
+import {useEntryEditModal} from "../../../store/entry/entry.edit.modal.store";
+import {computed, watch} from "vue";
+import {entryMessages, actualMessages} from "../../../localize/messages";
+import {Entry} from "../../../api/resource_types";
+import {dateHelper} from "../../../utils/date_helper";
+import EntryEditModal from './Entry.Edit.Modal.vue';
 
-<!--export default defineComponent({-->
-<!--  setup() {-->
-<!--    const store = useEntryProfileStore();-->
+const profileStore = useEntryProfileStore();
+const editStore = useEntryEditModal();
+const entry = computed(() : Entry | null => profileStore.entry);
 
-<!--    return {-->
-<!--      entry: computed(() => store.entry),-->
-<!--    }-->
-<!--  }-->
-<!--})-->
-<!--</script>-->
+watch(() => profileStore.entry, (val) => {
+  // if (val) editStore.$state.model = val;
+}, {immediate: true})
+
+const showEditForm = () => {
+  editStore.isShowModal = true;
+}
+</script>

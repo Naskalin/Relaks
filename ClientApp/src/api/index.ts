@@ -1,5 +1,6 @@
 ﻿import axios, {AxiosResponse} from "axios";
-import {apiUrl} from "../default";
+import {appDefaults} from "../app_defaults";
+const apiUrl = appDefaults.apiUrl;
 axios.interceptors.response.use((resp) => resp, (error) => {
     // show popup
     console.log(error);
@@ -9,23 +10,23 @@ axios.interceptors.response.use((resp) => resp, (error) => {
 export const appApi = {
     list: async (endPoint: EndpointParams, apiRequest?: ApiListRequest | ApiAnyRequest): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);
-        return (await axios.get(url, {params: apiRequest})).data;
+        return (await axios.get(url, {params: apiRequest}));
     },
     get: async (endPoint: EndpointParams): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);
-        return (await axios.get(url)).data;
+        return (await axios.get(url));
     },
     post: async (endPoint: EndpointParams, createRequest: ApiCreateRequest): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);
-        return (await axios.post(url, createRequest)).data;
+        return (await axios.post(url, createRequest));
     },
     put: async (endPoint: EndpointParams, createRequest: ApiUpdateRequest): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);
-        return (await axios.put(url, createRequest)).data;
+        return (await axios.put(url, createRequest));
     },
     delete: async (endPoint: EndpointParams): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);
-        return (await axios.delete(url)).data;
+        return (await axios.delete(url));
     }
 }
 

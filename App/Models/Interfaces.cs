@@ -1,5 +1,4 @@
-﻿
-namespace App.Models;
+﻿namespace App.Models;
 
 public interface IBaseEntity
 {

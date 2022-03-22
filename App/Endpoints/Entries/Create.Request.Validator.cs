@@ -18,5 +18,9 @@ public class CreateRequestValidator : AbstractValidator<CreateRequest>
         RuleFor(x => x.ActualEndAt).NotEqual(default(DateTime));
         RuleFor(x => x.ActualStartAtReason).NotNull().Length(0, 500);
         RuleFor(x => x.ActualEndAtReason).NotNull().Length(0, 500);
+
+        RuleFor(x => x.ActualEndAt)
+            .Must((x, actualEndAt) => x.ActualStartAt > actualEndAt)
+            .When(x => x.ActualEndAt != null);
     }
 }

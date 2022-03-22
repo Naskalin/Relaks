@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Reflection;
-
-namespace App.Models;
+﻿namespace App.Models;
 
 public class Entry : BaseEntity, ITimestampResource, IActualResource
 {

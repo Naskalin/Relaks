@@ -1,59 +1,73 @@
 <template>
-  <create-entry></create-entry>
-  <button @click="entryCreateStore.isShowModal = true">add</button>
-<!--  <div class="row">-->
-<!--    <div class="col-3">-->
-<!--      <q-card class="q-pa-md">-->
-<!--        <list-filter></list-filter>-->
-<!--      </q-card>-->
-<!--    </div>-->
-<!--    <div class="col-9">-->
-<!--      <q-table-->
-<!--          class="list-table q-ml-md"-->
-<!--          :title="'Объединения (' + totalResources + ')'"-->
-<!--          :rows="rows"-->
-<!--          :columns="columns"-->
-<!--          :loading="isLoading"-->
-<!--          row-key="id"-->
-<!--          :pagination="pagination"-->
-<!--          :virtual-scroll-item-size="48"-->
-<!--          :virtual-scroll-sticky-size-start="48"-->
-<!--          virtual-scroll-->
-<!--          :rows-per-page-options="[0]"-->
-<!--          @virtual-scroll="loadData"-->
-<!--      >-->
-<!--        <template v-slot:body="props">-->
-<!--          <q-tr :props="props" :key="`m_${props.row.index}`" @click.native="onRowClick(props.row.id)">-->
-<!--            <q-td-->
-<!--                v-for="col in props.cols"-->
-<!--                :key="col.name"-->
-<!--                :props="props"-->
-<!--            >-->
-<!--              <template v-if="col.name === 'id'">{{ props.rowIndex + 1 }}</template>-->
-<!--              <template v-else-if="col.name === 'entryType'">{{ entryTypeTrans[col.value] || '?' }}</template>-->
-<!--              <template v-else>{{ col.value }}</template>-->
-<!--            </q-td>-->
-<!--          </q-tr>-->
-<!--        </template>-->
+<!--      <create-entry @created="entry => $router.push({name: 'entry-profile', params: {entryId: entry.id}})"></create-entry>-->
+    <!--  {{ entryCreateStore.model }}-->
+    <button @click="entryCreateModel.isShow = true">add</button>
+    <entry-form-modal v-model="entryCreateModel" title="Добавление объединения"/>
+    <div class="row">
+        <div class="col-3" style="min-width: 320px">
+            <q-card class="q-pa-md">
+                <list-filter></list-filter>
+            </q-card>
+        </div>
+        <div class="col-9">
+            <!--      <q-table-->
+            <!--          class="list-table q-ml-md"-->
+            <!--          :title="'Объединения (' + totalResources + ')'"-->
+            <!--          :rows="rows"-->
+            <!--          :columns="columns"-->
+            <!--          :loading="isLoading"-->
+            <!--          row-key="id"-->
+            <!--          :pagination="pagination"-->
+            <!--          :virtual-scroll-item-size="48"-->
+            <!--          :virtual-scroll-sticky-size-start="48"-->
+            <!--          virtual-scroll-->
+            <!--          :rows-per-page-options="[0]"-->
+            <!--          @virtual-scroll="loadData"-->
+            <!--      >-->
+            <!--        <template v-slot:body="props">-->
+            <!--          <q-tr :props="props" :key="`m_${props.row.index}`" @click.native="onRowClick(props.row.id)">-->
+            <!--            <q-td-->
+            <!--                v-for="col in props.cols"-->
+            <!--                :key="col.name"-->
+            <!--                :props="props"-->
+            <!--            >-->
+            <!--              <template v-if="col.name === 'id'">{{ props.rowIndex + 1 }}</template>-->
+            <!--              <template v-else-if="col.name === 'entryType'">{{ entryTypeTrans[col.value] || '?' }}</template>-->
+            <!--              <template v-else>{{ col.value }}</template>-->
+            <!--            </q-td>-->
+            <!--          </q-tr>-->
+            <!--        </template>-->
 
-<!--        <template v-slot:top-right="props">-->
-<!--          <q-btn icon="las la-plus-circle"-->
-<!--                 @click="addEntryStore.isShowModal = true"-->
-<!--                 label="Добавить"-->
-<!--                 color="primary"-->
-<!--          />-->
-<!--        </template>-->
-<!--      </q-table>-->
-<!--    </div>-->
-<!--  </div>-->
+            <!--        <template v-slot:top-right="props">-->
+            <!--          <q-btn icon="las la-plus-circle"-->
+            <!--                 @click="addEntryStore.isShowModal = true"-->
+            <!--                 label="Добавить"-->
+            <!--                 color="primary"-->
+            <!--          />-->
+            <!--        </template>-->
+            <!--      </q-table>-->
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
-import CreateEntry from "./Entry.Create.vue";
+import ListFilter from './Entry.List.Filter.vue';
+import EntryFormModal from './Entry.Form.Modal.vue';
+import {reactive} from 'vue';
 import {useEntryCreateStore} from "../../../store/entry/entry.create.store";
+
 const entryCreateStore = useEntryCreateStore();
 
-// import ListFilter from './_list/ListFilter.vue';
+const entryCreateModel = reactive({
+    isShow: false,
+    model: entryCreateStore.model
+});
+
+// import CreateEntry from "./Entry.Create.Modal.vue";
+// import {useEntryCreateModalStore} from "../../../store/entry/entry.create.modal.store";
+//
+// const entryCreateStore = useEntryCreateModalStore();
+
 // import {defineComponent, ref, Ref, onMounted, computed, reactive} from "vue";
 // import {useRouter} from 'vue-router'
 // import {date} from 'quasar';
@@ -157,33 +171,33 @@ const entryCreateStore = useEntryCreateStore();
 
 <style lang="scss">
 .list-table {
-  max-height: 96vh;
+    max-height: 96vh;
 
-  td, th {
-    text-align: left;
-  }
+    td, th {
+        text-align: left;
+    }
 
-  tfoot tr > *,
-  thead tr > * {
-    position: sticky;
-    opacity: 1;
-    z-index: 1;
-    background-color: $themeBlack;
-    color: $bgColor;
-    //background-color: $bgGreyDarken2;
-    //color: $th;
-  }
+    tfoot tr > *,
+    thead tr > * {
+        position: sticky;
+        opacity: 1;
+        z-index: 1;
+        background-color: $themeBlack;
+        color: $bgColor;
+        //background-color: $bgGreyDarken2;
+        //color: $th;
+    }
 
-  thead tr:last-child > * {
-    top: 0;
-  }
+    thead tr:last-child > * {
+        top: 0;
+    }
 
-  thead tr:first-child > * {
-    bottom: 0
-  }
+    thead tr:first-child > * {
+        bottom: 0
+    }
 }
 
 .q-body--fullscreen-mixin .list-table {
-  max-height: 100vh;
+    max-height: 100vh;
 }
 </style>

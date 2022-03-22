@@ -1,11 +1,11 @@
-﻿import {ActualPart, EntryDate} from "../resource_types";
+﻿import {ActualTypes, EntryDate} from "../resource_types";
 
 import {ApiListRequest, appApi} from "../index";
 
 export declare type CreateEntryDateRequest = {
     about: string
     val: string
-} & ActualPart
+} & ActualTypes
 
 export declare type UpdateEntryDateRequest = {} & CreateEntryDateRequest
 

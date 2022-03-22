@@ -5,7 +5,6 @@ import {Entry} from "../../api/resource_types";
 declare type EntryCreateStoreState = {
     model: CreateEntryRequest,
     isCreating: boolean,
-    isShowModal: boolean,
 }
 
 export const useEntryCreateStore = defineStore('entryCreateStore', {
@@ -24,7 +23,6 @@ export const useEntryCreateStore = defineStore('entryCreateStore', {
                 actualStartAtReason: ''
             },
             isCreating: false,
-            isShowModal: false,
         }
     },
     actions: {

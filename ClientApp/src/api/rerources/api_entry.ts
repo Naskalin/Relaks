@@ -1,6 +1,6 @@
-﻿import {ActualPart, Entry, EntryType} from "../resource_types";
+﻿import {ActualTypes, Entry, EntryType} from "../resource_types";
 import {ApiListRequest, appApi} from "../index";
-import {dateToISONormalizer} from "../../utils/utils";
+import {dateHelper} from "../../utils/date_helper";
 
 export declare type CreateEntryRequest = {
     name: string
@@ -9,30 +9,29 @@ export declare type CreateEntryRequest = {
     reputation: number
     startAt: string | null
     endAt: string | null
-} & ActualPart
+} & ActualTypes
 
 export declare type UpdateEntryRequest = {
     entryId: string
 } & CreateEntryRequest
 
-function requestDateNormalizer(request: CreateEntryRequest | UpdateEntryRequest)
-{
-    request.startAt = dateToISONormalizer(request.startAt);
-    request.endAt = dateToISONormalizer(request.endAt);
-    request.actualStartAt = dateToISONormalizer(request.actualStartAt) as string;
-    request.actualEndAt = dateToISONormalizer(request.actualEndAt);
+function datesToISO(request: CreateEntryRequest | UpdateEntryRequest) {
+    request.startAt = dateHelper.toISO(request.startAt);
+    request.endAt = dateHelper.toISO(request.endAt);
+    request.actualStartAt = dateHelper.toISO(request.actualStartAt) as string;
+    request.actualEndAt = dateHelper.toISO(request.actualEndAt);
 }
 
 export const apiEntry = {
-    create: async (request: CreateEntryRequest) : Promise<Entry> => {
+    create: async (request: CreateEntryRequest): Promise<Entry> => {
         const reqCopy = Object.assign({}, request);
-        requestDateNormalizer(reqCopy);
+        datesToISO(reqCopy);
         const resp = await appApi.post({resource: 'entries'}, reqCopy);
         return resp.data;
     },
     update: async (entryId: string, request: UpdateEntryRequest): Promise<null> => {
         const reqCopy = Object.assign({}, request);
-        requestDateNormalizer(reqCopy);
+        datesToISO(reqCopy);
         const resp = await appApi.put({resource: 'entries', resourceId: entryId}, reqCopy);
         return resp.data;
     },
@@ -44,7 +43,7 @@ export const apiEntry = {
         const resp = await appApi.list({resource: 'entries'}, request);
         return resp.data;
     },
-    delete: async (entryId: string) : Promise<null> => {
+    delete: async (entryId: string): Promise<null> => {
         const resp = await appApi.delete({resource: 'entries', resourceId: entryId});
         return resp.data;
     },

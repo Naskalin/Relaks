@@ -1,41 +1,58 @@
-﻿export const entryTypeTrans: {[index: string]: string} = {
-    Person: 'Человек',
-    Company: 'Компания',
-    Meet: 'Встреча',
-}
-export const entryDescriptionHelpers = {
-    Person: 'Бородатый программист',
-    Company: 'Крупногабаритные перевозки',
-    Meet: 'Ежегодное совещание с коллегами по работе',
-}
-export const entryDateFields = {
-    Person: {
-        startAt: 'День рождения',
-        endAt: 'Дата смерти',
+﻿import {selectHelper} from "../utils/select_helper";
+
+const entryTypeNames = {
+        Person: 'Человек',
+        Company: 'Компания',
+        Meet: 'Встреча',
+};
+
+export const entryMessages = {
+    name: {
+        Person: 'Ф.И.О',
+        Company: 'Название компании',
+        Meet: 'Название встречи'
     },
-    Company: {
-        startAt: 'Дата регистрации',
-        endAt: 'Дата ликвидации',
+    entryType: {
+        selectOptions: selectHelper.toSelectOptions(entryTypeNames),
+        names: entryTypeNames,
+        descriptionHelpers: {
+            Person: 'Бородатый программист',
+            Company: 'Крупногабаритные перевозки',
+            Meet: 'Ежегодное совещание с коллегами по работе',
+        }
     },
-    Meet: {
-        startAt: 'Дата начала',
-        endAt: 'Дата окончания',
+    profile: {
+        tabs: {
+            'entry-note-list': 'Заметки',
+            'entry-file-list': 'Файлы',
+            // dates: 'Даты',
+            // kinship: 'Родство',
+            // structures: 'Структуры',
+        }
+    },
+    startAt: {
+        Person: 'День рождения',
+        Company: 'Дата регистрации',
+        Meet: 'Дата начала'
+    },
+    endAt: {
+        Person: 'Дата смерти',
+        Company: 'Дата ликвидации',
+        Meet: 'Дата окончания'
     }
-}
-export const entryTypesSelectOptions = () => {
-    const arr = [];
-    for (const [key, value] of Object.entries(entryTypeTrans))
-    {
-        arr.push({value: key, label: value})
-        console.log(arr);
-    }
-    return arr;
 }
 
-export const entryProfileTabs = {
-    'entry-note-list': 'Заметки',
-    'entry-file-list': 'Файлы',
-    // dates: 'Даты',
-    // kinship: 'Родство',
-    // structures: 'Структуры',
+export const actualMessages = {
+    actualStartAt: {
+        name: 'Актуально с'
+    },
+    actualEndAt: {
+        name: 'Не актуально с'
+    },
+    actualStartAtReason: {
+        name: 'Причина'
+    },
+    actualEndAtReason: {
+        name: 'Причина'
+    }
 }
