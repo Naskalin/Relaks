@@ -1,16 +1,5 @@
-﻿import {ActualTypes, EntryDate} from "../resource_types";
-
-import {ApiListRequest, appApi} from "../index";
-
-export declare type CreateEntryDateRequest = {
-    about: string
-    val: string
-} & ActualTypes
-
-export declare type UpdateEntryDateRequest = {} & CreateEntryDateRequest
-
-export declare type ListEntryDateRequest = {
-} & ApiListRequest
+﻿import {EntryDate, CreateEntryDateRequest, UpdateEntryDateRequest, ListEntryDateRequest} from "../api_types";
+import {appApi} from "../index";
 
 export const apiEntryDate = {
     create: async (entryId: string, request: CreateEntryDateRequest): Promise<EntryDate> => {

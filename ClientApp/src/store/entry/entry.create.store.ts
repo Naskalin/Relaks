@@ -1,10 +1,10 @@
 ﻿import {defineStore} from 'pinia';
-import {CreateEntryRequest, apiEntry} from "../../api/rerources/api_entry";
-import {Entry} from "../../api/resource_types";
+import {apiEntry} from "../../api/rerources/api_entry";
+import {Entry, CreateEntryRequest} from "../../api/api_types";
 
 declare type EntryCreateStoreState = {
     model: CreateEntryRequest,
-    isCreating: boolean,
+    isLoading: boolean,
 }
 
 export const useEntryCreateStore = defineStore('entryCreateStore', {
@@ -22,21 +22,21 @@ export const useEntryCreateStore = defineStore('entryCreateStore', {
                 actualEndAtReason: '',
                 actualStartAtReason: ''
             },
-            isCreating: false,
+            isLoading: false,
         }
     },
     actions: {
         async createEntry(): Promise<Entry> {
-            if (this.isCreating) {
+            if (this.isLoading) {
                 return Promise.reject();
             }
 
-            this.isCreating = true;
+            this.isLoading = true;
 
             try {
                 return await apiEntry.create(this.model);
             } finally {
-                this.isCreating = false;
+                this.isLoading = false;
             }
         }
     }

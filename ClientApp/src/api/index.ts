@@ -8,7 +8,7 @@ axios.interceptors.response.use((resp) => resp, (error) => {
 })
 
 export const appApi = {
-    list: async (endPoint: EndpointParams, apiRequest?: ApiListRequest | ApiAnyRequest): Promise<AxiosResponse> => {
+    list: async (endPoint: EndpointParams, apiRequest?: ApiAnyRequest): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);
         return (await axios.get(url, {params: apiRequest}));
     },

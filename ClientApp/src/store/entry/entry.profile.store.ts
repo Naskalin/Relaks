@@ -1,5 +1,5 @@
 ﻿import {defineStore} from 'pinia';
-import {Entry} from "../../api/resource_types";
+import {Entry} from "../../api/api_types";
 import {apiEntry} from "../../api/rerources/api_entry";
 
 interface EntryProfileStoreState {

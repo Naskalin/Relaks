@@ -15,11 +15,10 @@ public class EntryTextRepository : BaseRepository<EntryText>
     public async Task<List<EntryText>> PaginateListAsync(ListRequest request, CancellationToken cancellationToken)
     {
         Enum.TryParse(request.TextType, true, out TextTypeEnum textTypeEnum);
-        
-        var query = PaginateQuery(request)
+
+        var query = Entities
             .Where(x => x.EntryId == request.EntryId)
-            .Where(x => x.TextType == textTypeEnum)
-            ;
+            .Where(x => x.TextType == textTypeEnum);
 
         if (request.Search != null)
         {
@@ -37,6 +36,7 @@ public class EntryTextRepository : BaseRepository<EntryText>
 
         query = query.OrderByDescending(x => x.UpdatedAt);
 
+        query = PaginateQuery(query, request);
         return await query.ToListAsync(cancellationToken);
     }
 }

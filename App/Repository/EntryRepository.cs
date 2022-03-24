@@ -14,7 +14,7 @@ public class EntryRepository : BaseRepository<Entry>
     
     public async Task<IEnumerable<Entry>> PaginateListAsync(ListRequest listRequest, CancellationToken cancellationToken)
     {
-        var query = PaginateQuery(listRequest);
+        var query = Entities.Where(x => true);
 
         if (listRequest.EntryType != null)
         {
@@ -35,7 +35,9 @@ public class EntryRepository : BaseRepository<Entry>
         }
         
         query = query.OrderByDescending(x => x.UpdatedAt);
-
+        
+        
+        query = PaginateQuery(query, listRequest);
         return await query.ToListAsync(cancellationToken);
     }
 }

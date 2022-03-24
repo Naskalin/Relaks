@@ -1,18 +1,5 @@
-﻿import {ActualTypes, EntryText, TextType} from "../resource_types";
-
-import {ApiListRequest, appApi} from "../index";
-
-export declare type CreateEntryTextRequest = {
-    about: string
-    val: string
-    textType: TextType
-} & ActualTypes
-
-export declare type UpdateEntryTextRequest = {} & CreateEntryTextRequest
-
-export declare type ListEntryTextRequest = {
-    textType: TextType
-} & ApiListRequest
+﻿import {CreateEntryTextRequest, EntryText, UpdateEntryTextRequest, ListEntryTextRequest} from "../api_types";
+import {appApi} from "../index";
 
 export const apiEntryText = {
     create: async (entryId: string, request: CreateEntryTextRequest): Promise<EntryText> => {

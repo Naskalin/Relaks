@@ -1,5 +1,5 @@
 ﻿<template>
-  <q-dialog v-model="isShow" persistent>
+  <q-dialog v-model="isShowModel" persistent>
     <q-card style="width: 700px; max-width: 80vw;">
       <q-card-section class="row items-center card-header">
         <div class="text-h6">{{title}}</div>
@@ -16,16 +16,17 @@
 import {computed} from "vue";
 
 const props = defineProps<{
-    modelValue: boolean,
+    isShow: boolean,
     title: string
 }>()
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: boolean): void
+    (e: 'update:isShow', value: boolean): void
+    // (e: 'update:modelValue', value: boolean): void
 }>();
 
-const isShow = computed({
-    get: () => props.modelValue,
-    set: (val) => emit('update:modelValue', val)
+const isShowModel = computed({
+    get: () => props.isShow,
+    set: (val) => emit('update:isShow', val)
 })
 </script>

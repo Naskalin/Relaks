@@ -1,4 +1,6 @@
-﻿namespace App.Endpoints;
+﻿using App.Models;
+
+namespace App.Endpoints;
 
 public interface IPaginableRequest
 {

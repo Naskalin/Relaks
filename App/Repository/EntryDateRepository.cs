@@ -16,8 +16,7 @@ public class EntryDateRepository : BaseRepository<EntryDate>
         ListRequest listRequest,
         CancellationToken cancellationToken)
     {
-        var query = PaginateQuery(listRequest)
-            .Where(x => x.Entry.Id == listRequest.EntryId);
+        var query = Entities.Where(x => x.Entry.Id == listRequest.EntryId);
 
         if (listRequest.Search != null)
         {
@@ -31,6 +30,7 @@ public class EntryDateRepository : BaseRepository<EntryDate>
 
         query = query.OrderByDescending(x => x.UpdatedAt);
 
+        query = PaginateQuery(query, listRequest);
         return await query.ToListAsync(cancellationToken);
     }
     // public override List<EntryDate> PaginateListAsync()

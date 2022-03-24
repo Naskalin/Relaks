@@ -22,11 +22,14 @@ public class BaseRepository<TEntity> where TEntity : BaseEntity
         return await Entities.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    protected IQueryable<TEntity> PaginateQuery(IPaginableRequest request)
+    protected IQueryable<TEntity> PaginateQuery(IQueryable<TEntity> query, IPaginableRequest request)
     {
         var perPage = request.PerPage ?? 50;
         var page = request.Page ?? 1;
-        return Entities.Skip(perPage * (page - 1)).Take(perPage);
+        
+        return query
+            .Skip(perPage * (page - 1))
+            .Take(perPage);
     }
 
     // public async Task<List<TEntity>> PaginateListAsync(int perPage, int page, CancellationToken cancellationToken)

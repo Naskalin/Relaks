@@ -1,9 +1,9 @@
 ﻿import {selectHelper} from "../utils/select_helper";
 
 const entryTypeNames = {
-        Person: 'Человек',
-        Company: 'Компания',
-        Meet: 'Встреча',
+    Person: 'Человек',
+    Company: 'Компания',
+    Meet: 'Встреча',
 };
 
 export const entryMessages = {
@@ -15,6 +15,11 @@ export const entryMessages = {
     entryType: {
         selectOptions: selectHelper.toSelectOptions(entryTypeNames),
         names: entryTypeNames,
+        pluralNames: {
+            Person: 'Люди',
+            Company: 'Компании',
+            Meet: 'Встречи'
+        },
         descriptionHelpers: {
             Person: 'Бородатый программист',
             Company: 'Крупногабаритные перевозки',
@@ -39,7 +44,8 @@ export const entryMessages = {
         Person: 'Дата смерти',
         Company: 'Дата ликвидации',
         Meet: 'Дата окончания'
-    }
+    },
+    reputation: 'Репутация'
 }
 
 export const actualMessages = {
@@ -50,9 +56,9 @@ export const actualMessages = {
         name: 'Не актуально с'
     },
     actualStartAtReason: {
-        name: 'Причина'
+        name: 'Актуально по причине'
     },
     actualEndAtReason: {
-        name: 'Причина'
+        name: 'Не актуально по причине'
     }
 }

@@ -1,6 +1,5 @@
 ﻿<template>
   <q-input color="secondary"
-           style="max-width: 300px"
            :mask="mask"
            hide-bottom-space
            v-model="model"

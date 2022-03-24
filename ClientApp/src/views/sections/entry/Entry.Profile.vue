@@ -1,6 +1,4 @@
 ﻿<template>
-    {{ profileStore.entry }}
-    <entry-form-modal v-if="profileStore.entry" v-model="profileStore.entry"></entry-form-modal>
     <div class="row">
         <div class="col-3" style="min-width: 320px">
             <profile-card></profile-card>
@@ -26,7 +24,6 @@
 
 <script setup lang="ts">
 import ProfileCard from "./Entry.Profile.Card.vue";
-import EntryFormModal from './Entry.Form.Modal.vue';
 
 import {onMounted} from "vue";
 import {useRoute} from 'vue-router'

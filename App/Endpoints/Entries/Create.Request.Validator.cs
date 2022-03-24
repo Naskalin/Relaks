@@ -20,7 +20,7 @@ public class CreateRequestValidator : AbstractValidator<CreateRequest>
         RuleFor(x => x.ActualEndAtReason).NotNull().Length(0, 500);
 
         RuleFor(x => x.ActualEndAt)
-            .Must((x, actualEndAt) => x.ActualStartAt > actualEndAt)
+            .Must((x, actualEndAt) => actualEndAt >= x.ActualStartAt)
             .When(x => x.ActualEndAt != null);
     }
 }

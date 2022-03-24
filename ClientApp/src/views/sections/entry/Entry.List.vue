@@ -1,67 +1,99 @@
 <template>
-<!--      <create-entry @created="entry => $router.push({name: 'entry-profile', params: {entryId: entry.id}})"></create-entry>-->
+    <!--      <create-entry @created="entry => $router.push({name: 'entry-profile', params: {entryId: entry.id}})"></create-entry>-->
     <!--  {{ entryCreateStore.model }}-->
-    <button @click="entryCreateModel.isShow = true">add</button>
-    <entry-form-modal v-model="entryCreateModel" title="Добавление объединения"/>
-    <div class="row">
-        <div class="col-3" style="min-width: 320px">
-            <q-card class="q-pa-md">
-                <list-filter></list-filter>
-            </q-card>
-        </div>
-        <div class="col-9">
-            <!--      <q-table-->
-            <!--          class="list-table q-ml-md"-->
-            <!--          :title="'Объединения (' + totalResources + ')'"-->
-            <!--          :rows="rows"-->
-            <!--          :columns="columns"-->
-            <!--          :loading="isLoading"-->
-            <!--          row-key="id"-->
-            <!--          :pagination="pagination"-->
-            <!--          :virtual-scroll-item-size="48"-->
-            <!--          :virtual-scroll-sticky-size-start="48"-->
-            <!--          virtual-scroll-->
-            <!--          :rows-per-page-options="[0]"-->
-            <!--          @virtual-scroll="loadData"-->
-            <!--      >-->
-            <!--        <template v-slot:body="props">-->
-            <!--          <q-tr :props="props" :key="`m_${props.row.index}`" @click.native="onRowClick(props.row.id)">-->
-            <!--            <q-td-->
-            <!--                v-for="col in props.cols"-->
-            <!--                :key="col.name"-->
-            <!--                :props="props"-->
-            <!--            >-->
-            <!--              <template v-if="col.name === 'id'">{{ props.rowIndex + 1 }}</template>-->
-            <!--              <template v-else-if="col.name === 'entryType'">{{ entryTypeTrans[col.value] || '?' }}</template>-->
-            <!--              <template v-else>{{ col.value }}</template>-->
-            <!--            </q-td>-->
-            <!--          </q-tr>-->
-            <!--        </template>-->
+<!--    {{ createStore.$state }}-->
+<!--    <button @click="isShowCreateForm = true">add</button>-->
+    <entry-form-modal v-model:is-show="isShowCreateForm"
+                      v-model="createStore.model"
+                      :is-loading="createStore.isLoading"
+                      :is-create="true"
+                      btn-title="Добавить"
+                      @submit="createEntry"
+                      title="Добавление объединения"/>
+            
+    <entry-list-table></entry-list-table>
+<!--    <div class="row">-->
+<!--        <div class="col-3" style="min-width: 320px">-->
+<!--            <q-card class="q-pa-md">-->
+<!--                <list-filter v-model="listStore.listRequest"></list-filter>-->
+<!--            </q-card>-->
+<!--        </div>-->
+<!--        <div class="col-9">-->
+<!--                      :rows="rows"-->
+<!--                  <q-table-->
+<!--                      class="list-table q-ml-md"-->
+<!--                      :title="entryMessages.entryType.pluralNames[listStore.listRequest.entryType]"-->
+<!--                      :columns="columns"-->
+<!--                      :loading="isLoading"-->
+<!--                      row-key="id"-->
+<!--                      :pagination="pagination"-->
+<!--                      :virtual-scroll-item-size="48"-->
+<!--                      :virtual-scroll-sticky-size-start="48"-->
+<!--                      virtual-scroll-->
+<!--                      :rows-per-page-options="[0]"-->
+<!--                      @virtual-scroll="loadData"-->
+<!--                  >-->
+<!--                    <template v-slot:body="props">-->
+<!--                      <q-tr :props="props" :key="`m_${props.row.index}`" @click.native="onRowClick(props.row.id)">-->
+<!--                        <q-td-->
+<!--                            v-for="col in props.cols"-->
+<!--                            :key="col.name"-->
+<!--                            :props="props"-->
+<!--                        >-->
+<!--                          <template v-if="col.name === 'id'">{{ props.rowIndex + 1 }}</template>-->
+<!--                          <template v-else-if="col.name === 'entryType'">{{ entryTypeTrans[col.value] || '?' }}</template>-->
+<!--                          <template v-else>{{ col.value }}</template>-->
+<!--                        </q-td>-->
+<!--                      </q-tr>-->
+<!--                    </template>-->
 
-            <!--        <template v-slot:top-right="props">-->
-            <!--          <q-btn icon="las la-plus-circle"-->
-            <!--                 @click="addEntryStore.isShowModal = true"-->
-            <!--                 label="Добавить"-->
-            <!--                 color="primary"-->
-            <!--          />-->
-            <!--        </template>-->
-            <!--      </q-table>-->
-        </div>
-    </div>
+<!--                    <template v-slot:top-right="props">-->
+<!--                      <q-btn icon="las la-plus-circle"-->
+<!--                             @click="addEntryStore.isShowModal = true"-->
+<!--                             label="Добавить"-->
+<!--                             color="primary"-->
+<!--                      />-->
+<!--                    </template>-->
+<!--                  </q-table>-->
+<!--        </div>-->
+<!--    </div>-->
 </template>
 
 <script setup lang="ts">
-import ListFilter from './Entry.List.Filter.vue';
+// import ListFilter from './Entry.List.Filter.vue';
 import EntryFormModal from './Entry.Form.Modal.vue';
-import {reactive} from 'vue';
+import {ref} from 'vue';
 import {useEntryCreateStore} from "../../../store/entry/entry.create.store";
+// import {useEntryListStore} from "../../../store/entry/entry.list.store";
+import {useRouter} from 'vue-router'
+import EntryListTable from './Entry.List.Table.vue';
 
-const entryCreateStore = useEntryCreateStore();
+// creating
+const router = useRouter();
+const createStore = useEntryCreateStore();
+const isShowCreateForm = ref(false);
+const createEntry = async () => {
+    const entry = await createStore.createEntry();
+    await router.push({name: 'entry-profile', params: {entryId: entry.id}});
+    isShowCreateForm.value = false;
+    createStore.$reset();
+}
 
-const entryCreateModel = reactive({
-    isShow: false,
-    model: entryCreateStore.model
-});
+// list
+// const listStore = useEntryListStore();
+
+// const columns = [
+//   {name: 'id', label: '#', field: 'id', style: 'width: 70px'},
+//   {name: 'entryType', label: 'Тип', field: (row: any) => row.attributes.entryType},
+//   {name: 'name', label: 'Имя', field: (row: any) => row.attributes.name},
+//   {name: 'reputation', label: 'Репутация', field: (row: any) => row.attributes.reputation, style: 'width: 70px'},
+//   // {
+//   //   name: 'birthDay',
+//   //   label: 'День рождения',
+//   //   field: (row: any) => row.attributes.birthDay,
+//   //   format: (val: any) => val ? date.formatDate(new Date(val), 'YYYY-MM-DD HH:mm:ss') : null
+//   // },
+// ]
 
 // import CreateEntry from "./Entry.Create.Modal.vue";
 // import {useEntryCreateModalStore} from "../../../store/entry/entry.create.modal.store";
@@ -69,23 +101,10 @@ const entryCreateModel = reactive({
 // const entryCreateStore = useEntryCreateModalStore();
 
 // import {defineComponent, ref, Ref, onMounted, computed, reactive} from "vue";
-// import {useRouter} from 'vue-router'
 // import {date} from 'quasar';
 // import {useEntryCreateStore} from "../../../store/entry/EntryAddStore";
 // import {entryTypeTrans} from "../../../localize/messages";
 
-// const columns = [
-//   {name: 'id', label: '#', field: 'id', style: 'width: 70px'},
-//   {name: 'entryType', label: 'Тип', field: (row: any) => row.attributes.entryType},
-//   {name: 'name', label: 'Имя', field: (row: any) => row.attributes.name},
-//   {name: 'reputation', label: 'Репутация', field: (row: any) => row.attributes.reputation, style: 'width: 70px'},
-//   {
-//     name: 'birthDay',
-//     label: 'День рождения',
-//     field: (row: any) => row.attributes.birthDay,
-//     format: (val: any) => val ? date.formatDate(new Date(val), 'YYYY-MM-DD HH:mm:ss') : null
-//   },
-// ]
 
 // export default defineComponent({
 //   components: {AddEntry, ListFilter},
@@ -168,36 +187,3 @@ const entryCreateModel = reactive({
 //   }
 // })
 </script>
-
-<style lang="scss">
-.list-table {
-    max-height: 96vh;
-
-    td, th {
-        text-align: left;
-    }
-
-    tfoot tr > *,
-    thead tr > * {
-        position: sticky;
-        opacity: 1;
-        z-index: 1;
-        background-color: $themeBlack;
-        color: $bgColor;
-        //background-color: $bgGreyDarken2;
-        //color: $th;
-    }
-
-    thead tr:last-child > * {
-        top: 0;
-    }
-
-    thead tr:first-child > * {
-        bottom: 0
-    }
-}
-
-.q-body--fullscreen-mixin .list-table {
-    max-height: 100vh;
-}
-</style>

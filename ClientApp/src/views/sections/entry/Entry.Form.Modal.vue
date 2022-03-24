@@ -1,43 +1,58 @@
 ﻿<template>
-<modal v-model="model.isShow" :title="title">
-    <q-form autocorrect="off"
-            autocapitalize="off"
-            autocomplete="off"
-            spellcheck="false"
-            id="entry-form"
-    >
-<!--            @submit.prevent="addEntry"-->
-        <entry-fields v-model="model.model"></entry-fields>
-    </q-form>
+    <modal v-model:is-show="isShow" :title="title">
+        <q-form autocorrect="off"
+                autocapitalize="off"
+                autocomplete="off"
+                spellcheck="false"
+                id="entry-form"
+                @submit.prevent="emit('submit', model)"
+        >
+            <q-card-section class="q-gutter-y-md">
+                <entry-fields :is-create="isCreate" v-model="model"></entry-fields>
+            </q-card-section>
+        </q-form>
 
-<!--    <q-card-actions align="right" class="q-pa-md">-->
-<!--        <q-btn flat label="Закрыть" icon="las la-times" v-close-popup/>-->
-<!--        <q-btn label="Добавить" form="entry-form" type="submit" color="primary" icon="las la-plus-circle" :loading="store.isCreating"/>-->
-<!--    </q-card-actions>-->
-</modal>
+        <q-card-actions align="right" class="q-pa-md">
+            <q-btn flat label="Закрыть" icon="las la-times" v-close-popup/>
+            <q-btn :label="btnTitle"
+                   form="entry-form"
+                   type="submit"
+                   color="primary"
+                   :icon="btnIcon ?? 'las la-plus-circle'"
+                   :disable="isLoading"
+                   :loading="isLoading"/>
+        </q-card-actions>
+    </modal>
 </template>
 
 <script setup lang="ts">
 import Modal from '../../components/Modal.vue';
-import {CreateEntryRequest, UpdateEntryRequest} from "../../../api/rerources/api_entry";
+import {CreateEntryRequest, UpdateEntryRequest} from "../../../api/api_types";
 import EntryFields from './Entry.Fields.vue';
-import {computed} from "vue";
+import {computed, onMounted} from "vue";
 
-declare type EntryFormModalValue = {
-    model: CreateEntryRequest | UpdateEntryRequest,
-    isShow: boolean
-}
 const props = defineProps<{
-    title: string,
-    modelValue: EntryFormModalValue
+    title: string
+    btnTitle: string
+    btnIcon?: string
+    isLoading: boolean
+    modelValue: CreateEntryRequest | UpdateEntryRequest,
+    isShow: boolean,
+    isCreate: boolean
 }>()
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: EntryFormModalValue): void
+    (e: 'update:modelValue', value: CreateEntryRequest | UpdateEntryRequest): void,
+    (e: 'update:isShow', value: boolean): void
+    (e: 'submit', value: CreateEntryRequest | UpdateEntryRequest): void
 }>();
 
 const model = computed({
     get: () => props.modelValue,
     set: (val) => emit('update:modelValue', val)
+})
+
+onMounted(() => {
+    if (props.isCreate) model.value.actualStartAt = new Date().toISOString();
 })
 </script>

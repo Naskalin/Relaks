@@ -1,5 +1,6 @@
 ﻿using App.DbConfigurations;
 using App.Models;
+using Bogus;
 
 namespace App.Seeders;
 
@@ -11,43 +12,92 @@ public class EntrySeeder : DatabaseSeeder
 
     public async Task Seed()
     {
-        
-        // var names = new[] {"Tom", "Bob", "Mike", "Frida"};
-        // var random = new Random();
-        // for (int i = 0; i < 100; i++)
-        // {
-        //     var person = new Entry()
-        //     {
-        //         Name = names[random.Next(names.Length)],
-        //         Reputation = random.Next(0, 10),
-        //         EntryType = EntryTypeEnum.Person,
-        //         Description = "",
-        //         ActualEndAtReason = "",
-        //         ActualStartAtReason = ""
-        //     };
-        //
-        //     if (i % 2 == 0)
-        //     {
-        //         person.Description = "At vero eos et accusamus et iusto odio dignissimos ducimus";
-        //     }
-        //
-        //     Db.Entries.Add(person);
-        // }
+        var faker = new Faker()
+        {
+            Locale = "ru"
+        };
+
+        foreach (EntryTypeEnum entryType in (EntryTypeEnum[]) Enum.GetValues(typeof(EntryTypeEnum)))
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                var entry = new Entry()
+                {
+                    Reputation = faker.Random.Number(0, 10),
+                    EntryType = entryType,
+                    ActualEndAtReason = "",
+                    ActualStartAtReason = faker.Random.ArrayElement(new[] {faker.Lorem.Paragraph(), ""}),
+                    CreatedAt = faker.Date.Past(),
+                    UpdatedAt = faker.Date.Past(),
+                    ActualStartAt = faker.Date.Past(),
+                };
+
+                var startAt = faker.Date.Past(120, DateTime.UtcNow.AddYears(-10));
+                var diffYears = (int) Math.Floor(Math.Abs((startAt - DateTime.UtcNow).TotalDays) / 365);
+                if (diffYears < 1) diffYears = 1;
+                var endAt = faker.Date.Past(diffYears, DateTime.UtcNow);
+
+                if (i % faker.Random.Number(1, 5) == 0)
+                {
+                    entry.StartAt = startAt;
+                }
+
+                if (i % faker.Random.Number(1, 5) == 0)
+                {
+                    entry.EndAt = endAt;
+                    if (i % 2 == 0)
+                    {
+                        entry.StartAt = startAt;
+                    }
+                }
+
+                if (i % faker.Random.Number(1, 2) == 0)
+                {
+                    entry.ActualEndAt = faker.Date.Past();
+                    entry.ActualEndAtReason = faker.Lorem.Paragraph();
+                }
+
+                switch (entryType)
+                {
+                    case EntryTypeEnum.Person:
+                        entry.Name = faker.Name.FullName();
+                        entry.Description = faker.Random.ArrayElement(new[] {faker.Name.JobDescriptor(), ""});
+                        break;
+                    case EntryTypeEnum.Meet:
+                        entry.Name = faker.Commerce.Department();
+                        entry.Description = faker.Random.ArrayElement(new[] {faker.Commerce.ProductDescription(), ""});
+                        ;
+                        break;
+                    case EntryTypeEnum.Company:
+                        entry.Name = faker.Company.CompanyName();
+                        entry.Description = faker.Random.ArrayElement(new[] {faker.Company.CatchPhrase(), ""});
+                        break;
+                }
+
+
+                // if (i % 2 == 0)
+                // {
+                //     person.Description = "At vero eos et accusamus et iusto odio dignissimos ducimus";
+                // }
+
+                Db.Entries.Add(entry);
+            }
+        }
 
         var creator = new Entry()
         {
             Id = Guid.Parse("01FBDDDD-1D69-4757-A8D2-5050A1AED4D4"),
-            Name = "Michelle",
-            Description = "The creator of this",
+            Name = "Вася Пупкин",
+            Description = faker.Lorem.Paragraph(),
             EntryType = EntryTypeEnum.Person,
-            ActualEndAtReason = "",
-            ActualStartAtReason = "",
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
-            ActualStartAt = DateTime.UtcNow,
-            StartAt = DateTime.Parse("1988-04-05").ToUniversalTime()
+            ActualEndAtReason = faker.Lorem.Paragraph(),
+            ActualStartAtReason = faker.Lorem.Paragraph(),
+            CreatedAt = faker.Date.Past(),
+            UpdatedAt = faker.Date.Past(),
+            ActualStartAt = faker.Date.Past(),
+            StartAt = faker.Date.Past(),
         };
-        
+
         Db.Entries.Add(creator);
 
         await Db.SaveChangesAsync();

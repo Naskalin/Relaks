@@ -40,6 +40,6 @@
   margin-left: auto;
   margin-right: auto;
   //max-width: 900px;
-  padding: 16px 46px;
+  padding: 1.5vh;
 }
 </style>
