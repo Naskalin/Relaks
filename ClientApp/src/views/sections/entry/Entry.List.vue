@@ -11,7 +11,7 @@
                       @submit="createEntry"
                       title="Добавление объединения"/>
             
-    <entry-list-table></entry-list-table>
+    <entry-list-table @row-dbl-click="rowDoubleClick"></entry-list-table>
 <!--    <div class="row">-->
 <!--        <div class="col-3" style="min-width: 320px">-->
 <!--            <q-card class="q-pa-md">-->
@@ -67,6 +67,7 @@ import {useEntryCreateStore} from "../../../store/entry/entry.create.store";
 // import {useEntryListStore} from "../../../store/entry/entry.list.store";
 import {useRouter} from 'vue-router'
 import EntryListTable from './Entry.List.Table.vue';
+import {Entry} from "../../../api/api_types";
 
 // creating
 const router = useRouter();
@@ -80,6 +81,9 @@ const createEntry = async () => {
 }
 
 // list
+const rowDoubleClick = async (entry: Entry) => {
+    await router.push({name: 'entry-profile', params: {entryId: entry.id}});
+}
 // const listStore = useEntryListStore();
 
 // const columns = [

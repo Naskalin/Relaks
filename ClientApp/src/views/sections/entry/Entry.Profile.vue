@@ -1,7 +1,10 @@
 ﻿<template>
     <div class="row">
         <div class="col-3" style="min-width: 320px">
-            <profile-card></profile-card>
+            <profile-card v-if="profileStore.entry"
+                          :with-edit="true"
+                          @update-entry="reloadEntry"
+                          :entry="profileStore.entry"></profile-card>
         </div>
         <div class="col">
             <div class="q-ml-lg">
@@ -28,13 +31,21 @@ import ProfileCard from "./Entry.Profile.Card.vue";
 import {onMounted} from "vue";
 import {useRoute} from 'vue-router'
 import {useEntryProfileStore} from "../../../store/entry/entry.profile.store";
+import {useEntryEditStore} from "../../../store/entry/entry.edit.store";
 import {entryMessages} from "../../../localize/messages";
 
 const profileStore = useEntryProfileStore();
+const editStore = useEntryEditStore();
+
 const route = useRoute();
 const entryId = route.params.entryId as string;
 
+const reloadEntry = async (entryId: string) => {
+    // reload entry if updated
+    await profileStore.getEntry(entryId)   
+}
 onMounted(async () => {
+    // initialize entry
     await profileStore.getEntry(entryId);
 })
 </script>

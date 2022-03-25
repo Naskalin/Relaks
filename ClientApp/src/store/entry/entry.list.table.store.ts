@@ -34,7 +34,11 @@ export const useEntryListStore = defineStore('EntryListStore', {
 
             try {
                 const items = await apiEntry.list(this.listRequest);
-                this.entries = this.entries.concat(items);
+                if (this.listRequest.page > 1) {
+                    this.entries = this.entries.concat(items);   
+                } else {
+                    this.entries = items;    
+                }
                 this.listRequest.page += 1;
                 if (items.length < this.listRequest.perPage) {
                     this.isEnd = true;

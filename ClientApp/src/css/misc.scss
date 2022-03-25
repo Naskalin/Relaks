@@ -1,47 +1,64 @@
 ﻿h1, h2, h3, h4, h5, h6 {
-  margin-top: 0
+    margin-top: 0
 }
+
 .profile-tab {
-  
+
 }
+
 .q-table {
-  tbody td, thead th {
-    font-size: 15px
-  }
+    tbody td, thead th {
+        font-size: 14px !important;
+    }
+    thead th {
+        font-weight: 600;
+    }
 }
 
 //.q-field--float .q-field__label
 //  transform: translateY(-50%) scale(0.85)
 //
 .body--light {
-  background: $bgColor;
-  .app-sidebar {
-    background: $secondary;
-    color: $bgColor;
-    .q-item.q-router-link--active, .q-item--active {
-      color: $bgColor;
-      background: lighten($secondary, 5%);
+    background: $bgColor;
+
+    .app-sidebar {
+        background: $secondary;
+        color: $bgColor;
+
+        .q-item.q-router-link--active, .q-item--active {
+            color: $bgColor;
+            background: lighten($secondary, 5%);
+        }
     }
-  }
-  .q-table,
-  .q-card {
-    @include content-background-mixin
-  }
-  .q-table {
-    //@include content-background-mixin
-  }
-  .q-field__label {
-    color: $themeBlack;
-  }
-  .q-card__actions,
-  .card-header {
-    background: $bgGreyDarken1;
-  }
-  .q-field__bottom {
-    color: $grey-8;
-  }
-  .q-table__bottom,
-  .q-table__top {
-    background: $bgGreyDarken1;
-  }
+
+    .q-table,
+    .q-card {
+        @include content-background-mixin
+    }
+
+    .q-table {
+        //@include content-background-mixin
+    }
+
+    .q-field__label {
+        color: $themeBlack;
+    }
+
+    .q-card__actions,
+    .card-header {
+        background: $bgGreyDarken1;
+    }
+
+    .q-field__bottom {
+        color: $grey-8;
+    }
+
+    //.q-table__card {
+    //    background: none;
+    //}
+    .q-table__bottom,
+    .q-table__top {
+        @include content-background-mixin
+        //background: none;
+    }
 }

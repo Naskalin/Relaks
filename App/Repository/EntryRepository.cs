@@ -16,6 +16,7 @@ public class EntryRepository : BaseRepository<Entry>
     {
         var query = Entities.Where(x => true);
 
+        query.Include(x => x.Texts);
         if (listRequest.EntryType != null)
         {
             query = query.Where(x => x.EntryType == listRequest.EntryType);
@@ -35,8 +36,7 @@ public class EntryRepository : BaseRepository<Entry>
         }
         
         query = query.OrderByDescending(x => x.UpdatedAt);
-        
-        
+
         query = PaginateQuery(query, listRequest);
         return await query.ToListAsync(cancellationToken);
     }

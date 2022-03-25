@@ -1,5 +1,5 @@
 ﻿<template>
-    <q-card v-if="entry" class="profile-card">
+    <q-card class="profile-card">
         <q-card-section class="text-center">
             <div class="q-mb-md">
                 <q-avatar size="150px" rounded>
@@ -7,7 +7,7 @@
                         src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80">
                 </q-avatar>
             </div>
-
+            
             <div class="text-h6">{{ entry.name }}</div>
             <div v-if="entry.description" class="text-subtitle2">{{ entry.description }}</div>
             <div class="items-center flex justify-center q-gutter-sm q-mt-xs">
@@ -15,6 +15,7 @@
                 <strong>{{ entry.reputation }}</strong>
                 <q-icon name="star" size="1.5em"/>
             </div>
+            <div><q-badge color="secondary">{{ entryMessages.entryType.names[entry.entryType] }}</q-badge></div>
         </q-card-section>
 
         <q-card-section>
@@ -93,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import {useEntryProfileStore} from "../../../store/entry/entry.profile.store";
+// import {useEntryProfileStore} from "../../../store/entry/entry.profile.store";
 import {computed, withDefaults, ref, watch} from "vue";
 import {entryMessages, actualMessages} from "../../../localize/messages";
 import {Entry} from "../../../api/api_types";
@@ -104,26 +105,34 @@ import {entryMappers} from "../../../api/api_mappers";
 import {useRoute} from "vue-router";
 
 const editStore = useEntryEditStore();
-const profileStore = useEntryProfileStore();
+// const profileStore = useEntryProfileStore();
 
 const isShowEditModal = ref(false);
-const entry = computed((): Entry | null => profileStore.entry);
+// const entry = computed((): Entry | null => profileStore.entry);
 const props = withDefaults(defineProps<{
+    entry: Entry,
     withEdit?: boolean,
 }>(), {
     withEdit: true
 })
-watch(() => isShowEditModal.value, (val) => {
-    if (val && profileStore.entry) {
-        editStore.model = entryMappers.toUpdateRequest(profileStore.entry);
-    }
-})
-const route = useRoute();
 
+if (props.withEdit) {
+    watch(() => isShowEditModal.value, (val) => {
+        if (val) {
+            editStore.model = entryMappers.toUpdateRequest(props.entry);
+        }
+    })   
+}
+const emit = defineEmits<{
+    (e: 'update-entry', entryId: string): void
+}>()
+
+const route = useRoute();
 const updateEntry = async () => {
     await editStore.updateEntry(route.params.entryId as string);
     editStore.$reset();
     isShowEditModal.value = false;
-    profileStore.getEntry(entry.value!.id)
+    
+    emit('update-entry', props.entry.id);
 }
 </script>

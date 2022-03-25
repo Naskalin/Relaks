@@ -22,6 +22,8 @@ public class EntryConfiguration : IEntityTypeConfiguration<Entry>
         //     .HasValue<Company>(EntryTypeEnum.Company)
         //     ;
 
+        builder.Property(x => x.Name).UseCollation("NOCASE");
+
         builder
         .Property(x => x.EntryType)
         .HasConversion(new EnumToStringConverter<EntryTypeEnum>());

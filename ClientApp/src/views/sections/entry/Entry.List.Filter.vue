@@ -35,5 +35,4 @@ const model = computed({
     get: (): ListEntryRequest => props.modelValue,
     set: val => emit('update:modelValue', val)
 })
-
 </script>
