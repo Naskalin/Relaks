@@ -29,6 +29,7 @@ export const entryMessages = {
     profile: {
         tabs: {
             'entry-note-list': 'Заметки',
+            'entry-contacts': 'Контакты',
             'entry-file-list': 'Файлы',
             // dates: 'Даты',
             // kinship: 'Родство',

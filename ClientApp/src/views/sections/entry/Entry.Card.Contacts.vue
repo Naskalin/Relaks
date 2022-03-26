@@ -2,8 +2,7 @@
     <template v-if="store.phones.length">
         <q-card-section class="q-gutter-x-sm text-center">
             <div v-for="eText in store.phones">
-                <q-icon name="phone" color="secondary"/> {{ eText.val }}
-<!--                <q-icon name="phone" color="secondary"/> {{ phoneHelper.toPhone(eText.val).number }}-->
+                <phone :entry-text="eText"></phone>
             </div>
         </q-card-section>
         <q-separator></q-separator>
@@ -11,7 +10,7 @@
     <template v-if="store.emails.length">
         <q-card-section class="q-gutter-x-sm text-center">
             <div v-for="eText in store.emails">
-                <q-icon name="email" color="secondary"/> {{ eText.val }}
+                <q-icon name="las la-envelope" color="secondary" size="1.3em" class="q-mr-xs"/> {{ eText.val }}
             </div>
         </q-card-section>
         <q-separator></q-separator>
@@ -19,7 +18,7 @@
     <template v-if="store.urls.length">
         <q-card-section class="q-gutter-x-sm text-center">
             <div v-for="eText in store.urls">
-                <q-icon name="link" color="secondary"/> {{ eText.val }}
+                <q-icon name="las la-link" color="secondary" size="1.3em" class="q-mr-xs"/> {{ eText.val }}
             </div>
         </q-card-section>
         <q-separator></q-separator>
@@ -37,7 +36,8 @@
 <script setup lang="ts">
 import {onMounted, computed} from "vue";
 import {useEntryContactsStore} from "../../../store/entry_contacts/entry_cotacts_store";
-import {phoneHelper, Phone} from "../../../utils/phone_helper";
+import Phone from '../../components/Phone.vue';
+// import {phoneHelper, Phone} from "../../../utils/phone_helper";
 
 const props = defineProps<{
     entryId: string

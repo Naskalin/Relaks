@@ -65,6 +65,5 @@ export const endpointBuilder = ({resource, resourceId, subResource, subResourceI
         urlParts.push(subResourceId)
     }
 
-    console.log(urlParts);
     return '/' + urlParts.join('/');
 }

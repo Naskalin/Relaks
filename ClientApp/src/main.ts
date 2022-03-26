@@ -5,6 +5,7 @@ import {Quasar} from 'quasar';
 import '@quasar/extras/material-icons/material-icons.css'
 import '@quasar/extras/line-awesome/line-awesome.css'
 import 'quasar/src/css/index.sass'
+import 'flag-icons/sass/flag-icons.scss'
 
 import langRu from 'quasar/lang/ru'
 import router from './router';
