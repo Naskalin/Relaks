@@ -5,7 +5,7 @@
                 <list-filter v-model="store.listRequest"></list-filter>
             </q-card>
             
-            <entry-card v-if="previewEntry" :entry="previewEntry"></entry-card>
+            <entry-card v-if="previewEntry" :entry="previewEntry" :with-edit="false"></entry-card>
         </div>
         <div class="col">
             <q-table
@@ -16,13 +16,11 @@
                 row-key="id"
                 :rows="store.entries"
                 :pagination="{rowsPerPage: 0}"
-                :virtual-scroll-item-size="63"
-                :virtual-scroll-sticky-size-start="63"
+                :virtual-scroll-item-size="65"
+                :virtual-scroll-sticky-size-start="65"
                 virtual-scroll
                 :rows-per-page-options="[0]"
                 @virtual-scroll="getEntries"
-                @row-click="rowClick"
-                @row-dblclick="rowDoubleClick"
             >
                 <template v-slot:header-cell-name="props">
                     <q-th>{{entryMessages.name[store.listRequest.entryType]}}</q-th>
@@ -45,7 +43,9 @@
                           :class="{
                               'bg-blue-grey-2': previewEntry && previewEntry.id === props.row.id
                           }"
+                          @dblclick="rowDoubleClick(props.row)"
                           @click="previewEntry = props.row">
+<!--                        rowDoubleClick-->
 <!--                          @mouseleave="rowMouseLeave" -->
 <!--                          @mouseover="rowMouseOver" -->
                         <q-td
@@ -54,9 +54,7 @@
                             :props="props"
                         >
                             <template v-if="col.name === 'avatar'">
-                                <q-avatar>
-                                    <img src="https://via.placeholder.com/100">
-                                </q-avatar>
+                                <q-avatar size="50px" font-size="34px" color="grey-5" text-color="grey-4" icon="las la-question-circle" />
                             </template>
                             <template v-else>{{ col.value }}</template>
                         </q-td>
@@ -95,11 +93,11 @@ import {Entry} from "../../../api/api_types";
 import {dateHelper} from "../../../utils/date_helper";
 import ListFilter from './Entry.List.Filter.vue';
 import {watch, computed, ref} from 'vue';
-import EntryCard from './Entry.Profile.Card.vue';
+import EntryCard from './Entry.Card.vue';
 
 // initialize
 const store = useEntryListStore();
-const rowDoubleClick = (e: any, row: Entry) => {
+const rowDoubleClick = (row: Entry) => {
     emit('row-dblclick', row);
 }
 const emit = defineEmits<{

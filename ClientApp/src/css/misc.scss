@@ -62,3 +62,10 @@
         //background: none;
     }
 }
+
+.q-badge {
+    &.q-badge--size-normal {
+        font-size: $button-font-size;
+        line-height: 1.2em;
+    }
+}

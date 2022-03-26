@@ -34,7 +34,7 @@ public class EntryRepository : BaseRepository<Entry>
         {
             query = query.OrderBy(listRequest.OrderBy, listRequest.OrderByDesc ?? false);
         }
-        
+
         query = query.OrderByDescending(x => x.UpdatedAt);
 
         query = PaginateQuery(query, listRequest);

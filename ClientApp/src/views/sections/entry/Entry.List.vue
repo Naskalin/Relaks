@@ -11,7 +11,7 @@
                       @submit="createEntry"
                       title="Добавление объединения"/>
             
-    <entry-list-table @row-dbl-click="rowDoubleClick"></entry-list-table>
+    <entry-list-table @row-dblclick="rowDoubleClick"></entry-list-table>
 <!--    <div class="row">-->
 <!--        <div class="col-3" style="min-width: 320px">-->
 <!--            <q-card class="q-pa-md">-->

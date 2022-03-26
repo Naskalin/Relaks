@@ -1,10 +1,10 @@
 ﻿<template>
     <div class="row">
         <div class="col-3" style="min-width: 320px">
-            <profile-card v-if="profileStore.entry"
+            <entry-card v-if="profileStore.entry"
                           :with-edit="true"
                           @update-entry="reloadEntry"
-                          :entry="profileStore.entry"></profile-card>
+                          :entry="profileStore.entry"></entry-card>
         </div>
         <div class="col">
             <div class="q-ml-lg">
@@ -26,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import ProfileCard from "./Entry.Profile.Card.vue";
+import EntryCard from "./Entry.Card.vue";
 
 import {onMounted} from "vue";
 import {useRoute} from 'vue-router'
