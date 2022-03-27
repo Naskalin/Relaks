@@ -2,6 +2,6 @@
 
 import EntryContacts from './Entry.Contacts.vue';
 
-export const entryContactsRoutes: RouteRecordRaw[] = [
+export const entryTextRoutes: RouteRecordRaw[] = [
     {component: EntryContacts, path: 'contacts', name: 'entry-contacts'}
 ]

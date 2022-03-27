@@ -4,7 +4,7 @@ import ListEntry from './Entry.List.vue';
 import Profile from './Entry.Profile.vue';
 
 import {entryNoteRoutes} from "../entry_note/routes";
-import {entryContactsRoutes} from "../entry_contacts/routes";
+import {entryTextRoutes} from "../entry_text/routes";
 
 export const entryRoutes: RouteRecordRaw[] = [
     {path: '/entries', component: ListEntry, name: 'entry-list'},
@@ -15,7 +15,7 @@ export const entryRoutes: RouteRecordRaw[] = [
         },
         children: [
             ...entryNoteRoutes,
-            ...entryContactsRoutes,
+            ...entryTextRoutes,
         ]
     }
 ];

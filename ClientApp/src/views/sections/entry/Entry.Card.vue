@@ -68,22 +68,24 @@
         
         <card-contacts :entry-id="entry.id"></card-contacts>
 
-        <q-card-section>
-            <div class="row">
-                <div v-if="entry.startAt" class="col text-left">
-                    <small class="profile-card__caption">{{ entryMessages.startAt[entry.entryType] }}</small>
-                    <br>
-                    {{ dateHelper.utcFormat(entry.startAt) }}
+        <template v-if="entry.startAt || entry.endAt">
+            <q-card-section>
+                <div class="row">
+                    <div v-if="entry.startAt" class="col text-left">
+                        <small class="profile-card__caption">{{ entryMessages.startAt[entry.entryType] }}</small>
+                        <br>
+                        {{ dateHelper.utcFormat(entry.startAt) }}
+                    </div>
+                    <div v-if="entry.endAt" class="col text-right">
+                        <small class="profile-card__caption">{{ entryMessages.endAt[entry.entryType] }}</small>
+                        <br>
+                        {{ dateHelper.utcFormat(entry.endAt) }}
+                    </div>
                 </div>
-                <div v-if="entry.endAt" class="col text-right">
-                    <small class="profile-card__caption">{{ entryMessages.endAt[entry.entryType] }}</small>
-                    <br>
-                    {{ dateHelper.utcFormat(entry.endAt) }}
-                </div>
-            </div>
-        </q-card-section>
+            </q-card-section>
 
-        <q-separator/>
+            <q-separator/>
+        </template>
 
         <q-card-section>
             <small class="profile-card__caption q-mr-xs">{{ actualMessages.actualStartAt.name }}</small>

@@ -1,5 +1,5 @@
 ﻿<template>
-    <q-tooltip class="actual-tooltip" anchor="center right" self="center left" :offset="[5, 10]" size="2rem">
+    <arrow-tooltip direction="right">
         <slot></slot>
         
         <div>
@@ -37,13 +37,14 @@
                 <span class="text-grey-5">{{ dateHelper.utcFormat(entryText.updatedAt) }}</span>
             </div>
         </div>
-    </q-tooltip>
+    </arrow-tooltip>
 </template>
 
 <script setup lang="ts">
 import {EntryText} from "../../api/api_types";
 import {actualMessages} from "../../localize/messages";
 import {dateHelper} from "../../utils/date_helper";
+import ArrowTooltip from '../components/Arrow.Tooltip.vue';
 
 defineProps<{
     entryText: EntryText
@@ -52,7 +53,21 @@ defineProps<{
 
 <style lang="scss">
 .actual-tooltip {
-    max-width: 400px;
+    position: relative;
+    &:before {
+        right: 100%;
+        top: 50%;
+        content: "";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+        border: 30px solid rgba(0, 0, 0, 0);
+        border-right-color: #000000;
+        margin-top: -30px;
+    }
+    min-width: 300px;
+    max-width: 500px;
     background: $secondary;
     font-size: .9rem;
     .q-separator {

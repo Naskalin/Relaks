@@ -16,6 +16,4 @@ import {useEntryContactsStore} from "../../../store/entry_contacts/entry_cotacts
 
 const route = useRoute();
 const store = useEntryContactsStore();
-
-console.log(route.params.entryId)
 </script>

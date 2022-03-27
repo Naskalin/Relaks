@@ -63,6 +63,14 @@
     }
 }
 
+.link {
+    color: $themeBlack;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 1px;
+    border-bottom: 3px solid $primary;
+}
+
 .q-badge {
     &.q-badge--size-normal {
         font-size: $button-font-size;
