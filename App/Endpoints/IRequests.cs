@@ -13,7 +13,7 @@ public interface ISearchableRequest
     public string? Search { get; set; }
 }
 
-public interface ISortableRequest
+public interface IOrderableRequest
 {
     public string? OrderBy { get; set; }
     public bool? OrderByDesc { get; set; }

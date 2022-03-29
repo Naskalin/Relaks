@@ -2,7 +2,7 @@
 
 namespace App.Endpoints;
 
-public class BaseListRequest : IPaginableRequest, ISearchableRequest, ISortableRequest
+public class BaseListRequest : IPaginableRequest, ISearchableRequest, IOrderableRequest
 {
     [FromQuery]
     public int? Page { get; set; }

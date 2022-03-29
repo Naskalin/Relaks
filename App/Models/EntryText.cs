@@ -6,7 +6,7 @@ public class EntryText : BaseEntity, ITimestampResource, IActualResource
     public Guid EntryId { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
-    public string About { get; set; } = null!;
+    public string Title { get; set; } = null!;
     public string Val { get; set; } = null!;
     public TextTypeEnum TextType { get; set; }
     

@@ -1,6 +1,6 @@
 ﻿<template>
     <div class="row q-col-gutter-md">
-        <div class="col-3 q-gutter-y-md" style="min-width: 320px">
+        <div class="col-3 q-gutter-y-md">
             <q-card class="q-pa-md">
                 <list-filter v-model="store.listRequest"></list-filter>
             </q-card>
@@ -21,21 +21,21 @@
                 virtual-scroll
                 :rows-per-page-options="[0]"
                 @virtual-scroll="getEntries"
+                @request="onTableRequest"
+                binary-state-sort
             >
                 <template v-slot:header-cell-name="props">
-                    <q-th>{{entryMessages.name[store.listRequest.entryType]}}</q-th>
+                    <q-th :props="props">{{entryMessages.name[store.listRequest.entryType]}}</q-th>
                 </template>
                 <template v-slot:header-cell-startAt="props">
-                    <q-th>{{entryMessages.startAt[store.listRequest.entryType]}}</q-th>
+                    <q-th :props="props">{{entryMessages.startAt[store.listRequest.entryType]}}</q-th>
                 </template>
                 <template v-slot:header-cell-endAt="props">
-                    <q-th>{{entryMessages.endAt[store.listRequest.entryType]}}</q-th>
+                    <q-th :props="props">{{entryMessages.endAt[store.listRequest.entryType]}}</q-th>
                 </template>
-<!--                <template v-slot:body-cell-avatar>-->
-<!--                    <q-td>-->
-<!--                        <q-avatar>-->
-<!--                            <img src="https://via.placeholder.com/100">-->
-<!--                        </q-avatar>-->
+<!--                <template v-slot:body-cell-avatar="props">-->
+<!--                    <q-td :props="props">-->
+<!--                        <q-avatar size="50px" font-size="34px" color="grey-5" text-color="grey-4" icon="las la-question-circle" />-->
 <!--                    </q-td>-->
 <!--                </template>-->
                 <template v-slot:body="props">
@@ -45,9 +45,6 @@
                           }"
                           @dblclick="rowDoubleClick(props.row)"
                           @click="previewEntry = props.row">
-<!--                        rowDoubleClick-->
-<!--                          @mouseleave="rowMouseLeave" -->
-<!--                          @mouseover="rowMouseOver" -->
                         <q-td
                             v-for="col in props.cols"
                             :key="col.name"
@@ -60,27 +57,9 @@
                         </q-td>
                     </q-tr>
                 </template>
-                <!--                        <template v-slot:body="props">-->
-                <!--                          <q-tr :props="props" :key="`m_${props.row.index}`" @click.native="onRowClick(props.row.id)">-->
-                <!--                            <q-td-->
-                <!--                                v-for="col in props.cols"-->
-                <!--                                :key="col.name"-->
-                <!--                                :props="props"-->
-                <!--                            >-->
-                <!--                              <template v-if="col.name === 'id'">{{ props.rowIndex + 1 }}</template>-->
-                <!--                              <template v-else-if="col.name === 'entryType'">{{ entryTypeTrans[col.value] || '?' }}</template>-->
-                <!--                              <template v-else>{{ col.value }}</template>-->
-                <!--                            </q-td>-->
-                <!--                          </q-tr>-->
-                <!--                        </template>-->
-
-<!--                <template v-slot:top-right="props">-->
-<!--                    <q-btn icon="las la-plus-circle"-->
-<!--                           @click="addEntryStore.isShowModal = true"-->
-<!--                           label="Добавить"-->
-<!--                           color="primary"-->
-<!--                    />-->
-<!--                </template>-->
+                <template v-slot:top-right="props">
+                    <slot name="top-right"></slot>
+                </template>
             </q-table>
         </div>
     </div>
@@ -92,7 +71,7 @@ import {entryMessages, actualMessages} from "../../../localize/messages";
 import {Entry} from "../../../api/api_types";
 import {dateHelper} from "../../../utils/date_helper";
 import ListFilter from './Entry.List.Filter.vue';
-import {watch, computed, ref} from 'vue';
+import {watch, ref} from 'vue';
 import EntryCard from './Entry.Card.vue';
 
 // initialize
@@ -103,35 +82,50 @@ const rowDoubleClick = (row: Entry) => {
 const emit = defineEmits<{
     (e: 'row-dblclick', val: Entry): void,
 }>();
+
 const previewEntry = ref<Entry | null>(null);
 const columns = [
     // {name: 'id', label: '#', field: 'id'},
     // {name: 'entryType', label: 'Тип', field: (row: Entry) => entryMessages.entryType.names[row.entryType]},
     {name: 'avatar', label: 'Аватар', field: 'id'},
-    {name: 'name', label: 'name', field: 'name'},
-    {name: 'reputation', label: entryMessages.reputation, field: 'reputation', style: 'width: 70px'},
+    {name: 'name', label: 'name', field: 'name', sortable: true},
+    {name: 'reputation', label: entryMessages.reputation, field: 'reputation', style: 'width: 70px', sortable: true},
     {
         name: 'startAt',
+        sortable: true,
         label: entryMessages.startAt[store.listRequest.entryType],
         field: (row: Entry) => row.startAt ? dateHelper.utcFormat(row.startAt) : '',
     },
     {
         name: 'endAt',
+        sortable: true,
         label: entryMessages.endAt[store.listRequest.entryType],
         field: (row: Entry) => row.endAt ? dateHelper.utcFormat(row.endAt) : '',
     },
     {
         name: 'actualStartAt',
+        sortable: true,
         label: actualMessages.actualStartAt.name,
         field: (row: Entry) => row.actualStartAt ? dateHelper.utcFormat(row.actualStartAt) : '',
     },
     {
         name: 'actualEndAt',
+        sortable: true,
         label: actualMessages.actualEndAt.name,
         field: (row: Entry) => row.actualEndAt ? dateHelper.utcFormat(row.actualEndAt) : '',
     },
-    // {name: 'actualStartAtReason', label: actualMessages.actualStartAtReason.name, field: 'actualStartAtReason'},
-    // {name: 'actualEndAtReason', label: actualMessages.actualEndAtReason.name, field: 'actualEndAtReason'},
+    {
+        name: 'updatedAt',
+        sortable: true,
+        label: entryMessages.updatedAt,
+        field: (row: Entry) => dateHelper.utcFormat(row.updatedAt),
+    },
+    {
+        name: 'createdAt',
+        sortable: true,
+        label: entryMessages.createdAt,
+        field: (row: Entry) => dateHelper.utcFormat(row.createdAt),
+    },
 ]
 
 // get entries
@@ -146,20 +140,16 @@ const getEntries = async ({to}: { to: number }) => {
         await store.getEntries();
     }
 }
+const onTableRequest = (e: any) => {
+    console.log(e);
+    // console.log(a);
+    // console.log(b);
+}
 watch([() => store.listRequest.search, () => store.listRequest.entryType], async () => {
     store.listRequest.page = 1;
     store.isEnd = false;
     await getEntries({to: -1})
 })
-
-// mouse over card
-
-const rowMouseOver = (e: any, row: any) => {
-    console.log(e)
-}
-const rowMouseLeave = (e: any) => {
-    console.log(e)
-}
 </script>
 
 <style lang="scss">
@@ -176,7 +166,6 @@ const rowMouseLeave = (e: any) => {
         opacity: 1;
         z-index: 1;
         background-color: $bgGreyDarken1;
-        //color: $bgColor;
     }
 
     thead tr:last-child > * {

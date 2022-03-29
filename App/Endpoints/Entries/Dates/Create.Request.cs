@@ -16,7 +16,7 @@ public class CreateRequest
 
 public class EntryDateDetails : IActualResource
 {
-    public string About { get; set; } = null!;
+    public string Title { get; set; } = null!;
     public DateTime Val { get; set; }
     public DateTime ActualStartAt { get; set; }
     public DateTime? ActualEndAt { get; set; }

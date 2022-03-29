@@ -1,58 +1,16 @@
 ﻿<template>
     <q-card class="profile-card">
         <q-card-section class="q-pb-none text-center">
-            <div class="profile-card__edit">
-                <q-btn round v-if="withEdit" @click="isShowEditModal = true" color="primary" icon="las la-edit">
-                    <q-tooltip anchor="center left" self="center right" :offset="[5, 10]" class="bg-secondary">
-                        Изменить объединение
-                    </q-tooltip>
-                </q-btn>
-            </div>
-            <q-avatar size="180px">
-                <img
-                    src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80">
-            </q-avatar>
-            
-<!--            <div class="row">-->
-<!--                <div class="col-auto">-->
-<!--&lt;!&ndash;                    <div>&ndash;&gt;-->
-<!--&lt;!&ndash;                        <q-btn round v-if="withEdit" color="primary" icon="las la-phone">&ndash;&gt;-->
-<!--&lt;!&ndash;                            <q-tooltip anchor="center right" self="center left" :offset="[5, 10]" class="bg-secondary">&ndash;&gt;-->
-<!--&lt;!&ndash;                                Добавить телефон&ndash;&gt;-->
-<!--&lt;!&ndash;                            </q-tooltip>&ndash;&gt;-->
-<!--&lt;!&ndash;                        </q-btn>&ndash;&gt;-->
-<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
-<!--&lt;!&ndash;                    <div>&ndash;&gt;-->
-<!--&lt;!&ndash;                        <q-btn round v-if="withEdit" color="primary" icon="las la-envelope">&ndash;&gt;-->
-<!--&lt;!&ndash;                            <q-tooltip anchor="center right" self="center left" :offset="[5, 10]" class="bg-secondary">&ndash;&gt;-->
-<!--&lt;!&ndash;                                Добавить e-mail&ndash;&gt;-->
-<!--&lt;!&ndash;                            </q-tooltip>&ndash;&gt;-->
-<!--&lt;!&ndash;                        </q-btn>&ndash;&gt;-->
-<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
-<!--&lt;!&ndash;                    <div>&ndash;&gt;-->
-<!--&lt;!&ndash;                        <q-btn round v-if="withEdit" color="primary" icon="las la-link">&ndash;&gt;-->
-<!--&lt;!&ndash;                            <q-tooltip anchor="center right" self="center left" :offset="[5, 10]" class="bg-secondary">&ndash;&gt;-->
-<!--&lt;!&ndash;                                Добавить ссылку&ndash;&gt;-->
-<!--&lt;!&ndash;                            </q-tooltip>&ndash;&gt;-->
-<!--&lt;!&ndash;                        </q-btn>&ndash;&gt;-->
-<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
-<!--                </div>-->
-<!--                <div class="col text-center">-->
-<!--                 -->
-<!--                </div>-->
-<!--                <div class="col q-gutter-sm text-right">-->
-<!--                 -->
-<!--                    <div>-->
-<!--                        <q-btn round v-if="withEdit" color="primary" icon="las la-link">-->
-<!--                            <q-tooltip anchor="center right" self="center left" :offset="[5, 10]" class="bg-secondary">-->
-<!--                                Изменить контакты-->
-<!--                            </q-tooltip>-->
-<!--                        </q-btn>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
+            <!--            <div class="profile-card__edit">-->
+            <!--            -->
+            <!--            </div>-->
+            <!--            <q-avatar size="180px">-->
+            <!--                <img-->
+            <!--                    src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80">-->
+            <!--            </q-avatar>-->
+            <q-avatar size="180px" font-size="150px" color="grey-5" text-color="grey-4" icon="las la-question-circle"/>
         </q-card-section>
-        
+
         <q-card-section class="q-pb-none">
             <div class="text-h6 text-center">{{ entry.name }}</div>
             <div v-if="entry.description" class="text-subtitle2 text-center">{{ entry.description }}</div>
@@ -61,11 +19,26 @@
                 <strong>{{ entry.reputation }}</strong>
                 <q-icon name="star" size="1.5em"/>
             </div>
-            <div class="text-center">
-                <q-badge color="secondary">{{ entryMessages.entryType.names[entry.entryType] }}</q-badge>
-            </div>
         </q-card-section>
-        
+
+        <q-card-section v-if="withEdit" class="q-gutter-x-sm text-center">
+            <q-btn round @click="isShowEditModal = true" color="primary" icon="las la-edit">
+                <q-tooltip anchor="center right" self="center left" :offset="[5, 10]" class="bg-secondary"
+                           style="font-size: .9em">
+                    Изменить объединение
+                </q-tooltip>
+            </q-btn>
+            <q-btn round @click="showCreateEntryTextModal('Phone')" color="primary" icon="las la-phone">
+                <arrow-tooltip direction="top">Добавить телефон</arrow-tooltip>
+            </q-btn>
+            <q-btn round @click="showCreateEntryTextModal('Email')" color="primary" icon="las la-envelope">
+                <arrow-tooltip direction="top">Добавить e-mail</arrow-tooltip>
+            </q-btn>
+            <q-btn round @click="showCreateEntryTextModal('Url')" color="primary" icon="las la-link">
+                <arrow-tooltip direction="top">Добавить ссылку</arrow-tooltip>
+            </q-btn>
+        </q-card-section>
+
         <card-contacts :entry-id="entry.id"></card-contacts>
 
         <template v-if="entry.startAt || entry.endAt">
@@ -138,26 +111,35 @@
                       v-model:is-show="isShowEditModal"
                       @submit="updateEntry"
     />
+    <entry-text-form-modal
+        :title="'Добавление: ' + entryTextMessages.val.names[entryTextCreateStore.model.textType]"
+        :is-create="true"
+        :is-loading="entryTextCreateStore.isLoading"
+        v-model:is-show="isShowCreateEntryTextModal"
+        v-model="entryTextCreateStore.model"
+        btn-title="Добавить"
+        @submit="createEntryText"
+    />
 </template>
 
 <script setup lang="ts">
 import CardContacts from './Entry.Card.Contacts.vue';
-// import {useEntryProfileStore} from "../../../store/entry/entry.profile.store";
-// import EntryFormContactsModal from './Entry.Form.Contacts.Modal.vue';
+import ArrowTooltip from '../../components/Arrow.Tooltip.vue';
+import {useEntryTextCreateStore} from "../../../store/entry_text/entryText.create.store";
 import {withDefaults, ref, watch} from "vue";
-import {entryMessages, actualMessages} from "../../../localize/messages";
+import {entryMessages, actualMessages, entryTextMessages} from "../../../localize/messages";
 import {Entry} from "../../../api/api_types";
 import {dateHelper} from "../../../utils/date_helper";
 import EntryFormModal from './Entry.Form.Modal.vue';
 import {useEntryEditStore} from "../../../store/entry/entry.edit.store";
 import {entryMappers} from "../../../api/api_mappers";
 import {useRoute} from "vue-router";
+import {EntryTextType} from "../../../api/api_types";
+import EntryTextFormModal from '../entry_text/EntryText.Form.Modal.vue';
+import {useEntryContactsStore} from "../../../store/entry_contacts/entry_cotacts_store";
 
 const editStore = useEntryEditStore();
-// const profileStore = useEntryProfileStore();
-
 const isShowEditModal = ref(false);
-// const entry = computed((): Entry | null => profileStore.entry);
 const props = withDefaults(defineProps<{
     entry: Entry,
     withEdit?: boolean,
@@ -177,25 +159,40 @@ const emit = defineEmits<{
 }>()
 
 const route = useRoute();
+
+const entryId = route.params.entryId as string;
 const updateEntry = async () => {
-    await editStore.updateEntry(route.params.entryId as string);
+    await editStore.updateEntry(entryId);
     editStore.$reset();
     isShowEditModal.value = false;
 
     emit('update-entry', props.entry.id);
 }
+
+// Добавление entryText email/phone/url
+const entryTextCreateStore = useEntryTextCreateStore();
+const isShowCreateEntryTextModal = ref(false);
+const showCreateEntryTextModal = (textType: EntryTextType) => {
+    if (props.withEdit) {
+        entryTextCreateStore.model.actualStartAt = new Date().toISOString();
+        entryTextCreateStore.model.textType = textType;
+        isShowCreateEntryTextModal.value = true
+    }
+}
+const entryContactsStore = useEntryContactsStore();
+const createEntryText = async () => {
+    await entryTextCreateStore.create(entryId);
+    await entryContactsStore.getAllContacts(entryId);
+    isShowCreateEntryTextModal.value = false;
+    entryTextCreateStore.$reset();
+}
 </script>
 
 <style lang="scss">
-    .profile-card {
-        &__edit {
-            position: absolute;
-            right: 10px;
-            top: 10px;
-        }
-        &__caption {
-            color: $grey-7;
-            text-transform: uppercase;
-        }
+.profile-card {
+    &__caption {
+        color: $grey-7;
+        text-transform: uppercase;
     }
+}
 </style>

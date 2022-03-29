@@ -16,7 +16,7 @@ public class CreateRequest
 
 public class EntryTextDetails : IActualResource
 {
-    public string About { get; set; } = null!;
+    public string Title { get; set; } = null!;
     public string Val { get; set; } = null!;
     public string TextType { get; set; } = null!;
     

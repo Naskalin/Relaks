@@ -10,7 +10,7 @@ public static class EntryTextMapper
     {
         Enum.TryParse(req.TextType, true, out TextTypeEnum textTypeEnum);
         entryText.TextType = textTypeEnum;
-        entryText.About = req.About.Trim();
+        entryText.Title = req.Title.Trim();
 
         entryText.ActualStartAt = req.ActualStartAt;
         entryText.ActualStartAtReason = req.ActualStartAtReason.Trim();

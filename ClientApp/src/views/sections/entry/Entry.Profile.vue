@@ -1,6 +1,6 @@
 ﻿<template>
     <div class="row">
-        <div class="col-3" style="min-width: 320px">
+        <div class="col-3" style="min-width: 350px">
             <entry-card v-if="profileStore.entry"
                           :with-edit="true"
                           @update-entry="reloadEntry"

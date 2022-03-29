@@ -20,7 +20,7 @@ public class EntryDateRepository : BaseRepository<EntryDate>
 
         if (listRequest.Search != null)
         {
-            query = query.Where(x => EF.Functions.Like(x.About, "%" + listRequest.Search + "%"));
+            query = query.Where(x => EF.Functions.Like(x.Title, "%" + listRequest.Search + "%"));
         }
 
         if (listRequest.OrderBy != null)

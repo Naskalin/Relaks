@@ -7,7 +7,7 @@ public static class EntryDateMapper
 {
     private static void MapToCreateDetails(EntryDateDetails req, EntryDate entryDate)
     {
-        entryDate.About = req.About.Trim();
+        entryDate.Title = req.Title.Trim();
         entryDate.Val = req.Val;
         
         entryDate.ActualStartAt = req.ActualStartAt;

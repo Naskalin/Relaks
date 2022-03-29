@@ -3,6 +3,7 @@
     <!--  {{ entryCreateStore.model }}-->
 <!--    {{ createStore.$state }}-->
 <!--    <button @click="isShowCreateForm = true">add</button>-->
+<!--    <br>-->
     <entry-form-modal v-model:is-show="isShowCreateForm"
                       v-model="createStore.model"
                       :is-loading="createStore.isLoading"
@@ -10,8 +11,18 @@
                       btn-title="Добавить"
                       @submit="createEntry"
                       title="Добавление объединения"/>
-            
-    <entry-list-table @row-dblclick="rowDoubleClick"></entry-list-table>
+    
+    
+        
+    <entry-list-table @row-dblclick="rowDoubleClick">
+        <template v-slot:top-right>
+            <q-btn icon="las la-plus-circle"
+                   @click="isShowCreateForm = true"
+                   label="Добавить"
+                   color="primary"
+            />
+        </template>
+    </entry-list-table>
 <!--    <div class="row">-->
 <!--        <div class="col-3" style="min-width: 320px">-->
 <!--            <q-card class="q-pa-md">-->

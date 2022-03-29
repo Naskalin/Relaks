@@ -11,7 +11,7 @@ import {phoneHelper, PhoneType} from "../../utils/phone_helper";
 import {computed} from "vue";
 
 const props = defineProps<{
-    phone: string | PhoneType
+    phone: PhoneType | string
 }>()
 
 const p = computed((): PhoneType => {
@@ -26,9 +26,6 @@ const p = computed((): PhoneType => {
 
 <style lang="scss">
 .phone-show {
-    display: inline-flex;
-    justify-items: center;
-
     .fi {
         margin-right: .5rem;
         font-size: 1rem;

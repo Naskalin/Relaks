@@ -2,6 +2,10 @@
     margin-top: 0
 }
 
+body {
+    overflow-y: scroll;
+}
+
 .profile-tab {
 
 }
@@ -67,7 +71,7 @@
     color: $themeBlack;
     text-decoration: none;
     position: relative;
-    padding-bottom: 1px;
+    //padding-bottom: 1px;
     border-bottom: 3px solid $primary;
 }
 

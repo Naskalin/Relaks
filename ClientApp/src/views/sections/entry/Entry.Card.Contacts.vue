@@ -1,68 +1,96 @@
 ﻿<template>
     <template v-if="store.phones.length">
-        <q-card-section class="text-center q-gutter-y-sm">
-            <div v-for="eText in store.phones">
-                <entry-text-phone :entry-text="eText" :key="eText.id"></entry-text-phone>
-            </div>
+        <q-card-section class="q-gutter-y-sm">
+            <q-list bordered separator>
+                <q-item v-for="eText in store.phones" :key="eText.id">
+                    <q-item-section>
+                        <q-item-label>
+                            <phone :phone="eText.val"></phone>
+                        </q-item-label>
+                        <q-item-label v-if="eText.title" :lines="2" class="text-grey-9">{{ eText.title }}</q-item-label>
+                        <actual-timestamp-tooltip :entry-text="eText">
+                            <phone :phone="eText.val"></phone>
+
+                            <q-separator></q-separator>
+
+                            <div v-if="eText.title">
+                                {{ eText.title }}
+                                <q-separator></q-separator>
+                            </div>
+                        </actual-timestamp-tooltip>
+                    </q-item-section>
+                </q-item>
+            </q-list>
         </q-card-section>
         <q-separator></q-separator>
     </template>
     <template v-if="store.emails.length">
-        <q-card-section class="text-center q-gutter-y-sm">
-            <div v-for="eText in store.emails">
-                <entry-text-email :entry-text="eText" :key="eText.id"></entry-text-email>
-            </div>
+        <q-card-section class="q-gutter-y-sm">
+            <q-list bordered separator>
+                <q-item v-for="eText in store.emails" :key="eText.id">
+                    <!--                <entry-text-email :entry-text="eText" :key="eText.id"></entry-text-email>-->
+                    <q-item-section>
+                        <q-item-label>
+                            <email :email="eText.val" with-link></email>
+                        </q-item-label>
+                        <q-item-label v-if="eText.title" :lines="2" class="text-grey-9">{{ eText.title }}</q-item-label>
+                        <actual-timestamp-tooltip :entry-text="eText">
+                            <email :email="eText.val" icon-color="grey-5"></email>
+
+                            <q-separator></q-separator>
+
+                            <div v-if="eText.title">
+                                {{ eText.title }}
+                                <q-separator></q-separator>
+                            </div>
+                        </actual-timestamp-tooltip>
+                    </q-item-section>
+                </q-item>
+            </q-list>
         </q-card-section>
         <q-separator></q-separator>
     </template>
     <template v-if="store.urls.length">
-        <q-card-section class="text-center q-gutter-y-sm">
-            <div v-for="eText in store.urls">
-                <entry-text-url :entry-text="eText" :key="eText.id"></entry-text-url>
-            </div>
+        <q-card-section class="q-gutter-y-sm">
+            <q-list bordered separator>
+                <q-item v-for="eText in store.urls" :key="eText.id">
+                    <q-item-section>
+                        <q-item-label>
+                            <url :url="eText.val" with-link></url>
+                        </q-item-label>
+                        <q-item-label v-if="eText.title" :lines="2" class="text-grey-9">{{ eText.title }}</q-item-label>
+                        <actual-timestamp-tooltip :entry-text="eText">
+                            <url :url="eText.val" icon-color="grey-5"></url>
+
+                            <q-separator></q-separator>
+
+                            <div v-if="eText.title">
+                                {{ eText.title }}
+                                <q-separator></q-separator>
+                            </div>
+                        </actual-timestamp-tooltip>
+                    </q-item-section>
+                </q-item>
+            </q-list>
         </q-card-section>
         <q-separator></q-separator>
     </template>
-    <!--    <template v-if="emails !== ''">-->
-    <!--        <q-card-section>{{emails}}</q-card-section>-->
-    <!--        <q-separator></q-separator>-->
-    <!--    </template>-->
-    <!--    <template v-if="urls !== ''">-->
-    <!--        <q-card-section>{{urls}}</q-card-section>-->
-    <!--        <q-separator></q-separator>-->
-    <!--    </template>-->
 </template>
 
 <script setup lang="ts">
-import {onMounted, computed} from "vue";
+import {watch} from "vue";
 import {useEntryContactsStore} from "../../../store/entry_contacts/entry_cotacts_store";
-import EntryTextPhone from '../../sections/entry_text/EntryText.Phone.vue';
-import EntryTextEmail from '../../sections/entry_text/EntryText.Email.vue';
-import EntryTextUrl from '../../sections/entry_text/EntryText.Url.vue';
-// import {phoneHelper, Phone} from "../../../utils/phone_helper";
+import Phone from '../../components/Phone.vue';
+import Email from '../../components/Email.vue';
+import Url from '../../components/Url.vue';
+import ActualTimestampTooltip from '../../components/Actual.Timestamp.Tooltip.vue';
 
 const props = defineProps<{
     entryId: string
 }>();
 const store = useEntryContactsStore();
-store.entryId = props.entryId;
 
-onMounted(async () => {
-    await store.getEmails();
-    await store.getPhones();
-    await store.getUrls();
-})
-
-// const phones = computed(() => {
-//     return store.phones.map(eText => {
-//         const phone = phoneHelper.toPhone(eText.val);
-//         return phone.number
-//     }).join(', ');
-// })
-// const emails = computed(() => {
-//     return store.emails.map(eText => eText.val).join(', ');
-// })
-// const urls = computed(() => {
-//     return store.urls.map(eText => eText.val).join(', ');
-// })
+watch(() => props.entryId, async () => {
+    await store.getAllContacts(props.entryId);
+}, {immediate: true})
 </script>

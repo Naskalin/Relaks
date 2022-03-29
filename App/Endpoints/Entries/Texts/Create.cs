@@ -55,8 +55,11 @@ public class Create : EndpointBaseAsync
             UpdatedAt = DateTime.UtcNow,
         };
         request.MapTo(entryText);
-
+        
         await _entryTextRepository.CreateAsync(entryText, cancellationToken);
+        
+        entry.UpdatedAt = DateTime.UtcNow;
+        await _entryRepository.UpdateAsync(entry, cancellationToken);
         return CreatedAtRoute("Entries_Texts_Get", new {EntryId = entryText.EntryId, EntryTextId = entryText.Id}, entryText);
     }
 }

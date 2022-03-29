@@ -6,7 +6,7 @@
                   toggle-color="primary"
                   :options="entryMessages.entryType.selectOptions"
     />
-    <q-badge v-else color="secondary">{{ entryMessages.entryType.names[model.entryType] }}</q-badge>
+    <q-chip v-else color="grey-5">{{ entryMessages.entryType.names[model.entryType] }}</q-chip>
 
     <q-input color="secondary" v-model="model.name" required="required" :label="entryMessages.name[model.entryType]"/>
 

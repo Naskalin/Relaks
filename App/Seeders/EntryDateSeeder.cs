@@ -24,7 +24,7 @@ public class EntryDateSeeder : DatabaseSeeder
                 {
                     var entryDate = new EntryDate()
                     {
-                        About = "Первая встреча",
+                        Title = "Первая встреча",
                         Val = DateTime.Parse(dates[random.Next(dates.Length)]),
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow,
@@ -46,7 +46,7 @@ public class EntryDateSeeder : DatabaseSeeder
 
         var eDate = new EntryDate()
         {
-            About = "Birthday of creator",
+            Title = "Birthday of creator",
             EntryId = entryId,
             Id = entryDateId,
             Val = DateTime.Parse("1988-05-04 00:00:00"),

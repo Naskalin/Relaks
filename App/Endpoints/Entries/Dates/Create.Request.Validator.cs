@@ -7,7 +7,7 @@ public class CreateRequestValidator : AbstractValidator<EntryDateDetails>
 {
     public CreateRequestValidator()
     {
-        RuleFor(x => x.About).NotNull().Length(2, 255);
+        RuleFor(x => x.Title).NotNull().Length(2, 255);
         RuleFor(x => x.Val).NotEmpty().NotEqual(default(DateTime));
 
         RuleFor(x => x.ActualStartAt).NotEmpty().NotEqual(default(DateTime));

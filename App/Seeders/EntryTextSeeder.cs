@@ -37,13 +37,13 @@ public class EntryTextSeeder : DatabaseSeeder
                 {
                     EntryId = entry.Id,
                     TextType = TextTypeEnum.Note,
-                    About = "",
+                    Title = faker.Random.ArrayElement(new []{faker.Random.Words(), ""}),
                     Val = texts[random.Next(texts.Length)],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     ActualStartAt = DateTime.UtcNow,
-                    ActualEndAtReason = "",
-                    ActualStartAtReason = ""
+                    ActualEndAtReason = faker.Random.ArrayElement(new []{faker.Random.Words(), ""}),
+                    ActualStartAtReason = faker.Random.ArrayElement(new []{faker.Random.Words(), ""}),
                 };
                 
                 Db.EntryTexts.Add(entryText);
@@ -56,12 +56,12 @@ public class EntryTextSeeder : DatabaseSeeder
                     EntryId = entry.Id,
                     TextType = TextTypeEnum.Phone,
                     Val = "RU|+7812000000" + i,
-                    About = faker.Random.Words(),
+                    Title = faker.Random.ArrayElement(new []{faker.Random.Words(), ""}),
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     ActualStartAt = DateTime.UtcNow,
-                    ActualEndAtReason = faker.Random.Words(),
-                    ActualStartAtReason = faker.Random.Words()
+                    ActualEndAtReason = faker.Random.ArrayElement(new []{faker.Random.Words(), ""}),
+                    ActualStartAtReason = faker.Random.ArrayElement(new []{faker.Random.Words(), ""})
                 };
                 
                 Db.EntryTexts.Add(textPhone);
@@ -74,12 +74,12 @@ public class EntryTextSeeder : DatabaseSeeder
                     EntryId = entry.Id,
                     TextType = TextTypeEnum.Email,
                     Val = faker.Internet.Email().ToLower(),
-                    About = faker.Random.Words(),
+                    Title = faker.Random.ArrayElement(new []{faker.Random.Words(), ""}),
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     ActualStartAt = DateTime.UtcNow,
-                    ActualEndAtReason = "",
-                    ActualStartAtReason = ""
+                    ActualEndAtReason = faker.Random.ArrayElement(new []{faker.Random.Words(), ""}),
+                    ActualStartAtReason = faker.Random.ArrayElement(new []{faker.Random.Words(), ""}),
                 };
                 
                 Db.EntryTexts.Add(textPhone);
@@ -92,7 +92,7 @@ public class EntryTextSeeder : DatabaseSeeder
                     EntryId = entry.Id,
                     TextType = TextTypeEnum.Url,
                     Val = faker.Internet.Url(),
-                    About = faker.Random.Words(),
+                    Title = faker.Random.ArrayElement(new []{faker.Random.Words(), ""}),
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     ActualStartAt = DateTime.UtcNow,
@@ -109,7 +109,7 @@ public class EntryTextSeeder : DatabaseSeeder
         
         var eText = new EntryText()
         {
-            About = "The best of the best email",
+            Title = "The best of the best email",
             EntryId = entryId,
             Id = entryTextId,
             Val = "1acco@mail.ru",
@@ -117,8 +117,8 @@ public class EntryTextSeeder : DatabaseSeeder
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             ActualStartAt = DateTime.UtcNow,
-            ActualEndAtReason = "",
-            ActualStartAtReason = ""
+            ActualEndAtReason = faker.Random.ArrayElement(new []{faker.Random.Words(), ""}),
+            ActualStartAtReason = faker.Random.ArrayElement(new []{faker.Random.Words(), ""}),
         };
 
         Db.EntryTexts.Add(eText);

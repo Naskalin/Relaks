@@ -7,7 +7,7 @@ public class EntryDate : BaseEntity, ITimestampResource, IActualResource
     
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
-    public string About { get; set; } = null!;
+    public string Title { get; set; } = null!;
     public DateTime Val { get; set; }
     
     public DateTime ActualStartAt { get; set; }

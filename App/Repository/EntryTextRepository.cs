@@ -23,7 +23,7 @@ public class EntryTextRepository : BaseRepository<EntryText>
         if (request.Search != null)
         {
             query = query.Where(x => 
-                    EF.Functions.Like(x.About, "%" + request.Search + "%")
+                    EF.Functions.Like(x.Title, "%" + request.Search + "%")
                     || EF.Functions.Like(x.Val, "%" + request.Search + "%")
                     )
                 ;

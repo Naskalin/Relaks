@@ -5,6 +5,12 @@ const entryTypeNames = {
     Company: 'Компания',
     Meet: 'Встреча',
 };
+const entryTextTypes = {
+    Phone: 'Телефон',
+    Email: 'E-mail',
+    Url: 'Ссылка',
+    Note: 'Заметка',
+}
 
 export const entryMessages = {
     name: {
@@ -29,7 +35,7 @@ export const entryMessages = {
     profile: {
         tabs: {
             'entry-note-list': 'Заметки',
-            'entry-contacts': 'Контакты',
+            'entry-contact-list': 'Контакты',
             'entry-file-list': 'Файлы',
             // dates: 'Даты',
             // kinship: 'Родство',
@@ -46,7 +52,17 @@ export const entryMessages = {
         Company: 'Дата ликвидации',
         Meet: 'Дата окончания'
     },
-    reputation: 'Репутация'
+    reputation: 'Репутация',
+    createdAt: 'Создано',
+    updatedAt: 'Обновлено'
+}
+
+export const entryTextMessages = {
+    title: 'Название',
+    val: {
+        names: entryTextTypes,
+        selectOptions: selectHelper.toSelectOptions(entryTextTypes),
+    }
 }
 
 export const actualMessages = {

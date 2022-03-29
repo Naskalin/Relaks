@@ -9,7 +9,7 @@ public class CreateRequestValidator : AbstractValidator<EntryTextDetails>
 {
     public CreateRequestValidator()
     {
-        RuleFor(x => x.About).NotNull().Length(0, 255);
+        RuleFor(x => x.Title).NotNull().Length(0, 255);
         RuleFor(x => x.TextType).IsEnumName(typeof(TextTypeEnum), false);
 
         RuleFor(x => x.ActualStartAt).NotEmpty().NotEqual(default(DateTime));
