@@ -5,7 +5,7 @@
             @update:model-value="onSelectCountry"
             use-input
             input-debounce="0"
-            label="Регион"
+            label="Регион телефона"
             :options="selectOptions"
             @filter="filterFn"
             style="width: 150px"
@@ -21,14 +21,14 @@
             <template v-slot:selected>
                 <div v-if="country">
                     <span class="q-mr-sm fi" :class="'fi-' + country.toLowerCase()"></span>
-<!--                    <span class="text-grey-8">+{{ countries[country].phone }} | {{country}}</span>-->
+                    <!--                    <span class="text-grey-8">+{{ countries[country].phone }} | {{country}}</span>-->
                     <span class="text-grey-8">{{country}}</span>
                 </div>
                 <q-badge v-else>*none*</q-badge>
             </template>
         </q-select>
 
-        <q-input style="width: 200px" :model-value="number" @update:model-value="onUpdateNumber" label="Номер"/>
+        <q-input style="width: 200px" :model-value="number" @update:model-value="onUpdateNumber" label="Номер телефона"/>
     </div>
 </template>
 

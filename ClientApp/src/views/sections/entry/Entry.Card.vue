@@ -15,7 +15,7 @@
             <div class="text-h6 text-center">{{ entry.name }}</div>
             <div v-if="entry.description" class="text-subtitle2 text-center">{{ entry.description }}</div>
             <div class="items-center flex justify-center q-gutter-x-sm">
-                <small class="profile-card__caption">{{ entryMessages.reputation }}</small>
+<!--                <small class="profile-card__caption">{{ entryMessages.reputation }}</small>-->
                 <strong>{{ entry.reputation }}</strong>
                 <q-icon name="star" size="1.5em"/>
             </div>

@@ -19,6 +19,9 @@
                             </div>
                         </actual-timestamp-tooltip>
                     </q-item-section>
+                    <q-item-section side>
+                        <q-btn icon="las la-edit" flat round color="primary" title="Изменить"/>
+                    </q-item-section>
                 </q-item>
             </q-list>
         </q-card-section>
@@ -28,7 +31,6 @@
         <q-card-section class="q-gutter-y-sm">
             <q-list bordered separator>
                 <q-item v-for="eText in store.emails" :key="eText.id">
-                    <!--                <entry-text-email :entry-text="eText" :key="eText.id"></entry-text-email>-->
                     <q-item-section>
                         <q-item-label>
                             <email :email="eText.val" with-link></email>
@@ -44,6 +46,9 @@
                                 <q-separator></q-separator>
                             </div>
                         </actual-timestamp-tooltip>
+                    </q-item-section>
+                    <q-item-section side>
+                        <q-btn icon="las la-edit" flat round color="primary"/>
                     </q-item-section>
                 </q-item>
             </q-list>
@@ -70,6 +75,9 @@
                             </div>
                         </actual-timestamp-tooltip>
                     </q-item-section>
+                    <q-item-section side>
+                        <q-btn icon="las la-edit" flat round color="primary"/>
+                    </q-item-section>
                 </q-item>
             </q-list>
         </q-card-section>
@@ -84,6 +92,7 @@ import Phone from '../../components/Phone.vue';
 import Email from '../../components/Email.vue';
 import Url from '../../components/Url.vue';
 import ActualTimestampTooltip from '../../components/Actual.Timestamp.Tooltip.vue';
+import ArrowTooltip from '../../components/Arrow.Tooltip.vue';
 
 const props = defineProps<{
     entryId: string
