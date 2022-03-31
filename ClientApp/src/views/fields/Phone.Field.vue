@@ -1,92 +1,110 @@
 ﻿<template>
+    <div class="flex q-gutter-x-md">
+        <q-select
+            :model-value="country"
+            @update:model-value="onSelectCountry"
+            use-input
+            input-debounce="0"
+            label="Регион"
+            :options="selectOptions"
+            @filter="filterFn"
+            style="width: 150px"
+            behavior="dialog"
+        >
+            <template v-slot:no-option>
+                <q-item>
+                    <q-item-section class="text-grey">
+                        Ничего не найдено
+                    </q-item-section>
+                </q-item>
+            </template>
+            <template v-slot:selected>
+                <div v-if="country">
+                    <span class="q-mr-sm fi" :class="'fi-' + country.toLowerCase()"></span>
+<!--                    <span class="text-grey-8">+{{ countries[country].phone }} | {{country}}</span>-->
+                    <span class="text-grey-8">{{country}}</span>
+                </div>
+                <q-badge v-else>*none*</q-badge>
+            </template>
+        </q-select>
 
-    
-    <div class="row">
-        <div class="col-1">
-            <q-select
-                v-model="model"
-                use-input
-                label="Регион"
-                :options="countries"
-                @filter="filterFn"
-            >
-                <template v-slot:option="scope">
-                    <q-item v-bind="scope.itemProps">
-                        <q-item-section avatar>
-                            {{scope}}
-<!--                            <q-icon :name="scope.opt.icon" />-->
-                        </q-item-section>
-                        <q-item-section>
-                            <q-item-label>{{ scope.opt.native }}</q-item-label>
-                            <q-item-label caption>{{ scope.opt.name }}{{ scope.opt.capital ? ' - ' + scope.opt.capital : '' }}</q-item-label>
-                        </q-item-section>
-                    </q-item>
-                </template>
-            </q-select>
-        </div>
-        <div class="col-2">
-            <q-input v-model="model.number" label="Номер"/>
-        </div>
-    </div>
-
-    <!--    <p>{{russia.emoji.toUpperCase()}}</p>-->
-    <p><span class="q-mr-sm fi" :class="'fi-ru'"></span></p>
-
-    <div v-for="(c, key) in countries">
-        <p>
-            <span class="q-mr-sm fi" :class="'fi-' + key.toLowerCase()"></span>
-            +{{ c.phone }} {{ c.native }} ({{ c.name }}{{ c.capital ? ' - ' + c.capital : '' }})
-        </p>
+        <q-input style="width: 200px" :model-value="number" @update:model-value="onUpdateNumber" label="Номер"/>
     </div>
 </template>
 
 <script setup lang="ts">
 import {countries} from "countries-list";
-import {computed, ref} from "vue";
-import {phoneHelper, PhoneType} from "../../utils/phone_helper";
+import {ref, watch} from "vue";
+import {phoneHelper} from "../../utils/phone_helper";
+import {appDefaults} from "../../app_defaults";
 
+type SelectItem = {
+    value: string,
+    label: string
+}
 const props = defineProps<{
     modelValue: string
 }>()
-
 const emit = defineEmits<{
-    (e: 'update:modelValue', val: string)
+    (e: 'update:modelValue', val: string): void
 }>()
 
-// const countryOptions = computed(() => {
-//     // countries
-//     for (const [region, value] of Object.entries(countries))
-//     {
-//         arr.push({value: key, label: value})
-//     }
-// })
-const stringOptions = ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'];
-const options = ref(stringOptions);
-
-const model = computed({
-    get: (): PhoneType => {
-        if (props.modelValue === '') {
-            return {region: 'RU', number: ''};
-        }
-        
-        return phoneHelper.toPhone(props.modelValue);
-    },
-    set: (val: PhoneType) => {
-        return emit('update:modelValue', phoneHelper.toString(val));
+const country = ref(appDefaults.phoneRegion);
+const number = ref('');
+watch(() => props.modelValue, (val) => {
+    if (val === ('')) {
+        return;
     }
-})
 
-const filterFn = (val, update) => {
+    const phone = phoneHelper.toPhone(val);
+    country.value = phone.region.toUpperCase();
+    number.value = phone.number;
+}, {immediate: true})
+
+const onSelectCountry = (val: SelectItem) => {
+    country.value = val.value;
+    emitModel();
+}
+const onUpdateNumber = (val: string) => {
+    number.value = val;
+    emitModel();
+}
+const emitModel = () => {
+    let emitStr = phoneHelper.toString({
+        region: country.value,
+        number: number.value
+    });
+    
+    if (number.value === '') {
+        emitStr = '';
+    }
+    
+    emit('update:modelValue', emitStr);
+}
+const allCountries: SelectItem[] = [];
+for (const [region, value] of Object.entries(countries)) {
+    const desc = [];
+    if (value.name) desc.push(value.name);
+    if (value.capital) desc.push(value.capital);
+
+    allCountries.push({
+        value: region,
+        label: '+' + value.phone + ' - ' + value.native + ' (' + desc.join(' - ') + ')',
+    })
+}
+const selectOptions = ref(allCountries);
+const filterFn = (val: string, update: any) => {
     if (val === '') {
         update(() => {
-            options.value = stringOptions
+            selectOptions.value = allCountries;
         })
         return
     }
-
     update(() => {
         const needle = val.toLowerCase()
-        options.value = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+        selectOptions.value = allCountries.filter((v: SelectItem) => {
+            return v.label.toLowerCase().indexOf(needle) > -1 || v.value.toLowerCase().indexOf(needle) > -1;
+        })
     })
 }
 </script>

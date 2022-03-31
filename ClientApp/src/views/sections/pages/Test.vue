@@ -1,7 +1,7 @@
 ﻿<template>
     <h1>Tests</h1>
     
-    {{phone}}
+    <p>parent phone: {{phone}}</p>
     <phone-field v-model="phone"></phone-field>
 </template>
 
