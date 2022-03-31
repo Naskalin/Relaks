@@ -1,7 +1,7 @@
-﻿import {Entry, UpdateEntryRequest} from "./api_types";
+﻿import {Entry, EntryText, UpdateEntryRequest, UpdateEntryTextRequest} from "./api_types";
 
-export const entryMappers = {
-    toUpdateRequest: (entry: Entry): UpdateEntryRequest => {
+export const apiMappers = {
+    toUpdateEntryRequest: (entry: Entry): UpdateEntryRequest => {
         return {
             name: entry.name,
             entryType: entry.entryType,
@@ -13,6 +13,17 @@ export const entryMappers = {
             actualEndAt: entry.actualEndAt,
             actualStartAtReason: entry.actualStartAtReason,
             actualEndAtReason: entry.actualEndAtReason,
+        }
+    },
+    toUpdateEntryTextRequest: (eText: EntryText) : UpdateEntryTextRequest => {
+        return {
+            val: eText.val,
+            title: eText.title,
+            textType: eText.textType,
+            actualStartAt: eText.actualStartAt,
+            actualEndAt: eText.actualEndAt,
+            actualStartAtReason: eText.actualStartAtReason,
+            actualEndAtReason: eText.actualEndAtReason,
         }
     }
 }

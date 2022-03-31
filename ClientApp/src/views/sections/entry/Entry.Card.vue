@@ -39,7 +39,7 @@
             </q-btn>
         </q-card-section>
 
-        <card-contacts :entry-id="entry.id"></card-contacts>
+        <card-contacts :entry-id="entry.id" :with-edit="true"></card-contacts>
 
         <template v-if="entry.startAt || entry.endAt">
             <q-card-section>
@@ -125,17 +125,18 @@
 <script setup lang="ts">
 import CardContacts from './Entry.Card.Contacts.vue';
 import ArrowTooltip from '../../components/Arrow.Tooltip.vue';
+import EntryFormModal from './Entry.Form.Modal.vue';
+import EntryTextFormModal from '../entry_text/EntryText.Form.Modal.vue';
+
 import {useEntryTextCreateStore} from "../../../store/entry_text/entryText.create.store";
 import {withDefaults, ref, watch} from "vue";
 import {entryMessages, actualMessages, entryTextMessages} from "../../../localize/messages";
 import {Entry} from "../../../api/api_types";
 import {dateHelper} from "../../../utils/date_helper";
-import EntryFormModal from './Entry.Form.Modal.vue';
 import {useEntryEditStore} from "../../../store/entry/entry.edit.store";
-import {entryMappers} from "../../../api/api_mappers";
+import {apiMappers} from "../../../api/api_mappers";
 import {useRoute} from "vue-router";
 import {EntryTextType} from "../../../api/api_types";
-import EntryTextFormModal from '../entry_text/EntryText.Form.Modal.vue';
 import {useEntryContactsStore} from "../../../store/entry_contacts/entry_cotacts_store";
 
 const editStore = useEntryEditStore();
@@ -150,7 +151,7 @@ const props = withDefaults(defineProps<{
 if (props.withEdit) {
     watch(() => isShowEditModal.value, (val) => {
         if (val) {
-            editStore.model = entryMappers.toUpdateRequest(props.entry);
+            editStore.model = apiMappers.toUpdateEntryRequest(props.entry);
         }
     })
 }

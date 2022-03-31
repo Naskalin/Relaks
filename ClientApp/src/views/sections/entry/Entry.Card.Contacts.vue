@@ -19,8 +19,8 @@
                             </div>
                         </actual-timestamp-tooltip>
                     </q-item-section>
-                    <q-item-section side>
-                        <q-btn icon="las la-edit" flat round color="primary" title="Изменить"/>
+                    <q-item-section side v-if="withEdit">
+                        <q-btn icon="las la-edit" @click="showEditForm(eText)" flat round color="primary"/>
                     </q-item-section>
                 </q-item>
             </q-list>
@@ -47,8 +47,8 @@
                             </div>
                         </actual-timestamp-tooltip>
                     </q-item-section>
-                    <q-item-section side>
-                        <q-btn icon="las la-edit" flat round color="primary"/>
+                    <q-item-section side v-if="withEdit">
+                        <q-btn icon="las la-edit" @click="showEditForm(eText)" flat round color="primary"/>
                     </q-item-section>
                 </q-item>
             </q-list>
@@ -75,31 +75,78 @@
                             </div>
                         </actual-timestamp-tooltip>
                     </q-item-section>
-                    <q-item-section side>
-                        <q-btn icon="las la-edit" flat round color="primary"/>
+                    <q-item-section side v-if="withEdit">
+                        <q-btn icon="las la-edit" @click="showEditForm(eText)" flat round color="primary"/>
                     </q-item-section>
                 </q-item>
             </q-list>
         </q-card-section>
         <q-separator></q-separator>
     </template>
+    
+    <entry-text-form-modal v-if="withEdit && editStore.model"
+                           v-model="editStore.model"
+                           v-model:is-show="isShowEditModal"
+                           :is-loading="editStore.isLoading"
+                           :is-create="false"
+                           :title="'Изменение: ' + entryTextMessages.val.names[editStore.model.textType]"
+                           btn-title="Сохранить"
+                           btn-icon="las la-save"
+                           @submit="saveEditForm"
+    >
+        
+    </entry-text-form-modal>
 </template>
 
 <script setup lang="ts">
-import {watch} from "vue";
+import {watch, ref} from "vue";
 import {useEntryContactsStore} from "../../../store/entry_contacts/entry_cotacts_store";
 import Phone from '../../components/Phone.vue';
 import Email from '../../components/Email.vue';
 import Url from '../../components/Url.vue';
 import ActualTimestampTooltip from '../../components/Actual.Timestamp.Tooltip.vue';
-import ArrowTooltip from '../../components/Arrow.Tooltip.vue';
+import EntryTextFormModal from '../entry_text/EntryText.Form.Modal.vue';
+import {useEntryTextEditStore} from "../../../store/entry_text/entryText.edit.store";
+import {EntryText} from "../../../api/api_types";
+import {apiMappers} from "../../../api/api_mappers";
+import {useRouter} from 'vue-router';
+import {entryTextMessages} from "../../../localize/messages";
 
 const props = defineProps<{
-    entryId: string
+    entryId: string,
+    withEdit?: boolean
 }>();
-const store = useEntryContactsStore();
 
+// show
+const store = useEntryContactsStore();
 watch(() => props.entryId, async () => {
     await store.getAllContacts(props.entryId);
 }, {immediate: true})
+
+// show-edit
+const router = useRouter();
+const editStore = useEntryTextEditStore();
+const isShowEditModal = ref(false);
+// watch(() => isShowEditModal.value, (val: boolean) => {
+//     if (!val) {
+//         editStore.$reset();
+//     }
+// });
+const currentEditId = ref('');
+const showEditForm = (eText: EntryText) => {
+    if (props?.withEdit !== true) {
+        return;
+    } 
+    
+    editStore.model = apiMappers.toUpdateEntryTextRequest(eText);
+    isShowEditModal.value = true;
+    currentEditId.value = eText.id;
+}
+// save-edit
+const saveEditForm = async () => {
+    await editStore.update(props.entryId, currentEditId.value);
+    store.getAllContacts(props.entryId);
+    isShowEditModal.value = false;
+    editStore.$reset();
+}
 </script>
