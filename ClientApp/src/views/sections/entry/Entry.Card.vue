@@ -15,7 +15,6 @@
             <div class="text-h6 text-center">{{ entry.name }}</div>
             <div v-if="entry.description" class="text-subtitle2 text-center">{{ entry.description }}</div>
             <div class="items-center flex justify-center q-gutter-x-sm">
-<!--                <small class="profile-card__caption">{{ entryMessages.reputation }}</small>-->
                 <strong>{{ entry.reputation }}</strong>
                 <q-icon name="star" size="1.5em"/>
             </div>
@@ -28,13 +27,28 @@
                     Изменить объединение
                 </q-tooltip>
             </q-btn>
-            <q-btn round @click="showCreateEntryTextModal('Phone')" color="primary" icon="las la-phone">
+<!--            <q-fab-->
+<!--                label="Actions"-->
+<!--                external-label-->
+<!--                label-class="bg-grey-3 text-purple"-->
+<!--                vertical-actions-align="left"-->
+<!--                color="primary"-->
+<!--                icon="las la-plus"-->
+<!--                direction="right"-->
+<!--                padding="md"-->
+<!--            >-->
+<!--                <q-fab-action external-label label-position="top" color="secondary" @click="showCreateEntryTextModal('Phone')" icon="las la-phone" label="Телефон" />-->
+<!--                <q-fab-action external-label label-position="top" color="secondary" @click="showCreateEntryTextModal('Email')" icon="las la-envelope" label="E-mail" />-->
+<!--                <q-fab-action external-label label-position="top" color="secondary" @click="showCreateEntryTextModal('Url')" icon="las la-envelope" label="Ссылку" />-->
+<!--&lt;!&ndash;                <q-fab-action label-class="bg-grey-3 text-grey-8" external-label color="accent" @click="onClick" icon="room" label="Map" />&ndash;&gt;-->
+<!--            </q-fab>-->
+            <q-btn round @click="showCreateEntryTextModal('Phone')" color="secondary" icon="las la-phone">
                 <arrow-tooltip direction="top">Добавить телефон</arrow-tooltip>
             </q-btn>
-            <q-btn round @click="showCreateEntryTextModal('Email')" color="primary" icon="las la-envelope">
+            <q-btn round @click="showCreateEntryTextModal('Email')" color="secondary" icon="las la-envelope">
                 <arrow-tooltip direction="top">Добавить e-mail</arrow-tooltip>
             </q-btn>
-            <q-btn round @click="showCreateEntryTextModal('Url')" color="primary" icon="las la-link">
+            <q-btn round @click="showCreateEntryTextModal('Url')" color="secondary" icon="las la-link">
                 <arrow-tooltip direction="top">Добавить ссылку</arrow-tooltip>
             </q-btn>
         </q-card-section>
@@ -45,12 +59,12 @@
             <q-card-section>
                 <div class="row">
                     <div v-if="entry.startAt" class="col text-left">
-                        <small class="profile-card__caption">{{ entryMessages.startAt[entry.entryType] }}</small>
+                        <span class="label-caption text-grey-8">{{ entryMessages.startAt[entry.entryType] }}</span>
                         <br>
                         {{ dateHelper.utcFormat(entry.startAt) }}
                     </div>
                     <div v-if="entry.endAt" class="col text-right">
-                        <small class="profile-card__caption">{{ entryMessages.endAt[entry.entryType] }}</small>
+                        <span class="label-caption text-grey-8">{{ entryMessages.endAt[entry.entryType] }}</span>
                         <br>
                         {{ dateHelper.utcFormat(entry.endAt) }}
                     </div>
@@ -61,10 +75,10 @@
         </template>
 
         <q-card-section>
-            <small class="profile-card__caption q-mr-xs">{{ actualMessages.actualStartAt.name }}</small>
+            <span class="label-caption text-grey-8 q-mr-xs">{{ actualMessages.actualStartAt.name }}</span>
             {{ dateHelper.utcFormat(entry.actualStartAt) }}
             <div v-if="entry.actualStartAtReason">
-                <small class="profile-card__caption q-mr-xs">{{ actualMessages.actualStartAtReason.name }}</small>
+                <span class="label-caption text-grey-8 q-mr-xs">{{ actualMessages.actualStartAtReason.name }}</span>
                 {{ entry.actualStartAtReason }}
             </div>
         </q-card-section>
@@ -73,11 +87,11 @@
             <q-separator/>
             <q-card-section>
                 <template v-if="entry.actualEndAt">
-                    <small class="profile-card__caption q-mr-xs">{{ actualMessages.actualEndAt.name }}</small>
+                    <span class="label-caption text-grey-8 q-mr-xs">{{ actualMessages.actualEndAt.name }}</span>
                     {{ dateHelper.utcFormat(entry.actualEndAt) }}
                 </template>
                 <div v-if="entry.actualEndAtReason">
-                    <small class="profile-card__caption q-mr-xs">{{ actualMessages.actualEndAtReason.name }}</small>
+                    <span class="label-caption text-grey-8 q-mr-xs">{{ actualMessages.actualEndAtReason.name }}</span>
                     {{ entry.actualEndAtReason }}
                 </div>
             </q-card-section>
@@ -88,12 +102,12 @@
         <q-card-section>
             <div class="row">
                 <div class="col text-left">
-                    <small class="profile-card__caption">создано</small>
+                    <span class="label-caption text-grey-8">создано</span>
                     <br>
                     <span class="text-grey-7">{{ dateHelper.utcFormat(entry.createdAt) }}</span>
                 </div>
                 <div class="col text-right">
-                    <small class="profile-card__caption">обновлено</small>
+                    <span class="label-caption text-grey-8">обновлено</span>
                     <br>
                     <span class="text-grey-7">{{ dateHelper.utcFormat(entry.updatedAt) }}</span>
                 </div>
@@ -188,12 +202,3 @@ const createEntryText = async () => {
     entryTextCreateStore.$reset();
 }
 </script>
-
-<style lang="scss">
-.profile-card {
-    &__caption {
-        color: $grey-7;
-        text-transform: uppercase;
-    }
-}
-</style>

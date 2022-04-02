@@ -1,5 +1,5 @@
 ﻿import {defineStore} from 'pinia';
-import {UpdateEntryTextRequest, EntryText} from "../../api/api_types";
+import {UpdateEntryTextRequest} from "../../api/api_types";
 import {apiEntryText} from "../../api/rerources/api_entry_text";
 
 declare type EntryTextEditStoreState = {

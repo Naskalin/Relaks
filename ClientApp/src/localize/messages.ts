@@ -12,6 +12,11 @@ const entryTextTypes = {
     Note: 'Заметка',
 }
 
+export const timeStampMessages = {
+    createdAt: 'Создано',
+    updatedAt: 'Обновлено'
+}
+
 export const entryMessages = {
     name: {
         Person: 'Ф.И.О',
@@ -53,16 +58,16 @@ export const entryMessages = {
         Meet: 'Дата окончания'
     },
     reputation: 'Репутация',
-    createdAt: 'Создано',
-    updatedAt: 'Обновлено'
+    ...timeStampMessages
 }
 
 export const entryTextMessages = {
+    ...timeStampMessages,
     title: 'Название',
     val: {
         names: entryTextTypes,
         selectOptions: selectHelper.toSelectOptions(entryTextTypes),
-    }
+    },
 }
 
 export const actualMessages = {

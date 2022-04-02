@@ -25,5 +25,5 @@ export const apiMappers = {
             actualStartAtReason: eText.actualStartAtReason,
             actualEndAtReason: eText.actualEndAtReason,
         }
-    }
+    },
 }

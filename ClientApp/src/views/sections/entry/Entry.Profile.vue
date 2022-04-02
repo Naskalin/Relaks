@@ -16,9 +16,8 @@
                                  exact
                     />
                 </q-tabs>
-
                 <q-separator/>
-                <h5 class="q-my-md">{{ entryMessages.profile.tabs[route.name] }}</h5>
+                
                 <router-view></router-view>
             </div>
         </div>

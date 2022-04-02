@@ -49,4 +49,4 @@ export declare type CreateEntryTextRequest = {
 } & ActualTypes
 export declare type UpdateEntryTextRequest = {} & CreateEntryTextRequest
 export declare type ListEntryTextRequest = { textType: EntryTextType } & ApiListRequest
-export declare type EntryText = { id: string, entry: Entry } & CreateEntryTextRequest & ActualTypes & TimestampTypes;
+export declare type EntryText = { id: string, entry: Entry, entryId: string } & CreateEntryTextRequest & ActualTypes & TimestampTypes;

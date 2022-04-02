@@ -2,7 +2,15 @@
     <q-input v-if="model.textType === 'Email'" type="email" :label="entryTextMessages.val.names.Email" v-model="model.val"/>
     <q-input v-else-if="model.textType === 'Url'" type="url" :label="entryTextMessages.val.names.Url" v-model="model.val"/>
     <phone-field v-else-if="model.textType === 'Phone'" v-model="model.val"/>
-    <q-editor v-else-if="model.textType === 'Note'" v-model="model.val"/>
+    <q-editor v-else-if="model.textType === 'Note'"
+              @paste="onPaste"
+              ref="editorRef"
+              toolbar-bg="secondary"
+              toolbar-color="grey-1"
+              toolbar-toggle-color="positive"
+              content-class="bg-none"
+              class="bg-transparent"
+              v-model="model.val"/>
     <q-banner v-else class="bg-warning text-white">
         <q-icon icon="las la-exclamation-triangle la-fw"/>
         Что то пошло не так, EntryText.textType не определён.
@@ -22,10 +30,11 @@
 
 <script setup lang="ts">
 import {CreateEntryTextRequest, UpdateEntryTextRequest} from "../../../api/api_types";
-import {computed} from "vue";
+import {computed, ref} from "vue";
 import ActualFieldset from '../../fieldsets/Actual.Fieldset.vue';
 import PhoneField from '../../fields/Phone.Field.vue';
 import {entryTextMessages} from "../../../localize/messages";
+import {editorHelper} from "../../../utils/editorOnPaste";
 
 const props = defineProps<{
     modelValue: CreateEntryTextRequest | UpdateEntryTextRequest,
@@ -37,4 +46,9 @@ const model = computed({
     get: () => props.modelValue,
     set: (val) => emit('update:modelValue', val)
 })
+
+const editorRef = ref(null)
+const onPaste = (evt: any) => {
+    editorHelper.onPaste(evt, editorRef);
+}
 </script>

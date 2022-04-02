@@ -4,9 +4,7 @@
             <q-list bordered separator>
                 <q-item v-for="eText in store.phones" :key="eText.id">
                     <q-item-section>
-                        <q-item-label>
-                            <phone :phone="eText.val"></phone>
-                        </q-item-label>
+                        <q-item-label><phone :phone="eText.val"></phone></q-item-label>
                         <q-item-label v-if="eText.title" :lines="2" class="text-grey-9">{{ eText.title }}</q-item-label>
                         <actual-timestamp-tooltip :entry-text="eText">
                             <phone :phone="eText.val"></phone>
@@ -32,9 +30,7 @@
             <q-list bordered separator>
                 <q-item v-for="eText in store.emails" :key="eText.id">
                     <q-item-section>
-                        <q-item-label>
-                            <email :email="eText.val" with-link></email>
-                        </q-item-label>
+                        <q-item-label><email :email="eText.val" with-link></email></q-item-label>
                         <q-item-label v-if="eText.title" :lines="2" class="text-grey-9">{{ eText.title }}</q-item-label>
                         <actual-timestamp-tooltip :entry-text="eText">
                             <email :email="eText.val" icon-color="grey-5"></email>
@@ -60,9 +56,7 @@
             <q-list bordered separator>
                 <q-item v-for="eText in store.urls" :key="eText.id">
                     <q-item-section>
-                        <q-item-label>
-                            <url :url="eText.val" with-link></url>
-                        </q-item-label>
+                        <q-item-label><url :url="eText.val" with-link></url></q-item-label>
                         <q-item-label v-if="eText.title" :lines="2" class="text-grey-9">{{ eText.title }}</q-item-label>
                         <actual-timestamp-tooltip :entry-text="eText">
                             <url :url="eText.val" icon-color="grey-5"></url>
@@ -93,6 +87,7 @@
                            btn-title="Сохранить"
                            btn-icon="las la-save"
                            @submit="saveEditForm"
+                           @delete="onDelete"
     >
         
     </entry-text-form-modal>
@@ -109,6 +104,7 @@ import EntryTextFormModal from '../entry_text/EntryText.Form.Modal.vue';
 import {useEntryTextEditStore} from "../../../store/entry_text/entryText.edit.store";
 import {EntryText} from "../../../api/api_types";
 import {apiMappers} from "../../../api/api_mappers";
+import {apiEntryText} from "../../../api/rerources/api_entry_text";
 import {useRouter} from 'vue-router';
 import {entryTextMessages} from "../../../localize/messages";
 
@@ -127,11 +123,6 @@ watch(() => props.entryId, async () => {
 const router = useRouter();
 const editStore = useEntryTextEditStore();
 const isShowEditModal = ref(false);
-// watch(() => isShowEditModal.value, (val: boolean) => {
-//     if (!val) {
-//         editStore.$reset();
-//     }
-// });
 const currentEditId = ref('');
 const showEditForm = (eText: EntryText) => {
     if (props?.withEdit !== true) {
@@ -145,7 +136,15 @@ const showEditForm = (eText: EntryText) => {
 // save-edit
 const saveEditForm = async () => {
     await editStore.update(props.entryId, currentEditId.value);
-    store.getAllContacts(props.entryId);
+    await store.getAllContacts(props.entryId);
+    isShowEditModal.value = false;
+    editStore.$reset();
+}
+
+// delete
+const onDelete = async () => {
+    await apiEntryText.delete(props.entryId, currentEditId.value);
+    await store.getAllContacts(props.entryId);
     isShowEditModal.value = false;
     editStore.$reset();
 }
