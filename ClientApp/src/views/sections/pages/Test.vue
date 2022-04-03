@@ -1,13 +1,19 @@
 ﻿<template>
     <h1>Tests</h1>
-    
-    <p>parent phone: {{phone}}</p>
-    <phone-field v-model="phone"></phone-field>
+
+    <q-form>
+        <q-file
+            v-model="files"
+            label="Pick files"
+            filled
+            multiple
+            style="max-width: 300px"
+        />
+    </q-form>
 </template>
 
 <script setup lang="ts">
-import PhoneField from '../../fields/Phone.Field.vue';
-import {ref} from 'vue';
+import { ref } from 'vue'
 
-const phone = ref('');
+const files = ref(null);
 </script>

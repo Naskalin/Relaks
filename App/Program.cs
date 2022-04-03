@@ -44,9 +44,11 @@ builder.Services.Configure<ApiBehaviorOptions>(o =>
     o.SuppressInferBindingSourcesForParameters = true;
 });
 
+// builder.Services.AddTransient<BaseRepository<BaseEntity>>();
 builder.Services.AddTransient<EntryRepository>();
-builder.Services.AddTransient<EntryDateRepository>();
-builder.Services.AddTransient<EntryTextRepository>();
+builder.Services.AddTransient<EntryInfoDateRepository>();
+// builder.Services.AddTransient<EntryDateRepository>();
+// builder.Services.AddTransient<EntryTextRepository>();
 
 var app = builder.Build();
 

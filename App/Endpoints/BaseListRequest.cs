@@ -2,7 +2,7 @@
 
 namespace App.Endpoints;
 
-public class BaseListRequest : IPaginableRequest, ISearchableRequest, IOrderableRequest
+public class BaseListRequest : IListRequest
 {
     [FromQuery]
     public int? Page { get; set; }
@@ -18,4 +18,7 @@ public class BaseListRequest : IPaginableRequest, ISearchableRequest, IOrderable
 
     [FromQuery]
     public bool? OrderByDesc { get; set; }
+    
+    [FromQuery]
+    public bool? Deleted { get; set; }
 }

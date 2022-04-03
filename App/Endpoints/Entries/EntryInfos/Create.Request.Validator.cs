@@ -1,0 +1,47 @@
+﻿// using App.Models;
+// using App.Utils;
+// using App.Utils.Extensions;
+// using FluentValidation;
+//
+// namespace App.Endpoints.Entries.EntryInfos;
+//
+// public class CreateRequestValidator : AbstractValidator<EntryInfoDetails>
+// {
+//     public CreateRequestValidator()
+//     {
+//         RuleFor(x => x.Title).NotNull().Length(0, 255);
+//         RuleFor(x => x.TextType).IsEnumName(typeof(TextTypeEnum), false);
+//
+//         RuleFor(x => x.DeletedAt).NotEqual(default(DateTime));
+//         RuleFor(x => x.DeletedReason).NotNull().Length(0, 250);
+//
+//         RuleFor(x => x.Note).NotEmpty().MaximumLength(5000);
+//         RuleFor(x => x.Val).Must(IsPhoneValid)
+//             .When(x => IsTextType(x.TextType, TextTypeEnum.Phone))
+//             .WithMessage("Ошибка при разборе телефона. Данный номер не может существовать для выбранного региона.");
+//         RuleFor(x => x.Val).Must(IsPhoneValid).When(x => x.TextType.Equals<TextTypeEnum>(TextTypeEnum.Phone));
+//         RuleFor(x => x.Val).EmailAddress().When(x => IsTextType(x.TextType, TextTypeEnum.Email));
+//         RuleFor(x => x.Val)
+//             .Must(uri => Uri.TryCreate(uri, UriKind.Absolute, out _))
+//             .When(x => IsTextType(x.TextType, TextTypeEnum.Url))
+//             .WithMessage("Ошибка при разборе ссылки. Требуется абсолютный url.");
+//     }
+//
+//     private static bool IsTextType(string str, TextTypeEnum textTypeEnum)
+//     {
+//         return Enum.TryParse(str, true, out TextTypeEnum result) && result == textTypeEnum;
+//     }
+//
+//     private bool IsPhoneValid(string numberWithRegion)
+//     {
+//         try
+//         {
+//             PhoneHelper.ToPhone(numberWithRegion);
+//             return true;
+//         }
+//         catch (Exception)
+//         {
+//             return false;
+//         }
+//     }
+// }

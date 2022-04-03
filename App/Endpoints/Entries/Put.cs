@@ -18,7 +18,7 @@ public class Put : EndpointBaseAsync
         _entryRepository = entryRepository;
     }
 
-    [HttpPut("/api/entries/{EntryId}")]
+    [HttpPut("/api/entries/{entryId}")]
     [SwaggerOperation(OperationId = "Entry.Put", Tags = new[] {"Entry"})]
     public override async Task<ActionResult> HandleAsync(
         [FromMultiSource] PutRequest putRequest,

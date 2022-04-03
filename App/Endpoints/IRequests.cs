@@ -2,6 +2,10 @@
 
 namespace App.Endpoints;
 
+public interface IListRequest : IPaginableRequest, ISearchableRequest, IOrderableRequest
+{
+}
+
 public interface IPaginableRequest
 {
     public int? Page { get; set; }

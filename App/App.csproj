@@ -37,6 +37,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Endpoints\Entries\EntryInfos\Email" />
+      <Folder Include="Endpoints\Entries\EntryInfos\Note" />
+      <Folder Include="Endpoints\Entries\EntryInfos\Phone" />
+      <Folder Include="Endpoints\Entries\EntryInfos\Url" />
       <Folder Include="Migrations" />
       <Folder Include="wwwroot" />
       <Folder Include="..\ClientApp" />

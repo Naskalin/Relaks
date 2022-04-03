@@ -12,11 +12,8 @@ Content-Type: application/json
 {
   "name": "Test",
   "description": "",
-  "actualStartAt": "2022-03-17T12:11:35.798Z",
-  "ActualEndAtReason": "aaa",
-  "ActualStartAtReason": "asd",
-  "entryType": "Company",
-  "StartAt": null
+  "deletedReason": "",
+  "entryType": "Company"
 }
 
 ###
@@ -42,9 +39,7 @@ Content-Type: application/json
   "Name": "Jerry",
   "Reputation": 8,
   "description": "",
-  "actualStartAt": "2022-03-17T12:11:35.798Z",
-  "ActualEndAtReason": "aaa",
-  "ActualStartAtReason": "asd",
+  "deletedReason": "",
   "entryType": "Company"
 }
 

@@ -15,10 +15,8 @@ public static class EntryMapper
         entry.Reputation = req.Reputation;
         entry.StartAt = req.StartAt;
         entry.EndAt = req.EndAt;
-        entry.ActualStartAt = req.ActualStartAt;
-        entry.ActualStartAtReason = req.ActualStartAtReason.Trim();
-        entry.ActualEndAt = req.ActualEndAt;
-        entry.ActualEndAtReason = req.ActualEndAtReason.Trim();
+        entry.DeletedAt = req.DeletedAt;
+        entry.DeletedReason = req.DeletedReason.Trim();
     }
 
     public static void MapTo(this PutRequest req, Entry entry)

@@ -16,7 +16,7 @@ public class EntryRepository : BaseRepository<Entry>
     {
         var query = Entities.Where(x => true);
 
-        query.Include(x => x.Texts);
+        // query.Include(x => x.Texts);
         if (listRequest.EntryType != null)
         {
             query = query.Where(x => x.EntryType == listRequest.EntryType);
