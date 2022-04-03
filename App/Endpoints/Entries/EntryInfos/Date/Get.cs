@@ -8,23 +8,23 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace App.Endpoints.Entries.EntryInfos.Date;
 
 public class Get : EndpointBaseAsync
-    .WithRequest<GetRequest>
-    .WithActionResult<EntryInfoDate>
+    .WithRequest<EInfoGetRequest>
+    .WithActionResult<EntryDate>
 {
-    private readonly EntryInfoDateRepository _infoDateRepository;
+    private readonly EntryDateRepository _entryDateRepository;
 
-    public Get(EntryInfoDateRepository infoDateRepository)
+    public Get(EntryDateRepository entryDateRepository)
     {
-        _infoDateRepository = infoDateRepository;
+        _entryDateRepository = entryDateRepository;
     }
 
     [HttpGet("/api/entries/{entryId}/dates/{entryInfoId}", Name = "Entries_Dates_Get")]
     [SwaggerOperation(OperationId = "EntryDate.Get", Tags = new [] {"EntryDate"})]
-    public override async Task<ActionResult<EntryInfoDate>> HandleAsync(
-        [FromMultiSource] GetRequest request,
+    public override async Task<ActionResult<EntryDate>> HandleAsync(
+        [FromMultiSource] EInfoGetRequest request,
         CancellationToken cancellationToken = new())
     {
-        var eInfo = await _infoDateRepository.FindByIdAsync(request.EntryInfoId, cancellationToken);
+        var eInfo = await _entryDateRepository.FindByIdAsync(request.EntryInfoId, cancellationToken);
         if (eInfo == null || eInfo.EntryId != request.EntryId)
         {
             return NotFound();

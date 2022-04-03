@@ -1,5 +1,6 @@
 ﻿using App.Endpoints.Entries.EntryInfos;
 using App.Endpoints.Entries.EntryInfos.Date;
+using App.Endpoints.Entries.EntryInfos.Email;
 using App.Models;
 using App.Utils;
 
@@ -37,11 +38,11 @@ public static class EntryInfoMapper
     //     eInfo.Url = details.Url!.Trim().ToLower();
     // }
     //
-    // public static void MapTo(this EntryInfoDetails details, EntryInfoEmail eInfo)
-    // {
-    //     MapToCommon(details, eInfo);
-    //     eInfo.Email = details.Email!.Trim().ToLower();
-    // }
+    public static void MapTo(this RequestEmailDetails details, EntryEmail eInfo)
+    {
+        MapToCommon(details, eInfo);
+        eInfo.Email = details.Email.Trim().ToLower();
+    }
     //
     // public static void MapTo(this EntryInfoDetails details, EntryInfoNote eInfo)
     // {
@@ -50,11 +51,10 @@ public static class EntryInfoMapper
     // }
 
 
-    public static void MapTo(this RequestDateDetails details, EntryInfoDate eInfo)
+    public static void MapTo(this RequestDateDetails details, EntryDate eInfo)
     {
         MapToCommon(details, eInfo);
-        if (details.Date == null) throw new ArgumentException("MapTo eInfo.Date is null");
-        eInfo.Date = (DateTime) details.Date;
+        eInfo.Date = details.Date;
     }
 
     // public static void MapTo(this EntryInfoDetails details, EntryInfoPhone eInfo)

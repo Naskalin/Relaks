@@ -4,6 +4,7 @@ using App.Repository;
 using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace App.Endpoints.Entries.EntryInfos.Date;
@@ -12,11 +13,13 @@ public class Put : EndpointBaseAsync
     .WithRequest<PutRequest>
     .WithActionResult
 {
-    private readonly EntryInfoDateRepository _infoDateRepository;
+    private readonly EntryDateRepository _entryDateRepository;
+    private readonly IOptions<ApiBehaviorOptions> _apiOptions;
 
-    public Put(EntryInfoDateRepository infoDateRepository)
+    public Put(EntryDateRepository entryDateRepository, IOptions<ApiBehaviorOptions> apiOptions)
     {
-        _infoDateRepository = infoDateRepository;
+        _entryDateRepository = entryDateRepository;
+        _apiOptions = apiOptions;
     }
 
     [HttpPut("/api/entries/{entryId}/dates/{entryInfoId}")]
@@ -28,10 +31,11 @@ public class Put : EndpointBaseAsync
         var validation = await new FormRequestValidator().ValidateAsync(request.Details, cancellationToken);
          if (!validation.IsValid)
          {
-             return BadRequest(validation);
+             validation.Errors.ForEach(e => { ModelState.AddModelError(e.PropertyName, e.ErrorMessage); });
+             return (ActionResult) _apiOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
          }
          
-         var eInfo = await _infoDateRepository.FindByIdAsync(request.EntryInfoId, cancellationToken);
+         var eInfo = await _entryDateRepository.FindByIdAsync(request.EntryInfoId, cancellationToken);
          if (eInfo == null || eInfo.EntryId != request.EntryId)
          {
              return NotFound();
@@ -39,7 +43,7 @@ public class Put : EndpointBaseAsync
 
          request.Details.MapTo(eInfo);
          eInfo.UpdatedAt = DateTime.UtcNow;
-         await _infoDateRepository.UpdateAsync(eInfo, cancellationToken);
+         await _entryDateRepository.UpdateAsync(eInfo, cancellationToken);
 
          return NoContent();
     }

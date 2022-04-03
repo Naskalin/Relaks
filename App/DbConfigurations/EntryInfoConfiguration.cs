@@ -12,11 +12,11 @@ public class EntryInfoConfiguration : IEntityTypeConfiguration<EntryInfo>
         builder.ToTable("EntryInfos");
 
         builder.HasDiscriminator(x => x.Discriminator)
-            .HasValue<EntryInfoEmail>(EntryInfo.EmailType)
-            .HasValue<EntryInfoPhone>(EntryInfo.PhoneType)
-            .HasValue<EntryInfoUrl>(EntryInfo.UrlType)
-            .HasValue<EntryInfoNote>(EntryInfo.NoteType)
-            .HasValue<EntryInfoDate>(EntryInfo.DateType)
+            .HasValue<EntryEmail>(EntryInfo.EmailType)
+            .HasValue<EntryPhone>(EntryInfo.PhoneType)
+            .HasValue<EntryUrl>(EntryInfo.UrlType)
+            .HasValue<EntryNote>(EntryInfo.NoteType)
+            .HasValue<EntryDate>(EntryInfo.DateType)
             ;
     }
 }

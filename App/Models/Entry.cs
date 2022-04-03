@@ -15,11 +15,11 @@ public class Entry : BaseEntity, ITimestampResource, ISoftDelete
     public DateTime? DeletedAt { get; set; }
     public string DeletedReason { get; set; } = null!;
 
-    public List<EntryInfoDate> Dates { get; set; } = new();
-    public List<EntryInfoNote> Notes { get; set; } = new();
-    public List<EntryInfoEmail> Emails { get; set; } = new();
-    public List<EntryInfoPhone> Phones { get; set; } = new();
-    public List<EntryInfoUrl> Urls { get; set; } = new();
+    public List<EntryDate> Dates { get; set; } = new();
+    public List<EntryNote> Notes { get; set; } = new();
+    public List<EntryEmail> Emails { get; set; } = new();
+    public List<EntryPhone> Phones { get; set; } = new();
+    public List<EntryUrl> Urls { get; set; } = new();
     
     // public List<EntryDate> Dates { get; set; } = new();
     // public List<EntryText> Texts { get; set; } = new();

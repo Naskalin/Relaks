@@ -4,32 +4,32 @@ using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace App.Endpoints.Entries.EntryInfos.Date;
+namespace App.Endpoints.Entries.EntryInfos.Email;
 
 public class Delete : EndpointBaseAsync
     .WithRequest<EInfoGetRequest>
     .WithActionResult
 {
-    private readonly EntryDateRepository _entryDateRepository;
+    private readonly EntryEmailRepository _entryEmailRepository;
 
-    public Delete(EntryDateRepository entryDateRepository)
+    public Delete(EntryEmailRepository entryEmailRepository)
     {
-        _entryDateRepository = entryDateRepository;
+        _entryEmailRepository = entryEmailRepository;
     }
 
-    [HttpDelete("/api/entries/{entryId}/dates/{entryInfoId}")]
-    [SwaggerOperation(OperationId = "EntryDate.Delete", Tags = new[] {"EntryDate"})]
+    [HttpDelete("/api/entries/{entryId}/emails/{entryInfoId}")]
+    [SwaggerOperation(OperationId = "EntryEmail.Delete", Tags = new[] {"EntryEmail"})]
     public override async Task<ActionResult> HandleAsync(
         [FromMultiSource] EInfoGetRequest request,
         CancellationToken cancellationToken = new())
     {
-        var eInfo = await _entryDateRepository.FindByIdAsync(request.EntryInfoId, cancellationToken);
+        var eInfo = await _entryEmailRepository.FindByIdAsync(request.EntryInfoId, cancellationToken);
         if (eInfo == null || eInfo.EntryId != request.EntryId)
         {
             return NotFound();
         }
 
-        await _entryDateRepository.TrySoftDelete(eInfo, cancellationToken);
+        await _entryEmailRepository.TrySoftDelete(eInfo, cancellationToken);
         return NoContent();
     }
 }

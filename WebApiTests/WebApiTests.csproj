@@ -7,6 +7,10 @@
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="HttpRequests" />
+    </ItemGroup>
+
 <!--    <ItemGroup>-->
 <!--        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.2" />-->
 <!--        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />-->

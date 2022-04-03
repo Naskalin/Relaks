@@ -12,32 +12,33 @@ public class EntryRepository : BaseRepository<Entry>
     {
     }
     
-    public async Task<IEnumerable<Entry>> PaginateListAsync(ListRequest listRequest, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Entry>> PaginateListAsync(ListRequest req, CancellationToken cancellationToken)
     {
-        var query = Entities.Where(x => true);
+        var query = Entities.Where(x => true)
+                .Where(x => req.Deleted == true ? x.DeletedAt != null : x.DeletedAt == null)
+            ;
 
-        // query.Include(x => x.Texts);
-        if (listRequest.EntryType != null)
+        if (req.EntryType != null)
         {
-            query = query.Where(x => x.EntryType == listRequest.EntryType);
+            query = query.Where(x => x.EntryType == req.EntryType);
         }
         
-        if (listRequest.Search != null)
+        if (req.Search != null)
         {
             query = query.Where(x =>
-                EF.Functions.Like(x.Name, "%" + listRequest.Search + "%")
-                || (EF.Functions.Like(x.Description, "%" + listRequest.Search + "%"))
+                EF.Functions.Like(x.Name, "%" + req.Search + "%")
+                || EF.Functions.Like(x.Description, "%" + req.Search + "%")
             );
         }
         
-        if (listRequest.OrderBy != null)
+        if (req.OrderBy != null)
         {
-            query = query.OrderBy(listRequest.OrderBy, listRequest.OrderByDesc ?? false);
+            query = query.OrderBy(req.OrderBy, req.OrderByDesc ?? false);
         }
 
         query = query.OrderByDescending(x => x.UpdatedAt);
 
-        query = PaginateQuery(query, listRequest);
+        query = PaginateQuery(query, req);
         return await query.ToListAsync(cancellationToken);
     }
 }

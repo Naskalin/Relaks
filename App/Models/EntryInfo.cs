@@ -38,28 +38,28 @@ public abstract class EntryInfo : BaseEntity, ITimestampResource, ISoftDelete
     public string Discriminator { get; set; } = null!;
 }
 
-public class EntryInfoNote : EntryInfo
+public class EntryNote : EntryInfo
 {
     public string Note { get; set; } = null!;
 }
 
-public class EntryInfoPhone : EntryInfo
+public class EntryPhone : EntryInfo
 {
     public string Phone { get; set; } = null!;
     public string PhoneRegion { get; set; } = null!;
 }
 
-public class EntryInfoEmail : EntryInfo
+public class EntryEmail : EntryInfo
 {
     public string Email { get; set; } = null!;
 }
 
-public class EntryInfoUrl : EntryInfo
+public class EntryUrl : EntryInfo
 {
     public string Url { get; set; } = null!;
 }
 
-public class EntryInfoDate : EntryInfo
+public class EntryDate : EntryInfo
 {
     public DateTime Date { get; set; }
 }

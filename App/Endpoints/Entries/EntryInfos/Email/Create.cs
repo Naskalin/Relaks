@@ -7,29 +7,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace App.Endpoints.Entries.EntryInfos.Date;
+namespace App.Endpoints.Entries.EntryInfos.Email;
 
 public class Create : EndpointBaseAsync
     .WithRequest<CreateRequest>
     .WithActionResult
 {
-    private readonly EntryDateRepository _entryDateRepository;
-    private readonly IOptions<ApiBehaviorOptions> _apiOptions;
     private readonly EntryRepository _entryRepository;
+    private readonly EntryEmailRepository _entryEmailRepository;
+    private readonly IOptions<ApiBehaviorOptions> _apiOptions;
 
     public Create(
-        EntryDateRepository entryDateRepository,
-        IOptions<ApiBehaviorOptions> apiOptions,
-        EntryRepository entryRepository
+        EntryRepository entryRepository,
+        EntryEmailRepository entryEmailRepository,
+        IOptions<ApiBehaviorOptions> apiOptions
     )
     {
-        _entryDateRepository = entryDateRepository;
-        _apiOptions = apiOptions;
         _entryRepository = entryRepository;
+        _entryEmailRepository = entryEmailRepository;
+        _apiOptions = apiOptions;
     }
 
-    [HttpPost("/api/entries/{entryId}/dates")]
-    [SwaggerOperation(OperationId = "EntryDate.Create", Tags = new[] {"EntryDate"})]
+    [HttpPost("/api/entries/{entryId}/emails")]
+    [SwaggerOperation(OperationId = "EntryEmail.Create", Tags = new[] {"EntryEmail"})]
     public override async Task<ActionResult> HandleAsync(
         [FromMultiSource] CreateRequest request,
         CancellationToken cancellationToken = new()
@@ -48,13 +48,10 @@ public class Create : EndpointBaseAsync
             return NotFound();
         }
 
-        var eInfo = new EntryDate {EntryId = entry.Id, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow};
+        var eInfo = new EntryEmail {EntryId = entry.Id, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow};
         request.Details.MapTo(eInfo);
-        await _entryDateRepository.CreateAsync(eInfo, cancellationToken);
+        await _entryEmailRepository.CreateAsync(eInfo, cancellationToken);
 
-        entry.UpdatedAt = DateTime.UtcNow;
-        await _entryRepository.UpdateAsync(entry, cancellationToken);
-
-        return CreatedAtRoute("Entries_Dates_Get", new {entryId = entry.Id, entryInfoId = eInfo.Id}, eInfo);
+        return CreatedAtRoute("Entries_Emails_Get", new {entryId = entry.Id, entryInfoId = eInfo.Id}, eInfo);
     }
 }

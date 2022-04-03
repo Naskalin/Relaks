@@ -1,6 +1,5 @@
 ﻿using App.DbConfigurations;
 using App.Endpoints;
-using App.Endpoints.Entries;
 using App.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,8 +7,8 @@ namespace App.Repository;
 
 public class BaseRepository<TEntity> where TEntity : BaseEntity
 {
-    protected readonly AppDbContext Db;
-    protected DbSet<TEntity> Entities;
+    public readonly AppDbContext Db;
+    public DbSet<TEntity> Entities;
 
     public BaseRepository(AppDbContext db)
     {
@@ -31,11 +30,6 @@ public class BaseRepository<TEntity> where TEntity : BaseEntity
             .Skip(perPage * (page - 1))
             .Take(perPage);
     }
-
-    // public async Task<List<TEntity>> PaginateListAsync(int perPage, int page, CancellationToken cancellationToken)
-    // {
-    //     return await PaginateQuery(perPage, page).ToListAsync(cancellationToken);
-    // }
 
     public async Task CreateAsync(TEntity entity, CancellationToken cancellationToken)
     {

@@ -8,23 +8,23 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace App.Endpoints.Entries.EntryInfos.Date;
 
 public class List : EndpointBaseAsync
-    .WithRequest<EntryInfoListRequest>
-    .WithActionResult<List<EntryInfoDate>>
+    .WithRequest<EInfoListRequest>
+    .WithActionResult<List<EntryDate>>
 {
-    private readonly EntryInfoDateRepository _infoDateRepository;
+    private readonly EntryDateRepository _entryDateRepository;
 
-    public List(EntryInfoDateRepository infoDateRepository)
+    public List(EntryDateRepository entryDateRepository)
     {
-        _infoDateRepository = infoDateRepository;
+        _entryDateRepository = entryDateRepository;
     }
 
     [HttpGet("/api/entries/{entryId}/dates")]
     [SwaggerOperation(OperationId = "EntryDate.List", Tags = new[] {"EntryDate"})]
-    public override async Task<ActionResult<List<EntryInfoDate>>> HandleAsync(
-        [FromMultiSource] EntryInfoListRequest request,
+    public override async Task<ActionResult<List<EntryDate>>> HandleAsync(
+        [FromMultiSource] EInfoListRequest request,
         CancellationToken cancellationToken = new())
     {
-        var eInfos = await _infoDateRepository.PaginateListAsync(request, cancellationToken);
+        var eInfos = await _entryDateRepository.PaginateListAsync(request, cancellationToken);
         return Ok(eInfos);
     }
 }
