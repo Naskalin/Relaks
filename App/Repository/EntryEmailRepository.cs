@@ -22,6 +22,7 @@ public class EntryEmailRepository : BaseRepository<EntryEmail>
         if (request.Search != null)
             query = query.Where(x => EF.Functions.Like(x.Title, "%" + request.Search + "%")
                                      || EF.Functions.Like(x.Email, "%" + request.Search + "%")
+                                     || EF.Functions.Like(x.DeletedReason, "%" + request.Search + "%")
             );
 
         if (request.OrderBy != null)

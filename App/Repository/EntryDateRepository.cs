@@ -18,7 +18,13 @@ public class EntryDateRepository : BaseRepository<EntryDate>
     {
         var query = Entities.Where(x => x.EntryId == request.EntryId)
             .Where(x => request.Deleted == true ? x.DeletedAt != null : x.DeletedAt == null);
-        if (request.Search != null) query = query.Where(x => EF.Functions.Like(x.Title, "%" + request.Search + "%"));
+        if (request.Search != null)
+        {
+            query = query.Where(x => 
+                EF.Functions.Like(x.Title, "%" + request.Search + "%")
+                || EF.Functions.Like(x.DeletedReason, "%" + request.Search + "%")
+                );
+        }
 
         if (request.OrderBy != null)
         {

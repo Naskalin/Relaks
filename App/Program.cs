@@ -46,7 +46,13 @@ builder.Services.Configure<ApiBehaviorOptions>(o =>
 
 // builder.Services.AddTransient<BaseRepository<BaseEntity>>();
 builder.Services.AddTransient<EntryRepository>();
-builder.Services.AddTransient<EntryInfoDateRepository>();
+
+// EntryInfo
+builder.Services.AddTransient<EntryDateRepository>();
+builder.Services.AddTransient<EntryEmailRepository>();
+builder.Services.AddTransient<EntryNoteRepository>();
+builder.Services.AddTransient<EntryPhoneRepository>();
+builder.Services.AddTransient<EntryUrlRepository>();
 // builder.Services.AddTransient<EntryDateRepository>();
 // builder.Services.AddTransient<EntryTextRepository>();
 

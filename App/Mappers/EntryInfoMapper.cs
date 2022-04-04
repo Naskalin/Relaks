@@ -1,6 +1,7 @@
 ﻿using App.Endpoints.Entries.EntryInfos;
 using App.Endpoints.Entries.EntryInfos.Date;
 using App.Endpoints.Entries.EntryInfos.Email;
+using App.Endpoints.Entries.EntryInfos.Note;
 using App.Models;
 using App.Utils;
 
@@ -43,12 +44,12 @@ public static class EntryInfoMapper
         MapToCommon(details, eInfo);
         eInfo.Email = details.Email.Trim().ToLower();
     }
-    //
-    // public static void MapTo(this EntryInfoDetails details, EntryInfoNote eInfo)
-    // {
-    //     MapToCommon(details, eInfo);
-    //     eInfo.Note = details.Note!.Trim();
-    // }
+    
+    public static void MapTo(this RequestNoteDetails details, EntryNote eInfo)
+    {
+        MapToCommon(details, eInfo);
+        eInfo.Note = details.Note.Trim();
+    }
 
 
     public static void MapTo(this RequestDateDetails details, EntryDate eInfo)
