@@ -22,5 +22,6 @@ public class DatabaseSeeder
         await new EntryNoteSeeder(Db).Seed();
         await new EntryPhoneSeeder(Db).Seed();
         await new EntryUrlSeeder(Db).Seed();
+        await new EntryEmailSeeder(Db).Seed();
     }
 }
