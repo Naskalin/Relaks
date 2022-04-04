@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
-namespace App.Endpoints.Entries.EntryInfos.Date;
+namespace App.Endpoints.Entries.EntryInfos.Url;
 
 public class CreateRequest
 {
@@ -10,13 +10,13 @@ public class CreateRequest
     public Guid EntryId { get; set; }
 
     [FromBody]
-    public RequestDateDetails Details { get; set; } = null!;
+    public RequestUrlDetails Details { get; set; } = null!;
 }
 
-public class RequestDateDetails : IEntryInfoFormCommonRequest
+public class RequestUrlDetails : IEntryInfoFormCommonRequest
 {
     public string Title { get; set; } = null!;
     public DateTime? DeletedAt { get; set; }
     public string DeletedReason { get; set; } = null!;
-    public DateTime Date { get; set; }
+    public string Url { get; set; } = null!;
 }

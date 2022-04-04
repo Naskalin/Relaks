@@ -4,6 +4,7 @@ using App.Endpoints.Entries.EntryInfos.Date;
 using App.Endpoints.Entries.EntryInfos.Email;
 using App.Endpoints.Entries.EntryInfos.Note;
 using App.Endpoints.Entries.EntryInfos.Phone;
+using App.Endpoints.Entries.EntryInfos.Url;
 using App.Models;
 using App.Utils;
 
@@ -35,17 +36,19 @@ public static class EntryInfoMapper
         // eInfo.Val = val;
     }
     //
-    // public static void MapTo(this EntryInfoDetails details, EntryInfoUrl eInfo)
-    // {
-    //     MapToCommon(details, eInfo);
-    //     eInfo.Url = details.Url!.Trim().ToLower();
-    // }
+
     //
     // public static void MapTo(this ISoftDeletableRequest req, EntryInfo eInfo)
     // {
     //     eInfo.DeletedReason = req.DeletedReason.Trim();
     // }
     //
+    public static void MapTo(this RequestUrlDetails details, EntryUrl eInfo)
+    {
+        MapToCommon(details, eInfo);
+        eInfo.Url = details.Url.Trim().ToLower();
+    }
+    
     public static void MapTo(this RequestEmailDetails details, EntryEmail eInfo)
     {
         MapToCommon(details, eInfo);
