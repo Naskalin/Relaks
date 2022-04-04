@@ -1,18 +1,27 @@
 ﻿import {ApiListRequest} from "./index";
 
 export declare type EntryType = 'Person' | 'Company' | 'Meet';
-export declare type EntryTextType = 'Note' | 'Phone' | 'Email' | 'Url';
+export declare type EntryInfoType = 'Note' | 'Phone' | 'Email' | 'Url' | 'Date';
 
-export declare type ActualTypes = {
-    actualStartAt: string
-    actualEndAt: string | null
-    actualStartAtReason: string
-    actualEndAtReason: string
+// export declare type ActualTypes = {
+//     actualStartAt: string
+//     actualEndAt: string | null
+//     actualStartAtReason: string
+//     actualEndAtReason: string
+// }
+
+declare type SoftDeletableType = {
+    deletedAt: string | null
+    deletedReason: string
 }
-
-export declare type TimestampTypes = {
+declare type TimestampTypes = {
     createdAt: string
     updatedAt: string
+}
+
+export declare type PhoneType = {
+    phoneNumber: string
+    phoneRegion: string
 }
 
 // Entry
@@ -23,30 +32,57 @@ export declare type CreateEntryRequest = {
     reputation: number
     startAt: string | null
     endAt: string | null
-} & ActualTypes
+    isDeleted: boolean
+} & SoftDeletableType
+
 export declare type UpdateEntryRequest = {} & CreateEntryRequest
 export declare type ListEntryRequest = {
     page: number
     perPage: number
-    entryType: EntryType } & ApiListRequest
+    entryType: EntryType
+} & ApiListRequest
 export declare type Entry = { id: string } & CreateEntryRequest & TimestampTypes;
 
-// EntryDate
-export declare type CreateEntryDateRequest = {
-    title: string,
-    val: string
-    entryId: string
-} & ActualTypes
-export declare type UpdateEntryDateRequest = {} & CreateEntryDateRequest
-export declare type ListEntryDateRequest = {} & ApiListRequest
-export declare type EntryDate = { id: string, entry: Entry } & CreateEntryDateRequest & ActualTypes & TimestampTypes;
-
-// EntryText
-export declare type CreateEntryTextRequest = {
+// EntryInfo
+declare type EntryInfoCommonFormRequest = {
     title: string
-    val: string
-    textType: EntryTextType
-} & ActualTypes
-export declare type UpdateEntryTextRequest = {} & CreateEntryTextRequest
-export declare type ListEntryTextRequest = { textType: EntryTextType } & ApiListRequest
-export declare type EntryText = { id: string, entry: Entry, entryId: string } & CreateEntryTextRequest & ActualTypes & TimestampTypes;
+} & SoftDeletableType
+declare type EntryInfo = {
+    id: string,
+    entryId: string,
+    title: string,
+    discriminator: EntryInfoType
+} & SoftDeletableType & TimestampTypes
+
+// EntryDate
+export declare type EntryDateFormRequest = { date: string } & EntryInfoCommonFormRequest
+export declare type EntryDate = { date: string } & EntryInfo
+
+// EntryNote
+export declare type EntryNoteFormRequest = { note: string } & EntryInfoCommonFormRequest
+export declare type EntryNote = { note: string } & EntryInfo
+
+// EntryPhone
+export declare type EntryPhoneFormRequest = { phoneNumber: string, phoneRegion: string } & EntryInfoCommonFormRequest
+export declare type EntryPhone = {} & PhoneType & EntryInfo
+
+// EntryEmail
+export declare type EntryEmailFormRequest = { email: string } & EntryInfoCommonFormRequest
+export declare type EntryEmail = { email: string } & EntryInfo
+
+// EntryUrl
+export declare type EntryUrlFormRequest = { url: string } & EntryInfoCommonFormRequest
+export declare type EntryUrl = { url: string } & EntryInfo
+
+// export declare type CreateEntryTextRequest = {
+//     title: string
+//     val: string
+//     textType: EntryInfoType
+// } & SoftDeletableType
+// export declare type UpdateEntryTextRequest = {} & CreateEntryTextRequest
+// export declare type ListEntryTextRequest = { textType: EntryInfoType } & ApiListRequest
+// export declare type EntryText =
+//     { id: string, entry: Entry, entryId: string }
+//     & CreateEntryTextRequest
+//     & SoftDeletableType
+//     & TimestampTypes;

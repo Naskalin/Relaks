@@ -9,10 +9,12 @@ export const apiMappers = {
             reputation: entry.reputation,
             startAt: entry.startAt,
             endAt: entry.endAt,
-            actualStartAt: entry.actualStartAt,
-            actualEndAt: entry.actualEndAt,
-            actualStartAtReason: entry.actualStartAtReason,
-            actualEndAtReason: entry.actualEndAtReason,
+            deletedAt: entry.deletedAt,
+            deletedReason: entry.deletedReason,
+            // actualStartAt: entry.actualStartAt,
+            // actualEndAt: entry.actualEndAt,
+            // actualStartAtReason: entry.actualStartAtReason,
+            // actualEndAtReason: entry.actualEndAtReason,
         }
     },
     toUpdateEntryTextRequest: (eText: EntryText) : UpdateEntryTextRequest => {
@@ -20,10 +22,6 @@ export const apiMappers = {
             val: eText.val,
             title: eText.title,
             textType: eText.textType,
-            actualStartAt: eText.actualStartAt,
-            actualEndAt: eText.actualEndAt,
-            actualStartAtReason: eText.actualStartAtReason,
-            actualEndAtReason: eText.actualEndAtReason,
         }
     },
 }

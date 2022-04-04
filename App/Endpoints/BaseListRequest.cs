@@ -20,5 +20,5 @@ public class BaseListRequest : IListRequest
     public bool? OrderByDesc { get; set; }
     
     [FromQuery]
-    public bool? Deleted { get; set; }
+    public bool? isDeleted { get; set; }
 }

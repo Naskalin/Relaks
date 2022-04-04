@@ -150,7 +150,7 @@ import {dateHelper} from "../../../utils/date_helper";
 import {useEntryEditStore} from "../../../store/entry/entry.edit.store";
 import {apiMappers} from "../../../api/api_mappers";
 import {useRoute} from "vue-router";
-import {EntryTextType} from "../../../api/api_types";
+import {EntryInfoType} from "../../../api/api_types";
 import {useEntryContactsStore} from "../../../store/entry_contacts/entry_cotacts_store";
 
 const editStore = useEntryEditStore();
@@ -187,7 +187,7 @@ const updateEntry = async () => {
 // Добавление entryText email/phone/url
 const entryTextCreateStore = useEntryTextCreateStore();
 const isShowCreateEntryTextModal = ref(false);
-const showCreateEntryTextModal = (textType: EntryTextType) => {
+const showCreateEntryTextModal = (textType: EntryInfoType) => {
     if (props.withEdit) {
         entryTextCreateStore.model.actualStartAt = new Date().toISOString();
         entryTextCreateStore.model.textType = textType;

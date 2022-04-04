@@ -14,7 +14,7 @@ public class EntryRepository : BaseRepository<Entry>
     
     public async Task<IEnumerable<Entry>> PaginateListAsync(ListRequest req, CancellationToken cancellationToken)
     {
-        var query = Entities.Where(x => req.Deleted == true ? x.DeletedAt != null : x.DeletedAt == null);
+        var query = Entities.Where(x => req.isDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
 
         if (req.EntryType != null)
         {

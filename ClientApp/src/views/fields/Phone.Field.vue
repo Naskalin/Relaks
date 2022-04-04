@@ -1,7 +1,7 @@
 ﻿<template>
     <div class="flex q-gutter-x-md">
         <q-select
-            :model-value="country"
+            :model-value="model.phoneRegion"
             @update:model-value="onSelectCountry"
             use-input
             input-debounce="0"
@@ -19,68 +19,48 @@
                 </q-item>
             </template>
             <template v-slot:selected>
-                <div v-if="country">
-                    <span class="q-mr-sm fi" :class="'fi-' + country.toLowerCase()"></span>
-                    <!--                    <span class="text-grey-8">+{{ countries[country].phone }} | {{country}}</span>-->
-                    <span class="text-grey-8">{{country}}</span>
+                <div v-if="model.phoneRegion">
+                    <span class="q-mr-sm fi" :class="'fi-' + model.phoneRegion.toLowerCase()"></span>
+                    <span class="text-grey-8">{{model.phoneRegion}}</span>
                 </div>
                 <q-badge v-else>*none*</q-badge>
             </template>
         </q-select>
 
-        <q-input style="width: 200px" :model-value="number" @update:model-value="onUpdateNumber" label="Номер телефона"/>
+        <q-input style="width: 200px" v-model="model.phoneNumber" label="Номер телефона"/>
     </div>
 </template>
 
 <script setup lang="ts">
 import {countries} from "countries-list";
-import {ref, watch} from "vue";
-import {phoneHelper} from "../../utils/phone_helper";
+import {ref, watch, computed, onMounted} from "vue";
+// import {phoneHelper} from "../../utils/phone_helper";
 import {appDefaults} from "../../app_defaults";
+import {PhoneType} from "../../api/api_types";
 
 type SelectItem = {
     value: string,
     label: string
 }
 const props = defineProps<{
-    modelValue: string
+    modelValue: PhoneType
 }>()
 const emit = defineEmits<{
-    (e: 'update:modelValue', val: string): void
+    (e: 'update:modelValue', val: PhoneType): void
 }>()
 
-const country = ref(appDefaults.phoneRegion);
-const number = ref('');
-watch(() => props.modelValue, (val) => {
-    if (val === ('')) {
-        return;
-    }
-
-    const phone = phoneHelper.toPhone(val);
-    country.value = phone.region.toUpperCase();
-    number.value = phone.number;
-}, {immediate: true})
+const model = computed({
+    get: () => props.modelValue,
+    set: (val) => emit('update:modelValue', val)
+})
+onMounted(() => {
+    if (model.value.phoneRegion === '') model.value.phoneRegion = appDefaults.phoneRegion;
+})
 
 const onSelectCountry = (val: SelectItem) => {
-    country.value = val.value;
-    emitModel();
+    model.value.phoneRegion = val.value;
 }
-const onUpdateNumber = (val: string) => {
-    number.value = val;
-    emitModel();
-}
-const emitModel = () => {
-    let emitStr = phoneHelper.toString({
-        region: country.value,
-        number: number.value
-    });
-    
-    if (number.value === '') {
-        emitStr = '';
-    }
-    
-    emit('update:modelValue', emitStr);
-}
+
 const allCountries: SelectItem[] = [];
 for (const [region, value] of Object.entries(countries)) {
     const desc = [];

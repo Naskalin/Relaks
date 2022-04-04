@@ -36,15 +36,14 @@ export declare type ApiListRequest = {
     search?: string
     orderBy?: string
     orderByDesc?: string
+    isDeleted?: boolean
 }
 
 export declare type ApiAnyRequest = {
-    [index: string]: string | number | null
+    [index: string]: any
 }
 
-export declare type ApiCreateRequest = {
-    [index: string]: string | number | null
-}
+export declare type ApiCreateRequest = {} & ApiAnyRequest;
 export declare type ApiUpdateRequest = {} & ApiCreateRequest;
 
 export declare type EndpointParams = {

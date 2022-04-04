@@ -18,7 +18,7 @@ public class EntryUrlRepository : BaseRepository<EntryUrl>
     )
     {
         var query = Entities.Where(x => x.EntryId == request.EntryId)
-            .Where(x => request.Deleted == true ? x.DeletedAt != null : x.DeletedAt == null);
+            .Where(x => request.isDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
         
         if (request.Search != null)
             query = query.Where(x => EF.Functions.Like(x.Title, "%" + request.Search + "%")

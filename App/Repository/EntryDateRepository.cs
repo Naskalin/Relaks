@@ -17,7 +17,7 @@ public class EntryDateRepository : BaseRepository<EntryDate>
         CancellationToken cancellationToken)
     {
         var query = Entities.Where(x => x.EntryId == request.EntryId)
-            .Where(x => request.Deleted == true ? x.DeletedAt != null : x.DeletedAt == null);
+            .Where(x => request.isDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
         if (request.Search != null)
         {
             query = query.Where(x => 

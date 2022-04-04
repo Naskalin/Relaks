@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    <actual-fieldset v-model="model"></actual-fieldset>
+<!--    <actual-fieldset v-model="model"></actual-fieldset>-->
 </template>
 
 <script setup lang="ts">
@@ -53,7 +53,7 @@ import {CreateEntryRequest, UpdateEntryRequest} from "../../../api/api_types";
 import DateField from '../../fields/Date.Field.vue';
 import {computed} from "vue";
 import {entryMessages} from "../../../localize/messages";
-import ActualFieldset from '../../fieldsets/Actual.Fieldset.vue';
+// import ActualFieldset from '../../fieldsets/Actual.Fieldset.vue';
 
 const props = defineProps<{
     modelValue: CreateEntryRequest | UpdateEntryRequest,

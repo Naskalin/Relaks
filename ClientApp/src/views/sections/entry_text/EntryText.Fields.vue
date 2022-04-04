@@ -24,13 +24,13 @@
         type="textarea"
     />
 
-    <actual-fieldset v-model="model"></actual-fieldset>
+<!--    <actual-fieldset v-model="model"></actual-fieldset>-->
 </template>
 
 <script setup lang="ts">
 import {CreateEntryTextRequest, UpdateEntryTextRequest} from "../../../api/api_types";
 import {computed, ref} from "vue";
-import ActualFieldset from '../../fieldsets/Actual.Fieldset.vue';
+// import ActualFieldset from '../../fieldsets/Actual.Fieldset.vue';
 import PhoneField from '../../fields/Phone.Field.vue';
 import {entryTextMessages} from "../../../localize/messages";
 import {editorHelper} from "../../../utils/editorOnPaste";
