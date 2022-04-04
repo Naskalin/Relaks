@@ -7,7 +7,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace App.Endpoints.Entries.EntryInfos.Date;
 
 public class Delete : EndpointBaseAsync
-    .WithRequest<EInfoGetRequest>
+    .WithRequest<EntryInfoGetRequest>
     .WithActionResult
 {
     private readonly EntryDateRepository _entryDateRepository;
@@ -20,7 +20,7 @@ public class Delete : EndpointBaseAsync
     [HttpDelete("/api/entries/{entryId}/dates/{entryInfoId}")]
     [SwaggerOperation(OperationId = "EntryDate.Delete", Tags = new[] {"EntryDate"})]
     public override async Task<ActionResult> HandleAsync(
-        [FromMultiSource] EInfoGetRequest request,
+        [FromMultiSource] EntryInfoGetRequest request,
         CancellationToken cancellationToken = new())
     {
         var eInfo = await _entryDateRepository.FindByIdAsync(request.EntryInfoId, cancellationToken);
@@ -28,7 +28,7 @@ public class Delete : EndpointBaseAsync
         {
             return NotFound();
         }
-
+        
         await _entryDateRepository.TrySoftDelete(eInfo, cancellationToken);
         return NoContent();
     }

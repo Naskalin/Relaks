@@ -55,6 +55,6 @@ public class Create : EndpointBaseAsync
         entry.UpdatedAt = DateTime.UtcNow;
         await _entryRepository.UpdateAsync(entry, cancellationToken);
 
-        return CreatedAtRoute("Entries_Dates_Get", new {entryId = entry.Id, entryInfoId = eInfo.Id}, eInfo);
+        return CreatedAtRoute("EntryDate_Get", new {entryId = entry.Id, entryInfoId = eInfo.Id}, eInfo);
     }
 }

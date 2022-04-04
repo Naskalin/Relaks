@@ -1,7 +1,9 @@
-﻿using App.Endpoints.Entries.EntryInfos;
+﻿using App.Endpoints;
+using App.Endpoints.Entries.EntryInfos;
 using App.Endpoints.Entries.EntryInfos.Date;
 using App.Endpoints.Entries.EntryInfos.Email;
 using App.Endpoints.Entries.EntryInfos.Note;
+using App.Endpoints.Entries.EntryInfos.Phone;
 using App.Models;
 using App.Utils;
 
@@ -39,6 +41,11 @@ public static class EntryInfoMapper
     //     eInfo.Url = details.Url!.Trim().ToLower();
     // }
     //
+    // public static void MapTo(this ISoftDeletableRequest req, EntryInfo eInfo)
+    // {
+    //     eInfo.DeletedReason = req.DeletedReason.Trim();
+    // }
+    //
     public static void MapTo(this RequestEmailDetails details, EntryEmail eInfo)
     {
         MapToCommon(details, eInfo);
@@ -58,10 +65,11 @@ public static class EntryInfoMapper
         eInfo.Date = details.Date;
     }
 
-    // public static void MapTo(this EntryInfoDetails details, EntryInfoPhone eInfo)
-    // {
-    //     MapToCommon(details, eInfo);
-    //     // eInfo.Phone = details.Details.Url!.ToLower();
-    //     throw new NotImplementedException();
-    // }
+    public static void MapTo(this RequestPhoneDetails details, EntryPhone eInfo)
+    {
+        MapToCommon(details, eInfo);
+        var phone = PhoneHelper.ToPhone(details.PhoneNumber, details.PhoneRegion);
+        eInfo.PhoneNumber = phone.Number;
+        eInfo.PhoneRegion = phone.Region;
+    }
 }

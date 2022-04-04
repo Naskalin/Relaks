@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace App.Endpoints.Entries.EntryInfos.Email;
 
 public class List : EndpointBaseAsync
-    .WithRequest<EInfoListRequest>
+    .WithRequest<EntryInfoListRequest>
     .WithActionResult<List<EntryEmail>>
 {
     private readonly EntryEmailRepository _entryEmailRepository;
@@ -21,7 +21,7 @@ public class List : EndpointBaseAsync
     [HttpGet("/api/entries/{entryId}/emails")]
     [SwaggerOperation(OperationId = "EntryEmail.List", Tags = new[] {"EntryEmail"})]
     public override async Task<ActionResult<List<EntryEmail>>> HandleAsync(
-        [FromMultiSource] EInfoListRequest request,
+        [FromMultiSource] EntryInfoListRequest request,
         CancellationToken cancellationToken = new()
     )
     {

@@ -13,7 +13,7 @@ public class EntryEmailRepository : BaseRepository<EntryEmail>
     }
 
     public async Task<List<EntryEmail>> PaginateListAsync(
-        EInfoListRequest request,
+        EntryInfoListRequest request,
         CancellationToken cancellationToken)
     {
         var query = Entities.Where(x => x.EntryId == request.EntryId)

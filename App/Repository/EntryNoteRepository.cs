@@ -13,7 +13,7 @@ public class EntryNoteRepository : BaseRepository<EntryNote>
     {
     }
 
-    public async Task<List<EntryNote>> PaginateListAsync(EInfoListRequest request, CancellationToken cancellationToken)
+    public async Task<List<EntryNote>> PaginateListAsync(EntryInfoListRequest request, CancellationToken cancellationToken)
     {
         var query = Entities.Where(x => x.EntryId == request.EntryId)
             .Where(x => request.Deleted == true ? x.DeletedAt != null : x.DeletedAt == null);

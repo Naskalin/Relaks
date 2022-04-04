@@ -2,7 +2,7 @@
 
 namespace App.Endpoints.Entries.EntryInfos;
 
-public class EInfoGetRequest
+public class EntryInfoGetRequest
 {
     [FromRoute] public Guid EntryId { get; set; }
     [FromRoute] public Guid EntryInfoId { get; set; }

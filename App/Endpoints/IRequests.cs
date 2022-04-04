@@ -22,3 +22,8 @@ public interface IOrderableRequest
     public string? OrderBy { get; set; }
     public bool? OrderByDesc { get; set; }
 }
+
+// public interface ISoftDeletableRequest
+// {
+//     public string DeletedReason { get; set; }   
+// }

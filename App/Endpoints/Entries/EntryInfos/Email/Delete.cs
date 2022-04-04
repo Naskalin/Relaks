@@ -7,7 +7,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace App.Endpoints.Entries.EntryInfos.Email;
 
 public class Delete : EndpointBaseAsync
-    .WithRequest<EInfoGetRequest>
+    .WithRequest<EntryInfoGetRequest>
     .WithActionResult
 {
     private readonly EntryEmailRepository _entryEmailRepository;
@@ -20,7 +20,7 @@ public class Delete : EndpointBaseAsync
     [HttpDelete("/api/entries/{entryId}/emails/{entryInfoId}")]
     [SwaggerOperation(OperationId = "EntryEmail.Delete", Tags = new[] {"EntryEmail"})]
     public override async Task<ActionResult> HandleAsync(
-        [FromMultiSource] EInfoGetRequest request,
+        [FromMultiSource] EntryInfoGetRequest request,
         CancellationToken cancellationToken = new())
     {
         var eInfo = await _entryEmailRepository.FindByIdAsync(request.EntryInfoId, cancellationToken);

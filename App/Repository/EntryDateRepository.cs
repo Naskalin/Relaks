@@ -13,7 +13,7 @@ public class EntryDateRepository : BaseRepository<EntryDate>
     }
 
     public async Task<List<EntryDate>> PaginateListAsync(
-        EInfoListRequest request,
+        EntryInfoListRequest request,
         CancellationToken cancellationToken)
     {
         var query = Entities.Where(x => x.EntryId == request.EntryId)

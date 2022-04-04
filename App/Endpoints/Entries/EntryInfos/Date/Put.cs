@@ -29,22 +29,22 @@ public class Put : EndpointBaseAsync
         CancellationToken cancellationToken = new())
     {
         var validation = await new FormRequestValidator().ValidateAsync(request.Details, cancellationToken);
-         if (!validation.IsValid)
-         {
-             validation.Errors.ForEach(e => { ModelState.AddModelError(e.PropertyName, e.ErrorMessage); });
-             return (ActionResult) _apiOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
-         }
-         
-         var eInfo = await _entryDateRepository.FindByIdAsync(request.EntryInfoId, cancellationToken);
-         if (eInfo == null || eInfo.EntryId != request.EntryId)
-         {
-             return NotFound();
-         }
+        if (!validation.IsValid)
+        {
+            validation.Errors.ForEach(e => { ModelState.AddModelError(e.PropertyName, e.ErrorMessage); });
+            return (ActionResult) _apiOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+        }
 
-         request.Details.MapTo(eInfo);
-         eInfo.UpdatedAt = DateTime.UtcNow;
-         await _entryDateRepository.UpdateAsync(eInfo, cancellationToken);
+        var eInfo = await _entryDateRepository.FindByIdAsync(request.EntryInfoId, cancellationToken);
+        if (eInfo == null || eInfo.EntryId != request.EntryId)
+        {
+            return NotFound();
+        }
 
-         return NoContent();
+        request.Details.MapTo(eInfo);
+        eInfo.UpdatedAt = DateTime.UtcNow;
+        await _entryDateRepository.UpdateAsync(eInfo, cancellationToken);
+
+        return NoContent();
     }
 }

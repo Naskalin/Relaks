@@ -52,6 +52,6 @@ public class Create : EndpointBaseAsync
         request.Details.MapTo(eInfo);
         await _entryEmailRepository.CreateAsync(eInfo, cancellationToken);
 
-        return CreatedAtRoute("Entries_Emails_Get", new {entryId = entry.Id, entryInfoId = eInfo.Id}, eInfo);
+        return CreatedAtRoute("EntryEmail_Get", new {entryId = entry.Id, entryInfoId = eInfo.Id}, eInfo);
     }
 }

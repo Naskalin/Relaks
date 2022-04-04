@@ -12,12 +12,11 @@ public static class RepositoryExtensions
         if (entity.DeletedAt == null)
         {
             entity.DeletedAt = DateTime.UtcNow;
-        }
-        else
-        {
-            baseRepository.Entities.Remove(entity);
+            await baseRepository.UpdateAsync(entity, cancellationToken);
+            return;
         }
 
+        baseRepository.Entities.Remove(entity);
         await baseRepository.Db.SaveChangesAsync(cancellationToken);
     }
 }

@@ -45,7 +45,7 @@ public class EntryNote : EntryInfo
 
 public class EntryPhone : EntryInfo
 {
-    public string Phone { get; set; } = null!;
+    public string PhoneNumber { get; set; } = null!;
     public string PhoneRegion { get; set; } = null!;
 }
 
