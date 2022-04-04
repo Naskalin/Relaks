@@ -28,7 +28,7 @@ public class Delete : EndpointBaseAsync
             return NotFound();
         }
 
-        await _entryRepository.DeleteAsync(entry, cancellationToken);
+        await _entryRepository.TrySoftDelete(entry, cancellationToken);
 
         return NoContent();
     }

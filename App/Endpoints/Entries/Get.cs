@@ -17,7 +17,7 @@ public class Get : EndpointBaseAsync
         _entryRepository = entryRepository;
     }
 
-    [HttpGet("/api/entries/{entryId}", Name = "Entries_Get")]
+    [HttpGet("/api/entries/{entryId}", Name = "Entry_Get")]
     [SwaggerOperation(OperationId = "Entry.Get", Tags = new[] {"Entry"})]
     public override async Task<ActionResult<Entry>> HandleAsync(
         [FromRoute] Guid entryId, 
