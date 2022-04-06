@@ -18,8 +18,10 @@ public class EntryPhoneRepository : BaseRepository<EntryPhone>
         CancellationToken cancellationToken
     )
     {
-        var query = Entities.Where(x => x.EntryId == request.EntryId)
-            .Where(x => request.isDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
+        var query = Entities.Where(x => x.EntryId == request.EntryId);
+        
+        if (request.isDeleted != null)
+            query = query.Where(x => request.isDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
         
         
         if (request.Search != null)

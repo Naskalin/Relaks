@@ -21,18 +21,18 @@
 <script setup lang="ts">
 import {computed} from "vue";
 import {entryMessages} from "../../../localize/messages";
-import {ListEntryRequest} from "../../../api/api_types";
+import {EntryListRequest} from "../../../api/api_types";
 
 const props = defineProps<{
-    modelValue: ListEntryRequest
+    modelValue: EntryListRequest
 }>()
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', val: ListEntryRequest): void
+    (e: 'update:modelValue', val: EntryListRequest): void
 }>()
 
 const model = computed({
-    get: (): ListEntryRequest => props.modelValue,
+    get: (): EntryListRequest => props.modelValue,
     set: val => emit('update:modelValue', val)
 })
 </script>

@@ -5,11 +5,12 @@ const entryTypeNames = {
     Company: 'Компания',
     Meet: 'Встреча',
 };
-const entryTextTypes = {
+const entryInfoTypes = {
     Phone: 'Телефон',
     Email: 'E-mail',
     Url: 'Ссылка',
     Note: 'Заметка',
+    Date: 'Дата'
 }
 
 export const timeStampMessages = {
@@ -61,26 +62,26 @@ export const entryMessages = {
     ...timeStampMessages
 }
 
-export const entryTextMessages = {
+export const entryInfoMessages = {
     ...timeStampMessages,
     title: 'Название',
     val: {
-        names: entryTextTypes,
-        selectOptions: selectHelper.toSelectOptions(entryTextTypes),
+        names: entryInfoTypes,
+        // selectOptions: selectHelper.toSelectOptions(entryInfoTypes),
     },
 }
 
-export const actualMessages = {
-    actualStartAt: {
-        name: 'Актуально с'
-    },
-    actualEndAt: {
-        name: 'Не актуально с'
-    },
-    actualStartAtReason: {
-        name: 'Актуально по причине'
-    },
-    actualEndAtReason: {
-        name: 'Не актуально по причине'
-    }
-}
+// export const actualMessages = {
+//     actualStartAt: {
+//         name: 'Актуально с'
+//     },
+//     actualEndAt: {
+//         name: 'Не актуально с'
+//     },
+//     actualStartAtReason: {
+//         name: 'Актуально по причине'
+//     },
+//     actualEndAtReason: {
+//         name: 'Не актуально по причине'
+//     }
+// }

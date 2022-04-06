@@ -1,8 +1,9 @@
 ﻿<template>
-    <q-input v-if="model.textType === 'Email'" type="email" :label="entryTextMessages.val.names.Email" v-model="model.val"/>
-    <q-input v-else-if="model.textType === 'Url'" type="url" :label="entryTextMessages.val.names.Url" v-model="model.val"/>
-    <phone-field v-else-if="model.textType === 'Phone'" v-model="model.val"/>
-    <q-editor v-else-if="model.textType === 'Note'"
+    <q-input v-if="entryInfoType === 'Email'" type="email" :label="entryInfoMessages.val.names.Email" v-model="model.email"/>
+    <q-input v-else-if="entryInfoType === 'Url'" type="url" :label="entryInfoMessages.val.names.Url" v-model="model.url"/>
+    <phone-field v-else-if="entryInfoType === 'Phone'" v-model="model.phone"/>
+    <phone-field v-else-if="entryInfoType === 'Date'" v-model="model.date"/>
+    <q-editor v-else-if="entryInfoType === 'Note'"
               @paste="onPaste"
               ref="editorRef"
               toolbar-bg="grey-4"
@@ -28,18 +29,27 @@
 </template>
 
 <script setup lang="ts">
-import {CreateEntryTextRequest, UpdateEntryTextRequest} from "../../../api/api_types";
+import {
+    EntryEmailFormRequest,
+    EntryUrlFormRequest,
+    EntryPhoneFormRequest,
+    EntryDateFormRequest,
+    EntryNoteFormRequest,
+    EntryInfoType
+} from "../../../api/api_types";
 import {computed, ref} from "vue";
 // import ActualFieldset from '../../fieldsets/Actual.Fieldset.vue';
 import PhoneField from '../../fields/Phone.Field.vue';
-import {entryTextMessages} from "../../../localize/messages";
+import DateField from '../../fields/Date.Field.vue';
+import {entryInfoMessages} from "../../../localize/messages";
 import {editorHelper} from "../../../utils/editorOnPaste";
 
 const props = defineProps<{
-    modelValue: CreateEntryTextRequest | UpdateEntryTextRequest,
+    modelValue: EntryEmailFormRequest | EntryUrlFormRequest | EntryPhoneFormRequest | EntryDateFormRequest | EntryNoteFormRequest,
+    entryInfoType: EntryInfoType
 }>()
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: CreateEntryTextRequest | UpdateEntryTextRequest): void
+    (e: 'update:modelValue', value: EntryEmailFormRequest | EntryUrlFormRequest | EntryPhoneFormRequest | EntryDateFormRequest | EntryNoteFormRequest): void
 }>()
 const model = computed({
     get: () => props.modelValue,

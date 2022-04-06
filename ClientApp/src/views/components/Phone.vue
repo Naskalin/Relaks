@@ -1,27 +1,17 @@
 ﻿<template>
     <div class="phone-show">
-        <span class="q-mr-sm fi" :class="'fi-' + p.region.toLowerCase()"></span>
-        <span>{{ p.number }}</span>
+        <span class="q-mr-sm fi" :class="'fi-' + phone.phoneRegion.toLowerCase()"></span>
+        <span>{{ phone.phoneNumber }}</span>
         <slot></slot>
     </div>
 </template>
 
 <script setup lang="ts">
-import {phoneHelper, PhoneType} from "../../utils/phone_helper";
-import {computed} from "vue";
+import {PhoneType} from "../../api/api_types";
 
 const props = defineProps<{
-    phone: PhoneType | string
+    phone: PhoneType
 }>()
-
-const p = computed((): PhoneType => {
-    if (typeof props.phone === "string") {
-        return phoneHelper.toPhone(props.phone);
-    }
-
-    return props.phone;
-})
-
 </script>
 
 <style lang="scss">

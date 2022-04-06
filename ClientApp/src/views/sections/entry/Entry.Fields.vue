@@ -49,19 +49,19 @@
 </template>
 
 <script setup lang="ts">
-import {CreateEntryRequest, UpdateEntryRequest} from "../../../api/api_types";
+import {EntryCreateRequest, EntryUpdateRequest} from "../../../api/api_types";
 import DateField from '../../fields/Date.Field.vue';
 import {computed} from "vue";
 import {entryMessages} from "../../../localize/messages";
 // import ActualFieldset from '../../fieldsets/Actual.Fieldset.vue';
 
 const props = defineProps<{
-    modelValue: CreateEntryRequest | UpdateEntryRequest,
+    modelValue: EntryCreateRequest | EntryUpdateRequest,
     isCreate: boolean,
 }>()
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: CreateEntryRequest | UpdateEntryRequest): void
+    (e: 'update:modelValue', value: EntryCreateRequest | EntryUpdateRequest): void
 }>()
 
 const model = computed({

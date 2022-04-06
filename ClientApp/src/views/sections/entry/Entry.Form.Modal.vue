@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import Modal from '../../components/Modal.vue';
-import {CreateEntryRequest, UpdateEntryRequest} from "../../../api/api_types";
+import {EntryCreateRequest, EntryUpdateRequest} from "../../../api/api_types";
 import EntryFields from './Entry.Fields.vue';
 import {computed, onMounted} from "vue";
 
@@ -36,21 +36,21 @@ const props = defineProps<{
     btnTitle: string
     btnIcon?: string
     isLoading: boolean
-    modelValue: CreateEntryRequest | UpdateEntryRequest,
+    modelValue: EntryCreateRequest | EntryUpdateRequest,
     isShow: boolean,
     isCreate: boolean
 }>()
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: CreateEntryRequest | UpdateEntryRequest): void,
+    (e: 'update:modelValue', value: EntryCreateRequest | EntryUpdateRequest): void,
     (e: 'update:isShow', value: boolean): void
-    (e: 'submit', value: CreateEntryRequest | UpdateEntryRequest): void
+    (e: 'submit', value: EntryCreateRequest | EntryUpdateRequest): void
 }>();
 const model = computed({
     get: () => props.modelValue,
     set: (val) => emit('update:modelValue', val)
 })
-onMounted(() => {
-    if (props.isCreate) model.value.actualStartAt = new Date().toISOString();
-})
+// onMounted(() => {
+//     if (props.isCreate) model.value.actualStartAt = new Date().toISOString();
+// })
 </script>

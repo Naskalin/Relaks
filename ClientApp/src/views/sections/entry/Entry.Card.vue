@@ -20,38 +20,23 @@
             </div>
         </q-card-section>
 
-        <q-card-section v-if="withEdit" class="q-gutter-x-sm text-center">
-            <q-btn round @click="isShowEditModal = true" color="primary" icon="las la-edit">
-                <q-tooltip anchor="center right" self="center left" :offset="[5, 10]" class="bg-secondary"
-                           style="font-size: .9em">
-                    Изменить объединение
-                </q-tooltip>
-            </q-btn>
-<!--            <q-fab-->
-<!--                label="Actions"-->
-<!--                external-label-->
-<!--                label-class="bg-grey-3 text-purple"-->
-<!--                vertical-actions-align="left"-->
-<!--                color="primary"-->
-<!--                icon="las la-plus"-->
-<!--                direction="right"-->
-<!--                padding="md"-->
-<!--            >-->
-<!--                <q-fab-action external-label label-position="top" color="secondary" @click="showCreateEntryTextModal('Phone')" icon="las la-phone" label="Телефон" />-->
-<!--                <q-fab-action external-label label-position="top" color="secondary" @click="showCreateEntryTextModal('Email')" icon="las la-envelope" label="E-mail" />-->
-<!--                <q-fab-action external-label label-position="top" color="secondary" @click="showCreateEntryTextModal('Url')" icon="las la-envelope" label="Ссылку" />-->
-<!--&lt;!&ndash;                <q-fab-action label-class="bg-grey-3 text-grey-8" external-label color="accent" @click="onClick" icon="room" label="Map" />&ndash;&gt;-->
-<!--            </q-fab>-->
-            <q-btn round @click="showCreateEntryTextModal('Phone')" color="secondary" icon="las la-phone">
-                <arrow-tooltip direction="top">Добавить телефон</arrow-tooltip>
-            </q-btn>
-            <q-btn round @click="showCreateEntryTextModal('Email')" color="secondary" icon="las la-envelope">
-                <arrow-tooltip direction="top">Добавить e-mail</arrow-tooltip>
-            </q-btn>
-            <q-btn round @click="showCreateEntryTextModal('Url')" color="secondary" icon="las la-link">
-                <arrow-tooltip direction="top">Добавить ссылку</arrow-tooltip>
-            </q-btn>
-        </q-card-section>
+        <!--        <q-card-section v-if="withEdit" class="q-gutter-x-sm text-center">-->
+        <!--            <q-btn round @click="isShowEditModal = true" color="primary" icon="las la-edit">-->
+        <!--                <q-tooltip anchor="center right" self="center left" :offset="[5, 10]" class="bg-secondary"-->
+        <!--                           style="font-size: .9em">-->
+        <!--                    Изменить объединение-->
+        <!--                </q-tooltip>-->
+        <!--            </q-btn>-->
+        <!--            <q-btn round @click="showCreateEntryInfoModal('Phone')" color="secondary" icon="las la-phone">-->
+        <!--                <arrow-tooltip direction="top">Добавить телефон</arrow-tooltip>-->
+        <!--            </q-btn>-->
+        <!--            <q-btn round @click="showCreateEntryInfoModal('Email')" color="secondary" icon="las la-envelope">-->
+        <!--                <arrow-tooltip direction="top">Добавить e-mail</arrow-tooltip>-->
+        <!--            </q-btn>-->
+        <!--            <q-btn round @click="showCreateEntryInfoModal('Url')" color="secondary" icon="las la-link">-->
+        <!--                <arrow-tooltip direction="top">Добавить ссылку</arrow-tooltip>-->
+        <!--            </q-btn>-->
+        <!--        </q-card-section>-->
 
         <card-contacts :entry-id="entry.id" :with-edit="true"></card-contacts>
 
@@ -74,30 +59,30 @@
             <q-separator/>
         </template>
 
-        <q-card-section>
-            <span class="label-caption text-grey-8 q-mr-xs">{{ actualMessages.actualStartAt.name }}</span>
-            {{ dateHelper.utcFormat(entry.actualStartAt) }}
-            <div v-if="entry.actualStartAtReason">
-                <span class="label-caption text-grey-8 q-mr-xs">{{ actualMessages.actualStartAtReason.name }}</span>
-                {{ entry.actualStartAtReason }}
-            </div>
-        </q-card-section>
+        <!--        <q-card-section>-->
+        <!--            <span class="label-caption text-grey-8 q-mr-xs">{{ actualMessages.actualStartAt.name }}</span>-->
+        <!--            {{ dateHelper.utcFormat(entry.actualStartAt) }}-->
+        <!--            <div v-if="entry.actualStartAtReason">-->
+        <!--                <span class="label-caption text-grey-8 q-mr-xs">{{ actualMessages.actualStartAtReason.name }}</span>-->
+        <!--                {{ entry.actualStartAtReason }}-->
+        <!--            </div>-->
+        <!--        </q-card-section>-->
 
-        <template v-if="entry.actualEndAt || entry.actualEndAtReason">
-            <q-separator/>
-            <q-card-section>
-                <template v-if="entry.actualEndAt">
-                    <span class="label-caption text-grey-8 q-mr-xs">{{ actualMessages.actualEndAt.name }}</span>
-                    {{ dateHelper.utcFormat(entry.actualEndAt) }}
-                </template>
-                <div v-if="entry.actualEndAtReason">
-                    <span class="label-caption text-grey-8 q-mr-xs">{{ actualMessages.actualEndAtReason.name }}</span>
-                    {{ entry.actualEndAtReason }}
-                </div>
-            </q-card-section>
-        </template>
+        <!--        <template v-if="entry.actualEndAt || entry.actualEndAtReason">-->
+        <!--            <q-separator/>-->
+        <!--            <q-card-section>-->
+        <!--                <template v-if="entry.actualEndAt">-->
+        <!--                    <span class="label-caption text-grey-8 q-mr-xs">{{ actualMessages.actualEndAt.name }}</span>-->
+        <!--                    {{ dateHelper.utcFormat(entry.actualEndAt) }}-->
+        <!--                </template>-->
+        <!--                <div v-if="entry.actualEndAtReason">-->
+        <!--                    <span class="label-caption text-grey-8 q-mr-xs">{{ actualMessages.actualEndAtReason.name }}</span>-->
+        <!--                    {{ entry.actualEndAtReason }}-->
+        <!--                </div>-->
+        <!--            </q-card-section>-->
+        <!--        </template>-->
 
-        <q-separator/>
+<!--        <q-separator/>-->
 
         <q-card-section>
             <div class="row">
@@ -115,24 +100,25 @@
         </q-card-section>
     </q-card>
 
-    <entry-form-modal v-if="withEdit && editStore.model"
-                      title="Изменение объединения"
-                      btn-title="Сохранить"
-                      btn-icon="las la-save"
-                      :is-loading="editStore.isLoading"
-                      :is-create="false"
-                      v-model="editStore.model"
-                      v-model:is-show="isShowEditModal"
-                      @submit="updateEntry"
-    />
-    <entry-text-form-modal
-        :title="'Добавление: ' + entryTextMessages.val.names[entryTextCreateStore.model.textType]"
+    <!--    <entry-form-modal v-if="withEdit && editStore.model"-->
+    <!--                      title="Изменение объединения"-->
+    <!--                      btn-title="Сохранить"-->
+    <!--                      btn-icon="las la-save"-->
+    <!--                      :is-loading="editStore.isLoading"-->
+    <!--                      :is-create="false"-->
+    <!--                      v-model="editStore.model"-->
+    <!--                      v-model:is-show="isShowEditModal"-->
+    <!--                      @submit="updateEntry"-->
+    <!--    />-->
+    <entry-info-form-modal
+        :title="'Добавление: ' + entryInfoMessages.val.names[entryInfoFormType]"
         :is-create="true"
-        :is-loading="entryTextCreateStore.isLoading"
-        v-model:is-show="isShowCreateEntryTextModal"
-        v-model="entryTextCreateStore.model"
+        :entry-info-type="entryInfoFormType"
+        :is-loading="entryInfoCreateStore.isLoading"
+        v-model:is-show="isShowCreateModal"
+        v-model="entryInfoCreateStore.model"
         btn-title="Добавить"
-        @submit="createEntryText"
+        @submit="createEntryInfo"
     />
 </template>
 
@@ -140,18 +126,18 @@
 import CardContacts from './Entry.Card.Contacts.vue';
 import ArrowTooltip from '../../components/Arrow.Tooltip.vue';
 import EntryFormModal from './Entry.Form.Modal.vue';
-import EntryTextFormModal from '../entry_text/EntryText.Form.Modal.vue';
+import EntryInfoFormModal from '../entry_info/EntryInfo.Form.Modal.vue';
 
-import {useEntryTextCreateStore} from "../../../store/entry_text/entryText.create.store";
+import {useEntryInfoCreateStore} from "../../../store/entry_info/entryInfo.create.store";
 import {withDefaults, ref, watch} from "vue";
-import {entryMessages, actualMessages, entryTextMessages} from "../../../localize/messages";
+import {entryMessages, entryInfoMessages} from "../../../localize/messages";
 import {Entry} from "../../../api/api_types";
 import {dateHelper} from "../../../utils/date_helper";
 import {useEntryEditStore} from "../../../store/entry/entry.edit.store";
 import {apiMappers} from "../../../api/api_mappers";
 import {useRoute} from "vue-router";
 import {EntryInfoType} from "../../../api/api_types";
-import {useEntryContactsStore} from "../../../store/entry_contacts/entry_cotacts_store";
+import {useEntryInfoListStore} from "../../../store/entry_info/entryInfo.list.store";
 
 const editStore = useEntryEditStore();
 const isShowEditModal = ref(false);
@@ -162,43 +148,50 @@ const props = withDefaults(defineProps<{
     withEdit: false
 })
 
-if (props.withEdit) {
-    watch(() => isShowEditModal.value, (val) => {
-        if (val) {
-            editStore.model = apiMappers.toUpdateEntryRequest(props.entry);
-        }
-    })
-}
-const emit = defineEmits<{
-    (e: 'update-entry', entryId: string): void
-}>()
-
+// if (props.withEdit) {
+//     watch(() => isShowEditModal.value, (val) => {
+//         if (val) {
+//             editStore.model = apiMappers.toEntryFormRequest(props.entry);
+//         }
+//     })
+// }
+// const emit = defineEmits<{
+//     (e: 'update-entry', entryId: string): void
+// }>()
+//
 const route = useRoute();
 
 const entryId = route.params.entryId as string;
-const updateEntry = async () => {
-    await editStore.updateEntry(entryId);
-    editStore.$reset();
-    isShowEditModal.value = false;
-
-    emit('update-entry', props.entry.id);
-}
+// const updateEntry = async () => {
+//     await editStore.updateEntry(entryId);
+//     editStore.$reset();
+//     isShowEditModal.value = false;
+//
+//     emit('update-entry', props.entry.id);
+// }
 
 // Добавление entryText email/phone/url
-const entryTextCreateStore = useEntryTextCreateStore();
-const isShowCreateEntryTextModal = ref(false);
-const showCreateEntryTextModal = (textType: EntryInfoType) => {
+const entryInfoCreateStore = useEntryInfoCreateStore();
+const isShowCreateModal = ref(false);
+const entryInfoFormType = ref<EntryInfoType>('Phone');
+const showCreateEntryInfoModal = (textType: EntryInfoType) => {
     if (props.withEdit) {
-        entryTextCreateStore.model.actualStartAt = new Date().toISOString();
-        entryTextCreateStore.model.textType = textType;
-        isShowCreateEntryTextModal.value = true
+        entryInfoFormType.value = textType;
+        // entryInfoCreateStore.model.actualStartAt = new Date().toISOString();
+        // entryInfoCreateStore.model.textType = textType;
+        isShowCreateModal.value = true
     }
 }
-const entryContactsStore = useEntryContactsStore();
-const createEntryText = async () => {
-    await entryTextCreateStore.create(entryId);
-    await entryContactsStore.getAllContacts(entryId);
-    isShowCreateEntryTextModal.value = false;
-    entryTextCreateStore.$reset();
+
+// card contacts
+const entryInfoListStore = useEntryInfoListStore();
+const createEntryInfo = async (entryInfoType: EntryInfoType) => {
+    // Создаём entryInfo
+    await entryInfoCreateStore.create(entryId, entryInfoType)
+    
+    // update card contacts list
+    await entryInfoListStore.getAllContacts(entryId);
+    isShowCreateModal.value = false;
+    entryInfoCreateStore.$reset();
 }
 </script>

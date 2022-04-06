@@ -25,29 +25,28 @@ export declare type PhoneType = {
 }
 
 // Entry
-export declare type CreateEntryRequest = {
+export declare type EntryCreateRequest = {
     name: string
     entryType: EntryType
     description: string
     reputation: number
     startAt: string | null
     endAt: string | null
-    isDeleted: boolean
 } & SoftDeletableType
 
-export declare type UpdateEntryRequest = {} & CreateEntryRequest
-export declare type ListEntryRequest = {
+export declare type EntryUpdateRequest = {} & EntryCreateRequest
+export declare type EntryListRequest = {
     page: number
     perPage: number
     entryType: EntryType
 } & ApiListRequest
-export declare type Entry = { id: string } & CreateEntryRequest & TimestampTypes;
+export declare type Entry = { id: string } & EntryCreateRequest & TimestampTypes;
 
 // EntryInfo
-declare type EntryInfoCommonFormRequest = {
+export declare type EntryInfoCommonFormRequest = {
     title: string
 } & SoftDeletableType
-declare type EntryInfo = {
+export declare type EntryInfo = {
     id: string,
     entryId: string,
     title: string,

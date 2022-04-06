@@ -1,9 +1,9 @@
 ﻿import {defineStore} from 'pinia';
 import {apiEntry} from "../../api/rerources/api_entry";
-import {Entry, CreateEntryRequest} from "../../api/api_types";
+import {Entry, EntryCreateRequest} from "../../api/api_types";
 
 declare type EntryCreateStoreState = {
-    model: CreateEntryRequest,
+    model: EntryCreateRequest,
     isLoading: boolean,
 }
 
@@ -17,10 +17,8 @@ export const useEntryCreateStore = defineStore('entryCreateStore', {
                 description: '',
                 startAt: null,
                 endAt: null,
-                actualStartAt: '',
-                actualEndAt: null,
-                actualEndAtReason: '',
-                actualStartAtReason: ''
+                deletedReason: '',
+                deletedAt: null
             },
             isLoading: false,
         }

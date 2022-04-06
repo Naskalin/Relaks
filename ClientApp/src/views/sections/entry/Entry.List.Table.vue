@@ -67,7 +67,7 @@
 
 <script setup lang="ts">
 import {useEntryListStore} from "../../../store/entry/entry.list.table.store";
-import {entryMessages, actualMessages} from "../../../localize/messages";
+import {entryMessages} from "../../../localize/messages";
 import {Entry} from "../../../api/api_types";
 import {dateHelper} from "../../../utils/date_helper";
 import ListFilter from './Entry.List.Filter.vue';
@@ -102,18 +102,18 @@ const columns = [
         label: entryMessages.endAt[store.listRequest.entryType],
         field: (row: Entry) => row.endAt ? dateHelper.utcFormat(row.endAt) : '',
     },
-    {
-        name: 'actualStartAt',
-        sortable: true,
-        label: actualMessages.actualStartAt.name,
-        field: (row: Entry) => row.actualStartAt ? dateHelper.utcFormat(row.actualStartAt) : '',
-    },
-    {
-        name: 'actualEndAt',
-        sortable: true,
-        label: actualMessages.actualEndAt.name,
-        field: (row: Entry) => row.actualEndAt ? dateHelper.utcFormat(row.actualEndAt) : '',
-    },
+    // {
+    //     name: 'actualStartAt',
+    //     sortable: true,
+    //     label: actualMessages.actualStartAt.name,
+    //     field: (row: Entry) => row.actualStartAt ? dateHelper.utcFormat(row.actualStartAt) : '',
+    // },
+    // {
+    //     name: 'actualEndAt',
+    //     sortable: true,
+    //     label: actualMessages.actualEndAt.name,
+    //     field: (row: Entry) => row.actualEndAt ? dateHelper.utcFormat(row.actualEndAt) : '',
+    // },
     {
         name: 'updatedAt',
         sortable: true,

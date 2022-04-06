@@ -1,9 +1,9 @@
 ﻿import {defineStore} from 'pinia';
 import {apiEntry} from "../../api/rerources/api_entry";
-import {UpdateEntryRequest} from "../../api/api_types";
+import {EntryUpdateRequest} from "../../api/api_types";
 
 declare type EntryEditStoreState = {
-    model: null | UpdateEntryRequest,
+    model: null | EntryUpdateRequest,
     isLoading: boolean,
 }
 export const useEntryEditStore = defineStore('EntryEditStore', {

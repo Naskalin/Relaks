@@ -8,7 +8,7 @@
                 @submit.prevent="emit('submit', model)"
         >
             <q-card-section class="q-gutter-y-md">
-                <entry-text-fields v-model="model"></entry-text-fields>
+                <entry-info-fields v-model="model" :entry-info-type="entryInfoType"></entry-info-fields>
             </q-card-section>
         </q-form>
 
@@ -29,14 +29,22 @@
 </template>
 
 <script setup lang="ts">
-import EntryTextFields from './EntryText.Fields.vue';
+import EntryInfoFields from './EntryInfo.Fields.vue';
 import Modal from '../../components/Modal.vue';
-import {CreateEntryTextRequest, UpdateEntryTextRequest} from "../../../api/api_types";
+import {
+    EntryNoteFormRequest,
+    EntryEmailFormRequest,
+    EntryUrlFormRequest,
+    EntryDateFormRequest,
+    EntryPhoneFormRequest,
+    EntryInfoType
+} from "../../../api/api_types";
 import {computed, onMounted} from "vue";
 import {useQuasar} from "quasar";
 
 const props = defineProps<{
-    modelValue: CreateEntryTextRequest | UpdateEntryTextRequest,
+    modelValue: EntryNoteFormRequest | EntryEmailFormRequest | EntryUrlFormRequest | EntryDateFormRequest | EntryPhoneFormRequest,
+    entryInfoType: EntryInfoType,
     isCreate: boolean,
     isShow: boolean,
     title: string
@@ -45,18 +53,18 @@ const props = defineProps<{
     isLoading: boolean
 }>()
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: CreateEntryTextRequest | UpdateEntryTextRequest): void
+    (e: 'update:modelValue', value: EntryNoteFormRequest | EntryEmailFormRequest | EntryUrlFormRequest | EntryDateFormRequest | EntryPhoneFormRequest): void
     (e: 'update:isShow', value: boolean): void
     (e: 'delete'): void
-    (e: 'submit', value: CreateEntryTextRequest | UpdateEntryTextRequest): void
+    (e: 'submit', value: EntryNoteFormRequest | EntryEmailFormRequest | EntryUrlFormRequest | EntryDateFormRequest | EntryPhoneFormRequest): void
 }>()
 const model = computed({
     get: () => props.modelValue,
     set: (val) => emit('update:modelValue', val)
 })
-onMounted(() => {
-    if (props.isCreate) model.value.actualStartAt = new Date().toISOString();
-})
+// onMounted(() => {
+    // if (props.isCreate && props.entryInfoType === 'Date') model.value.actualStartAt = new Date().toISOString();
+// })
 
 // delete
 const $q = useQuasar();

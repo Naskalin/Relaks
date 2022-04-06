@@ -1,13 +1,13 @@
-﻿import {Entry, CreateEntryRequest, UpdateEntryRequest, ListEntryRequest} from "../api_types";
+﻿import {Entry, EntryCreateRequest, EntryUpdateRequest, EntryListRequest} from "../api_types";
 import {appApi} from "../index";
 
 export const apiEntry = {
-    create: async (request: CreateEntryRequest): Promise<Entry> => {
+    create: async (request: EntryCreateRequest): Promise<Entry> => {
         const reqCopy = Object.assign({}, request);
         const resp = await appApi.post({resource: 'entries'}, reqCopy);
         return resp.data;
     },
-    update: async (entryId: string, request: UpdateEntryRequest): Promise<null> => {
+    update: async (entryId: string, request: EntryUpdateRequest): Promise<null> => {
         const reqCopy = Object.assign({}, request);
         const resp = await appApi.put({resource: 'entries', resourceId: entryId}, reqCopy);
         return resp.data;
@@ -16,7 +16,7 @@ export const apiEntry = {
         const resp = await appApi.get({resource: 'entries', resourceId: entryId});
         return resp.data;
     },
-    list: async (request: ListEntryRequest): Promise<Entry[]> => {
+    list: async (request: EntryListRequest): Promise<Entry[]> => {
         const resp = await appApi.list({resource: 'entries'}, request);
         return resp.data;
     },

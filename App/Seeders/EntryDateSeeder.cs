@@ -17,28 +17,25 @@ public class EntryDateSeeder : DatabaseSeeder
         var random = new Random();
         foreach (var entry in entries)
         {
-            if (i % random.Next(1, 5) == 0)
+            for (int j = 0; j < random.Next(1, 5); j++)
             {
-                for (int j = 0; j < random.Next(1, 5); j++)
+                var entryDate = new EntryDate()
                 {
-                    var entryDate = new EntryDate()
-                    {
-                        Title = "Первая встреча",
-                        Date = Faker.Date.Past(),
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        DeletedReason = ""
-                    };
+                    Title = "Первая встреча",
+                    Date = Faker.Date.Past(),
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    DeletedReason = ""
+                };
                     
-                    if (j % Faker.Random.Number(1, 2) == 0)
-                    {
-                        entryDate.DeletedReason = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(), ""});
-                        entryDate.DeletedAt = Faker.Date.Past();
-                    }
-                    
-                    entryDate.EntryId = entry.Id;
-                    Db.EntryDates.Add(entryDate);
+                if (j % Faker.Random.Number(1, 2) == 0)
+                {
+                    entryDate.DeletedReason = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(), ""});
+                    entryDate.DeletedAt = Faker.Date.Past();
                 }
+                    
+                entryDate.EntryId = entry.Id;
+                Db.EntryDates.Add(entryDate);
             }
 
             i++;

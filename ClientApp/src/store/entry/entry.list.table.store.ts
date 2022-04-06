@@ -1,11 +1,11 @@
 ﻿import {defineStore} from 'pinia';
-import {Entry, ListEntryRequest} from "../../api/api_types";
+import {Entry, EntryListRequest} from "../../api/api_types";
 import {apiEntry} from "../../api/rerources/api_entry";
 
 declare type EntryListStoreState = {
     isLoading: boolean,
     isEnd: boolean,
-    listRequest: ListEntryRequest,
+    listRequest: EntryListRequest,
     entries: Entry[]
 }
 export const useEntryListStore = defineStore('EntryListStore', {

@@ -17,29 +17,26 @@ public class EntryPhoneSeeder : DatabaseSeeder
         var random = new Random();
         foreach (var entry in entries)
         {
-            if (i % random.Next(1, 5) == 0)
+            for (int j = 0; j < random.Next(1, 5); j++)
             {
-                for (int j = 0; j < random.Next(1, 5); j++)
+                var eInfo = new EntryPhone()
                 {
-                    var eInfo = new EntryPhone()
-                    {
-                        Title = Faker.Random.ArrayElement(new []{Faker.Random.Words(), ""}),
-                        PhoneNumber = "+7812000000" + i,
-                        PhoneRegion = "RU",
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        DeletedReason = ""
-                    };
+                    Title = Faker.Random.ArrayElement(new []{Faker.Random.Words(), ""}),
+                    PhoneNumber = "+7812000000" + i,
+                    PhoneRegion = "RU",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    DeletedReason = ""
+                };
                     
-                    if (j % Faker.Random.Number(1, 2) == 0)
-                    {
-                        eInfo.DeletedReason = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(), ""});
-                        eInfo.DeletedAt = Faker.Date.Past();
-                    }
-                    
-                    eInfo.EntryId = entry.Id;
-                    Db.EntryPhones.Add(eInfo);
+                if (j % Faker.Random.Number(1, 2) == 0)
+                {
+                    eInfo.DeletedReason = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(), ""});
+                    eInfo.DeletedAt = Faker.Date.Past();
                 }
+                    
+                eInfo.EntryId = entry.Id;
+                Db.EntryPhones.Add(eInfo);
             }
 
             i++;

@@ -17,28 +17,25 @@ public class EntryEmailSeeder : DatabaseSeeder
         var random = new Random();
         foreach (var entry in entries)
         {
-            if (i % random.Next(1, 5) == 0)
+            for (int j = 0; j < random.Next(1, 5); j++)
             {
-                for (int j = 0; j < random.Next(1, 5); j++)
+                var eInfo = new EntryEmail()
                 {
-                    var eInfo = new EntryEmail()
-                    {
-                        Title = Faker.Random.ArrayElement(new []{Faker.Random.Words(), ""}),
-                        Email = Faker.Internet.Email(),
-                        CreatedAt = DateTime.UtcNow,
-                        UpdatedAt = DateTime.UtcNow,
-                        DeletedReason = ""
-                    };
+                    Title = Faker.Random.ArrayElement(new []{Faker.Random.Words(), ""}),
+                    Email = Faker.Internet.Email(),
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    DeletedReason = ""
+                };
                     
-                    if (j % Faker.Random.Number(1, 2) == 0)
-                    {
-                        eInfo.DeletedReason = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(), ""});
-                        eInfo.DeletedAt = Faker.Date.Past();
-                    }
-                    
-                    eInfo.EntryId = entry.Id;
-                    Db.EntryEmails.Add(eInfo);
+                if (j % Faker.Random.Number(1, 2) == 0)
+                {
+                    eInfo.DeletedReason = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(), ""});
+                    eInfo.DeletedAt = Faker.Date.Past();
                 }
+                    
+                eInfo.EntryId = entry.Id;
+                Db.EntryEmails.Add(eInfo);
             }
 
             i++;
