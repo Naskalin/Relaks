@@ -5,7 +5,7 @@ import {
     EntryEmailFormRequest,
     EntryNoteFormRequest,
     EntryPhoneFormRequest,
-    EntryUrlFormRequest, EntryInfo, EntryEmail, EntryNote, EntryPhone, EntryDate, EntryUrl
+    EntryUrlFormRequest, EntryEmail, EntryNote, EntryPhone, EntryDate, EntryUrl
 } from "../../api/api_types";
 import {apiEntryInfo} from "../../api/rerources/api_entry_info";
 

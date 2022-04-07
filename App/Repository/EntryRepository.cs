@@ -14,14 +14,17 @@ public class EntryRepository : BaseRepository<Entry>
     
     public async Task<IEnumerable<Entry>> PaginateListAsync(ListRequest req, CancellationToken cancellationToken)
     {
-        var query = Entities.Where(x => req.isDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
-
+        var query = Entities.Where(x => true);
+        
+        if (req.isDeleted != null)
+            query = query.Where(x => req.isDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
+        
         if (req.EntryType != null)
         {
             query = query.Where(x => x.EntryType == req.EntryType);
         }
         
-        if (req.Search != null)
+        if (!string.IsNullOrEmpty(req.Search))
         {
             query = query.Where(x =>
                 EF.Functions.Like(x.Name, "%" + req.Search + "%")
@@ -29,7 +32,7 @@ public class EntryRepository : BaseRepository<Entry>
             );
         }
         
-        if (req.OrderBy != null)
+        if (!string.IsNullOrEmpty(req.OrderBy))
         {
             query = query.OrderBy(req.OrderBy, req.OrderByDesc ?? false);
         }

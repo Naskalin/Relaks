@@ -18,6 +18,11 @@ export const timeStampMessages = {
     updatedAt: 'Обновлено'
 }
 
+export const deletedMessages = {
+    deletedAt: 'В архиве с',
+    deletedReason: 'В архиве по причине'
+}
+
 export const entryMessages = {
     name: {
         Person: 'Ф.И.О',
@@ -59,11 +64,13 @@ export const entryMessages = {
         Meet: 'Дата окончания'
     },
     reputation: 'Репутация',
-    ...timeStampMessages
+    ...timeStampMessages,
+    ...deletedMessages,
 }
 
 export const entryInfoMessages = {
     ...timeStampMessages,
+    ...deletedMessages,
     title: 'Название',
     val: {
         names: entryInfoTypes,

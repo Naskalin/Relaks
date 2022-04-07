@@ -10,11 +10,11 @@ export declare type EntryInfoType = 'Note' | 'Phone' | 'Email' | 'Url' | 'Date';
 //     actualEndAtReason: string
 // }
 
-declare type SoftDeletableType = {
+export declare type SoftDeletableType = {
     deletedAt: string | null
     deletedReason: string
 }
-declare type TimestampTypes = {
+export declare type TimestampTypes = {
     createdAt: string
     updatedAt: string
 }

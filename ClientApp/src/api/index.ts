@@ -36,7 +36,7 @@ export declare type ApiListRequest = {
     search?: string
     orderBy?: string
     orderByDesc?: string
-    isDeleted?: boolean
+    isDeleted?: boolean | null
 }
 
 export declare type ApiAnyRequest = {

@@ -39,7 +39,7 @@ import {
     EntryPhoneFormRequest,
     EntryInfoType
 } from "../../../api/api_types";
-import {computed, onMounted} from "vue";
+import {computed} from "vue";
 import {useQuasar} from "quasar";
 
 const props = defineProps<{
@@ -62,14 +62,10 @@ const model = computed({
     get: () => props.modelValue,
     set: (val) => emit('update:modelValue', val)
 })
-// onMounted(() => {
-    // if (props.isCreate && props.entryInfoType === 'Date') model.value.actualStartAt = new Date().toISOString();
-// })
 
 // delete
 const $q = useQuasar();
 const onDelete = () => {
-    console.log($q);
     $q.dialog({
         title: 'Подтверждение удаления',
         message: 'Удаляем, всё верно?',

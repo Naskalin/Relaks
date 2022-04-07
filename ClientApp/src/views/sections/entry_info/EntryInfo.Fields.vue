@@ -1,8 +1,8 @@
 ﻿<template>
     <q-input v-if="entryInfoType === 'Email'" type="email" :label="entryInfoMessages.val.names.Email" v-model="model.email"/>
     <q-input v-else-if="entryInfoType === 'Url'" type="url" :label="entryInfoMessages.val.names.Url" v-model="model.url"/>
-    <phone-field v-else-if="entryInfoType === 'Phone'" v-model="model.phone"/>
-    <phone-field v-else-if="entryInfoType === 'Date'" v-model="model.date"/>
+    <phone-field v-else-if="entryInfoType === 'Phone'" v-model="model"/>
+    <date-field v-else-if="entryInfoType === 'Date'" v-model="model.date"/>
     <q-editor v-else-if="entryInfoType === 'Note'"
               @paste="onPaste"
               ref="editorRef"
@@ -11,8 +11,8 @@
               content-class="bg-none"
               class="bg-transparent"
               v-model="model.val"/>
-    <q-banner v-else class="bg-warning text-white">
-        <q-icon icon="las la-exclamation-triangle la-fw"/>
+    <q-banner v-else class="bg-negative text-white">
+        <q-icon name="las la-exclamation-triangle la-fw"/>
         Что то пошло не так, EntryText.textType не определён.
     </q-banner>
     
@@ -24,7 +24,8 @@
         label="Название"
         type="textarea"
     />
-
+    
+<!--    <q-input v-model="model.deletedReason" type="text" :label="entryInfoMessages.deletedReason"/>-->
 <!--    <actual-fieldset v-model="model"></actual-fieldset>-->
 </template>
 
@@ -52,8 +53,10 @@ const emit = defineEmits<{
     (e: 'update:modelValue', value: EntryEmailFormRequest | EntryUrlFormRequest | EntryPhoneFormRequest | EntryDateFormRequest | EntryNoteFormRequest): void
 }>()
 const model = computed({
-    get: () => props.modelValue,
-    set: (val) => emit('update:modelValue', val)
+    get: (): any => {
+        return props.modelValue
+    },
+    set: (val) => emit('update:modelValue', val as any)
 })
 
 const editorRef = ref(null)

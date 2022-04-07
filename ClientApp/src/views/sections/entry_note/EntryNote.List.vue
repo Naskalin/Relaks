@@ -4,7 +4,7 @@
             <h5 class="q-my-md">{{ entryMessages.profile.tabs[route.name] }}</h5>
         </div>
         <div class="col flex justify-center">
-            <q-input v-model="listStore.Note.request.search" debounce="300" label="Поиск заметок" style="width: 500px"/>
+            <q-input v-model="listStore.listRequest.search" label="Поиск заметок" style="width: 500px"/>
         </div>
 <!--        <div class="col-auto">-->
 <!--            <q-btn label="Добавить" @click="showCreateForm" color="secondary" icon="las la-plus-circle"/>-->
@@ -13,8 +13,8 @@
 
     <br>
     
-    <div v-if="listStore.Note.list.length" class="q-gutter-y-lg">
-        <entry-note-list-item v-for="eText in listStore.Note.list"
+    <div v-if="listStore.notes.length" class="q-gutter-y-lg">
+        <entry-note-list-item v-for="eText in listStore.notes"
                               :e-text="eText"
                               :key="eText.id"
         ></entry-note-list-item>
@@ -52,7 +52,7 @@ import EntryNoteListItem from './EntryNote.List.Item.vue';
 import {useRoute} from "vue-router";
 import {entryMessages} from "../../../localize/messages";
 // import {useEntryNoteListStore} from "../../../store/entry_notes/entryText.note.list.store";
-import {useEntryInfoListStore} from "../../../store/entry_info/entryInfo.list.store";
+import {useEntryNoteListStore} from "../../../store/entry_notes/entryNote.list.store";
 import {computed, onMounted, ref, watch} from "vue";
 // import {apiMappers} from "../../../api/api_mappers";
 // import {useEntryTextEditStore} from "../../../store/entry_text/entryText.edit.store";
@@ -61,7 +61,7 @@ import {computed, onMounted, ref, watch} from "vue";
 // import {useEntryTextCreateStore} from "../../../store/entry_text/entryText.create.store";
 
 const route = useRoute();
-const listStore = useEntryInfoListStore();
+const listStore = useEntryNoteListStore();
 const entryId = route.params.entryId as string;
 
 // watch(() => listStore.listRequest.search, async (val) => {

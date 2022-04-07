@@ -45,7 +45,7 @@ public class EntrySeeder : DatabaseSeeder
                     }
                 }
         
-                if (i % Faker.Random.Number(1, 2) == 0)
+                if (Faker.Random.Number(1, 10) > 8)
                 {
                     entry.DeletedReason = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(), ""});
                     entry.DeletedAt = Faker.Date.Past();

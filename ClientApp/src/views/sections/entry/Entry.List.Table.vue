@@ -4,7 +4,7 @@
             <q-card class="q-pa-md">
                 <list-filter v-model="store.listRequest"></list-filter>
             </q-card>
-            
+
             <entry-card v-if="previewEntry" :entry="previewEntry" :with-edit="false"></entry-card>
         </div>
         <div class="col">
@@ -25,22 +25,23 @@
                 binary-state-sort
             >
                 <template v-slot:header-cell-name="props">
-                    <q-th :props="props">{{entryMessages.name[store.listRequest.entryType]}}</q-th>
+                    <q-th :props="props">{{ entryMessages.name[store.listRequest.entryType] }}</q-th>
                 </template>
                 <template v-slot:header-cell-startAt="props">
-                    <q-th :props="props">{{entryMessages.startAt[store.listRequest.entryType]}}</q-th>
+                    <q-th :props="props">{{ entryMessages.startAt[store.listRequest.entryType] }}</q-th>
                 </template>
                 <template v-slot:header-cell-endAt="props">
-                    <q-th :props="props">{{entryMessages.endAt[store.listRequest.entryType]}}</q-th>
+                    <q-th :props="props">{{ entryMessages.endAt[store.listRequest.entryType] }}</q-th>
                 </template>
-<!--                <template v-slot:body-cell-avatar="props">-->
-<!--                    <q-td :props="props">-->
-<!--                        <q-avatar size="50px" font-size="34px" color="grey-5" text-color="grey-4" icon="las la-question-circle" />-->
-<!--                    </q-td>-->
-<!--                </template>-->
+                <!--                <template v-slot:body-cell-avatar="props">-->
+                <!--                    <q-td :props="props">-->
+                <!--                        <q-avatar size="50px" font-size="34px" color="grey-5" text-color="grey-4" icon="las la-question-circle" />-->
+                <!--                    </q-td>-->
+                <!--                </template>-->
                 <template v-slot:body="props">
                     <q-tr :props="props" :key="`m_${props.row.index}`"
                           :class="{
+                              'bg-pink-1': props.row.deletedAt,
                               'bg-blue-grey-2': previewEntry && previewEntry.id === props.row.id
                           }"
                           @dblclick="rowDoubleClick(props.row)"
@@ -51,7 +52,8 @@
                             :props="props"
                         >
                             <template v-if="col.name === 'avatar'">
-                                <q-avatar size="50px" font-size="34px" color="grey-5" text-color="grey-4" icon="las la-question-circle" />
+                                <q-avatar size="50px" font-size="34px" color="grey-5" text-color="grey-4"
+                                          icon="las la-question-circle"/>
                             </template>
                             <template v-else>{{ col.value }}</template>
                         </q-td>
@@ -73,6 +75,7 @@ import {dateHelper} from "../../../utils/date_helper";
 import ListFilter from './Entry.List.Filter.vue';
 import {watch, ref} from 'vue';
 import EntryCard from './Entry.Card.vue';
+import Date from '../../components/Date.vue';
 
 // initialize
 const store = useEntryListStore();
@@ -126,6 +129,12 @@ const columns = [
         label: entryMessages.createdAt,
         field: (row: Entry) => dateHelper.utcFormat(row.createdAt),
     },
+    // {
+    //     name: 'deletedAt',
+    //     sortable: true,
+    //     label: entryMessages.deletedAt,
+    //     field: (row: Entry) => row.deletedAt ? dateHelper.utcFormat(row.deletedAt) : '',
+    // },
 ]
 
 // get entries
@@ -145,7 +154,11 @@ const onTableRequest = (e: any) => {
     // console.log(a);
     // console.log(b);
 }
-watch([() => store.listRequest.search, () => store.listRequest.entryType], async () => {
+watch([
+    () => store.listRequest.search,
+    () => store.listRequest.entryType,
+    () => store.listRequest.isDeleted
+], async () => {
     store.listRequest.page = 1;
     store.isEnd = false;
     await getEntries({to: -1})

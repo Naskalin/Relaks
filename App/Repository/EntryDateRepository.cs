@@ -21,7 +21,7 @@ public class EntryDateRepository : BaseRepository<EntryDate>
         if (request.isDeleted != null)
             query = query.Where(x => request.isDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
         
-        if (request.Search != null)
+        if (!string.IsNullOrEmpty(request.Search))
         {
             query = query.Where(x => 
                 EF.Functions.Like(x.Title, "%" + request.Search + "%")
@@ -29,7 +29,7 @@ public class EntryDateRepository : BaseRepository<EntryDate>
                 );
         }
 
-        if (request.OrderBy != null)
+        if (!string.IsNullOrEmpty(request.OrderBy))
         {
             query = query.OrderBy(request.OrderBy, request.OrderByDesc ?? false);
         }
@@ -38,7 +38,10 @@ public class EntryDateRepository : BaseRepository<EntryDate>
             query = query.OrderByDescending(x => x.Date);
         }
 
-        query = PaginateQuery(query, request);
+        if (request.Page != null && request.PerPage != null)
+        {
+            query = PaginateQuery(query, request);     
+        }
 
         return await query.ToListAsync(cancellationToken);
     }

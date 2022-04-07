@@ -17,17 +17,17 @@ public class EntryEmailRepository : BaseRepository<EntryEmail>
         CancellationToken cancellationToken)
     {
         var query = Entities.Where(x => x.EntryId == request.EntryId);
-
+        
         if (request.isDeleted != null)
             query = query.Where(x => request.isDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
 
-        if (request.Search != null)
+        if (!string.IsNullOrEmpty(request.Search))
             query = query.Where(x => EF.Functions.Like(x.Title, "%" + request.Search + "%")
                                      || EF.Functions.Like(x.Email, "%" + request.Search + "%")
                                      || EF.Functions.Like(x.DeletedReason, "%" + request.Search + "%")
             );
 
-        if (request.OrderBy != null)
+        if (!string.IsNullOrEmpty(request.OrderBy))
         {
             query = query.OrderBy(request.OrderBy, request.OrderByDesc ?? false);
         }
@@ -36,7 +36,10 @@ public class EntryEmailRepository : BaseRepository<EntryEmail>
             query = query.OrderByDescending(x => x.UpdatedAt);
         }
 
-        query = PaginateQuery(query, request);
+        if (request.Page != null && request.PerPage != null)
+        {
+            query = PaginateQuery(query, request);     
+        }
 
         return await query.ToListAsync(cancellationToken);
     }

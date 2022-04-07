@@ -28,7 +28,7 @@ public class EntryEmailSeeder : DatabaseSeeder
                     DeletedReason = ""
                 };
                     
-                if (j % Faker.Random.Number(1, 2) == 0)
+                if (Faker.Random.Number(1, 10) > 8)
                 {
                     eInfo.DeletedReason = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(), ""});
                     eInfo.DeletedAt = Faker.Date.Past();
