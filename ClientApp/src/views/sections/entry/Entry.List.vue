@@ -12,7 +12,7 @@
                       @submit="createEntry"
                       title="Добавление объединения"/>
     
-    <entry-list-table @row-dblclick="rowDoubleClick">
+    <entry-list-table @row-dblclick="rowDoubleClick" @card-dblclick="rowDoubleClick">
         <template v-slot:top-right>
             <q-btn icon="las la-plus-circle"
                    @click="isShowCreateForm = true"

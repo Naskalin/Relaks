@@ -4,8 +4,7 @@
             <q-card class="q-pa-md">
                 <list-filter v-model="store.listRequest"></list-filter>
             </q-card>
-
-            <entry-card v-if="previewEntry" :entry="previewEntry" :with-edit="false"></entry-card>
+            <entry-card @card-dblclick="emit('card-dblclick', previewEntry)" v-if="previewEntry" :entry="previewEntry" :with-edit="false"></entry-card>
         </div>
         <div class="col">
             <q-table
@@ -84,6 +83,7 @@ const rowDoubleClick = (row: Entry) => {
 }
 const emit = defineEmits<{
     (e: 'row-dblclick', val: Entry): void,
+    (e: 'card-dblclick', val: Entry): void
 }>();
 
 const previewEntry = ref<Entry | null>(null);

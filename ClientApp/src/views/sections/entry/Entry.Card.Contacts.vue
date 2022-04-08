@@ -80,9 +80,9 @@
                            btn-icon="las la-save"
                            @submit="saveEditForm"
                            @delete="onDelete"
+                           @archive="onArchive"
+                           @recover="saveEditForm"
     />
-<!--        -->
-<!--    </entry-text-form-modal>-->
 </template>
 
 <script setup lang="ts">
@@ -149,9 +149,14 @@ const saveEditForm = async () => {
 // delete
 const onDelete = async () => {
     await apiEntryInfo[entryInfoType.value].delete(props.entryId, currentEditId.value);
-    // await apiEntryText.delete(props.entryId, currentEditId.value);
     await contactsStore.getAllContacts(props.entryId);
     isShowEditModal.value = false;
     editStore.$reset();
+}
+
+// archive
+const onArchive = async () => {
+    await editStore.update(props.entryId, currentEditId.value, entryInfoType.value);
+    await onDelete();
 }
 </script>

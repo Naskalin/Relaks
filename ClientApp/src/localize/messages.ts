@@ -20,7 +20,7 @@ export const timeStampMessages = {
 
 export const deletedMessages = {
     deletedAt: 'В архиве с',
-    deletedReason: 'В архиве по причине'
+    deletedReason: 'Причина архивации'
 }
 
 export const entryMessages = {

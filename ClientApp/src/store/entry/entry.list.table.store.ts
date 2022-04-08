@@ -21,7 +21,7 @@ export const useEntryListStore = defineStore('EntryListStore', {
                 orderBy: '',
                 orderByDesc: '',
                 entryType: 'Person',
-                isDeleted: null,
+                isDeleted: false,
             }
         }
     },

@@ -8,7 +8,9 @@ public class FormRequestValidator : AbstractValidator<RequestPhoneDetails>
     public FormRequestValidator()
     {
         Include(new FormCommonValidator());
-        RuleFor(x => x.PhoneNumber).Must((x, phoneNumber) => IsPhoneValid(x.PhoneNumber, x.PhoneRegion))
+        RuleFor(x => x.PhoneNumber)
+            .NotEmpty()
+            .Must((x, phoneNumber) => IsPhoneValid(x.PhoneNumber, x.PhoneRegion))
             .WithMessage("Данный номер телефона не может существовать для выбранного региона.");
         RuleFor(x => x.PhoneRegion).NotEmpty().Length(2, 2);
     }

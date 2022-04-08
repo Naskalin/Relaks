@@ -2,19 +2,35 @@
     <div class="q-gutter-md">
         <p class="text-center text-h6">Фильтр</p>
 
-        <q-btn-toggle
-            class="bg-grey-2"
-            v-model="model.entryType"
-            spread
-            toggle-color="primary"
-            :options="entryMessages.entryType.selectOptions"
-        />
-        
-        <div class="text-center">
-            <q-radio v-model="model.isDeleted" :val="null" label="Все объединения" />
-            <q-radio v-model="model.isDeleted" :val="false" label="Актуальные" />
-            <q-radio v-model="model.isDeleted" :val="true" label="Архив" />
+        <div class="flex justify-between items-center">
+            <span class="text-uppercase text-grey-7">Тип</span>
+            <q-btn-toggle
+                class="bg-grey-2"
+                v-model="model.entryType"
+                toggle-color="secondary"
+                :options="entryMessages.entryType.selectOptions"
+            />
         </div>
+
+        <div class="flex justify-between items-center">
+            <span class="text-uppercase text-grey-7">Актуальность</span>
+            <q-btn-toggle
+                class="bg-grey-2"
+                v-model="model.isDeleted"
+                toggle-color="secondary"
+                :options="[
+                {label: 'Любая', value: null},
+                {label: 'Актуально', value: false},
+                {label: 'Архив', value: true},
+            ]"
+            />
+        </div>
+        
+<!--        <div class="text-center">-->
+<!--            <q-radio v-model="model.isDeleted" :val="null" label="Все объединения" />-->
+<!--            <q-radio v-model="model.isDeleted" :val="false" label="Актуальные" />-->
+<!--            <q-radio v-model="model.isDeleted" :val="true" label="Архив" />-->
+<!--        </div>-->
 
         <q-input v-model="model.search" debounce="250" label="Поиск..." color="secondary">
             <template v-slot:append>
@@ -42,9 +58,4 @@ const model = computed({
     get: (): EntryListRequest => props.modelValue,
     set: val => emit('update:modelValue', val)
 })
-
-// const debounceSearch = debounce((val) => {
-//     props.modelValue.search = val;
-//     emit('update:modelValue', props.modelValue);
-// }, 200)
 </script>

@@ -1,9 +1,13 @@
 ﻿import axios, {AxiosResponse} from "axios";
 import {appDefaults} from "../app_defaults";
 const apiUrl = appDefaults.apiUrl;
+import {useApiErrorsStore} from "../store/api_errors_store";
+
 axios.interceptors.response.use((resp) => resp, (error) => {
-    // show popup
-    console.log(error);
+    // console.log(error?.response?.data);
+    const apiErrorsStore = useApiErrorsStore();
+    apiErrorsStore.apiError = error?.response?.data;
+    // console.log(error);
     throw error;
 })
 

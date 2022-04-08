@@ -13,7 +13,14 @@
         </q-form>
 
         <q-card-actions align="between" class="q-pa-md">
-            <q-btn v-if="!isCreate" @click="onDelete" flat label="Удалить" icon="las la-trash" text-color="negative"/>
+            <template v-if="!isCreate">
+                <div v-if="model.deletedAt" class="q-gutter-x-md">
+                    <q-btn @click="onDelete" flat label="Удалить" icon="las la-trash"
+                           text-color="negative"/>
+                    <q-btn @click="onRecover" flat label="Восстановить" icon="las la-redo-alt" color="positive"/>
+                </div>
+                <q-btn v-else @click="onArchive" flat label="В архив" icon="las la-archive" text-color="negative"/>
+            </template>
             <div class="q-gutter-x-md" :class="{'q-ml-auto': isCreate}">
                 <q-btn flat label="Закрыть" icon="las la-times" v-close-popup/>
                 <q-btn :label="btnTitle"
@@ -31,6 +38,7 @@
 <script setup lang="ts">
 import EntryInfoFields from './EntryInfo.Fields.vue';
 import Modal from '../../components/Modal.vue';
+import {deletedMessages} from "../../../localize/messages";
 import {
     EntryNoteFormRequest,
     EntryEmailFormRequest,
@@ -56,6 +64,8 @@ const emit = defineEmits<{
     (e: 'update:modelValue', value: EntryNoteFormRequest | EntryEmailFormRequest | EntryUrlFormRequest | EntryDateFormRequest | EntryPhoneFormRequest): void
     (e: 'update:isShow', value: boolean): void
     (e: 'delete'): void
+    (e: 'archive'): void
+    (e: 'recover'): void
     (e: 'submit', value: EntryNoteFormRequest | EntryEmailFormRequest | EntryUrlFormRequest | EntryDateFormRequest | EntryPhoneFormRequest): void
 }>()
 const model = computed({
@@ -68,11 +78,35 @@ const $q = useQuasar();
 const onDelete = () => {
     $q.dialog({
         title: 'Подтверждение удаления',
-        message: 'Удаляем, всё верно?',
+        message: 'Удаляем из архива, всё верно?',
         cancel: true,
         persistent: true
     }).onOk(() => {
         emit('delete');
     })
+}
+
+const onArchive = () => {
+    $q.dialog({
+        title: 'Архивация',
+        message: deletedMessages.deletedReason + ' (не обязательно)',
+        cancel: true,
+        persistent: true,
+        prompt: {
+            model: '',
+            type: 'textarea',
+            maxlength: 250,
+            counter: true,
+        },
+    }).onOk(data => {
+        model.value.deletedReason = data;
+        emit('archive');
+    })
+}
+
+const onRecover = () => {
+    model.value.deletedAt = null;
+    model.value.deletedReason = '';
+    emit('recover');
 }
 </script>

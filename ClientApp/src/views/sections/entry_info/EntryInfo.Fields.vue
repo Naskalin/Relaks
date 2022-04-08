@@ -25,8 +25,11 @@
         type="textarea"
     />
     
-<!--    <q-input v-model="model.deletedReason" type="text" :label="entryInfoMessages.deletedReason"/>-->
-<!--    <actual-fieldset v-model="model"></actual-fieldset>-->
+    
+    <q-banner v-if="model.deletedAt" class="bg-pink-1">
+        {{deletedMessages.deletedAt}} <date :date="model.deletedAt"/>
+        <q-input v-if="model.deletedAt" v-model="model.deletedReason" type="textarea" maxlength="250" counter autogrow :label="entryInfoMessages.deletedReason"/>
+    </q-banner>
 </template>
 
 <script setup lang="ts">
@@ -40,10 +43,12 @@ import {
 } from "../../../api/api_types";
 import {computed, ref} from "vue";
 // import ActualFieldset from '../../fieldsets/Actual.Fieldset.vue';
+import {deletedMessages} from "../../../localize/messages";
 import PhoneField from '../../fields/Phone.Field.vue';
 import DateField from '../../fields/Date.Field.vue';
 import {entryInfoMessages} from "../../../localize/messages";
 import {editorHelper} from "../../../utils/editorOnPaste";
+import Date from '../../components/Date.vue';
 
 const props = defineProps<{
     modelValue: EntryEmailFormRequest | EntryUrlFormRequest | EntryPhoneFormRequest | EntryDateFormRequest | EntryNoteFormRequest,

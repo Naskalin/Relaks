@@ -12,7 +12,7 @@
             </q-card-section>
             <q-separator/>
         </template>
-        
+
         <q-card-section class="q-pb-none text-center">
             <!--            <div class="profile-card__edit">-->
             <!--            -->
@@ -21,7 +21,8 @@
             <!--                <img-->
             <!--                    src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80">-->
             <!--            </q-avatar>-->
-            <q-avatar size="180px" font-size="150px" color="grey-5" text-color="grey-4" icon="las la-question-circle"/>
+            <q-avatar @dblclick="emit('card-dblclick', entry)" size="180px" font-size="150px" color="grey-5"
+                      text-color="grey-4" icon="las la-question-circle"/>
         </q-card-section>
 
         <q-card-section class="q-pb-none">
@@ -35,10 +36,10 @@
 
         <q-card-section v-if="withEdit" class="q-gutter-x-sm text-center flex justify-center">
             <q-btn round @click="isShowEditModal = true" color="primary" icon="las la-edit">
-<!--                <q-tooltip anchor="center right" self="center left" :offset="[5, 10]" class="bg-secondary"-->
-<!--                           style="font-size: .9em">-->
-<!--                    Изменить объединение-->
-<!--                </q-tooltip>-->
+                <!--                <q-tooltip anchor="center right" self="center left" :offset="[5, 10]" class="bg-secondary"-->
+                <!--                           style="font-size: .9em">-->
+                <!--                    Изменить объединение-->
+                <!--                </q-tooltip>-->
                 <arrow-tooltip direction="top">Изменить объединение</arrow-tooltip>
             </q-btn>
             <q-separator vertical color="grey-5" class="q-mx-sm q-ml-md"/>
@@ -55,7 +56,7 @@
                 <arrow-tooltip direction="top">Добавить дату</arrow-tooltip>
             </q-btn>
         </q-card-section>
-        
+
         <q-card-section class="text-center">
             <q-btn-toggle
                 v-model="contactsStore.isShowDeleted"
@@ -70,7 +71,7 @@
             />
         </q-card-section>
 
-        <card-contacts :entry-id="entry.id" :with-edit="true"></card-contacts>
+        <card-contacts :entry-id="entryId" :with-edit="withEdit"></card-contacts>
 
         <template v-if="entry.startAt || entry.endAt">
             <q-card-section>
@@ -133,7 +134,7 @@
                       v-model:is-show="isShowEditModal"
                       @submit="updateEntry"
     />
-    
+
     <entry-info-form-modal
         :title="'Добавление: ' + entryInfoMessages.val.names[entryInfoFormType]"
         :is-create="true"
@@ -159,7 +160,7 @@ import {Entry} from "../../../api/api_types";
 import {dateHelper} from "../../../utils/date_helper";
 import {useEntryEditStore} from "../../../store/entry/entry.edit.store";
 import {apiMappers} from "../../../api/api_mappers";
-import {useRoute} from "vue-router";
+// import {useRoute} from "vue-router";
 import {EntryInfoType} from "../../../api/api_types";
 import {useEntryCardContactsStore} from "../../../store/entry/entryCard.contacts.store";
 import Date from "../../components/Date.vue";
@@ -181,18 +182,19 @@ if (props.withEdit) {
     })
 }
 const emit = defineEmits<{
-    (e: 'update-entry', entryId: string): void
+    (e: 'update-entry', entryId: string): void,
+    (e: 'card-dblclick', entry: Entry): void,
 }>()
 
-const route = useRoute();
+// const route = useRoute();
 
-const entryId = route.params.entryId as string;
+const entryId = props.entry.id;
 const updateEntry = async () => {
     await editStore.updateEntry(entryId);
     editStore.$reset();
     isShowEditModal.value = false;
 
-    emit('update-entry', props.entry.id);
+    emit('update-entry', entryId);
 }
 
 // Добавление entryText email/phone/url

@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import {Quasar, Dialog} from 'quasar';
+import {Quasar, Dialog, Notify} from 'quasar';
 // import '@quasar/extras/roboto-font-latin-ext/roboto-font-latin-ext.css'
 import '@quasar/extras/material-icons/material-icons.css'
 import '@quasar/extras/line-awesome/line-awesome.css'
@@ -18,7 +18,8 @@ import { createPinia } from 'pinia';
 const myApp = createApp(App)
 myApp.use(Quasar, {
     plugins: {
-        Dialog
+        Dialog,
+        Notify,
     },
     lang: langRu,
     // config: {
