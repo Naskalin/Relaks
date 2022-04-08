@@ -3,6 +3,6 @@
 public interface IEntryInfoFormCommonRequest
 {
     public string Title { get; set; }
-    public DateTime? DeletedAt { get; set; }
-    public string DeletedReason { get; set; }
+    
+    
 }

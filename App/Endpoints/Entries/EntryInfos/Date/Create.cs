@@ -35,7 +35,7 @@ public class Create : EndpointBaseAsync
         CancellationToken cancellationToken = new()
     )
     {
-        var validation = await new FormRequestValidator().ValidateAsync(request.Details, cancellationToken);
+        var validation = await new CreateRequestValidator().ValidateAsync(request.Details, cancellationToken);
         if (!validation.IsValid)
         {
             validation.Errors.ForEach(e => { ModelState.AddModelError(e.PropertyName, e.ErrorMessage); });

@@ -6,59 +6,60 @@
         <div class="col flex justify-center">
             <q-input v-model="listStore.listRequest.search" label="Поиск заметок" style="width: 500px"/>
         </div>
-<!--        <div class="col-auto">-->
-<!--            <q-btn label="Добавить" @click="showCreateForm" color="secondary" icon="las la-plus-circle"/>-->
-<!--        </div>-->
+        <div class="col-auto">
+            <q-btn label="Добавить" @click="showCreateForm" color="secondary" icon="las la-plus-circle"/>
+        </div>
     </div>
 
     <br>
-    
+
     <div v-if="listStore.notes.length" class="q-gutter-y-lg">
-        <entry-note-list-item v-for="eText in listStore.notes"
-                              :e-text="eText"
-                              :key="eText.id"
+        <entry-note-list-item v-for="eNote in listStore.notes"
+                              :e-note="eNote"
+                              :key="eNote.id"
         ></entry-note-list-item>
-<!--                              @showEditForm="showEditForm(eText)"-->
+        <!--                              @showEditForm="showEditForm(eText)"-->
     </div>
     <div v-else>
         Ничего не найдено
     </div>
-    
-<!--    <entry-text-form-modal v-model:is-show="isShowCreate"-->
-<!--                           v-model="createStore.model"-->
-<!--                           :is-loading="createStore.isLoading"-->
-<!--                           title="Добавление заметки"-->
-<!--                           btn-title="Добавить"-->
-<!--                           btn-icon="las la-plus-circle"-->
-<!--                           @submit="onSubmitCreateForm"-->
-<!--                           :is-create="true"-->
-<!--    />-->
 
-<!--    <entry-text-form-modal v-model:is-show="isShowEdit"-->
-<!--                           v-model="editStore.model"-->
-<!--                           :is-loading="editStore.isLoading"-->
-<!--                           title="Изменение заметки"-->
-<!--                           btn-title="Сохранить"-->
-<!--                           btn-icon="las la-save"-->
-<!--                           @submit="onSubmitEditForm"-->
-<!--                           @delete="onDelete"-->
-<!--                           :is-create="false"/>-->
+    <entry-info-form-modal
+        v-model:is-show="isShowCreate"
+        v-model="createStore.Note"
+        :is-loading="createStore.isLoading"
+        entry-info-type="Note"
+        title="Добавление заметки"
+        btn-title="Добавить"
+        btn-icon="las la-plus-circle"
+        @submit="onSubmitCreateForm"
+        :is-create="true"
+    />
+
+    <!--    <entry-text-form-modal v-model:is-show="isShowEdit"-->
+    <!--                           v-model="editStore.model"-->
+    <!--                           :is-loading="editStore.isLoading"-->
+    <!--                           title="Изменение заметки"-->
+    <!--                           btn-title="Сохранить"-->
+    <!--                           btn-icon="las la-save"-->
+    <!--                           @submit="onSubmitEditForm"-->
+    <!--                           @delete="onDelete"-->
+    <!--                           :is-create="false"/>-->
 </template>
 
 <script setup lang="ts">
-// import EntryTextFormModal from '../entry_text/EntryText.Form.Modal.vue';
+import EntryInfoFormModal from '../entry_info/EntryInfo.Form.Modal.vue';
 import EntryNoteListItem from './EntryNote.List.Item.vue';
 
 import {useRoute} from "vue-router";
 import {entryMessages} from "../../../localize/messages";
-// import {useEntryNoteListStore} from "../../../store/entry_notes/entryText.note.list.store";
 import {useEntryNoteListStore} from "../../../store/entry_notes/entryNote.list.store";
 import {computed, onMounted, ref, watch} from "vue";
 // import {apiMappers} from "../../../api/api_mappers";
 // import {useEntryTextEditStore} from "../../../store/entry_text/entryText.edit.store";
 // import {EntryNote, EntryText} from "../../../api/api_types";
 // import {apiEntryText} from "../../../api/rerources/api_entry_text";
-// import {useEntryTextCreateStore} from "../../../store/entry_text/entryText.create.store";
+import {useEntryInfoCreateStore} from "../../../store/entry_info/entryInfo.create.store";
 
 const route = useRoute();
 const listStore = useEntryNoteListStore();
@@ -104,18 +105,18 @@ onMounted(async () => {
 // }
 
 // create
-// const isShowCreate = ref(false);
-// const createStore = useEntryTextCreateStore();
-// const showCreateForm = () => {
-//     createStore.$reset();
-//     createStore.model.textType = 'Note';
-//     createStore.model.actualStartAt = new Date().toISOString();
-//     isShowCreate.value = true;
-// }
-//
-// const onSubmitCreateForm = async () => {
-//     const eText = await createStore.create(entryId);
-//     listStore.notes.unshift(eText);
-//     isShowCreate.value = false;
-// }
+const isShowCreate = ref(false);
+const createStore = useEntryInfoCreateStore();
+const showCreateForm = () => {
+    createStore.$reset();
+    // createStore.Note.model.textType = 'Note';
+    // createStore.model.actualStartAt = new Date().toISOString();
+    isShowCreate.value = true;
+}
+
+const onSubmitCreateForm = async () => {
+    const eNote = await createStore.create(entryId, 'Note');
+    listStore.notes.unshift(eNote);
+    isShowCreate.value = false;
+}
 </script>

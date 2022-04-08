@@ -22,7 +22,7 @@ public class EntryPhoneSeeder : DatabaseSeeder
                 var eInfo = new EntryPhone()
                 {
                     Title = Faker.Random.ArrayElement(new []{Faker.Random.Words(), ""}),
-                    PhoneNumber = "+7812000000" + i,
+                    PhoneNumber = "+7812000000" + j,
                     PhoneRegion = "RU",
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,

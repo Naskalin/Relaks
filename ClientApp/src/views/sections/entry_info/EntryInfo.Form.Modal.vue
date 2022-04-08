@@ -13,14 +13,11 @@
         </q-form>
 
         <q-card-actions align="between" class="q-pa-md">
-            <template v-if="!isCreate">
-                <div v-if="model.deletedAt" class="q-gutter-x-md">
-                    <q-btn @click="onDelete" flat label="Удалить" icon="las la-trash"
-                           text-color="negative"/>
-                    <q-btn @click="onRecover" flat label="Восстановить" icon="las la-redo-alt" color="positive"/>
-                </div>
-                <q-btn v-else @click="onArchive" flat label="В архив" icon="las la-archive" text-color="negative"/>
-            </template>
+            <div v-if="!isCreate" class="q-gutter-x-md">
+                <q-btn @click="onDelete" flat label="Удалить" icon="las la-trash" text-color="negative"/>
+                <q-btn v-if="model.deletedAt" @click="onRecover" flat label="Восстановить" icon="las la-redo-alt" color="positive"/>
+                <q-btn v-else @click="onSoftDelete" flat label="В архив" icon="las la-archive" text-color="negative"/>
+            </div>
             <div class="q-gutter-x-md" :class="{'q-ml-auto': isCreate}">
                 <q-btn flat label="Закрыть" icon="las la-times" v-close-popup/>
                 <q-btn :label="btnTitle"
@@ -64,7 +61,7 @@ const emit = defineEmits<{
     (e: 'update:modelValue', value: EntryNoteFormRequest | EntryEmailFormRequest | EntryUrlFormRequest | EntryDateFormRequest | EntryPhoneFormRequest): void
     (e: 'update:isShow', value: boolean): void
     (e: 'delete'): void
-    (e: 'archive'): void
+    (e: 'softDelete'): void
     (e: 'recover'): void
     (e: 'submit', value: EntryNoteFormRequest | EntryEmailFormRequest | EntryUrlFormRequest | EntryDateFormRequest | EntryPhoneFormRequest): void
 }>()
@@ -77,8 +74,9 @@ const model = computed({
 const $q = useQuasar();
 const onDelete = () => {
     $q.dialog({
-        title: 'Подтверждение удаления',
-        message: 'Удаляем из архива, всё верно?',
+        title: 'Полное удаление!',
+        message: 'Удаляем, всё верно?',
+        class: 'bg-negative text-white',
         cancel: true,
         persistent: true
     }).onOk(() => {
@@ -86,7 +84,7 @@ const onDelete = () => {
     })
 }
 
-const onArchive = () => {
+const onSoftDelete = () => {
     $q.dialog({
         title: 'Архивация',
         message: deletedMessages.deletedReason + ' (не обязательно)',
@@ -95,12 +93,13 @@ const onArchive = () => {
         prompt: {
             model: '',
             type: 'textarea',
+            attrs: {rows: 2},
             maxlength: 250,
             counter: true,
         },
     }).onOk(data => {
         model.value.deletedReason = data;
-        emit('archive');
+        emit('softDelete');
     })
 }
 

@@ -14,47 +14,30 @@ public static class EntryInfoMapper
 {
     private static void MapToCommon(IEntryInfoFormCommonRequest formCommon, EntryInfo eInfo)
     {
-        // Enum.TryParse(details.TextType, true, out TextTypeEnum textTypeEnum);
-        // eInfo.TextType = textTypeEnum;
         eInfo.Title = formCommon.Title.Trim();
-        eInfo.DeletedAt = formCommon.DeletedAt;
-        eInfo.DeletedReason = formCommon.DeletedReason.Trim();
-
-        // var val = details.Val.Trim();
-        //
-        // switch (eInfo.TextType)
-        // {
-        //     case TextTypeEnum.Phone:
-        //         val = PhoneHelper.ToPhone(val).ToString();
-        //         break;
-        //     case TextTypeEnum.Url:
-        //     case TextTypeEnum.Email:
-        //         val = val.ToLower();
-        //         break;
-        // }
-        //
-        // eInfo.Val = val;
     }
-    //
 
-    //
-    // public static void MapTo(this ISoftDeletableRequest req, EntryInfo eInfo)
-    // {
-    //     eInfo.DeletedReason = req.DeletedReason.Trim();
-    // }
-    //
+    public static void MapTo(this ISoftDeleteRequest req, ISoftDelete model)
+    {
+        if (req.IsFullDelete != true)
+        {
+            model.DeletedAt = DateTime.UtcNow;
+            model.DeletedReason = req.DeletedReason;
+        }
+    }
+
     public static void MapTo(this RequestUrlDetails details, EntryUrl eInfo)
     {
         MapToCommon(details, eInfo);
         eInfo.Url = details.Url.Trim().ToLower();
     }
-    
-    public static void MapTo(this RequestEmailDetails details, EntryEmail eInfo)
+
+    public static void MapTo(this EntryEmailCreateRequestDetails details, EntryEmail eInfo)
     {
         MapToCommon(details, eInfo);
         eInfo.Email = details.Email.Trim().ToLower();
     }
-    
+
     public static void MapTo(this RequestNoteDetails details, EntryNote eInfo)
     {
         MapToCommon(details, eInfo);
@@ -62,10 +45,18 @@ public static class EntryInfoMapper
     }
 
 
-    public static void MapTo(this RequestDateDetails details, EntryDate eInfo)
+    public static void MapTo(this EntryDateCreateRequestDetails createDetails, EntryDate eInfo)
     {
-        MapToCommon(details, eInfo);
-        eInfo.Date = details.Date;
+        MapToCommon(createDetails, eInfo);
+        eInfo.Date = createDetails.Date;
+    }
+
+    public static void MapTo(this EntryDatePutRequestDetails details, EntryDate eInfo)
+    {
+        EntryDateCreateRequestDetails createMapTo = details;
+        ISoftDeleteRequest softDeleteMapTo = details;
+        createMapTo.MapTo(eInfo);
+        softDeleteMapTo.MapTo(eInfo);
     }
 
     public static void MapTo(this RequestPhoneDetails details, EntryPhone eInfo)

@@ -10,7 +10,7 @@
               toolbar-toggle-color="positive"
               content-class="bg-none"
               class="bg-transparent"
-              v-model="model.val"/>
+              v-model="model.note"/>
     <q-banner v-else class="bg-negative text-white">
         <q-icon name="las la-exclamation-triangle la-fw"/>
         Что то пошло не так, EntryText.textType не определён.

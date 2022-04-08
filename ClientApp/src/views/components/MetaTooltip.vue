@@ -1,5 +1,6 @@
 ﻿<template>
     <arrow-tooltip :direction="direction">
+        <slot></slot>
         <template v-if="meta.deletedAt">
             <div class="q-pa-sm text-pink-4">
                 <small class="q-mr-sm">{{ deletedMessages.deletedAt }}</small>
@@ -32,7 +33,6 @@ import {TimestampTypes, SoftDeletableType} from "../../api/api_types";
 import {withDefaults} from "vue";
 
 import {timeStampMessages, deletedMessages} from "../../localize/messages";
-import {dateHelper} from "../../utils/date_helper";
 import ArrowTooltip from '../components/Arrow.Tooltip.vue';
 import Date from '../components/Date.vue';
 

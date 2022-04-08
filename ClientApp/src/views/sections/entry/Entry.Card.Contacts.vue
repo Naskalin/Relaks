@@ -4,9 +4,10 @@
             <q-list separator>
                 <q-item v-for="eInfo in contactsStore.phones" :class="{'bg-pink-1': eInfo.deletedAt}" :key="eInfo.id">
                     <q-item-section>
-                        <q-item-label><phone :phone="eInfo"></phone></q-item-label>
-                        <q-item-label v-if="eInfo.title" :lines="2" class="text-grey-9">{{ eInfo.title }}</q-item-label>
-                        <meta-tooltip :meta="eInfo"></meta-tooltip>
+                        <phone :phone="eInfo"></phone>
+                        <q-item-label v-if="eInfo.title" :lines="1" class="text-grey-9">{{ eInfo.title }}</q-item-label>
+                        <q-item-label v-if="eInfo.deletedReason" :lines="1" class="text-negative">{{ eInfo.deletedReason }}</q-item-label>
+                        <entry-info-tooltip :e-info="eInfo"/>
                     </q-item-section>
                     <q-item-section side v-if="withEdit">
                         <q-btn icon="las la-edit" @click="showEditForm(eInfo)" flat round color="primary"/>
@@ -21,9 +22,10 @@
             <q-list separator>
                 <q-item v-for="eInfo in contactsStore.emails" :class="{'bg-pink-1': eInfo.deletedAt}" :key="eInfo.id">
                     <q-item-section>
-                        <q-item-label><email :email="eInfo.email" with-link></email></q-item-label>
-                        <q-item-label v-if="eInfo.title" :lines="2" class="text-grey-9">{{ eInfo.title }}</q-item-label>
-                        <meta-tooltip :meta="eInfo"></meta-tooltip>
+                        <email :email="eInfo.email" with-link></email>
+                        <q-item-label v-if="eInfo.title" :lines="1" class="text-grey-9">{{ eInfo.title }}</q-item-label>
+                        <q-item-label v-if="eInfo.deletedReason" :lines="1" class="text-negative">{{ eInfo.deletedReason }}</q-item-label>
+                        <entry-info-tooltip :e-info="eInfo"/>
                     </q-item-section>
                     <q-item-section side v-if="withEdit">
                         <q-btn icon="las la-edit" @click="showEditForm(eInfo)" flat round color="primary"/>
@@ -38,9 +40,10 @@
             <q-list separator>
                 <q-item v-for="eInfo in contactsStore.urls" :class="{'bg-pink-1': eInfo.deletedAt}" :key="eInfo.id">
                     <q-item-section>
-                        <q-item-label><url :url="eInfo.url" with-link></url></q-item-label>
-                        <q-item-label v-if="eInfo.title" :lines="2" class="text-grey-9">{{ eInfo.title }}</q-item-label>
-                        <meta-tooltip :meta="eInfo"></meta-tooltip>
+                        <url :url="eInfo.url" with-link></url>
+                        <q-item-label :lines="1" v-if="eInfo.title" class="text-grey-9">{{ eInfo.title }}</q-item-label>
+                        <q-item-label v-if="eInfo.deletedReason" :lines="1" class="text-negative">{{ eInfo.deletedReason }}</q-item-label>
+                        <entry-info-tooltip :e-info="eInfo"/>
                     </q-item-section>
                     <q-item-section side v-if="withEdit">
                         <q-btn icon="las la-edit" @click="showEditForm(eInfo)" flat round color="primary"/>
@@ -55,11 +58,11 @@
             <q-list separator>
                 <q-item v-for="eInfo in contactsStore.dates" :class="{'bg-pink-1': eInfo.deletedAt}" :key="eInfo.id">
                     <q-item-section>
-                        <q-item-label>
-                            <date :date="eInfo.date"></date>
-                        </q-item-label>
-                        <q-item-label v-if="eInfo.title" :lines="2" class="text-grey-9">{{ eInfo.title }}</q-item-label>
-                        <meta-tooltip :meta="eInfo"></meta-tooltip>
+                        <date :date="eInfo.date"></date>
+                        <q-item-label v-if="eInfo.title" :lines="1" class="text-grey-9">{{ eInfo.title }}</q-item-label>
+                        <q-item-label v-if="eInfo.deletedReason" :lines="1" class="text-negative">{{ eInfo.deletedReason }}</q-item-label>
+<!--                        <meta-tooltip :meta="eInfo"></meta-tooltip>-->
+                        <entry-info-tooltip :e-info="eInfo"/>
                     </q-item-section>
                     <q-item-section side v-if="withEdit">
                         <q-btn icon="las la-edit" @click="showEditForm(eInfo)" flat round color="primary"/>
@@ -80,7 +83,7 @@
                            btn-icon="las la-save"
                            @submit="saveEditForm"
                            @delete="onDelete"
-                           @archive="onArchive"
+                           @softDelete="onSoftDelete"
                            @recover="saveEditForm"
     />
 </template>
@@ -92,8 +95,9 @@ import Phone from '../../components/Phone.vue';
 import Email from '../../components/Email.vue';
 import Url from '../../components/Url.vue';
 import Date from '../../components/Date.vue';
-import MetaTooltip from '../../components/MetaTooltip.vue';
+// import MetaTooltip from '../../components/MetaTooltip.vue';
 import EntryInfoFormModal from '../entry_info/EntryInfo.Form.Modal.vue';
+import EntryInfoTooltip from '../entry_info/EntryInfo.Tooltip.vue';
 
 // import ActualTimestampTooltip from '../../components/Actual.Timestamp.Tooltip.vue';
 import EntryTextFormModal from '../entry_text/EntryText.Form.Modal.vue';
@@ -148,15 +152,22 @@ const saveEditForm = async () => {
 
 // delete
 const onDelete = async () => {
+    if (!editStore[entryInfoType.value].model!.deletedAt) {
+        editStore[entryInfoType.value].model!.deletedAt = new Date().toISOString()
+        await editStore.update(props.entryId, currentEditId.value, entryInfoType.value);
+    }
     await apiEntryInfo[entryInfoType.value].delete(props.entryId, currentEditId.value);
     await contactsStore.getAllContacts(props.entryId);
     isShowEditModal.value = false;
     editStore.$reset();
 }
 
-// archive
-const onArchive = async () => {
+// softDelete
+const onSoftDelete = async () => {
     await editStore.update(props.entryId, currentEditId.value, entryInfoType.value);
-    await onDelete();
+    await apiEntryInfo[entryInfoType.value].delete(props.entryId, currentEditId.value);
+    await contactsStore.getAllContacts(props.entryId);
+    isShowEditModal.value = false;
+    editStore.$reset();
 }
 </script>

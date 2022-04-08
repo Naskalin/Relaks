@@ -1,4 +1,5 @@
-﻿using App.Repository;
+﻿using App.Mappers;
+using App.Repository;
 using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace App.Endpoints.Entries.EntryInfos.Date;
 
 public class Delete : EndpointBaseAsync
-    .WithRequest<EntryInfoGetRequest>
+    .WithRequest<EntryInfoDeleteRequest>
     .WithActionResult
 {
     private readonly EntryDateRepository _entryDateRepository;
@@ -20,7 +21,7 @@ public class Delete : EndpointBaseAsync
     [HttpDelete("/api/entries/{entryId}/dates/{entryInfoId}")]
     [SwaggerOperation(OperationId = "EntryDate.Delete", Tags = new[] {"EntryDate"})]
     public override async Task<ActionResult> HandleAsync(
-        [FromMultiSource] EntryInfoGetRequest request,
+        [FromMultiSource] EntryInfoDeleteRequest request,
         CancellationToken cancellationToken = new())
     {
         var eInfo = await _entryDateRepository.FindByIdAsync(request.EntryInfoId, cancellationToken);
@@ -28,8 +29,17 @@ public class Delete : EndpointBaseAsync
         {
             return NotFound();
         }
+
+        if (request.IsFullDelete == true)
+        {
+            await _entryDateRepository.DeleteAsync(eInfo, cancellationToken);
+        }
+        else
+        {
+            request.MapTo(eInfo);
+            await _entryDateRepository.UpdateAsync(eInfo, cancellationToken);   
+        }
         
-        await _entryDateRepository.TrySoftDelete(eInfo, cancellationToken);
         return NoContent();
     }
 }

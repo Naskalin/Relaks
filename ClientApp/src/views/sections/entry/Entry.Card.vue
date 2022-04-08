@@ -60,7 +60,6 @@
         <q-card-section class="text-center">
             <q-btn-toggle
                 v-model="contactsStore.isShowDeleted"
-                push
                 toggle-color="secondary"
                 size="sm"
                 :options="[

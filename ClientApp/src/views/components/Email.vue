@@ -10,11 +10,9 @@
 <script setup lang="ts">
 import {withDefaults} from "vue";
 
-withDefaults(defineProps<{
+defineProps<{
     iconColor?: string
     email: string
     withLink?: boolean
-}>(), {
-    iconColor: 'secondary'
-})
+}>()
 </script>

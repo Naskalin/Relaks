@@ -1,4 +1,5 @@
-﻿using App.Repository;
+﻿using App.Mappers;
+using App.Repository;
 using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace App.Endpoints.Entries.EntryInfos.Phone;
 
 public class Delete : EndpointBaseAsync
-    .WithRequest<EntryInfoGetRequest>
+    .WithRequest<EntryInfoDeleteRequest>
     .WithActionResult
 {
     private readonly EntryPhoneRepository _entryPhoneRepository;
@@ -20,7 +21,7 @@ public class Delete : EndpointBaseAsync
     [HttpDelete("/api/entries/{entryId}/phones/{entryInfoId}")]
     [SwaggerOperation(OperationId = "EntryPhone.Delete", Tags = new[] {"EntryPhone"})]
     public override async Task<ActionResult> HandleAsync(
-        [FromMultiSource] EntryInfoGetRequest request,
+        [FromMultiSource] EntryInfoDeleteRequest request,
         CancellationToken cancellationToken = new()
     )
     {
@@ -30,7 +31,15 @@ public class Delete : EndpointBaseAsync
             return NotFound();
         }
         
-        await _entryPhoneRepository.TrySoftDelete(eInfo, cancellationToken);
+        if (request.IsFullDelete == true)
+        {
+            await _entryPhoneRepository.DeleteAsync(eInfo, cancellationToken);
+        }
+        else
+        {
+            request.MapTo(eInfo);
+            await _entryPhoneRepository.UpdateAsync(eInfo, cancellationToken);   
+        }
         return NoContent();
     }
 }
