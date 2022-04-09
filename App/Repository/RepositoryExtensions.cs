@@ -4,12 +4,19 @@
 //
 // public static class RepositoryExtensions
 // {
-//     public static async Task SoftDeleteAsync<TEntity>(
+//     public static async Task TrySoftDelete<TEntity>(
 //         this BaseRepository<TEntity> baseRepository,
 //         TEntity entity,
 //         CancellationToken cancellationToken) where TEntity : BaseEntity, ISoftDelete
 //     {
-//         entity.DeletedAt = DateTime.UtcNow;
-//         await baseRepository.UpdateAsync(entity, cancellationToken);
+//         if (entity.DeletedAt == null)
+//         {
+//             entity.DeletedAt = DateTime.UtcNow;
+//             await baseRepository.UpdateAsync(entity, cancellationToken);
+//             return;
+//         }
+//
+//         baseRepository.Entities.Remove(entity);
+//         await baseRepository.Db.SaveChangesAsync(cancellationToken);
 //     }
 // }

@@ -1,26 +1,20 @@
 ﻿<template>
     <q-card class="profile-card">
-        <template v-if="entry.deletedAt">
-            <q-card-section class="bg-pink-1">
-                <span class="label-caption text-grey-8">{{ entryMessages.deletedAt }}</span>
-                &nbsp;
-                <date :date="entry.deletedAt"></date>
-                <div v-if="entry.deletedReason">
-                    <span class="label-caption text-grey-8 q-mr-xs">{{ entryMessages.deletedReason }}</span>
-                    {{ entry.deletedReason }}
-                </div>
-            </q-card-section>
-            <q-separator/>
-        </template>
+<!--        <template v-if="entry.deletedAt">-->
+<!--            <q-card-section class="bg-pink-1">-->
+<!--                <span class="label-caption text-grey-8">{{ entryMessages.deletedAt }}</span>-->
+<!--                &nbsp;-->
+<!--                <date :date="entry.deletedAt"></date>-->
+<!--                <div v-if="entry.deletedReason">-->
+<!--                    <span class="label-caption text-grey-8 q-mr-xs">{{ entryMessages.deletedReason }}</span>-->
+<!--                    {{ entry.deletedReason }}-->
+<!--                </div>-->
+<!--            </q-card-section>-->
+<!--            <q-separator/>-->
+<!--        </template>-->
+        <deleted :deleted="entry"></deleted>
 
         <q-card-section class="q-pb-none text-center">
-            <!--            <div class="profile-card__edit">-->
-            <!--            -->
-            <!--            </div>-->
-            <!--            <q-avatar size="180px">-->
-            <!--                <img-->
-            <!--                    src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80">-->
-            <!--            </q-avatar>-->
             <q-avatar @dblclick="emit('card-dblclick', entry)" size="180px" font-size="150px" color="grey-5"
                       text-color="grey-4" icon="las la-question-circle"/>
         </q-card-section>
@@ -151,6 +145,7 @@ import CardContacts from './Entry.Card.Contacts.vue';
 import ArrowTooltip from '../../components/Arrow.Tooltip.vue';
 import EntryFormModal from './Entry.Form.Modal.vue';
 import EntryInfoFormModal from '../entry_info/EntryInfo.Form.Modal.vue';
+import Deleted from '../../components/Deleted.vue';
 
 import {useEntryInfoCreateStore} from "../../../store/entry_info/entryInfo.create.store";
 import {withDefaults, ref, watch} from "vue";

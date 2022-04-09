@@ -7,6 +7,6 @@ public class FormRequestValidator : AbstractValidator<RequestNoteDetails>
     public FormRequestValidator()
     {
         Include(new FormCommonValidator());
-        RuleFor(x => x.Note).NotEmpty().MaximumLength(5000);
+        RuleFor(x => x.Note).NotEmpty().MaximumLength(10000);
     }
 }

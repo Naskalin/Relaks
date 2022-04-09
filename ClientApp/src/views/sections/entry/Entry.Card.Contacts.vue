@@ -61,7 +61,6 @@
                         <date :date="eInfo.date"></date>
                         <q-item-label v-if="eInfo.title" :lines="1" class="text-grey-9">{{ eInfo.title }}</q-item-label>
                         <q-item-label v-if="eInfo.deletedReason" :lines="1" class="text-negative">{{ eInfo.deletedReason }}</q-item-label>
-<!--                        <meta-tooltip :meta="eInfo"></meta-tooltip>-->
                         <entry-info-tooltip :e-info="eInfo"/>
                     </q-item-section>
                     <q-item-section side v-if="withEdit">
@@ -84,7 +83,7 @@
                            @submit="saveEditForm"
                            @delete="onDelete"
                            @softDelete="onSoftDelete"
-                           @recover="saveEditForm"
+                           @recover="onRecover"
     />
 </template>
 
@@ -95,22 +94,13 @@ import Phone from '../../components/Phone.vue';
 import Email from '../../components/Email.vue';
 import Url from '../../components/Url.vue';
 import Date from '../../components/Date.vue';
-// import MetaTooltip from '../../components/MetaTooltip.vue';
 import EntryInfoFormModal from '../entry_info/EntryInfo.Form.Modal.vue';
 import EntryInfoTooltip from '../entry_info/EntryInfo.Tooltip.vue';
-
-// import ActualTimestampTooltip from '../../components/Actual.Timestamp.Tooltip.vue';
-import EntryTextFormModal from '../entry_text/EntryText.Form.Modal.vue';
-// import {useEntryTextEditStore} from "../../../store/entry_text/entryText.edit.store";
-// import {EntryText} from "../../../api/api_types";
-// import {apiMappers} from "../../../api/api_mappers";
 import {apiEntryInfo} from "../../../api/rerources/api_entry_info";
 import {useEntryInfoEditStore} from "../../../store/entry_info/entryInfo.edit.store";
-import {useRouter} from 'vue-router';
 import {entryInfoMessages} from "../../../localize/messages";
-import {EntryInfo, EntryInfoType} from "../../../api/api_types";
+import {EntryInfoType} from "../../../api/api_types";
 
-const isShowDeletedContacts = ref(false);
 const props = withDefaults(defineProps<{
     entryId: string,
     withEdit?: boolean,
@@ -125,8 +115,7 @@ watch(() => props.entryId, async () => {
     await contactsStore.getAllContacts(props.entryId);
 }, {immediate: true})
 
-// show-edit
-// const router = useRouter();
+// show edit form
 const editStore = useEntryInfoEditStore();
 const isShowEditModal = ref(false);
 const currentEditId = ref('');
@@ -142,7 +131,7 @@ const showEditForm = (eInfo: any) => {
     currentEditId.value = eInfo.id;
 }
 
-// save-edit
+// save edit
 const saveEditForm = async () => {
     await editStore.update(props.entryId, currentEditId.value, entryInfoType.value);
     await contactsStore.getAllContacts(props.entryId);
@@ -152,10 +141,6 @@ const saveEditForm = async () => {
 
 // delete
 const onDelete = async () => {
-    if (!editStore[entryInfoType.value].model!.deletedAt) {
-        editStore[entryInfoType.value].model!.deletedAt = new Date().toISOString()
-        await editStore.update(props.entryId, currentEditId.value, entryInfoType.value);
-    }
     await apiEntryInfo[entryInfoType.value].delete(props.entryId, currentEditId.value);
     await contactsStore.getAllContacts(props.entryId);
     isShowEditModal.value = false;
@@ -164,10 +149,11 @@ const onDelete = async () => {
 
 // softDelete
 const onSoftDelete = async () => {
-    await editStore.update(props.entryId, currentEditId.value, entryInfoType.value);
-    await apiEntryInfo[entryInfoType.value].delete(props.entryId, currentEditId.value);
-    await contactsStore.getAllContacts(props.entryId);
-    isShowEditModal.value = false;
-    editStore.$reset();
+    await saveEditForm();
+}
+
+// recover
+const onRecover = async () => {
+    await saveEditForm();
 }
 </script>

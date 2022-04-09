@@ -2,7 +2,7 @@
 
 namespace App.Endpoints.Entries;
 
-public class CreateRequest
+public class CreateRequest : ISoftDelete
 {
     public string Name { get; set; } = null!;
     public string EntryType { get; set; } = null!;

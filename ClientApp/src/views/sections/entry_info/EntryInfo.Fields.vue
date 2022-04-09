@@ -1,4 +1,19 @@
 ﻿<template>
+    <q-banner v-if="model.deletedAt" class="bg-pink-1">
+        {{deletedMessages.deletedAt}} <date :date="model.deletedAt"/>
+        <q-input v-if="model.deletedAt" v-model="model.deletedReason" type="textarea" maxlength="250" counter autogrow :label="entryInfoMessages.deletedReason"/>
+    </q-banner>
+    
+    <q-input
+        v-model="model.title"
+        counter
+        maxlength="250"
+        autogrow
+        color="secondary"
+        label="Название (не обязательно)"
+        type="textarea"
+    />
+    
     <q-input v-if="entryInfoType === 'Email'" type="email" :label="entryInfoMessages.val.names.Email" v-model="model.email"/>
     <q-input v-else-if="entryInfoType === 'Url'" type="url" :label="entryInfoMessages.val.names.Url" v-model="model.url"/>
     <phone-field v-else-if="entryInfoType === 'Phone'" v-model="model"/>
@@ -9,26 +24,11 @@
               toolbar-bg="grey-4"
               toolbar-toggle-color="positive"
               content-class="bg-none"
-              class="bg-transparent"
+              class="bg-transparent q-my-md"
               v-model="model.note"/>
     <q-banner v-else class="bg-negative text-white">
         <q-icon name="las la-exclamation-triangle la-fw"/>
         Что то пошло не так, EntryText.textType не определён.
-    </q-banner>
-    
-    <q-input
-        v-model="model.title"
-        counter
-        autogrow
-        color="secondary"
-        label="Название"
-        type="textarea"
-    />
-    
-    
-    <q-banner v-if="model.deletedAt" class="bg-pink-1">
-        {{deletedMessages.deletedAt}} <date :date="model.deletedAt"/>
-        <q-input v-if="model.deletedAt" v-model="model.deletedReason" type="textarea" maxlength="250" counter autogrow :label="entryInfoMessages.deletedReason"/>
     </q-banner>
 </template>
 

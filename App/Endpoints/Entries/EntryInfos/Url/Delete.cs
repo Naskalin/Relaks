@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace App.Endpoints.Entries.EntryInfos.Url;
 
 public class Delete : EndpointBaseAsync
-    .WithRequest<EntryInfoDeleteRequest>
+    .WithRequest<EntryInfoGetRequest>
     .WithActionResult
 {
     private readonly EntryUrlRepository _entryUrlRepository;
@@ -21,7 +21,7 @@ public class Delete : EndpointBaseAsync
     [HttpDelete("/api/entries/{entryId}/urls/{entryInfoId}")]
     [SwaggerOperation(OperationId = "EntryUrl.Delete", Tags = new[] {"EntryUrl"})]
     public override async Task<ActionResult> HandleAsync(
-        [FromMultiSource] EntryInfoDeleteRequest request,
+        [FromMultiSource] EntryInfoGetRequest request,
         CancellationToken cancellationToken = new()
     )
     {
@@ -31,15 +31,7 @@ public class Delete : EndpointBaseAsync
             return NotFound();
         }
 
-        if (request.IsFullDelete == true)
-        {
-            await _entryUrlRepository.DeleteAsync(eInfo, cancellationToken);
-        }
-        else
-        {
-            request.MapTo(eInfo);
-            await _entryUrlRepository.UpdateAsync(eInfo, cancellationToken);   
-        }
+        await _entryUrlRepository.DeleteAsync(eInfo, cancellationToken);
         return NoContent();
     }
 }

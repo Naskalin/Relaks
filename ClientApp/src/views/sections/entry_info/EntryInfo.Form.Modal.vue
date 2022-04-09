@@ -1,20 +1,20 @@
 ﻿<template>
     <modal v-model:is-show="isShow" :title="title">
-        <q-form autocorrect="off"
-                autocapitalize="off"
-                autocomplete="off"
-                spellcheck="false"
-                id="entry-text-form"
-                @submit.prevent="emit('submit', model)"
-        >
-            <q-card-section class="q-gutter-y-md">
+        <q-card-section class="q-gutter-y-md" :class="{'max-height-scrollable': entryInfoType === 'Note'}">
+            <q-form autocorrect="off"
+                    autocapitalize="off"
+                    autocomplete="off"
+                    spellcheck="false"
+                    id="entry-text-form"
+                    @submit.prevent="emit('submit', model)"
+            >
                 <entry-info-fields v-model="model" :entry-info-type="entryInfoType"></entry-info-fields>
-            </q-card-section>
-        </q-form>
+            </q-form>
+        </q-card-section>
 
         <q-card-actions align="between" class="q-pa-md">
             <div v-if="!isCreate" class="q-gutter-x-md">
-                <q-btn @click="onDelete" flat label="Удалить" icon="las la-trash" text-color="negative"/>
+                <q-btn @click="onDelete" flat label="Удалить" icon="las la-trash" text-color="secondary"/>
                 <q-btn v-if="model.deletedAt" @click="onRecover" flat label="Восстановить" icon="las la-redo-alt" color="positive"/>
                 <q-btn v-else @click="onSoftDelete" flat label="В архив" icon="las la-archive" text-color="negative"/>
             </div>
@@ -98,6 +98,7 @@ const onSoftDelete = () => {
             counter: true,
         },
     }).onOk(data => {
+        model.value.deletedAt = new Date().toISOString();
         model.value.deletedReason = data;
         emit('softDelete');
     })
@@ -109,3 +110,10 @@ const onRecover = () => {
     emit('recover');
 }
 </script>
+
+<style lang="scss">
+    .max-height-scrollable {
+        max-height: 80vh;
+        overflow-y: scroll;
+    }
+</style>

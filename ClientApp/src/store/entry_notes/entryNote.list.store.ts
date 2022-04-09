@@ -19,7 +19,7 @@ export const useEntryNoteListStore = defineStore('EntryNoteListStore', {
                 search: '',
                 orderBy: '',
                 orderByDesc: '',
-                isDeleted: null
+                isDeleted: false
             }
         }
     },

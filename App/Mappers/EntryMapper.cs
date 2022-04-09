@@ -1,6 +1,5 @@
 ﻿using App.Endpoints.Entries;
 using App.Models;
-using App.Utils;
 
 namespace App.Mappers;
 
@@ -15,8 +14,8 @@ public static class EntryMapper
         entry.Reputation = req.Reputation;
         entry.StartAt = req.StartAt;
         entry.EndAt = req.EndAt;
-        entry.DeletedAt = req.DeletedAt;
-        entry.DeletedReason = req.DeletedReason.Trim();
+        
+        req.SoftDeleteMapTo(entry);
     }
 
     public static void MapTo(this PutRequest req, Entry entry)

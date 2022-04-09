@@ -10,11 +10,13 @@ public class CreateRequest
     public Guid EntryId { get; set; }
 
     [FromBody]
-    public EntryDateCreateRequestDetails Details { get; set; } = null!;
+    public RequestDateDetails Details { get; set; } = null!;
 }
 
-public class EntryDateCreateRequestDetails : IEntryInfoFormCommonRequest
+public class RequestDateDetails : IEntryInfoFormCommonRequest
 {
     public string Title { get; set; } = null!;
+    public DateTime? DeletedAt { get; set; }
+    public string DeletedReason { get; set; } = null!;
     public DateTime Date { get; set; }
 }

@@ -2,7 +2,7 @@
 
 namespace App.Endpoints.Entries.EntryInfos.Email;
 
-public class FormRequestValidator : AbstractValidator<EntryEmailCreateRequestDetails>
+public class FormRequestValidator : AbstractValidator<RequestEmailDetails>
 {
     public FormRequestValidator()
     {

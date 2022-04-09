@@ -2,7 +2,7 @@
 
 namespace App.Endpoints.Entries.EntryInfos.Date;
 
-public class CreateRequestValidator : AbstractValidator<EntryDateCreateRequestDetails>
+public class CreateRequestValidator : AbstractValidator<RequestDateDetails>
 {
     public CreateRequestValidator()
     {

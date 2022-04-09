@@ -1,29 +1,35 @@
 ﻿<template>
-    <div class="row q-gutter-x-lg items-center q-mb-md">
-        <div class="col-auto">
-            <h5 class="q-my-md">{{ entryMessages.profile.tabs[route.name] }}</h5>
-        </div>
-        <div class="col flex justify-center">
-            <q-input v-model="listStore.listRequest.search" label="Поиск заметок" style="width: 500px"/>
-        </div>
-        <div class="col-auto">
-            <q-btn label="Добавить" @click="showCreateForm" color="secondary" icon="las la-plus-circle"/>
-        </div>
+    <div class="row justify-between items-center q-mb-md">
+        <h5 class="q-my-md">{{ entryMessages.profile.tabs[route.name] }}</h5>
+        <q-btn label="Добавить" @click="showCreateForm" color="primary" icon="las la-plus-circle"/>
     </div>
 
+    <div class="q-gutter-y-md">
+        <q-btn-toggle
+            class="bg-grey-2"
+            v-model="listStore.listRequest.isDeleted"
+            toggle-color="secondary"
+            :options="[
+                {label: 'Все', value: null},
+                {label: 'Актуальные', value: false},
+                {label: 'Архивные', value: true},
+            ]"
+        />
+        <q-input v-model="listStore.listRequest.search" debounce="250" label="Поиск заметок" style="width: 500px"/>
+    </div>
     <br>
 
     <div v-if="listStore.notes.length" class="q-gutter-y-lg">
         <entry-note-list-item v-for="eNote in listStore.notes"
                               :e-note="eNote"
                               :key="eNote.id"
+                              @showEditForm="showEditForm(eNote)"
         ></entry-note-list-item>
-        <!--                              @showEditForm="showEditForm(eText)"-->
     </div>
-    <div v-else>
-        Ничего не найдено
-    </div>
-
+    <q-banner v-else rounded class="bg-grey-3">
+        К сожалению, ничего не найдено.
+    </q-banner>
+    
     <entry-info-form-modal
         v-model:is-show="isShowCreate"
         v-model="createStore.Note"
@@ -36,15 +42,20 @@
         :is-create="true"
     />
 
-    <!--    <entry-text-form-modal v-model:is-show="isShowEdit"-->
-    <!--                           v-model="editStore.model"-->
-    <!--                           :is-loading="editStore.isLoading"-->
-    <!--                           title="Изменение заметки"-->
-    <!--                           btn-title="Сохранить"-->
-    <!--                           btn-icon="las la-save"-->
-    <!--                           @submit="onSubmitEditForm"-->
-    <!--                           @delete="onDelete"-->
-    <!--                           :is-create="false"/>-->
+    <entry-info-form-modal
+        v-model="editStore.Note.model"
+        v-model:is-show="isShowEdit"
+        entry-info-type="Note"
+        :is-loading="editStore.isLoading"
+        :is-create="false"
+        title="Изменение заметки"
+        btn-title="Сохранить"
+        btn-icon="las la-save"
+        @submit="onSubmitEditForm"
+        @delete="onDelete"
+        @softDelete="onSubmitEditForm"
+        @recover="onSubmitEditForm"
+    />
 </template>
 
 <script setup lang="ts">
@@ -60,60 +71,60 @@ import {computed, onMounted, ref, watch} from "vue";
 // import {EntryNote, EntryText} from "../../../api/api_types";
 // import {apiEntryText} from "../../../api/rerources/api_entry_text";
 import {useEntryInfoCreateStore} from "../../../store/entry_info/entryInfo.create.store";
+import {useEntryInfoEditStore} from "../../../store/entry_info/entryInfo.edit.store";
+import {EntryNote} from "../../../api/api_types";
+import {apiMappers} from "../../../api/api_mappers";
+import {apiEntryNote} from "../../../api/rerources/api_entry_info";
 
 const route = useRoute();
 const listStore = useEntryNoteListStore();
 const entryId = route.params.entryId as string;
 
-// watch(() => listStore.listRequest.search, async (val) => {
-//     await listStore.getNotes(entryId);
-// })
+watch([() => listStore.listRequest.search, () => listStore.listRequest.isDeleted], async (val) => {
+    await listStore.getNotes(entryId);
+})
 
 onMounted(async () => {
     await listStore.getNotes(entryId);
 })
 
 // edit
-// const editStore = useEntryTextEditStore();
-// const isShowEdit = ref(false);
-// const eInfoEditable = ref<EntryNote | null>(null);
-// const showEditForm = (eText: EntryText) => {
-//     editStore.model = apiMappers.toEntryNoteFormRequest(eText);
-//     isShowEdit.value = true;
-//     eInfoEditable.value = eText;
-// }
-// const onSubmitEditForm = async () => {
-//     if (!eInfoEditable.value) throw Error('eTextEditable not found');
-//     const eTextId = eInfoEditable.value.id;
-//    
-//     await editStore.update(entryId, eTextId);
-//     const eTextUpdated = await apiEntryText.get(entryId, eTextId);
-//     listStore.notes[listStore.notes.findIndex(x => x.id === eTextUpdated.id)] = eTextUpdated;
-//    
-//     isShowEdit.value = false;
-// }
+const editStore = useEntryInfoEditStore();
+const isShowEdit = ref(false);
+const entryNoteEditable = ref<EntryNote | null>(null);
+const showEditForm = (entryNote: EntryNote) => {
+    editStore.Note.model = apiMappers.toEntryInfoFormRequest.Note(entryNote);
+    entryNoteEditable.value = entryNote;
+    
+    isShowEdit.value = true;
+}
+const onSubmitEditForm = async () => {
+    if (!entryNoteEditable.value) throw Error('onSubmitEditForm entryNoteEditable not found');
+    const entryNoteId = entryNoteEditable.value.id;
+    await editStore.update(entryId, entryNoteId, 'Note');
+    const eNoteUpdated = await apiEntryNote.get(entryId, entryNoteId);
+    listStore.notes[listStore.notes.findIndex(x => x.id === eNoteUpdated.id)] = eNoteUpdated;
+    
+    isShowEdit.value = false;
+}
 
 // delete
-// const onDelete = async () => {
-//     if (!eInfoEditable.value) throw Error('eTextEditable not found');
-//
-//     const eTextId = eInfoEditable.value.id;
-//    
-//     await apiEntryText.delete(entryId, eTextId);
-//     listStore.notes.splice(listStore.notes.findIndex(x => x.id === eTextId), 1);
-//     isShowEdit.value = false;
-// }
+const onDelete = async () => {
+    if (!entryNoteEditable.value) throw Error('onDelete entryNoteEditable not found');
+    const entryNoteId = entryNoteEditable.value.id;
+    await apiEntryNote.delete(entryId, entryNoteId);
+    listStore.notes.splice(listStore.notes.findIndex(x => x.id === entryNoteId), 1);
+    
+    isShowEdit.value = false;
+}
 
 // create
 const isShowCreate = ref(false);
 const createStore = useEntryInfoCreateStore();
 const showCreateForm = () => {
     createStore.$reset();
-    // createStore.Note.model.textType = 'Note';
-    // createStore.model.actualStartAt = new Date().toISOString();
     isShowCreate.value = true;
 }
-
 const onSubmitCreateForm = async () => {
     const eNote = await createStore.create(entryId, 'Note');
     listStore.notes.unshift(eNote);

@@ -4,24 +4,27 @@
 
         <div class="flex justify-between items-center">
             <span class="text-uppercase text-grey-7">Тип</span>
-            <q-btn-toggle
-                class="bg-grey-2"
-                v-model="model.entryType"
-                toggle-color="secondary"
-                :options="entryMessages.entryType.selectOptions"
-            />
+            <div>
+                <q-btn-toggle
+                    class="bg-grey-2"
+                    v-model="model.entryType"
+                    toggle-color="secondary"
+                    :options="entryMessages.entryType.selectOptions"
+                />
+            </div>
         </div>
 
-        <div class="flex justify-between items-center">
-            <span class="text-uppercase text-grey-7">Актуальность</span>
+        <div class="">
+<!--            <span class="text-uppercase text-grey-7">Актуальность</span>-->
             <q-btn-toggle
                 class="bg-grey-2"
+                spread
                 v-model="model.isDeleted"
                 toggle-color="secondary"
                 :options="[
-                {label: 'Любая', value: null},
-                {label: 'Актуально', value: false},
-                {label: 'Архив', value: true},
+                {label: 'Все', value: null},
+                {label: 'Актуальные', value: false},
+                {label: 'Архивные', value: true},
             ]"
             />
         </div>
