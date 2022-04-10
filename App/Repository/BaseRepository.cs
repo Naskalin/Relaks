@@ -37,6 +37,12 @@ public class BaseRepository<TEntity> where TEntity : BaseEntity
         await Db.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task CreateRangeAsync(List<TEntity> entities, CancellationToken cancellationToken)
+    {
+        Entities.AddRange(entities);
+        await Db.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)
     {
         Db.Entry(entity).State = EntityState.Modified;

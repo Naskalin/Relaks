@@ -1,4 +1,4 @@
-﻿import axios, {AxiosResponse} from "axios";
+﻿import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
 import {appDefaults} from "../app_defaults";
 const apiUrl = appDefaults.apiUrl;
 import {useApiErrorsStore} from "../store/api_errors_store";
@@ -20,9 +20,9 @@ export const appApi = {
         const url = apiUrl + endpointBuilder(endPoint);
         return (await axios.get(url));
     },
-    post: async (endPoint: EndpointParams, createRequest: ApiCreateRequest): Promise<AxiosResponse> => {
+    post: async (endPoint: EndpointParams, createRequest: ApiCreateRequest, config?: AxiosRequestConfig): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);
-        return (await axios.post(url, createRequest));
+        return (await axios.post(url, createRequest, config));
     },
     put: async (endPoint: EndpointParams, createRequest: ApiUpdateRequest): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);

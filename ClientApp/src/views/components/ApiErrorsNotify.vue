@@ -15,18 +15,22 @@ watch(() => store.apiError, (apiError: null | ApiError) => {
         if (apiError?.title) title.push(apiError.title);
         let html = '';
         if (title.length) html += `<div>${title.join(', ')}</div>`;
-        for (const [prop, messages] of Object.entries(apiError?.errors)) {
-            html += '<ul>'
-            messages.map((e: string) => html += `<li>${e}</li>`);
-            html += '</ul>'
+        
+        if (apiError?.errors) {
+            for (const [prop, messages] of Object.entries(apiError?.errors)) {
+                html += '<ul>'
+                messages.map((e: string) => html += `<li>${e}</li>`);
+                html += '</ul>'
+            }
         }
+        
+        if (html === '') html = 'Неизвестная ошибка.';
 
         $q.notify({
             message: html,
             html: true,
             type: 'negative',
             progress: true,
-            // closeBtn: true,
             position: 'bottom-right',
             actions: [
                 {label: 'Закрыть', color: 'white', handler: () => {}}

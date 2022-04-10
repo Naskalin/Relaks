@@ -53,8 +53,8 @@ builder.Services.AddTransient<EntryEmailRepository>();
 builder.Services.AddTransient<EntryNoteRepository>();
 builder.Services.AddTransient<EntryPhoneRepository>();
 builder.Services.AddTransient<EntryUrlRepository>();
-// builder.Services.AddTransient<EntryDateRepository>();
-// builder.Services.AddTransient<EntryTextRepository>();
+
+builder.Services.AddTransient<EntryFileRepository>();
 
 var app = builder.Build();
 

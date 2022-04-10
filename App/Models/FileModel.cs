@@ -3,9 +3,8 @@
 public class FileModel : BaseEntity, ITimestampResource, ISoftDelete
 {
     public string Path { get; set; } = null!;
-    public string MimeType { get; set; } = null!;
-    public string Title { get; set; } = null!;
-    public string Description { get; set; } = null!;
+    public string ContentType { get; set; } = null!;
+    public string Name { get; set; } = null!;
     
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

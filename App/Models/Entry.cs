@@ -25,7 +25,6 @@ public class Entry : BaseEntity, ITimestampResource, ISoftDelete
     // public List<EntryText> Texts { get; set; } = new();
     
     public List<EntryTag> Tags { get; set; } = new();
-
     public List<EntryFile> Files { get; set; } = new();
 }
 

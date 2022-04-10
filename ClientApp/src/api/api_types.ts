@@ -73,6 +73,9 @@ export declare type EntryEmail = { email: string } & EntryInfo
 export declare type EntryUrlFormRequest = { url: string } & EntryInfoCommonFormRequest
 export declare type EntryUrl = { url: string } & EntryInfo
 
+// EntryFile
+export declare type EntryFileCreateRequest = FormData
+
 // export declare type CreateEntryTextRequest = {
 //     title: string
 //     val: string

@@ -65,11 +65,7 @@ import EntryNoteListItem from './EntryNote.List.Item.vue';
 import {useRoute} from "vue-router";
 import {entryMessages} from "../../../localize/messages";
 import {useEntryNoteListStore} from "../../../store/entry_notes/entryNote.list.store";
-import {computed, onMounted, ref, watch} from "vue";
-// import {apiMappers} from "../../../api/api_mappers";
-// import {useEntryTextEditStore} from "../../../store/entry_text/entryText.edit.store";
-// import {EntryNote, EntryText} from "../../../api/api_types";
-// import {apiEntryText} from "../../../api/rerources/api_entry_text";
+import {onMounted, ref, watch} from "vue";
 import {useEntryInfoCreateStore} from "../../../store/entry_info/entryInfo.create.store";
 import {useEntryInfoEditStore} from "../../../store/entry_info/entryInfo.edit.store";
 import {EntryNote} from "../../../api/api_types";
@@ -80,7 +76,7 @@ const route = useRoute();
 const listStore = useEntryNoteListStore();
 const entryId = route.params.entryId as string;
 
-watch([() => listStore.listRequest.search, () => listStore.listRequest.isDeleted], async (val) => {
+watch([() => listStore.listRequest.search, () => listStore.listRequest.isDeleted], async () => {
     await listStore.getNotes(entryId);
 })
 

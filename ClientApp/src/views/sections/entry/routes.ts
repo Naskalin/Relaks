@@ -2,6 +2,7 @@
 
 import ListEntry from './Entry.List.vue';
 import Profile from './Entry.Profile.vue';
+import EntryFileList from '../entry_files/EntryFile.List.vue';
 
 import {entryNoteRoutes} from "../entry_note/routes";
 
@@ -14,6 +15,7 @@ export const entryRoutes: RouteRecordRaw[] = [
         },
         children: [
             ...entryNoteRoutes,
+            {component: EntryFileList, path: 'files', name: 'entry-file-list'}
         ]
     }
 ];

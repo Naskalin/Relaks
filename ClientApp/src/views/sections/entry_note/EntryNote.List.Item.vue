@@ -4,7 +4,7 @@
         
         <template v-if="eNote.title">
             <q-card-section class="q-py-sm">
-                <div class="text-h6">{{ eNote.title }}</div>
+                <div class="text-body1"><b>{{ eNote.title }}</b></div>
             </q-card-section>
             <q-separator/>
         </template>
