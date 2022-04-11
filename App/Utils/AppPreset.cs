@@ -20,6 +20,7 @@ public class AppPresetWriteModel
 public class AppPresetModel : AppPresetWriteModel
 {
     public string SqliteConnection { get; set; } = null!;
+    public string FilesDir { get; set; } = null!;
 }
 
 public class AppPreset
@@ -76,6 +77,7 @@ public class AppPreset
             }
 
             appPresetModel.SqliteConnection = "Data Source=" + appPresetModel.DataDir + "\\app.db";
+            appPresetModel.FilesDir = Path.Combine(appPresetModel.DataDir, "files");
             
             return appPresetModel;
         }

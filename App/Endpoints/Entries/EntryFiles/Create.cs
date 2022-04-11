@@ -47,7 +47,7 @@ public class Create : EndpointBaseAsync
                 formFile.MapToCreate(entryFile);
 
                 var folder = Path.Combine(
-                    _appPresetModel.DataDir + "\\files",
+                    _appPresetModel.FilesDir,
                     entryFile.EntryId.ToString()
                 );
                 if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);

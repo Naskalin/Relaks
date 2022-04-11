@@ -11,10 +11,12 @@ public class Delete : EndpointBaseAsync
     .WithActionResult
 {
     private readonly EntryFileRepository _entryFileRepository;
+    private readonly AppPresetModel _appPresetModel;
 
-    public Delete(EntryFileRepository entryFileRepository)
+    public Delete(EntryFileRepository entryFileRepository, AppPresetModel appPresetModel)
     {
         _entryFileRepository = entryFileRepository;
+        _appPresetModel = appPresetModel;
     }
 
     [HttpDelete("/api/entries/{entryId}/files/{entryFileId}")]
@@ -29,8 +31,13 @@ public class Delete : EndpointBaseAsync
         {
             return NotFound();
         }
-
+        
         await _entryFileRepository.DeleteAsync(entryFile, cancellationToken);
-        return NoContent();
+        
+        // Remove attached file
+        var filePath = Path.Combine(_appPresetModel.FilesDir, entryFile.GetFilePath());
+        if (System.IO.File.Exists(filePath)) System.IO.File.Delete(filePath);
+
+            return NoContent();
     }
 }

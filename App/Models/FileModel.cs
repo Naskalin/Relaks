@@ -16,6 +16,11 @@ public class FileModel : BaseEntity, ITimestampResource, ISoftDelete
 public class EntryFile : FileModel
 {
     public Guid EntryId { get; set; }
+    
+    public string GetFilePath()
+    {
+        return System.IO.Path.Combine(EntryId.ToString(), Path);
+    }
 }
 
 public class EntryInfoFile : FileModel
