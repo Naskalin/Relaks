@@ -37,9 +37,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Data\files" />
       <Folder Include="Migrations" />
-      <Folder Include="wwwroot" />
       <Folder Include="..\ClientApp" />
     </ItemGroup>
 

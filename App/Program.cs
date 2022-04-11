@@ -2,11 +2,15 @@ using System.Text.Json.Serialization;
 using App.DbConfigurations;
 using App.Repository;
 using App.Seeders;
+using App.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
+var appPreset = new AppPreset(Directory.GetCurrentDirectory()).GetPreset();
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSingleton(appPreset);
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -20,9 +24,9 @@ builder.Services.AddSwaggerGen(c =>
     c.EnableAnnotations();
 });
 
-string sqliteConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+// string sqliteConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseSqlite(sqliteConnection)
+    options => options.UseSqlite(appPreset.SqliteConnection)
 );
 
 var corsSpaName = "_spa";
@@ -58,13 +62,12 @@ builder.Services.AddTransient<EntryFileRepository>();
 
 var app = builder.Build();
 
-
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
     if (app.Environment.IsDevelopment())
-    {
+  {
         db.Database.EnsureDeleted();
         db.Database.EnsureCreated();
         await new DatabaseSeeder(db).SeedAll();

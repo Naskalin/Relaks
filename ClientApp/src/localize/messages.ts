@@ -77,6 +77,12 @@ export const entryInfoMessages = {
         // selectOptions: selectHelper.toSelectOptions(entryInfoTypes),
     },
 }
+export const entryFileFieldNames = {
+    name: 'Название',
+    contentType: 'Тип',
+    ...timeStampMessages,
+    ...deletedMessages,
+}
 
 // export const actualMessages = {
 //     actualStartAt: {

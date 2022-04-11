@@ -12,9 +12,9 @@ axios.interceptors.response.use((resp) => resp, (error) => {
 })
 
 export const appApi = {
-    list: async (endPoint: EndpointParams, apiRequest?: ApiAnyRequest): Promise<AxiosResponse> => {
+    list: async (endPoint: EndpointParams, listRequest?: ApiAnyRequest): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);
-        return (await axios.get(url, {params: apiRequest}));
+        return (await axios.get(url, {params: listRequest}));
     },
     get: async (endPoint: EndpointParams): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);
@@ -24,9 +24,9 @@ export const appApi = {
         const url = apiUrl + endpointBuilder(endPoint);
         return (await axios.post(url, createRequest, config));
     },
-    put: async (endPoint: EndpointParams, createRequest: ApiUpdateRequest): Promise<AxiosResponse> => {
+    put: async (endPoint: EndpointParams, putRequest: ApiUpdateRequest): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);
-        return (await axios.put(url, createRequest));
+        return (await axios.put(url, putRequest));
     },
     delete: async (endPoint: EndpointParams): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);

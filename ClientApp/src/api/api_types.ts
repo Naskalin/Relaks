@@ -24,6 +24,11 @@ export declare type PhoneType = {
     phoneRegion: string
 }
 
+export declare type PaginateListRequest = {
+    page: number
+    perPage: number
+} & ApiListRequest
+
 // Entry
 export declare type EntryCreateRequest = {
     name: string
@@ -36,10 +41,8 @@ export declare type EntryCreateRequest = {
 
 export declare type EntryUpdateRequest = {} & EntryCreateRequest
 export declare type EntryListRequest = {
-    page: number
-    perPage: number
     entryType: EntryType
-} & ApiListRequest
+} & PaginateListRequest
 export declare type Entry = { id: string } & EntryCreateRequest & TimestampTypes;
 
 // EntryInfo
@@ -74,7 +77,17 @@ export declare type EntryUrlFormRequest = { url: string } & EntryInfoCommonFormR
 export declare type EntryUrl = { url: string } & EntryInfo
 
 // EntryFile
-export declare type EntryFileCreateRequest = FormData
+export declare type EntryFile = {
+    id: string
+    name: string
+    path: string
+    contentType: string
+    entryId: string
+} & TimestampTypes & SoftDeletableType
+export declare type EntryFileCreateResponse = {
+    count: number
+}
+// export declare type EntryFileCreateRequest = FormData
 
 // export declare type CreateEntryTextRequest = {
 //     title: string

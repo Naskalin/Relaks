@@ -82,7 +82,7 @@ public class EntrySeeder : DatabaseSeeder
             StartAt = Faker.Date.Past(),
             EndAt = Faker.Date.Past(),
             DeletedReason = Faker.Lorem.Paragraph(),
-            DeletedAt = Faker.Date.Past(),
+            // DeletedAt = Faker.Date.Past(),
         };
 
         Db.Entries.Add(creator);

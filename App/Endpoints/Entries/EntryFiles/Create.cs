@@ -4,6 +4,7 @@ using App.Repository;
 using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace App.Endpoints.Entries.EntryFiles;
 
@@ -14,14 +15,17 @@ public class Create : EndpointBaseAsync
 {
     private readonly EntryFileRepository _entryFileRepository;
     private readonly EntryRepository _entryRepository;
+    private readonly AppPresetModel _appPresetModel;
 
-    public Create(EntryFileRepository entryFileRepository, EntryRepository entryRepository)
+    public Create(EntryFileRepository entryFileRepository, EntryRepository entryRepository, AppPresetModel appPresetModel)
     {
         _entryFileRepository = entryFileRepository;
         _entryRepository = entryRepository;
+        _appPresetModel = appPresetModel;
     }
 
     [HttpPost("/api/entries/{entryId}/files")]
+    [SwaggerOperation(OperationId = "EntryFile.Create", Tags = new[] {"EntryFile"})]
     public override async Task<ActionResult> HandleAsync(
         [FromMultiSource] CreateRequest request,
         CancellationToken cancellationToken = new()
@@ -43,7 +47,7 @@ public class Create : EndpointBaseAsync
                 formFile.MapToCreate(entryFile);
 
                 var folder = Path.Combine(
-                    "C:\\app\\RiderProjects\\Relaks\\App\\Data\\files",
+                    _appPresetModel.DataDir + "\\files",
                     entryFile.EntryId.ToString()
                 );
                 if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
@@ -55,7 +59,6 @@ public class Create : EndpointBaseAsync
                 }
 
                 await _entryFileRepository.CreateAsync(entryFile, cancellationToken);
-                // await _entryFileRepository.CreateRangeAsync(entryFiles, cancellationToken);
             }
         }
 

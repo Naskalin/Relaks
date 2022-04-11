@@ -7,6 +7,7 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import 'dayjs/locale/ru';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
 dayjs.extend(timezone);
@@ -30,8 +31,8 @@ export const dateHelper = {
 
         return null;
     },
-    utcFormat: (val: string, format: string = 'DD.MM.YYYY HH:mm'): string => {
-        if (val === '') return val;
+    utcFormat: (val: string | null, format: string = 'DD.MM.YYYY HH:mm'): string => {
+        if (!val || val === '') return '';
         // Переводим дату в utc, если ещё не в utc
         const d = dayjs(val).utc(!isISO(val));
         return d.tz(appDefaults.timeZone).format(format);

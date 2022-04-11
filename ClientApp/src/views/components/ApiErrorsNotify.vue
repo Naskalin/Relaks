@@ -37,8 +37,6 @@ watch(() => store.apiError, (apiError: null | ApiError) => {
             ]
         });
     }
-    // console.log('>> watch api errors')
-    // console.log(val);
 })
 
 

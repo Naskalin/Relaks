@@ -151,8 +151,7 @@ const getEntries = async ({to}: { to: number }) => {
 }
 const onTableRequest = (e: any) => {
     console.log(e);
-    // console.log(a);
-    // console.log(b);
+
 }
 watch([
     () => store.listRequest.search,
