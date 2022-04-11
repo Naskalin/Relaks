@@ -1,6 +1,9 @@
-﻿namespace App.Endpoints.Entries.EntryFiles;
+﻿using Microsoft.AspNetCore.Mvc;
 
-public class ListRequest : EntrySubresourceListRequest
+namespace App.Endpoints.Entries.EntryFiles;
+
+public class ListRequest
 {
-    
+    [FromRoute]
+    public Guid EntryId { get; set; }   
 }

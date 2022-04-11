@@ -1,4 +1,5 @@
-﻿using App.Models;
+﻿using App.Endpoints.Entries.EntryFiles;
+using App.Models;
 
 namespace App.Mappers;
 
@@ -14,5 +15,12 @@ public static class EntryFileMapper
         model.CreatedAt = DateTime.UtcNow;
         model.UpdatedAt = DateTime.UtcNow;
         model.DeletedReason = "";
+    }
+
+    public static void MapTo(this EntryFilePutDetails req, EntryFile model)
+    {
+        model.Name = req.Name.Trim();
+        model.UpdatedAt = DateTime.UtcNow;
+        req.SoftDeleteMapTo(model);
     }
 }

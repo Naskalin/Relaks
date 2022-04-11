@@ -82,8 +82,8 @@ const rowDoubleClick = (row: Entry) => {
     emit('row-dblclick', row);
 }
 const emit = defineEmits<{
-    (e: 'row-dblclick', val: Entry): void,
-    (e: 'card-dblclick', val: Entry): void
+    (e: 'row-dblclick', val: Entry | any): void,
+    (e: 'card-dblclick', val: Entry | any): void
 }>();
 
 const previewEntry = ref<Entry | null>(null);

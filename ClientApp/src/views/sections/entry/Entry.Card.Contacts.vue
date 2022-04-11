@@ -71,7 +71,7 @@
         </q-card-section>
         <q-separator></q-separator>
     </template>
-    <entry-info-form-modal v-if="withEdit && editStore[entryInfoType].model"
+    <entry-info-form-modal v-if="withEdit && editStore[entryInfoType].model !== null"
                            v-model="editStore[entryInfoType].model"
                            v-model:is-show="isShowEditModal"
                            :entry-info-type="entryInfoType"

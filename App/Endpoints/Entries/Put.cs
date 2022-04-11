@@ -3,6 +3,7 @@ using App.Repository;
 using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace App.Endpoints.Entries;
@@ -12,10 +13,12 @@ public class Put : EndpointBaseAsync
     .WithActionResult
 {
     private readonly EntryRepository _entryRepository;
+    private readonly IOptions<ApiBehaviorOptions> _apiOptions;
 
-    public Put(EntryRepository entryRepository)
+    public Put(EntryRepository entryRepository, IOptions<ApiBehaviorOptions> apiOptions)
     {
         _entryRepository = entryRepository;
+        _apiOptions = apiOptions;
     }
 
     [HttpPut("/api/entries/{entryId}")]
@@ -27,9 +30,10 @@ public class Put : EndpointBaseAsync
         var validation = await new CreateRequestValidator().ValidateAsync(putRequest.Details, cancellationToken);
         if (!validation.IsValid)
         {
-            return BadRequest(validation);
+            validation.Errors.ForEach(e => { ModelState.AddModelError(e.PropertyName, e.ErrorMessage); });
+            return (ActionResult) _apiOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
         }
-        
+
         var entry = await _entryRepository.FindByIdAsync(putRequest.EntryId, cancellationToken);
         if (entry == null) return NotFound();
         

@@ -2,11 +2,11 @@
 
 namespace App.Endpoints.Entries.EntryFiles;
 
-public class CreateRequest
+public class GetRequest
 {
     [FromRoute]
     public Guid EntryId { get; set; }
-
-    [FromForm]
-    public List<IFormFile> Files { get; set; } = null!;
+    
+    [FromRoute]
+    public Guid EntryFileId { get; set; }
 }

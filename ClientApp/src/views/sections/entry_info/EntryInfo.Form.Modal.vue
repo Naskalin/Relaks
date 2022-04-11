@@ -48,7 +48,7 @@ import {computed} from "vue";
 import {useQuasar} from "quasar";
 
 const props = defineProps<{
-    modelValue: EntryNoteFormRequest | EntryEmailFormRequest | EntryUrlFormRequest | EntryDateFormRequest | EntryPhoneFormRequest,
+    modelValue: any,
     entryInfoType: EntryInfoType,
     isCreate: boolean,
     isShow: boolean,
@@ -58,12 +58,12 @@ const props = defineProps<{
     isLoading: boolean
 }>()
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: EntryNoteFormRequest | EntryEmailFormRequest | EntryUrlFormRequest | EntryDateFormRequest | EntryPhoneFormRequest): void
+    (e: 'update:modelValue', value: any): void
     (e: 'update:isShow', value: boolean): void
     (e: 'delete'): void
     (e: 'softDelete'): void
     (e: 'recover'): void
-    (e: 'submit', value: EntryNoteFormRequest | EntryEmailFormRequest | EntryUrlFormRequest | EntryDateFormRequest | EntryPhoneFormRequest): void
+    (e: 'submit', value: any): void
 }>()
 const model = computed({
     get: () => props.modelValue,

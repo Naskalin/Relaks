@@ -23,11 +23,11 @@ public interface IOrderableRequest
     public bool? OrderByDesc { get; set; }
 }
 
-public interface ISoftDeleteRequest
-{
-    public bool? IsFullDelete { get; set; }
-    public string DeletedReason { get; set; }
-}
+// public interface ISoftDeleteRequest
+// {
+//     public bool? IsFullDelete { get; set; }
+//     public string DeletedReason { get; set; }
+// }
 
 // public interface ISoftDeletableRequest
 // {

@@ -1,16 +1,13 @@
 ﻿import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
-import {appDefaults} from "../app_defaults";
-const apiUrl = appDefaults.apiUrl;
 import {useApiErrorsStore} from "../store/api_errors_store";
 
 axios.interceptors.response.use((resp) => resp, (error) => {
-    // console.log(error?.response?.data);
     const apiErrorsStore = useApiErrorsStore();
     apiErrorsStore.apiError = error?.response?.data;
-    // console.log(error);
     throw error;
 })
 
+const apiUrl = 'https://localhost:7125/api';
 export const appApi = {
     list: async (endPoint: EndpointParams, listRequest?: ApiAnyRequest): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);

@@ -1,6 +1,6 @@
 ﻿<template>
     <div class="row justify-between items-center q-mb-md">
-        <h5 class="q-my-md">{{ entryMessages.profile.tabs[route.name] }}</h5>
+        <h5 class="q-my-md">{{ entryMessages.profile.tabs['entry-note-list'] }}</h5>
         <q-btn label="Добавить" @click="showCreateForm" color="primary" icon="las la-plus-circle"/>
     </div>
 
@@ -43,6 +43,7 @@
     />
 
     <entry-info-form-modal
+        v-if="editStore.Note.model"
         v-model="editStore.Note.model"
         v-model:is-show="isShowEdit"
         entry-info-type="Note"
