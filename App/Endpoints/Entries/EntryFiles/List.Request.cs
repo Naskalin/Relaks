@@ -2,7 +2,7 @@
 
 namespace App.Endpoints.Entries.EntryFiles;
 
-public class ListRequest
+public class ListRequest : BaseListRequest
 {
     [FromRoute]
     public Guid EntryId { get; set; }   

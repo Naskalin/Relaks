@@ -15,13 +15,13 @@ public class Create : EndpointBaseAsync
 {
     private readonly EntryFileRepository _entryFileRepository;
     private readonly EntryRepository _entryRepository;
-    private readonly AppPresetModel _appPresetModel;
+    private readonly AppPreset _appPreset;
 
-    public Create(EntryFileRepository entryFileRepository, EntryRepository entryRepository, AppPresetModel appPresetModel)
+    public Create(EntryFileRepository entryFileRepository, EntryRepository entryRepository, AppPreset appPreset)
     {
         _entryFileRepository = entryFileRepository;
         _entryRepository = entryRepository;
-        _appPresetModel = appPresetModel;
+        _appPreset = appPreset;
     }
 
     [HttpPost("/api/entries/{entryId}/files")]
@@ -47,7 +47,7 @@ public class Create : EndpointBaseAsync
                 formFile.MapToCreate(entryFile);
 
                 var folder = Path.Combine(
-                    _appPresetModel.FilesDir,
+                    _appPreset.FilesDir,
                     entryFile.EntryId.ToString()
                 );
                 if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);

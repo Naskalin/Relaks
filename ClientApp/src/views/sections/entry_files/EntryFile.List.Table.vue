@@ -12,14 +12,14 @@
         :rows-per-page-options="[0]"
         @virtual-scroll="getFiles"
     >
-        <template v-slot:body-cell-path="props">
-            <q-td :props="props">
-                {{props.row.path}}
-                <q-avatar>
-                    <img src="https://cdn.quasar.dev/img/avatar.png">
-                </q-avatar>
-            </q-td>
-        </template>
+<!--        <template v-slot:body-cell-path="props">-->
+<!--            <q-td :props="props">-->
+<!--                {{props.row.path}}-->
+<!--                <q-avatar>-->
+<!--                    <img src="https://cdn.quasar.dev/img/avatar.png">-->
+<!--                </q-avatar>-->
+<!--            </q-td>-->
+<!--        </template>-->
     </q-table>
 </template>
 

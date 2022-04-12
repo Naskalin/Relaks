@@ -39,10 +39,10 @@
     <ItemGroup>
       <Folder Include="Migrations" />
       <Folder Include="..\ClientApp" />
+      <Folder Include="wwwroot" />
     </ItemGroup>
 
     <ItemGroup>
-        <!-- Don't publish the SPA source files, but do show them in the project files list -->
         <Content Remove="$(SpaRoot)**" />
         <None Remove="$(SpaRoot)**" />
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />

@@ -2,7 +2,6 @@
 using App.Models;
 using App.Repository;
 using Ardalis.ApiEndpoints;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;

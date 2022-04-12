@@ -7,7 +7,7 @@ axios.interceptors.response.use((resp) => resp, (error) => {
     throw error;
 })
 
-const apiUrl = 'https://localhost:7125/api';
+const apiUrl = '/api';
 export const appApi = {
     list: async (endPoint: EndpointParams, listRequest?: ApiAnyRequest): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);

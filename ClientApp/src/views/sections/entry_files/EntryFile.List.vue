@@ -6,8 +6,20 @@
         </div>
     </div>
 
-    b30e1423-8aa7-44b1-a41f-023fdf988abb.jpg
-<!--    <img src="C:\app\RiderProjects\Relaks\App\Data\files\01fbdddd-1d69-4757-a8d2-5050a1aed4d4\1a0143a0-fc33-4296-a1c0-5e96af906a88.jpg" width="100" height="100" alt="">-->
+    test file
+    
+<!--    href="" width="100" height="100"-->
+    <p>
+<!--        <a >C:\app\RiderProjects\Relaks\Data\files\01fbdddd-1d69-4757-a8d2-5050a1aed4d4\71c043bc-3b72-4c94-8f80-d69150c65ce9.jpg</a>-->
+    </p>
+
+<!--    <p>-->
+<!--        <img-->
+<!--            src="C:\app\RiderProjects\Relaks\Data\files\01fbdddd-1d69-4757-a8d2-5050a1aed4d4\71c043bc-3b72-4c94-8f80-d69150c65ce9.jpg"-->
+<!--            width="200"-->
+<!--            height="200"-->
+<!--            alt="">-->
+<!--    </p>-->
     <br>
 
     <entry-file-list-table :entry-id="entryId"></entry-file-list-table>
