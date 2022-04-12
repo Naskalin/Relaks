@@ -15,15 +15,17 @@ public class Entry : BaseEntity, ITimestampResource, ISoftDelete
     public DateTime? DeletedAt { get; set; }
     public string DeletedReason { get; set; } = null!;
 
+    public Guid? Avatar { get; set; }
+
     public List<EntryDate> Dates { get; set; } = new();
     public List<EntryNote> Notes { get; set; } = new();
     public List<EntryEmail> Emails { get; set; } = new();
     public List<EntryPhone> Phones { get; set; } = new();
     public List<EntryUrl> Urls { get; set; } = new();
-    
+
     // public List<EntryDate> Dates { get; set; } = new();
     // public List<EntryText> Texts { get; set; } = new();
-    
+
     public List<EntryTag> Tags { get; set; } = new();
     public List<EntryFile> Files { get; set; } = new();
 }

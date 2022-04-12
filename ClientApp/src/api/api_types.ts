@@ -87,6 +87,13 @@ export declare type EntryFile = {
 export declare type EntryFileCreateResponse = {
     count: number
 }
+
+// FileDownload
+export declare type FileDownloadRequest = {
+    fileId: string,
+    imageFilter?: string
+}
+
 // export declare type EntryFileCreateRequest = FormData
 
 // export declare type CreateEntryTextRequest = {

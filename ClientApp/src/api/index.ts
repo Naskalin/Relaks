@@ -8,14 +8,15 @@ axios.interceptors.response.use((resp) => resp, (error) => {
 })
 
 const apiUrl = '/api';
+// const apiUrl = 'https://localhost:7125/api';
 export const appApi = {
     list: async (endPoint: EndpointParams, listRequest?: ApiAnyRequest): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);
         return (await axios.get(url, {params: listRequest}));
     },
-    get: async (endPoint: EndpointParams): Promise<AxiosResponse> => {
+    get: async (endPoint: EndpointParams, config?: AxiosRequestConfig): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);
-        return (await axios.get(url));
+        return (await axios.get(url, config));
     },
     post: async (endPoint: EndpointParams, createRequest: ApiCreateRequest, config?: AxiosRequestConfig): Promise<AxiosResponse> => {
         const url = apiUrl + endpointBuilder(endPoint);

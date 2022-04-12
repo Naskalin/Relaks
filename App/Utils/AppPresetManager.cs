@@ -21,6 +21,7 @@ public class AppPreset : AppPresetWriteModel
 {
     public string SqliteConnection { get; set; } = null!;
     public string FilesDir { get; set; } = null!;
+    public string CacheDir { get; set; } = null!;
 }
 
 public class AppPresetManager
@@ -36,10 +37,7 @@ public class AppPresetManager
     {
         if (!File.Exists(configPath))
         {
-            if (!Directory.Exists(dirPath))
-            {
-                Directory.CreateDirectory(dirPath);
-            }
+            if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
 
             var data = new AppPresetWriteModel()
             {
@@ -63,7 +61,7 @@ public class AppPresetManager
         {
             throw new ArgumentException("AppPreset, файл конфигурации не найден.");
         }
-        
+
         using (StreamReader r = new StreamReader(configPath))
         {
             string json = r.ReadToEnd();
@@ -75,10 +73,16 @@ public class AppPresetManager
             }
 
             appPresetModel.SqliteConnection = "Data Source=" + appPresetModel.DataDir + "\\app.db";
-            appPresetModel.FilesDir = Path.Combine(appPresetModel.DataDir, "files");
-            
+
+            var filesDir = Path.Combine(appPresetModel.DataDir, "files");
+            if (Directory.Exists(filesDir)) Directory.CreateDirectory(filesDir);
+            appPresetModel.FilesDir = filesDir;
+
+            var cacheDir = Path.Combine(appPresetModel.DataDir, "cache");
+            if (Directory.Exists(cacheDir)) Directory.CreateDirectory(cacheDir);
+            appPresetModel.CacheDir = cacheDir;
+
             return appPresetModel;
         }
-
     }
 }

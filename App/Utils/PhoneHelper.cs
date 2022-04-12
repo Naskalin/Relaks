@@ -39,10 +39,10 @@ public static class PhoneHelper
         }
     }
     
-    // Предполагается, что это будет строка вида 1234567890|ru
-    public static Phone ToPhone(string numberWithRegion)
+    // Предполагается, что это будет строка вида RU|1234567890
+    public static Phone ToPhone(string regionWithNumber)
     {
-        var phoneArr = numberWithRegion.Split("|");
+        var phoneArr = regionWithNumber.Split("|");
         var phoneNumberUtil = PhoneNumberUtil.GetInstance();
         try
         {
@@ -60,7 +60,7 @@ public static class PhoneHelper
         catch (Exception)
         {
             throw new ArgumentException(
-                $"Номер телефона {numberWithRegion} не может существовать для выбранного региона.");
+                $"Номер телефона {regionWithNumber} не может существовать для выбранного региона.");
         }
     }
 }

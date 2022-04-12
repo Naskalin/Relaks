@@ -27,24 +27,9 @@ builder.Services.AddSwaggerGen(c =>
     c.EnableAnnotations();
 });
 
-// string sqliteConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(
     options => options.UseSqlite(appPreset.SqliteConnection)
 );
-
-// var corsSpaName = "_spa";
-// builder.Services.AddCors(options =>
-// {
-//     options.AddPolicy(corsSpaName, corsPolicyBuilder =>
-//     {
-//         corsPolicyBuilder
-//             .AllowAnyMethod()
-//             .AllowAnyHeader()
-//             .AllowCredentials()
-//             .WithOrigins("https://localhost:7125", "http://localhost:3000")
-//             ;
-//     });
-// });
 
 builder.Services.Configure<ApiBehaviorOptions>(o =>
 {
