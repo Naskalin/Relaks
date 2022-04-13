@@ -55,9 +55,9 @@ using (var scope = app.Services.CreateScope())
 
     if (app.Environment.IsDevelopment())
   {
-        db.Database.EnsureDeleted();
-        db.Database.EnsureCreated();
-        await new DatabaseSeeder(db).SeedAll();
+        // db.Database.EnsureDeleted();
+        // db.Database.EnsureCreated();
+        // await new DatabaseSeeder(db).SeedAll();
     }
 
     db.Database.Migrate();
@@ -75,11 +75,11 @@ app.MapControllers();
 app.UseDefaultFiles();
 
 app.UseStaticFiles();
-app.UseStaticFiles(new StaticFileOptions()
-{
-    FileProvider = new PhysicalFileProvider(appPreset.FilesDir),
-    RequestPath = "/files"
-});
+// app.UseStaticFiles(new StaticFileOptions()
+// {
+//     FileProvider = new PhysicalFileProvider(appPreset.FilesDir),
+//     RequestPath = "/files"
+// });
 
 app.Run();
 

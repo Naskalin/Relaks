@@ -76,14 +76,19 @@ export declare type EntryEmail = { email: string } & EntryInfo
 export declare type EntryUrlFormRequest = { url: string } & EntryInfoCommonFormRequest
 export declare type EntryUrl = { url: string } & EntryInfo
 
-// EntryFile
-export declare type EntryFile = {
+export declare type FileModel = {
     id: string
     name: string
     path: string
     contentType: string
-    entryId: string
 } & TimestampTypes & SoftDeletableType
+export declare type FileModelUpdateRequest = {
+    name: string
+} & SoftDeletableType
+// EntryFile
+export declare type EntryFile = {
+    entryId: string
+} & FileModel
 export declare type EntryFileCreateResponse = {
     count: number
 }

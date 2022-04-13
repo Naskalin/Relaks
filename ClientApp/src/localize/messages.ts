@@ -77,7 +77,7 @@ export const entryInfoMessages = {
         // selectOptions: selectHelper.toSelectOptions(entryInfoTypes),
     },
 }
-export const entryFileFieldNames = {
+export const fileFieldNames = {
     name: 'Название',
     contentType: 'Тип',
     ...timeStampMessages,

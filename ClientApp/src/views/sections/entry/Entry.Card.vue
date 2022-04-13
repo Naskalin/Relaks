@@ -1,17 +1,5 @@
 ﻿<template>
     <q-card class="profile-card">
-<!--        <template v-if="entry.deletedAt">-->
-<!--            <q-card-section class="bg-pink-1">-->
-<!--                <span class="label-caption text-grey-8">{{ entryMessages.deletedAt }}</span>-->
-<!--                &nbsp;-->
-<!--                <date :date="entry.deletedAt"></date>-->
-<!--                <div v-if="entry.deletedReason">-->
-<!--                    <span class="label-caption text-grey-8 q-mr-xs">{{ entryMessages.deletedReason }}</span>-->
-<!--                    {{ entry.deletedReason }}-->
-<!--                </div>-->
-<!--            </q-card-section>-->
-<!--            <q-separator/>-->
-<!--        </template>-->
         <deleted :deleted="entry"></deleted>
 
         <q-card-section class="q-pb-none text-center">
@@ -30,10 +18,6 @@
 
         <q-card-section v-if="withEdit" class="q-gutter-x-sm text-center flex justify-center">
             <q-btn round @click="isShowEditModal = true" color="primary" icon="las la-edit">
-                <!--                <q-tooltip anchor="center right" self="center left" :offset="[5, 10]" class="bg-secondary"-->
-                <!--                           style="font-size: .9em">-->
-                <!--                    Изменить объединение-->
-                <!--                </q-tooltip>-->
                 <arrow-tooltip direction="top">Изменить объединение</arrow-tooltip>
             </q-btn>
             <q-separator vertical color="grey-5" class="q-mx-sm q-ml-md"/>
@@ -84,22 +68,6 @@
 
             <q-separator/>
         </template>
-
-        <!--        <template v-if="entry.actualEndAt || entry.actualEndAtReason">-->
-        <!--            <q-separator/>-->
-        <!--            <q-card-section>-->
-        <!--                <template v-if="entry.actualEndAt">-->
-        <!--                    <span class="label-caption text-grey-8 q-mr-xs">{{ actualMessages.actualEndAt.name }}</span>-->
-        <!--                    {{ dateHelper.utcFormat(entry.actualEndAt) }}-->
-        <!--                </template>-->
-        <!--                <div v-if="entry.actualEndAtReason">-->
-        <!--                    <span class="label-caption text-grey-8 q-mr-xs">{{ actualMessages.actualEndAtReason.name }}</span>-->
-        <!--                    {{ entry.actualEndAtReason }}-->
-        <!--                </div>-->
-        <!--            </q-card-section>-->
-        <!--        </template>-->
-
-        <!--        <q-separator/>-->
 
         <q-card-section>
             <div class="row">

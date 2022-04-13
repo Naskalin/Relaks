@@ -10,8 +10,9 @@ public static class EntryFileMapper
         var guid = Guid.NewGuid();
         model.Id = guid;
         model.Path = guid + Path.GetExtension(formFile.FileName);
+        
         model.ContentType = formFile.ContentType;
-        model.Name = formFile.FileName;
+        model.Name = Path.GetFileNameWithoutExtension(formFile.FileName);
         model.CreatedAt = DateTime.UtcNow;
         model.UpdatedAt = DateTime.UtcNow;
         model.DeletedReason = "";

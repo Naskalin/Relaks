@@ -6,10 +6,25 @@
     EntryNoteFormRequest,
     EntryPhoneFormRequest,
     EntryUrlFormRequest,
-    EntryDateFormRequest, EntryEmail, EntryInfo, EntryInfoCommonFormRequest, EntryNote, EntryUrl, EntryPhone, EntryDate,
+    EntryDateFormRequest,
+    EntryEmail,
+    EntryInfo,
+    EntryInfoCommonFormRequest,
+    EntryNote,
+    EntryUrl,
+    EntryPhone,
+    EntryDate,
+    FileModel, FileModelUpdateRequest,
 } from "./api_types";
 
 export const apiMappers = {
+    toFileModelUpdateRequest: (model: FileModel): FileModelUpdateRequest => {
+        return {
+            name: model.name,
+            deletedAt: model.deletedAt,
+            deletedReason: model.deletedReason,
+        }  
+    },
     toEntryUpdateRequest: (entry: Entry): EntryUpdateRequest => {
         return {
             name: entry.name,

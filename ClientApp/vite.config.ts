@@ -15,7 +15,7 @@ export default defineConfig({
     ],
     server: {
         proxy: {
-            '/files': {target: 'https://localhost:7125', secure: false, changeOrigin: true},
+            // '/files': {target: 'https://localhost:7125', secure: false, changeOrigin: true},
             '/api': {target: 'https://localhost:7125', secure: false, changeOrigin: true},
         },
         fs: {

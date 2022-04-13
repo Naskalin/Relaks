@@ -29,7 +29,7 @@
 import Modal from '../../components/Modal.vue';
 import {EntryCreateRequest, EntryUpdateRequest} from "../../../api/api_types";
 import EntryFields from './Entry.Fields.vue';
-import {computed, onMounted} from "vue";
+import {computed} from "vue";
 
 const props = defineProps<{
     title: string

@@ -10,12 +10,12 @@
 </template>
 
 <script setup lang="ts">
-import {EntryFile} from "../../api/api_types";
+import {FileModel} from "../../api/api_types";
 import {apiFiles} from "../../api/rerources/api_files";
 import {computed, ref, onMounted} from "vue";
 
 const props = defineProps<{
-    file: EntryFile
+    file: FileModel
 }>()
 
 const downloadFile = async () => {
