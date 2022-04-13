@@ -23,7 +23,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo {Title = "API", Version = "v1"});
     c.EnableAnnotations();
 });
 
@@ -31,10 +31,7 @@ builder.Services.AddDbContext<AppDbContext>(
     options => options.UseSqlite(appPreset.SqliteConnection)
 );
 
-builder.Services.Configure<ApiBehaviorOptions>(o =>
-{
-    o.SuppressInferBindingSourcesForParameters = true;
-});
+builder.Services.Configure<ApiBehaviorOptions>(o => { o.SuppressInferBindingSourcesForParameters = true; });
 
 builder.Services.AddTransient<EntryRepository>();
 
@@ -54,7 +51,7 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
     if (app.Environment.IsDevelopment())
-  {
+    {
         // db.Database.EnsureDeleted();
         // db.Database.EnsureCreated();
         // await new DatabaseSeeder(db).SeedAll();
@@ -75,11 +72,11 @@ app.MapControllers();
 app.UseDefaultFiles();
 
 app.UseStaticFiles();
-// app.UseStaticFiles(new StaticFileOptions()
-// {
-//     FileProvider = new PhysicalFileProvider(appPreset.FilesDir),
-//     RequestPath = "/files"
-// });
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(appPreset.FilesDir),
+    RequestPath = "/files"
+});
 
 app.Run();
 

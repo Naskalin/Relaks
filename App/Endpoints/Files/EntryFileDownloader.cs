@@ -36,20 +36,20 @@ public class EntryFileDownload : EndpointBaseAsync
         }
 
         var filePath = Path.Combine(_appPreset.FilesDir, entryFile.GetFilePath());
-        var streamOrigin = System.IO.File.OpenRead(filePath);
+        var fileStream = System.IO.File.OpenRead(filePath);
+        var fileDownloadName = entryFile.Name + Path.GetExtension(entryFile.Path);
         
         if (entryFile.IsImage())
         {
-            var imagePath = await GetImagePath(streamOrigin, entryFile, req.ImageFilter, cancellationToken);
+            var imagePath = await GetImagePath(fileStream, entryFile, req.ImageFilter, cancellationToken);
             if (imagePath != null)
             {
-                streamOrigin.Close();
-                FileStream streamCacheImage = System.IO.File.OpenRead(imagePath);
-                return new FileStreamResult(streamCacheImage, entryFile.ContentType);
+                fileStream.Close();
+                fileStream = System.IO.File.OpenRead(imagePath);
             }
         }
         
-        return new FileStreamResult(streamOrigin, entryFile.ContentType);
+        return new FileStreamResult(fileStream, entryFile.ContentType) {FileDownloadName = fileDownloadName};
     }
 
     private async Task<string?> GetImagePath(

@@ -1,4 +1,5 @@
-﻿using App.Repository;
+﻿using System.Diagnostics;
+using App.Repository;
 using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
@@ -31,13 +32,13 @@ public class Delete : EndpointBaseAsync
         {
             return NotFound();
         }
-
+        
         await _entryFileRepository.DeleteAsync(entryFile, cancellationToken);
-
+        
         // Remove attached file
         var filePath = Path.Combine(_appPreset.FilesDir, entryFile.GetFilePath());
         if (System.IO.File.Exists(filePath)) System.IO.File.Delete(filePath);
-
+        
         return NoContent();
     }
 }

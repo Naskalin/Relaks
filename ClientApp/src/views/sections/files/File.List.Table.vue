@@ -50,8 +50,8 @@ import {fileFieldNames as trans} from "../../../localize/messages";
 import {dateHelper} from "../../../utils/date_helper";
 import {FileModel} from "../../../api/api_types";
 import {computed} from 'vue';
+import {getFileExtension} from "../../../utils/file_helper";
 
-// "props" name used in table tr and td 
 const props = defineProps<{
     files: FileModel[]
     isEnd: boolean
@@ -68,7 +68,7 @@ const emit = defineEmits<{
 
 const columns = [
     {name: 'path', field: 'path', label: 'Файл', style: {width: '80px'}},
-    {name: 'name', field: 'name', label: trans.name},
+    {name: 'name', field: 'name', label: trans.name, format: (val: string, row: FileModel) => val + '.' + getFileExtension(row.path)},
     {name: 'contentType', field: 'contentType', label: trans.contentType, style: {width: '180px'}},
     {name: 'createdAt', field: 'createdAt', label: trans.createdAt, format: (val: string) => dateHelper.utcFormat(val), style: {width: '130px'}},
     {name: 'updatedAt', field: 'updatedAt', label: trans.updatedAt, format: (val: string) => dateHelper.utcFormat(val), style: {width: '130px'}},
