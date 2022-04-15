@@ -17,7 +17,11 @@ public class DatabaseSeeder
 
     public async Task SeedAll()
     {
-        await new EntrySeeder(Db).Seed();
+        Db.Entries.RemoveRange(Db.Entries);
+        // Db.Set<EntryFts>().RemoveRange(Db.Set<EntryFts>());
+        Db.Set<EntryInfo>().RemoveRange(Db.Set<EntryInfo>());
+
+        // await new EntrySeeder(Db).Seed();
         await new EntryDateSeeder(Db).Seed();
         await new EntryNoteSeeder(Db).Seed();
         await new EntryPhoneSeeder(Db).Seed();

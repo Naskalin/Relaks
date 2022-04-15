@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220414213405_FtsPostMigration")]
-    partial class FtsPostMigration
+    [Migration("20220415221720_AddPosts")]
+    partial class AddPosts
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -146,32 +146,6 @@ namespace App.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("FileModel");
                 });
 
-            modelBuilder.Entity("App.Models.FtsPost", b =>
-                {
-                    b.Property<Guid>("RowId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Match")
-                        .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasColumnName("FtsPost");
-
-                    b.Property<double?>("Rank")
-                        .HasColumnType("REAL");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("RowId");
-
-                    b.ToTable("FtsPost");
-                });
-
             modelBuilder.Entity("App.Models.Post", b =>
                 {
                     b.Property<Guid>("Id")
@@ -182,9 +156,47 @@ namespace App.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("App.Models.PostFts", b =>
+                {
+                    b.Property<int>("RowId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Match")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("PostFts");
+
+                    b.Property<double?>("Rank")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("RowId");
+
+                    b.ToTable("PostFts");
                 });
 
             modelBuilder.Entity("App.Models.EntryDate", b =>
@@ -279,17 +291,6 @@ namespace App.Migrations
                     b.HasDiscriminator().HasValue("Url");
                 });
 
-            modelBuilder.Entity("App.Models.FtsPost", b =>
-                {
-                    b.HasOne("App.Models.Post", "Post")
-                        .WithOne("FtsPost")
-                        .HasForeignKey("App.Models.FtsPost", "RowId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-                });
-
             modelBuilder.Entity("App.Models.EntryDate", b =>
                 {
                     b.HasOne("App.Models.Entry", null)
@@ -371,12 +372,6 @@ namespace App.Migrations
             modelBuilder.Entity("App.Models.EntryInfo", b =>
                 {
                     b.Navigation("Files");
-                });
-
-            modelBuilder.Entity("App.Models.Post", b =>
-                {
-                    b.Navigation("FtsPost")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

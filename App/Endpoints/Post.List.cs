@@ -4,8 +4,15 @@ using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace App.Endpoints;
+
+public class FtsResult
+{
+    public Guid Id { get; set; }
+    public string Snippet { get; set; } = null!;
+}
 
 public class PostList : EndpointBaseAsync
     .WithRequest<BaseListRequest>
@@ -20,7 +27,7 @@ public class PostList : EndpointBaseAsync
 
     [HttpGet("/api/posts")]
     public override async Task<ActionResult> HandleAsync(
-        [FromMultiSource] BaseListRequest request, 
+        [FromMultiSource] BaseListRequest request,
         CancellationToken cancellationToken = new())
     {
         if (!_db.Posts.Any())
@@ -28,35 +35,44 @@ public class PostList : EndpointBaseAsync
             Seed();
         }
 
-//         var results = _db.Database.ExecuteSqlRaw(@"
-// SELECT *, highlight(FtsPost, 2, '<b>', '</b>') as Highlight
-// FROM FtsPost
-// WHERE FtsPost MATCH 'кошк*'
-// ");
-//         var results = _db.Set<FtsPost>().FromSqlRaw(@"
-// SELECT *, highlight(FtsPost, 2, '<b>', '</b>') as Highlight
-// FROM FtsPost
-// WHERE FtsPost MATCH 'кошк*'
-// ");
-            
         // TODO: work variant
-        var results = from fts in _db.Set<FtsPost>()
-            where fts.Match == request.Search + "*"
-            orderby fts.Rank
-            select new
-            {
-                PostId = fts.PostId,
-                Snippet = _db.Snippet(fts.Match, "-1", "<b>", "</b>", "...", 10),
-            };
+        // var results = from postFts in _db.Set<PostFts>()
+        //     join post in _db.Posts on postFts.Id equals post.Id 
+        //     where postFts.Match == request.Search + "*"
+        //     orderby postFts.Rank
+        //     select new
+        //     {
+        //         Id = postFts.Id,
+        //         Snippet = _db.Snippet(postFts.Match, "-1", "<b>", "</b>", "...", 10),
+        //     };
 
-        return Ok(results);
-        // return Ok(new
-        // {
-        //     DateTime.UtcNow,
-        //     results,
-        // });
+        var results = FindFtsResults(request.Search);
+
+        var data = results.Join(_db.Posts,
+            x => x.Id,
+            p => p.Id,
+            (fts, post) => new
+            {
+                Fts = fts,
+                Post = post
+            }).ToList();
+
+        return Ok(data);
     }
-    
+
+    private IQueryable<FtsResult> FindFtsResults(string search)
+    {
+        return from postFts in _db.Set<PostFts>()
+            where postFts.Match == search + "*"
+            orderby postFts.Rank
+            select new FtsResult()
+            {
+                Id = postFts.Id,
+                Snippet = _db.Snippet(postFts.Match, "-1", "<b>", "</b>", "...", 10),
+            };
+    }
+
+
     private void Seed()
     {
         var data = new Dictionary<string, string>()
@@ -73,27 +89,16 @@ public class PostList : EndpointBaseAsync
         foreach (var item in data)
         {
             var postId = Guid.NewGuid();
-            
+
             var post = new Post()
             {
                 Id = postId,
+                Title = item.Key,
+                Description = item.Value,
                 AnyField = "default val"
             };
 
-            var ftsPost = new FtsPost()
-            {
-                PostId = postId,
-                Title = item.Key,
-                Description = item.Value,
-            };
-
-//             _db.Set<FtsPost>().FromSqlRaw(@"
-// INSERT INTO FtsPost(ROWID, Title, Description) VALUES(2, 'Cat', 'myau and murk');
-// ");
             _db.Posts.Add(post);
-            _db.Set<FtsPost>().Add(ftsPost);
-            // _db.Add(ftsPost);
-            // _db.Add(post);
         }
 
         _db.SaveChanges();

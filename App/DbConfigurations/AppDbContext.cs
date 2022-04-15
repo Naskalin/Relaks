@@ -6,7 +6,7 @@ namespace App.DbConfigurations;
 public class AppDbContext : DbContext
 {
     public DbSet<Entry> Entries { get; set; } = null!;
-
+    
     public DbSet<EntryDate> EntryDates { get; set; } = null!;
     public DbSet<EntryNote> EntryNotes { get; set; } = null!;
     public DbSet<EntryPhone> EntryPhones { get; set; } = null!;
@@ -33,23 +33,19 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new EntryConfiguration());
+        // modelBuilder.ApplyConfiguration(new EntryFtsConfiguration());
+        
         modelBuilder.ApplyConfiguration(new EntryInfoConfiguration());
-        modelBuilder.ApplyConfiguration(new FileConfiguration());
+        modelBuilder.ApplyConfiguration(new FileConfiguration()); 
 
         // FTS
-        
-        modelBuilder.Entity<FtsPost>(builder =>
+        modelBuilder.Entity<PostFts>(builder =>
         {
-            builder.HasKey(fts => fts.PostId);
+            builder.HasKey(fts => fts.RowId);
         
             builder
                 .Property(fts => fts.Match)
-                .HasColumnName(nameof(FtsPost));
-        
-            builder
-                .HasOne(fts => fts.Post)
-                .WithOne(p => p.FtsPost)
-                .HasForeignKey<FtsPost>(fts => fts.PostId);
+                .HasColumnName(nameof(PostFts));
         });
     }
 }

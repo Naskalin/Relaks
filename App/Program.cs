@@ -52,8 +52,6 @@ using (var scope = app.Services.CreateScope())
 
     if (app.Environment.IsDevelopment())
     {
-        // db.Database.EnsureDeleted();
-        // db.Database.EnsureCreated();
         // await new DatabaseSeeder(db).SeedAll();
     }
 

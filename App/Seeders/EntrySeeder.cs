@@ -1,6 +1,5 @@
 ﻿using App.DbConfigurations;
 using App.Models;
-using Bogus;
 
 namespace App.Seeders;
 
@@ -12,7 +11,6 @@ public class EntrySeeder : DatabaseSeeder
 
     public async Task Seed()
     {
-
         foreach (EntryTypeEnum entryType in (EntryTypeEnum[]) Enum.GetValues(typeof(EntryTypeEnum)))
         {
             for (int i = 0; i < 50; i++)

@@ -6,18 +6,21 @@ public class Post
 {
     [Key]
     public Guid Id { get; set; }
-    public FtsPost FtsPost { get; set; } = null!;
 
+    public string Title { get; set; } = null!;
+    public string Description { get; set; } = null!;
+    
     public string AnyField { get; set; } = null!;
 }
 
-public class FtsPost
+public class PostFts : IFtsEntity
 {
+    [Key]
+    public int RowId { get; set; }
     public string Match { get; set; } = null!;
     public double? Rank { get; set; }
-
-    public Post Post { get; set; } = null!;
-    public Guid PostId { get; set; }
+    
+    public Guid Id { get; set; }
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
 }

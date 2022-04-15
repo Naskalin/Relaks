@@ -14,7 +14,7 @@ public static class EntryMapper
         entry.Reputation = req.Reputation;
         entry.StartAt = req.StartAt;
         entry.EndAt = req.EndAt;
-        
+
         req.SoftDeleteMapTo(entry);
     }
 
@@ -22,4 +22,12 @@ public static class EntryMapper
     {
         MapTo(req.Details, entry);
     }
+
+    // public static void MapTo(this Entry entry, EntryFts entryFts)
+    // {
+    //     entryFts.Id = entry.Id;
+    //     entryFts.Name = entry.Name;
+    //     entryFts.Description = entry.Description;
+    //     entryFts.DeletedReason = entry.DeletedReason;
+    // }
 }
