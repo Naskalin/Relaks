@@ -33,8 +33,7 @@
 
 <script setup lang="ts">
 import {countries} from "countries-list";
-import {ref, watch, computed, onMounted} from "vue";
-// import {phoneHelper} from "../../utils/phone_helper";
+import {ref, computed, onMounted} from "vue";
 import {appDefaults} from "../../app_defaults";
 import {PhoneType} from "../../api/api_types";
 

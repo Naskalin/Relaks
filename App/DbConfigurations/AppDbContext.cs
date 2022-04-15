@@ -1,6 +1,5 @@
 ﻿using App.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace App.DbConfigurations;
 
@@ -13,13 +12,19 @@ public class AppDbContext : DbContext
     public DbSet<EntryPhone> EntryPhones { get; set; } = null!;
     public DbSet<EntryEmail> EntryEmails { get; set; } = null!;
     public DbSet<EntryUrl> EntryUrls { get; set; } = null!;
-    
-    // public DbSet<EntryDate> EntryDates { get; set; } = null!;
-    // public DbSet<EntryText> EntryTexts { get; set; } = null!;
-    // public DbSet<EntryTag> EntryTags { get; set; } = null!;
 
     public DbSet<EntryFile> EntryFiles { get; set; } = null!;
     public DbSet<EntryInfoFile> EntryInfoFiles { get; set; } = null!;
+
+    public DbSet<Post> Posts { get; set; } = null!;
+    
+    [DbFunction]
+    public string Highlight(string match, string column, string open, string close)
+        => throw new NotImplementedException();
+
+    [DbFunction]
+    public string Snippet(string match, string column, string open, string close, string ellips, int count)
+        => throw new NotImplementedException();
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -28,9 +33,23 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new EntryConfiguration());
-        // modelBuilder.ApplyConfiguration(new EntryDateConfiguration());
-        // modelBuilder.ApplyConfiguration(new EntryTextConfiguration());
         modelBuilder.ApplyConfiguration(new EntryInfoConfiguration());
         modelBuilder.ApplyConfiguration(new FileConfiguration());
+
+        // FTS
+        
+        modelBuilder.Entity<FtsPost>(builder =>
+        {
+            builder.HasKey(fts => fts.PostId);
+        
+            builder
+                .Property(fts => fts.Match)
+                .HasColumnName(nameof(FtsPost));
+        
+            builder
+                .HasOne(fts => fts.Post)
+                .WithOne(p => p.FtsPost)
+                .HasForeignKey<FtsPost>(fts => fts.PostId);
+        });
     }
 }

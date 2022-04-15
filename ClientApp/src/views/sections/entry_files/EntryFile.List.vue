@@ -10,12 +10,15 @@
 
     <file-list-table
         @getFiles="listStore.getFiles(entryId)"
-        :files="listStore.files"
         :with-edit="true"
-        :is-loading="listStore.isLoading"
-        :is-end="listStore.isEnd"
+        v-model="listStore"
         @showEdit="onShowEdit"
+        @rowDblClick="openFile"
     />
+<!--    v-model:is-end="listStore.isEnd"-->
+<!--    v-model:list-request="listStore.listRequest"-->
+<!--        :files="listStore.files"-->
+<!--        :is-loading="listStore.isLoading"-->
 
     <file-edit-modal
         v-if="editStore.file"
@@ -27,10 +30,7 @@
         @delete="onDelete"
         @softDelete="onSoftDelete"
     />
-    <!--    -->
-    <!--    recover-->
-    <!--    softDelete-->
-    <!--    delete-->
+    <a :href="testLinkHref" download="test.jpg" ref="testLink"></a>
 </template>
 
 <script setup lang="ts">
@@ -40,23 +40,27 @@ import EntryFileCreate from './EntryFile.Create.vue';
 
 import {entryMessages} from "../../../localize/messages";
 import {useRoute} from "vue-router";
-import {useEntryFileListTableStore} from "../../../store/entryFile/entryFile.list.table.store";
+import {useFileListTableStore} from "../../../store/entryFile/entryFile.list.table.store";
 import {useEntryFileEditStore} from "../../../store/entryFile/entryFile.edit.store";
-import {ref} from 'vue';
+import {ref, computed, onMounted} from 'vue';
 import {EntryFile} from "../../../api/api_types";
 import {apiMappers} from "../../../api/api_mappers";
 import {apiEntryFile} from "../../../api/rerources/api_entry_file";
+import {apiFileDownload} from "../../../api/rerources/api_files";
 
 const route = useRoute();
-const entryId = route.params.entryId as string;
-const listStore = useEntryFileListTableStore();
+const entryId = computed(() => route.params.entryId as string)
+const listStore = useFileListTableStore();
 const editStore = useEntryFileEditStore();
 const isShowEdit = ref(false);
+
+// initialize
+onMounted(() => listStore.$reset());
 
 // create
 const onUploaded = async () => {
     listStore.$reset();
-    await listStore.getFiles(entryId);
+    await listStore.getFiles(entryId.value);
 }
 
 // edit
@@ -70,7 +74,7 @@ const saveEditForm = async () => {
     const req = apiMappers.toFileModelUpdateRequest(editStore.file);
     await editStore.update(req);
 
-    const indexOf = listStore.files.findIndex(x => x.id === editStore.file.id);
+    const indexOf = listStore.files.findIndex(x => x.id === editStore.file!.id);
     if (indexOf > -1) listStore.files[indexOf] = editStore.file;
     
     isShowEdit.value = false;
@@ -86,12 +90,26 @@ const onRecover = async () => {
 
 const onDelete = async () => {
     if (!editStore.file) throw Error('onDelete. EditStore file model not found');
-    await apiEntryFile.delete(entryId, editStore.file.id);
+    await apiEntryFile.delete(entryId.value, editStore.file.id);
 
-    const indexOf = listStore.files.findIndex(x => x.id === editStore.file.id);
+    const indexOf = listStore.files.findIndex(x => x.id === editStore.file!.id);
     if (indexOf > -1) listStore.files.splice(indexOf, 1);
 
     isShowEdit.value = false;
     editStore.$reset();
+}
+
+// open file
+// https://gist.github.com/javilobo8/097c30a233786be52070986d8cdb1743
+const testLinkHref = ref('');
+const testLink = ref(null);
+const openFile = async (file: EntryFile) => {
+    const url = await apiFileDownload.entryFile({fileId: file.id});
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', file.path);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
 }
 </script>

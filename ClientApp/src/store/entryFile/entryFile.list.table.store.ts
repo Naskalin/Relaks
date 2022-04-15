@@ -1,15 +1,15 @@
 ﻿import {defineStore} from 'pinia';
-import {EntryFile, PaginateListRequest} from "../../api/api_types";
+import {FileModel, PaginateListRequest} from "../../api/api_types";
 import {apiEntryFile} from "../../api/rerources/api_entry_file";
 
-declare type EntryFileListTableStoreState = {
-    files: EntryFile[],
+export declare type FileListTableStoreState = {
+    files: FileModel[],
     isLoading: boolean,
     isEnd: boolean,
     listRequest: PaginateListRequest
 }
-export const useEntryFileListTableStore = defineStore('EntryFileListTableStore', {
-    state: (): EntryFileListTableStoreState => {
+export const useFileListTableStore = defineStore('FileListTableStore', {
+    state: (): FileListTableStoreState => {
         return {
             files: [],
             isLoading: false,

@@ -72,14 +72,15 @@ public class AppPresetManager
                 throw new ArgumentException("AppPreset, файл конфигурации не распознан.");
             }
 
-            appPresetModel.SqliteConnection = "Data Source=" + appPresetModel.DataDir + "\\app.db";
+            var dbPath = Path.Combine(appPresetModel.DataDir, "db.sqlite");
+            appPresetModel.SqliteConnection = "Data Source=" + dbPath;
 
             var filesDir = Path.Combine(appPresetModel.DataDir, "files");
-            if (Directory.Exists(filesDir)) Directory.CreateDirectory(filesDir);
+            if (!Directory.Exists(filesDir)) Directory.CreateDirectory(filesDir);
             appPresetModel.FilesDir = filesDir;
 
             var cacheDir = Path.Combine(appPresetModel.DataDir, "cache");
-            if (Directory.Exists(cacheDir)) Directory.CreateDirectory(cacheDir);
+            if (!Directory.Exists(cacheDir)) Directory.CreateDirectory(cacheDir);
             appPresetModel.CacheDir = cacheDir;
 
             return appPresetModel;

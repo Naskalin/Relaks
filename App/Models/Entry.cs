@@ -22,11 +22,7 @@ public class Entry : BaseEntity, ITimestampResource, ISoftDelete
     public List<EntryEmail> Emails { get; set; } = new();
     public List<EntryPhone> Phones { get; set; } = new();
     public List<EntryUrl> Urls { get; set; } = new();
-
-    // public List<EntryDate> Dates { get; set; } = new();
-    // public List<EntryText> Texts { get; set; } = new();
-
-    public List<EntryTag> Tags { get; set; } = new();
+    
     public List<EntryFile> Files { get; set; } = new();
 }
 

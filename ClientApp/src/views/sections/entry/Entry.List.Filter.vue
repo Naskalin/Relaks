@@ -2,20 +2,17 @@
     <div class="q-gutter-md">
         <p class="text-center text-h6">Фильтр</p>
 
-        <div class="flex justify-between items-center">
-            <span class="text-uppercase text-grey-7">Тип</span>
-            <div>
-                <q-btn-toggle
-                    class="bg-grey-2"
-                    v-model="model.entryType"
-                    toggle-color="secondary"
-                    :options="entryMessages.entryType.selectOptions"
-                />
-            </div>
+        <div>
+            <q-btn-toggle
+                spread
+                class="bg-grey-2"
+                v-model="model.entryType"
+                toggle-color="secondary"
+                :options="entryMessages.entryType.selectOptions"
+            />
         </div>
 
-        <div class="">
-<!--            <span class="text-uppercase text-grey-7">Актуальность</span>-->
+        <div>
             <q-btn-toggle
                 class="bg-grey-2"
                 spread

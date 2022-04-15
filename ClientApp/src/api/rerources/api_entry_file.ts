@@ -7,7 +7,10 @@ export const apiEntryFile = {
         const resp = await appApi.post(
             {resource: 'entries', resourceId: entryId, subResource: subResource},
             formData,
-            {headers: {'Content-Type': 'multipart/form-data'}}
+            {
+                responseType: 'blob',
+                headers: {'Content-Type': 'multipart/form-data'}
+            }
         );
 
         return resp.data;
