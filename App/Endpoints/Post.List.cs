@@ -14,6 +14,11 @@ public class FtsResult
     public string Snippet { get; set; } = null!;
 }
 
+public class SearchResult<T>
+{
+    
+}
+
 public class PostList : EndpointBaseAsync
     .WithRequest<BaseListRequest>
     .WithActionResult
@@ -47,15 +52,17 @@ public class PostList : EndpointBaseAsync
         //     };
 
         var results = FindFtsResults(request.Search);
-
+        
         var data = results.Join(_db.Posts,
             x => x.Id,
             p => p.Id,
             (fts, post) => new
             {
-                Fts = fts,
+                Snippet = fts.Snippet,
                 Post = post
-            }).ToList();
+            }
+            
+            ).ToList();
 
         return Ok(data);
     }
@@ -71,7 +78,6 @@ public class PostList : EndpointBaseAsync
                 Snippet = _db.Snippet(postFts.Match, "-1", "<b>", "</b>", "...", 10),
             };
     }
-
 
     private void Seed()
     {

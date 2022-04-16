@@ -33,7 +33,7 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new EntryConfiguration());
-        // modelBuilder.ApplyConfiguration(new EntryFtsConfiguration());
+        modelBuilder.ApplyConfiguration(new EntryFtsConfiguration());
         
         modelBuilder.ApplyConfiguration(new EntryInfoConfiguration());
         modelBuilder.ApplyConfiguration(new FileConfiguration()); 

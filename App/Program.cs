@@ -1,11 +1,12 @@
 using System.Text.Json.Serialization;
 using App.DbConfigurations;
+using App.Models;
 using App.Repository;
-using App.Seeders;
 using App.Utils;
+using App.Utils.Extensions.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.OpenApi.Models;
 
 var appPreset = new AppPresetManager(Directory.GetCurrentDirectory()).GetPreset();
@@ -53,6 +54,12 @@ using (var scope = app.Services.CreateScope())
     if (app.Environment.IsDevelopment())
     {
         // await new DatabaseSeeder(db).SeedAll();
+        Console.WriteLine(SqliteMigrationHelper.CreateAfterInsertTrigger(new TriggerModel()
+        {
+            Fields = new []{nameof(Post.Id), nameof(Post.Title), nameof(Post.Description)},
+            TargetTable = "Posts",
+            TriggeredTable = nameof(PostFts),
+        }));
     }
 
     // db.Database.Migrate();
