@@ -14,7 +14,7 @@ public class TableNames
 {
     public string Table { get; set; } = null!;
     public string[] Columns = Array.Empty<string>();
-    public string ColumnId { get; set; } = null!;
+    public string[] Unindexed { get; set; } = null!;
 }
 
 public enum TriggerTypeEnum
@@ -28,10 +28,19 @@ public class SqliteMigrationHelper
 {
     public static string CreateFtsTable(TableNames names)
     {
-        var fields = String.Join(", ", names.Columns.Select(x => x == names.ColumnId ? x + " UNINDEXED" : x));
+        var fields = String.Join(", ", names.Columns.Select(x => names.Unindexed.Contains(x) ? x + " UNINDEXED" : x));
         return $"CREATE VIRTUAL TABLE {names.Table} USING fts5({fields});";
     }
 
+    public static string DeleteTriggers(string triggerTableName)
+    {
+        return $@"
+DROP TRIGGER IF EXISTS {GetTriggerName(triggerTableName, TriggerTypeEnum.Insert)};
+DROP TRIGGER IF EXISTS {GetTriggerName(triggerTableName, TriggerTypeEnum.Delete)};
+DROP TRIGGER IF EXISTS {GetTriggerName(triggerTableName, TriggerTypeEnum.Update)};
+";
+    }
+    
     public static string CreateTriggers(TriggerNames names)
     {
         var insertBody = InsertTriggerBody(names.TriggerTable, names.Columns);
@@ -71,14 +80,28 @@ public class SqliteMigrationHelper
         string watchTableName,
         string triggerBody)
     {
+        var operation = GetOperationName(triggerTypeEnum);
+        var triggerName = GetTriggerName(triggerTableName, triggerTypeEnum);
+        return $@"CREATE TRIGGER {triggerName} AFTER {operation.ToUpper()} ON {watchTableName} BEGIN
+    {triggerBody}
+END;";
+    }
+
+    public static string GetOperationName(TriggerTypeEnum triggerTypeEnum)
+    {
         var operation = Enum.GetName(typeof(TriggerTypeEnum), triggerTypeEnum);
         if (operation == null)
         {
             throw new ArgumentException("Operation name not recognized.");
         }
-        return $@"CREATE TRIGGER {triggerTableName}_after{operation} AFTER {operation.ToUpper()} ON {watchTableName} BEGIN
-    {triggerBody}
-END;";
+
+        return operation;
+    }
+    
+    public static string GetTriggerName(string triggerTableName, TriggerTypeEnum triggerTypeEnum)
+    {
+        var operation = GetOperationName(triggerTypeEnum);
+        return $"{triggerTableName}_after{operation}";
     }
 
 

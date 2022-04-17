@@ -8,6 +8,7 @@
         </div>
         <div class="col">
             <q-table
+                ref="entryListTable"
                 class="list-table"
                 :title="store.listRequest.entryType ? entryMessages.entryType.pluralNames[store.listRequest.entryType] : 'Все'"
                 :columns="columns"
@@ -20,7 +21,6 @@
                 virtual-scroll
                 :rows-per-page-options="[0]"
                 @virtual-scroll="getEntries"
-                @request="onTableRequest"
                 binary-state-sort
             >
                 <template v-slot:header-cell-name="props">
@@ -32,11 +32,6 @@
                 <template v-slot:header-cell-endAt="props">
                     <q-th :props="props">{{ labelEndAt }}</q-th>
                 </template>
-                <!--                <template v-slot:body-cell-avatar="props">-->
-                <!--                    <q-td :props="props">-->
-                <!--                        <q-avatar size="50px" font-size="34px" color="grey-5" text-color="grey-4" icon="las la-question-circle" />-->
-                <!--                    </q-td>-->
-                <!--                </template>-->
                 <template v-slot:body="props">
                     <q-tr :props="props" :key="`m_${props.row.index}`"
                           :class="{
@@ -86,7 +81,7 @@
 <script setup lang="ts">
 import {useEntryListStore} from "../../../store/entry/entry.list.table.store";
 import {entryMessages} from "../../../localize/messages";
-import {Entry, EntryType} from "../../../api/api_types";
+import {Entry} from "../../../api/api_types";
 import {dateHelper} from "../../../utils/date_helper";
 import ListFilter from './Entry.List.Filter.vue';
 import {watch, ref, computed} from 'vue';
@@ -103,7 +98,7 @@ const emit = defineEmits<{
 }>();
 
 const previewEntry = ref<Entry | null>(null);
-const columns = [
+let columns = [
     // {name: 'id', label: '#', field: 'id'},
     {name: 'avatar', label: 'Аватар', field: 'id'},
     {name: 'entryType', label: 'Тип', field: 'entryType', style: 'width: 60px'},
@@ -112,14 +107,12 @@ const columns = [
     {
         name: 'startAt',
         sortable: true,
-        // label: entryMessages.startAt[store.listRequest.entryType],
         field: 'startAt',
         format: (val: string) => dateHelper.utcFormat(val),
     },
     {
         name: 'endAt',
         sortable: true,
-        // label: entryMessages.endAt[store.listRequest.entryType],
         field: 'endAt',
         format: (val: string) => dateHelper.utcFormat(val),
     },
@@ -138,10 +131,10 @@ const columns = [
         format: (val: string) => dateHelper.utcFormat(val),
     },
 ]
-columns.map(row => ({...row, align: 'left'}));
+columns = columns.map(row => ({...row, align: 'left'}));
 
 // get entries
-const getEntries = async ({to}: { to: number }) => {
+const getEntries = async ({to}: { to: number}) => {
     const rowsCount = store.entries.length;
     if (
         // Если ещё нет данных
@@ -151,10 +144,6 @@ const getEntries = async ({to}: { to: number }) => {
     ) {
         await store.getEntries();
     }
-}
-const onTableRequest = (e: any) => {
-    console.log(e);
-
 }
 watch([
     () => store.listRequest.search,
@@ -174,10 +163,6 @@ const labelEndAt = computed(() => store.listRequest.entryType ? entryMessages.en
 <style lang="scss">
 .list-table {
     max-height: 97vh;
-
-    //td, th {
-    //    text-align: left;
-    //}
 
     tfoot tr > *,
     thead tr > * {

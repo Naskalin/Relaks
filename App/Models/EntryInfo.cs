@@ -38,6 +38,23 @@ public abstract class EntryInfo : BaseEntity, ITimestampResource, ISoftDelete
     public string Discriminator { get; set; } = null!;
 }
 
+public class EntryInfoFts : IFtsEntity
+{
+    public int RowId { get; set; }
+    public string Match { get; set; } = null!;
+    public double? Rank { get; set; }
+    
+    public Guid Id { get; set; }
+    public Guid EntryId { get; set; }
+    
+    public string Title { get; set; } = null!;
+    public string DeletedReason { get; set; } = null!;
+    public string? PhoneNumber { get; set; }
+    public string? Email { get; set; }
+    public string? Url { get; set; }
+    public string? Note { get; set; }
+}
+
 public class EntryNote : EntryInfo
 {
     public string Note { get; set; } = null!;

@@ -6,7 +6,8 @@ namespace App.DbConfigurations;
 public class AppDbContext : DbContext
 {
     public DbSet<Entry> Entries { get; set; } = null!;
-    
+
+    public DbSet<EntryInfo> EntryInfos { get; set; } = null!;
     public DbSet<EntryDate> EntryDates { get; set; } = null!;
     public DbSet<EntryNote> EntryNotes { get; set; } = null!;
     public DbSet<EntryPhone> EntryPhones { get; set; } = null!;
@@ -36,6 +37,8 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new EntryFtsConfiguration());
         
         modelBuilder.ApplyConfiguration(new EntryInfoConfiguration());
+        modelBuilder.ApplyConfiguration(new EntryInfoFtsConfiguration());
+        
         modelBuilder.ApplyConfiguration(new FileConfiguration()); 
 
         // FTS

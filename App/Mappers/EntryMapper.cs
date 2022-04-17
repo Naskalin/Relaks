@@ -15,6 +15,7 @@ public static class EntryMapper
         entry.Reputation = req.Reputation;
         entry.StartAt = req.StartAt;
         entry.EndAt = req.EndAt;
+        entry.UpdatedAt = DateTime.UtcNow;
 
         req.SoftDeleteMapTo(entry);
     }

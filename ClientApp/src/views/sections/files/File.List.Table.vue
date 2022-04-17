@@ -94,7 +94,7 @@ const emit = defineEmits<{
     (e: 'update:modelValue', val: FileListTableStoreState): void 
 }>()
 
-const columns = [
+let columns = [
     {name: 'path', field: 'path', label: 'Файл', style: {width: '80px'}},
     {
         name: 'name',
@@ -126,7 +126,7 @@ const columns = [
     },
     {name: 'deletedReason', field: 'deletedReason', label: trans.deletedReason},
 ]
-columns.map(row => ({...row, align: 'left'}));
+columns = columns.map(row => ({...row, align: 'left'}));
 
 const store = computed({
     get: () => props.modelValue,

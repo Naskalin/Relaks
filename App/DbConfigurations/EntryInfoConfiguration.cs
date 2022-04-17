@@ -20,3 +20,15 @@ public class EntryInfoConfiguration : IEntityTypeConfiguration<EntryInfo>
             ;
     }
 }
+
+public class EntryInfoFtsConfiguration : IEntityTypeConfiguration<EntryInfoFts>
+{
+    public void Configure(EntityTypeBuilder<EntryInfoFts> builder)
+    {
+        builder.HasKey(fts => fts.RowId);
+        
+        builder
+            .Property(fts => fts.Match)
+            .HasColumnName(nameof(EntryInfoFts));
+    }
+}

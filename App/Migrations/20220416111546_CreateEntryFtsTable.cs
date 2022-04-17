@@ -24,12 +24,12 @@ namespace App.Migrations
                     new TableNames() 
                     {
                         Table = nameof(EntryFts),
-                        ColumnId = nameof(EntryFts.Id),
+                        Unindexed = new []{nameof(EntryFts.Id)},
                         Columns = columns,
                     }
                 )
             );
-
+            
             migrationBuilder.Sql(
                 SqliteMigrationHelper.CreateTriggers(
                     new TriggerNames()
@@ -46,6 +46,10 @@ namespace App.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql(
+                SqliteMigrationHelper.DeleteTriggers(nameof(EntryFts))
+            );
+            
             migrationBuilder.DropTable(
                 name: "EntryFts");
         }

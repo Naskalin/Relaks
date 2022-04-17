@@ -33,8 +33,11 @@
 <!--        </div>-->
 
         <q-input v-model="model.search" debounce="250" label="Поиск..." color="secondary">
-            <template v-slot:append>
+            <template v-slot:prepend>
                 <q-icon name="las la-search"/>
+            </template>
+            <template v-slot:append>
+                <q-icon @click="model.search = ''" name="close" class="cursor-pointer"/>
             </template>
         </q-input>
     </div>

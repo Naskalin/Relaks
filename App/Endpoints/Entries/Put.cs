@@ -38,7 +38,6 @@ public class Put : EndpointBaseAsync
         if (entry == null) return NotFound();
         
         putRequest.MapTo(entry);
-        entry.UpdatedAt = DateTime.UtcNow;
         await _entryRepository.UpdateAsync(entry, cancellationToken);
 
         return NoContent();

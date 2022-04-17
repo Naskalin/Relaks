@@ -22,42 +22,13 @@ public class List : EndpointBaseAsync
     [HttpGet("/api/entries")]
     [SwaggerOperation(OperationId = "Entry.List", Tags = new[] {"Entry"})]
     // public override async Task<ActionResult<List<EntryFtsDto>>> HandleAsync(
-    public override async Task<ActionResult> HandleAsync(
+    public override Task<ActionResult> HandleAsync(
         [FromQuery] ListRequest listRequest,
         CancellationToken cancellationToken = new())
     {
-        var query = _entryRepository.FindByListRequest(listRequest);
-        
-        // .ToListAsync(cancellationToken);
-        return Ok(query.ToList());
-        
-        // if (!String.IsNullOrEmpty(listRequest.Search))
-        // {
-        //     var entries = _entryRepository.FindFtsResults(listRequest.Search);
-        //
-        //     var results = entries.Join(
-        //         _entryRepository.Entities,
-        //         x => x.Id,
-        //         e => e.Id,
-        //         (result, entry) => MakeResult(result, entry)
-        //     );
-        //
-        //     return Ok(results);
-        // }
-
-        // return Ok();
+        // var query = _entryRepository.FindByListRequest(listRequest);
+        // var query = _entryRepository.FtsSearch(listRequest.Search ?? "");
+        // return Task.FromResult<ActionResult>(Ok(query.ToList()));
+        return Task.FromResult<ActionResult>(Ok());
     }
-    
-    // public class EntityFtsResult : Entry
-    // {
-    //     public string? Snippet { get; set; }
-    // }
-    //
-    // private static EntityFtsResult MakeResult(FtsResult ftsResult, Entry entry)
-    // {
-    //     var r = (EntityFtsResult) entry;
-    //     r.Snippet = ftsResult.Snippet;
-    //
-    //     return r;
-    // }
 }
