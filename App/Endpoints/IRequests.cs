@@ -22,7 +22,6 @@ public interface IOrderableRequest
     public string? OrderBy { get; set; }
     public bool? OrderByDesc { get; set; }
 }
-
 // public interface ISoftDeleteRequest
 // {
 //     public bool? IsFullDelete { get; set; }

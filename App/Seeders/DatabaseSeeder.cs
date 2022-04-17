@@ -1,6 +1,7 @@
 ﻿using App.DbConfigurations;
 using App.Models;
 using Bogus;
+using Microsoft.EntityFrameworkCore;
 
 namespace App.Seeders;
 
@@ -15,17 +16,16 @@ public class DatabaseSeeder
         Faker = new Faker("ru");
     }
 
-    public async Task SeedAll()
+    public void SeedAll()
     {
-        Db.Entries.RemoveRange(Db.Entries);
-        // Db.Set<EntryFts>().RemoveRange(Db.Set<EntryFts>());
-        Db.Set<EntryInfo>().RemoveRange(Db.Set<EntryInfo>());
+        Db.Database.ExecuteSqlRaw("delete from EntryInfos;");
+        Db.Database.ExecuteSqlRaw("delete from Entries;");
 
-        // await new EntrySeeder(Db).Seed();
-        await new EntryDateSeeder(Db).Seed();
-        await new EntryNoteSeeder(Db).Seed();
-        await new EntryPhoneSeeder(Db).Seed();
-        await new EntryUrlSeeder(Db).Seed();
-        await new EntryEmailSeeder(Db).Seed();
+        new EntrySeeder(Db).Seed();
+        new EntryDateSeeder(Db).Seed();
+        new EntryNoteSeeder(Db).Seed();
+        new EntryPhoneSeeder(Db).Seed();
+        new EntryUrlSeeder(Db).Seed();
+        new EntryEmailSeeder(Db).Seed();
     }
 }

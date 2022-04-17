@@ -9,7 +9,7 @@ public class EntryDateSeeder : DatabaseSeeder
     {
     }
 
-    public async Task Seed()
+    public void Seed()
     {
         var entries = Db.Entries.Where(x => true).ToList();
 
@@ -57,6 +57,6 @@ public class EntryDateSeeder : DatabaseSeeder
 
         Db.EntryDates.Add(eDate);
 
-        await Db.SaveChangesAsync();
+        Db.SaveChanges();
     }
 }

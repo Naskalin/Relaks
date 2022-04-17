@@ -1,5 +1,6 @@
 ﻿using App.DbConfigurations;
 using App.Models;
+using App.Repository;
 using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
@@ -8,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Internal;
 
 namespace App.Endpoints;
 
-public class FtsResult
-{
-    public Guid Id { get; set; }
-    public string Snippet { get; set; } = null!;
-}
+// public class FtsResult
+// {
+//     public Guid Id { get; set; }
+//     public string Snippet { get; set; } = null!;
+// }
 
 public class SearchResult<T>
 {

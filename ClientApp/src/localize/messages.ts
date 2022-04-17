@@ -24,12 +24,18 @@ export const deletedMessages = {
 }
 
 export const entryMessages = {
+    nameNull: 'Ф.И.О / Название',
     name: {
         Person: 'Ф.И.О',
         Company: 'Название компании',
         Meet: 'Название встречи'
     },
     entryType: {
+        icons: {
+            Person: 'las la-user',
+            Meet: 'las la-user-friends',
+            Company: 'las la-handshake'
+        },
         selectOptions: selectHelper.toSelectOptions(entryTypeNames),
         names: entryTypeNames,
         pluralNames: {
@@ -53,11 +59,13 @@ export const entryMessages = {
             // structures: 'Структуры',
         }
     },
+    startAtNull: 'Дата рождения/регистрации/начала',
     startAt: {
         Person: 'День рождения',
         Company: 'Дата регистрации',
         Meet: 'Дата начала'
     },
+    endAtNull: 'Дата смерти/ликвидации/окончания',
     endAt: {
         Person: 'Дата смерти',
         Company: 'Дата ликвидации',

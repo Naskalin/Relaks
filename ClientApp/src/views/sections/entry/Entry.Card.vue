@@ -7,10 +7,13 @@
                       text-color="grey-4" icon="las la-question-circle"/>
         </q-card-section>
 
-        <q-card-section class="q-pb-none">
+        <q-card-section class="q-pb-xs q-gutter-y-sm">
             <div class="text-h6 text-center">{{ entry.name }}</div>
             <div v-if="entry.description" class="text-subtitle2 text-center">{{ entry.description }}</div>
             <div class="items-center flex justify-center q-gutter-x-sm">
+                <q-icon :name="entryMessages.entryType.icons[entry.entryType]" size="1.4rem"/>
+                <span>{{entryMessages.entryType.names[entry.entryType]}}</span>
+                <q-separator vertical class="q-mx-md"/>
                 <strong>{{ entry.reputation }}</strong>
                 <q-icon name="star" size="1.5em"/>
             </div>

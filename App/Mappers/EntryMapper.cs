@@ -1,5 +1,6 @@
 ﻿using App.Endpoints.Entries;
 using App.Models;
+using App.Repository;
 
 namespace App.Mappers;
 
@@ -22,6 +23,8 @@ public static class EntryMapper
     {
         MapTo(req.Details, entry);
     }
+
+
 
     // public static void MapTo(this Entry entry, EntryFts entryFts)
     // {

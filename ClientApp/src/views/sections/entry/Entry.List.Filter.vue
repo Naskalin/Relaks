@@ -8,7 +8,7 @@
                 class="bg-grey-2"
                 v-model="model.entryType"
                 toggle-color="secondary"
-                :options="entryMessages.entryType.selectOptions"
+                :options="entryTypes"
             />
         </div>
 
@@ -45,17 +45,18 @@ import {computed} from "vue";
 import {entryMessages} from "../../../localize/messages";
 import {EntryListRequest} from "../../../api/api_types";
 
-
 const props = defineProps<{
     modelValue: EntryListRequest
 }>()
-
 const emit = defineEmits<{
     (e: 'update:modelValue', val: EntryListRequest): void
 }>()
-
 const model = computed({
     get: (): EntryListRequest => props.modelValue,
     set: val => emit('update:modelValue', val)
 })
+const entryTypes = [
+    {value: null, label: 'Все'},
+    ...entryMessages.entryType.selectOptions,
+]
 </script>

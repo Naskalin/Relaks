@@ -24,6 +24,10 @@ export declare type PhoneType = {
     phoneRegion: string
 }
 
+export declare type FtsResultType = {
+    snippet?: string
+}
+
 export declare type PaginateListRequest = {
     page: number
     perPage: number
@@ -41,9 +45,9 @@ export declare type EntryCreateRequest = {
 
 export declare type EntryUpdateRequest = {} & EntryCreateRequest
 export declare type EntryListRequest = {
-    entryType: EntryType
+    entryType: EntryType | null
 } & PaginateListRequest
-export declare type Entry = { id: string } & EntryCreateRequest & TimestampTypes;
+export declare type Entry = { id: string } & EntryCreateRequest & TimestampTypes & FtsResultType;
 
 // EntryInfo
 export declare type EntryInfoCommonFormRequest = {

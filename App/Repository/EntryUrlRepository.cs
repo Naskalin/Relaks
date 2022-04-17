@@ -39,7 +39,7 @@ public class EntryUrlRepository : BaseRepository<EntryUrl>
 
         if (request.Page != null && request.PerPage != null)
         {
-            query = PaginateQuery(query, request);     
+            query = PaginateQuery(query, request); 
         }
 
         return await query.ToListAsync(cancellationToken);

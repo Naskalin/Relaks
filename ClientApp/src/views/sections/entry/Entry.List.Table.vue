@@ -9,7 +9,7 @@
         <div class="col">
             <q-table
                 class="list-table"
-                :title="entryMessages.entryType.pluralNames[store.listRequest.entryType]"
+                :title="store.listRequest.entryType ? entryMessages.entryType.pluralNames[store.listRequest.entryType] : 'Все'"
                 :columns="columns"
                 :loading="store.isLoading"
                 row-key="id"
@@ -24,13 +24,13 @@
                 binary-state-sort
             >
                 <template v-slot:header-cell-name="props">
-                    <q-th :props="props">{{ entryMessages.name[store.listRequest.entryType] }}</q-th>
+                    <q-th :props="props">{{ labelName }}</q-th>
                 </template>
                 <template v-slot:header-cell-startAt="props">
-                    <q-th :props="props">{{ entryMessages.startAt[store.listRequest.entryType] }}</q-th>
+                    <q-th :props="props">{{ labelStartAt }}</q-th>
                 </template>
                 <template v-slot:header-cell-endAt="props">
-                    <q-th :props="props">{{ entryMessages.endAt[store.listRequest.entryType] }}</q-th>
+                    <q-th :props="props">{{ labelEndAt }}</q-th>
                 </template>
                 <!--                <template v-slot:body-cell-avatar="props">-->
                 <!--                    <q-td :props="props">-->
@@ -50,9 +50,26 @@
                             :key="col.name"
                             :props="props"
                         >
-                            <template v-if="col.name === 'avatar'">
-                                <q-avatar size="50px" font-size="34px" color="grey-5" text-color="grey-4"
-                                          icon="las la-question-circle"/>
+                            <q-avatar v-if="col.name === 'avatar'" size="50px" font-size="34px" color="grey-5"
+                                      text-color="grey-4"
+                                      icon="las la-question-circle"/>
+                            <span v-else-if="col.name === 'entryType'" style="font-size: 1.6rem">
+                                <q-icon v-if="col.value === 'Person'" :name="entryMessages.entryType.icons.Person">
+                                    <q-tooltip>{{entryMessages.entryType.names.Person}}</q-tooltip>
+                                </q-icon>
+                                <q-icon v-else-if="col.value === 'Meet'" :name="entryMessages.entryType.icons.Meet">
+                                    <q-tooltip>{{entryMessages.entryType.names.Meet}}</q-tooltip>
+                                </q-icon>
+                                <q-icon v-else :name="entryMessages.entryType.icons.Company">
+                                    <q-tooltip>{{entryMessages.entryType.names.Company}}</q-tooltip>
+                                </q-icon>
+                            </span>
+                            <template v-else-if="col.name === 'name'">
+                                {{ col.value }}
+                                <div v-if="props.row.snippet" class="text-grey-7">
+                                    <q-icon name="las la-search" size=".9rem" class="q-mr-xs"/>
+                                    <span v-html="props.row.snippet"></span>
+                                </div>
                             </template>
                             <template v-else>{{ col.value }}</template>
                         </q-td>
@@ -69,12 +86,11 @@
 <script setup lang="ts">
 import {useEntryListStore} from "../../../store/entry/entry.list.table.store";
 import {entryMessages} from "../../../localize/messages";
-import {Entry} from "../../../api/api_types";
+import {Entry, EntryType} from "../../../api/api_types";
 import {dateHelper} from "../../../utils/date_helper";
 import ListFilter from './Entry.List.Filter.vue';
-import {watch, ref} from 'vue';
+import {watch, ref, computed} from 'vue';
 import EntryCard from './Entry.Card.vue';
-import Date from '../../components/Date.vue';
 
 // initialize
 const store = useEntryListStore();
@@ -89,53 +105,40 @@ const emit = defineEmits<{
 const previewEntry = ref<Entry | null>(null);
 const columns = [
     // {name: 'id', label: '#', field: 'id'},
-    // {name: 'entryType', label: 'Тип', field: (row: Entry) => entryMessages.entryType.names[row.entryType]},
     {name: 'avatar', label: 'Аватар', field: 'id'},
+    {name: 'entryType', label: 'Тип', field: 'entryType', style: 'width: 60px'},
     {name: 'name', label: 'name', field: 'name', sortable: true},
     {name: 'reputation', label: entryMessages.reputation, field: 'reputation', style: 'width: 70px', sortable: true},
     {
         name: 'startAt',
         sortable: true,
-        label: entryMessages.startAt[store.listRequest.entryType],
-        field: (row: Entry) => row.startAt ? dateHelper.utcFormat(row.startAt) : '',
+        // label: entryMessages.startAt[store.listRequest.entryType],
+        field: 'startAt',
+        format: (val: string) => dateHelper.utcFormat(val),
     },
     {
         name: 'endAt',
         sortable: true,
-        label: entryMessages.endAt[store.listRequest.entryType],
-        field: (row: Entry) => row.endAt ? dateHelper.utcFormat(row.endAt) : '',
+        // label: entryMessages.endAt[store.listRequest.entryType],
+        field: 'endAt',
+        format: (val: string) => dateHelper.utcFormat(val),
     },
-    // {
-    //     name: 'actualStartAt',
-    //     sortable: true,
-    //     label: actualMessages.actualStartAt.name,
-    //     field: (row: Entry) => row.actualStartAt ? dateHelper.utcFormat(row.actualStartAt) : '',
-    // },
-    // {
-    //     name: 'actualEndAt',
-    //     sortable: true,
-    //     label: actualMessages.actualEndAt.name,
-    //     field: (row: Entry) => row.actualEndAt ? dateHelper.utcFormat(row.actualEndAt) : '',
-    // },
     {
         name: 'updatedAt',
+        field: 'updatedAt',
         sortable: true,
         label: entryMessages.updatedAt,
-        field: (row: Entry) => dateHelper.utcFormat(row.updatedAt),
+        format: (val: string) => dateHelper.utcFormat(val),
     },
     {
         name: 'createdAt',
+        field: 'createdAt',
         sortable: true,
         label: entryMessages.createdAt,
-        field: (row: Entry) => dateHelper.utcFormat(row.createdAt),
+        format: (val: string) => dateHelper.utcFormat(val),
     },
-    // {
-    //     name: 'deletedAt',
-    //     sortable: true,
-    //     label: entryMessages.deletedAt,
-    //     field: (row: Entry) => row.deletedAt ? dateHelper.utcFormat(row.deletedAt) : '',
-    // },
 ]
+columns.map(row => ({...row, align: 'left'}));
 
 // get entries
 const getEntries = async ({to}: { to: number }) => {
@@ -162,15 +165,19 @@ watch([
     store.isEnd = false;
     await getEntries({to: -1})
 })
+
+const labelName = computed(() => store.listRequest.entryType ? entryMessages.name[store.listRequest.entryType] : entryMessages.nameNull);
+const labelStartAt = computed(() => store.listRequest.entryType ? entryMessages.startAt[store.listRequest.entryType] : entryMessages.startAtNull);
+const labelEndAt = computed(() => store.listRequest.entryType ? entryMessages.endAt[store.listRequest.entryType] : entryMessages.endAtNull);
 </script>
 
 <style lang="scss">
 .list-table {
     max-height: 97vh;
 
-    td, th {
-        text-align: left;
-    }
+    //td, th {
+    //    text-align: left;
+    //}
 
     tfoot tr > *,
     thead tr > * {

@@ -1,4 +1,6 @@
 ﻿using System;
+using App.Models;
+using App.Utils.Extensions.Database;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -9,23 +11,37 @@ namespace App.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "EntryFts",
-                columns: table => new
-                {
-                    RowId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    EntryFts = table.Column<string>(type: "TEXT", nullable: false),
-                    Rank = table.Column<double>(type: "REAL", nullable: true),
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: false),
-                    DeletedReason = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EntryFts", x => x.RowId);
-                });
+            var columns = new[]
+            {
+                nameof(EntryFts.Id),
+                nameof(EntryFts.Name),
+                nameof(EntryFts.Description),
+                nameof(EntryFts.DeletedReason),
+            };
+            
+            migrationBuilder.Sql(
+                SqliteMigrationHelper.CreateFtsTable(
+                    new TableNames() 
+                    {
+                        Table = nameof(EntryFts),
+                        ColumnId = nameof(EntryFts.Id),
+                        Columns = columns,
+                    }
+                )
+            );
+
+            migrationBuilder.Sql(
+                SqliteMigrationHelper.CreateTriggers(
+                    new TriggerNames()
+                    {
+                        Columns = columns,
+                        TriggerTable = nameof(EntryFts),
+                        WatchTable = "Entries",
+                        TriggerTableId = nameof(EntryFts.Id),
+                        WatchTableId = nameof(Post.Id),
+                    }
+                )
+            );
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -9,7 +9,7 @@ public class EntryUrlSeeder : DatabaseSeeder
     {
     }
 
-    public async Task Seed()
+    public void Seed()
     {
         var entries = Db.Entries.Where(x => true).ToList();
 
@@ -59,6 +59,6 @@ public class EntryUrlSeeder : DatabaseSeeder
 
         Db.EntryUrls.Add(eDate);
 
-        await Db.SaveChangesAsync();
+        Db.SaveChanges();
     }
 }

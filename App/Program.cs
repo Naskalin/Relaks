@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using App.DbConfigurations;
 using App.Models;
 using App.Repository;
+using App.Seeders;
 using App.Utils;
 using App.Utils.Extensions.Database;
 using Microsoft.AspNetCore.Mvc;
@@ -53,13 +54,36 @@ using (var scope = app.Services.CreateScope())
 
     if (app.Environment.IsDevelopment())
     {
-        // await new DatabaseSeeder(db).SeedAll();
-        Console.WriteLine(SqliteMigrationHelper.CreateAfterInsertTrigger(new TriggerModel()
-        {
-            Fields = new []{nameof(Post.Id), nameof(Post.Title), nameof(Post.Description)},
-            TargetTable = "Posts",
-            TriggeredTable = nameof(PostFts),
-        }));
+        new DatabaseSeeder(db).SeedAll();
+        // Columns = new []{nameof(Post.Id), nameof(Post.Title), nameof(Post.Description)},
+        // WatchTable = "Posts",
+        // WatchTable = nameof(PostFts),
+        // var columns = new[]
+        // {
+        //     nameof(EntryFts.Id),
+        //     nameof(EntryFts.Name),
+        //     nameof(EntryFts.Description),
+        //     nameof(EntryFts.DeletedReason),
+        // };
+        //
+        // var table = SqliteMigrationHelper.CreateFtsTable(new TableNames()
+        // {
+        //     Table = nameof(EntryFts),
+        //     ColumnId = nameof(EntryFts.Id),
+        //     Columns = columns,
+        // });
+        //
+        // var triggers = SqliteMigrationHelper.CreateTriggers(new TriggerNames()
+        // {
+        //     Columns = columns,
+        //     TriggerTable = nameof(EntryFts),
+        //     WatchTable = "Posts",
+        //     TriggerTableId = nameof(EntryFts.Id),
+        //     WatchTableId = nameof(Post.Id),
+        // });
+        //
+        // Console.WriteLine(table);
+        // Console.WriteLine(triggers);
     }
 
     // db.Database.Migrate();

@@ -9,7 +9,7 @@ public class EntryEmailSeeder : DatabaseSeeder
     {
     }
 
-    public async Task Seed()
+    public void Seed()
     {
         var entries = Db.Entries.Where(x => true).ToList();
 
@@ -56,6 +56,6 @@ public class EntryEmailSeeder : DatabaseSeeder
 
         Db.EntryEmails.Add(eDate);
 
-        await Db.SaveChangesAsync();
+        Db.SaveChanges();
     }
 }

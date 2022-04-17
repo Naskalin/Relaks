@@ -9,7 +9,7 @@ public class EntrySeeder : DatabaseSeeder
     {
     }
 
-    public async Task Seed()
+    public void Seed()
     {
         foreach (EntryTypeEnum entryType in (EntryTypeEnum[]) Enum.GetValues(typeof(EntryTypeEnum)))
         {
@@ -85,6 +85,6 @@ public class EntrySeeder : DatabaseSeeder
 
         Db.Entries.Add(creator);
 
-        await Db.SaveChangesAsync();
+        Db.SaveChanges();
     }
 }

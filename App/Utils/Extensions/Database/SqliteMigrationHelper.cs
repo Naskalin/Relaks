@@ -1,73 +1,86 @@
 ﻿namespace App.Utils.Extensions.Database;
 
-public class TriggerModel
+public class TriggerNames
 {
-    public string TargetTable { get; set; } = null!;
-    public string TriggeredTable { get; set; } = null!;
-    public string IdField { get; set; } = null!;
-    public string[] Fields = Array.Empty<string>();
+    public string WatchTable { get; set; } = null!;
+    public string WatchTableId { get; set; } = null!;
+    public string[] Columns = Array.Empty<string>();
+    
+    public string TriggerTable { get; set; } = null!;
+    public string TriggerTableId { get; set; } = null!;
+}
+
+public class TableNames
+{
+    public string Table { get; set; } = null!;
+    public string[] Columns = Array.Empty<string>();
+    public string ColumnId { get; set; } = null!;
+}
+
+public enum TriggerTypeEnum
+{
+    Insert,
+    Delete,
+    Update,
 }
 
 public class SqliteMigrationHelper
 {
-    public static string CreateFtsTable(TriggerModel model)
+    public static string CreateFtsTable(TableNames names)
     {
-        return $"CREATE VIRTUAL TABLE PostFts USING fts5(Id UNINDEXED, Title, Description);";
-    }
-    
-    // CREATE TRIGGER PostFts_ai AFTER INSERT ON Posts BEGIN
-    // ...
-    // END;
-    public static string CreateAfterInsertTrigger(TriggerModel model)
-    {
-        return $@"
-            CREATE TRIGGER {model.TriggeredTable}_ai AFTER INSERT ON {model.TargetTable} BEGIN
-                {InsertTriggerBody(model)}
-            END;  
-";
+        var fields = String.Join(", ", names.Columns.Select(x => x == names.ColumnId ? x + " UNINDEXED" : x));
+        return $"CREATE VIRTUAL TABLE {names.Table} USING fts5({fields});";
     }
 
+    public static string CreateTriggers(TriggerNames names)
+    {
+        var insertBody = InsertTriggerBody(names.TriggerTable, names.Columns);
+        var deleteBody = DeleteTriggerBody(names.TriggerTable, names.TriggerTableId, names.WatchTableId);
+        var updateBody = $@"{deleteBody}
+    {insertBody}";
+
+        var insertTrigger = CreateTriggerWrap(TriggerTypeEnum.Insert, names.TriggerTable, names.WatchTable, insertBody);
+        var deleteTrigger = CreateTriggerWrap(TriggerTypeEnum.Delete, names.TriggerTable, names.WatchTable, deleteBody);
+        var updateTrigger = CreateTriggerWrap(TriggerTypeEnum.Update, names.TriggerTable, names.WatchTable, updateBody);
+
+        return $@"
+{insertTrigger}
+{deleteTrigger}
+{updateTrigger}
+";
+    }
+    
     // INSERT INTO PostFts(Id, Title, Description) VALUES (new.Id, new.Title, new.Description);
-    private static string InsertTriggerBody(TriggerModel model)
+    private static string InsertTriggerBody(string triggerTableName, string[] fieldNames)
     {
-        var fields = String.Join(", ", model.Fields);
-        var values = String.Join(", ", model.Fields.Select(x => "new." + x));
+        var fields = String.Join(", ", fieldNames);
+        var values = String.Join(", ", fieldNames.Select(x => "new." + x));
 
-        return $"INSERT INTO {model.TriggeredTable}({fields}) VALUES ({values});";
+        return $"INSERT INTO {triggerTableName}({fields}) VALUES ({values});";
     }
 
-    // CREATE TRIGGER PostFts_ad AFTER DELETE ON Posts BEGIN
-    // ...
-    // END;
-    public static string CreateAfterDeleteTrigger(TriggerModel model)
-    {
-        return $@"
-            CREATE TRIGGER {model.TriggeredTable}_ad AFTER DELETE ON {model.TargetTable} BEGIN
-                {DeleteTriggerBody(model)}
-            END;
-";
-    }
-    
     // DELETE FROM PostFts WHERE Id = old.Id;
-    private static string DeleteTriggerBody(TriggerModel model)
+    private static string DeleteTriggerBody(string triggerTableName, string triggerTableId, string outerIdName)
     {
-        return $"DELETE FROM {model.TriggeredTable} WHERE {model.IdField} = old.{model.IdField};";
+        return $"DELETE FROM {triggerTableName} WHERE {triggerTableId} = old.{outerIdName};";
     }
 
-    // CREATE TRIGGER PostFts_au AFTER UPDATE ON Posts BEGIN
-    // DELETE FROM PostFts WHERE Id = old.Id;
-    // INSERT INTO PostFts(Id, Title, Description) VALUES (new.Id, new.Title, new.Description);
-    // END;
-    public static string CreateAfterUpdateTrigger(TriggerModel model)
+    public static string CreateTriggerWrap(
+        TriggerTypeEnum triggerTypeEnum,
+        string triggerTableName,
+        string watchTableName,
+        string triggerBody)
     {
-        return $@"
-            CREATE TRIGGER {nameof(model.TriggeredTable)}_au AFTER UPDATE ON {nameof(model.TargetTable)} BEGIN
-                {DeleteTriggerBody(model)}
-                {InsertTriggerBody(model)}
-            END;
-";
+        var operation = Enum.GetName(typeof(TriggerTypeEnum), triggerTypeEnum);
+        if (operation == null)
+        {
+            throw new ArgumentException("Operation name not recognized.");
+        }
+        return $@"CREATE TRIGGER {triggerTableName}_after{operation} AFTER {operation.ToUpper()} ON {watchTableName} BEGIN
+    {triggerBody}
+END;";
     }
-    
+
 
     // CREATE VIRTUAL TABLE PostFts USING fts5(Id UNINDEXED, Title, Description);
     //

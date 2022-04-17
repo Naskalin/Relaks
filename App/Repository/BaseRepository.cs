@@ -5,6 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace App.Repository;
 
+public class FtsResult 
+{
+    public Guid Id { get; set; }
+    public string Snippet { get; set; } = null!;
+}
+
 public class BaseRepository<TEntity> where TEntity : BaseEntity
 {
     public readonly AppDbContext Db;
