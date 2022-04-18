@@ -18,11 +18,13 @@ const props = defineProps<{
     file: FileModel
 }>()
 
-const downloadFile = async () => {
-    return await apiFiles.download({
+const getImgSrc = async () => {
+    const resp = await apiFiles.download({
         fileId: props.file.id,
         imageFilter: 'thumbnail'
     });
+
+    return URL.createObjectURL(resp.data);
 }
 
 const isImage = computed(() => {
@@ -80,10 +82,10 @@ const iconClass = computed(() => {
     return iconDetected ?? iconDefault;
 })
 
-const imgSrc = ref(null);
+const imgSrc = ref<string | null>(null);
 onMounted(async () => {
     if (isImage) {
-        imgSrc.value = await downloadFile();
+        imgSrc.value = await getImgSrc();
     }
 })
 const onDblclick = () => {

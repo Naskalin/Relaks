@@ -37,7 +37,6 @@ public class Create : EndpointBaseAsync
         var entry = new Entry()
         {
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
         };
         createRequest.MapTo(entry);
 

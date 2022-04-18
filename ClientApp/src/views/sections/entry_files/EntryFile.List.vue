@@ -10,10 +10,11 @@
 
     <file-list-table
         @getFiles="listStore.getFiles(entryId)"
-        :with-edit="true"
+        with-edit
+        with-download
+        with-explorer
         v-model="listStore"
         @showEdit="onShowEdit"
-        @rowDblClick="openFile"
     />
 <!--    v-model:is-end="listStore.isEnd"-->
 <!--    v-model:list-request="listStore.listRequest"-->
@@ -103,13 +104,4 @@ const onDelete = async () => {
 // https://gist.github.com/javilobo8/097c30a233786be52070986d8cdb1743
 const testLinkHref = ref('');
 const testLink = ref(null);
-const openFile = async (file: EntryFile) => {
-    const url = await apiFiles.download({fileId: file.id});
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', file.path);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-}
 </script>

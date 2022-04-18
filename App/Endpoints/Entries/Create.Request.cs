@@ -10,6 +10,7 @@ public class CreateRequest : ISoftDelete
     public int Reputation { get; set; }
     public DateTime? StartAt { get; set; }
     public DateTime? EndAt { get; set; }
+    public Guid? Avatar { get; set; }
 
     public DateTime? DeletedAt { get; set; }
     public string DeletedReason { get; set; } = null!;

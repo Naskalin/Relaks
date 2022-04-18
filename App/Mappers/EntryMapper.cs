@@ -16,6 +16,7 @@ public static class EntryMapper
         entry.StartAt = req.StartAt;
         entry.EndAt = req.EndAt;
         entry.UpdatedAt = DateTime.UtcNow;
+        entry.Avatar = req.Avatar;
 
         req.SoftDeleteMapTo(entry);
     }
