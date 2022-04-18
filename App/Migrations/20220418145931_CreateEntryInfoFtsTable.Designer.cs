@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220417131553_CreateEntryInfoFtsTable")]
+    [Migration("20220418145931_CreateEntryInfoFtsTable")]
     partial class CreateEntryInfoFtsTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -144,7 +144,14 @@ namespace App.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("DeletedReason")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("EntryId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("Id")
@@ -163,6 +170,10 @@ namespace App.Migrations
 
                     b.Property<double?>("Rank")
                         .HasColumnType("REAL");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Url")
                         .HasColumnType("TEXT");

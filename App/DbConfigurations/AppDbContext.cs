@@ -17,11 +17,11 @@ public class AppDbContext : DbContext
     public DbSet<EntryFile> EntryFiles { get; set; } = null!;
     public DbSet<EntryInfoFile> EntryInfoFiles { get; set; } = null!;
 
-    public DbSet<Post> Posts { get; set; } = null!;
+    // public DbSet<Post> Posts { get; set; } = null!;
     
-    [DbFunction]
-    public string Highlight(string match, string column, string open, string close)
-        => throw new NotImplementedException();
+    // [DbFunction]
+    // public string Highlight(string match, string column, string open, string close)
+    //     => throw new NotImplementedException();
 
     [DbFunction]
     public string Snippet(string match, string column, string open, string close, string ellips, int count)
@@ -42,13 +42,13 @@ public class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new FileConfiguration()); 
 
         // FTS
-        modelBuilder.Entity<PostFts>(builder =>
-        {
-            builder.HasKey(fts => fts.RowId);
-        
-            builder
-                .Property(fts => fts.Match)
-                .HasColumnName(nameof(PostFts));
-        });
+        // modelBuilder.Entity<PostFts>(builder =>
+        // {
+        //     builder.HasKey(fts => fts.RowId);
+        //
+        //     builder
+        //         .Property(fts => fts.Match)
+        //         .HasColumnName(nameof(PostFts));
+        // });
     }
 }
