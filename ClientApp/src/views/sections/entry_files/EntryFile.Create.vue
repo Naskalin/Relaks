@@ -2,6 +2,8 @@
     <q-file
         v-model="store.files"
         @update:model-value="onSelectFiles"
+        :loading="store.isLoading"
+        :disable="store.isLoading"
         multiple
         filled
         use-chips

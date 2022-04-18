@@ -36,13 +36,14 @@
 
         <template v-slot:header="p">
             <q-tr :props="p">
-                <q-th v-if="hasActions" style="width: 70px"/>
+                <q-th v-if="props.withEdit" style="width: 70px"/>
                 <q-th
                     v-for="col in p.cols"
                     :key="col.name"
                     :props="p"
                 >{{ col.label }}
                 </q-th>
+                <q-th v-if="props.withDownload" style="width: 70px"/>
             </q-tr>
         </template>
 
@@ -51,18 +52,10 @@
                   :key="p.row.id"
                   :class="{'bg-pink-1': p.row.deletedAt}"
                   @click="emit('rowClick', p.row)">
-                <q-td v-if="hasActions" class="q-gutter-x-sm">
+                <q-td v-if="props.withEdit" class="q-gutter-x-sm">
                     <q-btn v-if="withEdit" size="sm" color="primary" round @click="emit('showEdit', p.row)">
                         <q-icon name="las la-edit" size="1.2rem"/>
                         <q-tooltip>Изменить</q-tooltip>
-                    </q-btn>
-                    <q-btn v-if="withExplorer" size="sm" outline color="secondary" round @click="explorer(p.row)">
-                        <q-icon name="las la-folder-open" size="1.2rem"/>
-                        <q-tooltip>Открыть</q-tooltip>
-                    </q-btn>
-                    <q-btn v-if="withDownload" size="sm" outline color="secondary" round @click="download(p.row)">
-                        <q-icon name="las la-file-export" size="1.2rem"/>
-                        <q-tooltip>Экспортировать</q-tooltip>
                     </q-btn>
                 </q-td>
                 <q-td
@@ -70,8 +63,14 @@
                     :key="col.name"
                     :props="p"
                 >
-                    <file-in-table-cell v-if="col.name === 'path'" :file="p.row"/>
+                    <file-in-table-cell @dblclick="file => explorer(file.id)" v-if="col.name === 'path'" :file="p.row"/>
                     <template v-else>{{ col.value }}</template>
+                </q-td>
+                <q-td v-if="withDownload">
+                    <q-btn size="sm" outline color="secondary" round @click="download(p.row.id)">
+                        <q-icon name="las la-file-export" size="1.2rem"/>
+                        <q-tooltip>Экспортировать</q-tooltip>
+                    </q-btn>
                 </q-td>
             </q-tr>
         </template>
@@ -82,7 +81,7 @@
 import FileInTableCell from '../../components/FileInTableCell.vue';
 import {fileFieldNames as trans} from "../../../localize/messages";
 import {dateHelper} from "../../../utils/date_helper";
-import {EntryFile, FileModel, PaginateListRequest} from "../../../api/api_types";
+import {FileModel, PaginateListRequest} from "../../../api/api_types";
 import {computed, watch} from 'vue';
 import {getFileExtension} from "../../../utils/file_helper";
 import {FileListTableStoreState} from "../../../store/entryFile/entryFile.list.table.store";
@@ -99,7 +98,6 @@ const emit = defineEmits<{
     (e: 'getFiles'): void,
     (e: 'showEdit', row: FileModel): void,
     (e: 'rowClick', row: FileModel): void,
-    // (e: 'rowDblClick', row: FileModel): void,
     (e: 'update:modelValue', val: FileListTableStoreState): void 
 }>()
 
@@ -158,13 +156,10 @@ watch(() => store.value.listRequest.isDeleted, () => {
     emit('getFiles')
 });
 
-const hasActions = computed(() => {
-    return props.withExplorer || props.withEdit || props.withDownload;
-})
-const download = async (file: EntryFile) => {
+const download = async (fileId: string) => {
     if (!props.withDownload) return;
 
-    const resp = await apiFiles.download({fileId: file.id});
+    const resp = await apiFiles.download({fileId});
     const fileName = resp.headers['content-disposition'].split('filename=')[1].split(';')[0];
     const url = URL.createObjectURL(resp.data);
     const link = document.createElement('a');
@@ -176,8 +171,8 @@ const download = async (file: EntryFile) => {
     
 }
 
-const explorer = async (file: EntryFile) => {
+const explorer = async (fileId: string) => {
     if (!props.withExplorer) return;
-    await apiFiles.explorer(file.id);
+    await apiFiles.explorer(fileId);
 }
 </script>

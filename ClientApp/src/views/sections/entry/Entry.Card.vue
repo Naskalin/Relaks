@@ -5,6 +5,7 @@
         <q-card-section class="q-pb-none text-center">
             <q-avatar @dblclick="emit('card-dblclick', entry)" size="180px" font-size="150px" color="grey-5"
                       text-color="grey-4" icon="las la-question-circle"/>
+            
         </q-card-section>
 
         <q-card-section class="q-pb-xs q-gutter-y-sm">
@@ -125,10 +126,8 @@ import {Entry} from "../../../api/api_types";
 import {dateHelper} from "../../../utils/date_helper";
 import {useEntryEditStore} from "../../../store/entry/entry.edit.store";
 import {apiMappers} from "../../../api/api_mappers";
-// import {useRoute} from "vue-router";
 import {EntryInfoType} from "../../../api/api_types";
 import {useEntryCardContactsStore} from "../../../store/entry/entryCard.contacts.store";
-import Date from "../../components/Date.vue";
 
 const editStore = useEntryEditStore();
 const isShowEditModal = ref(false);
@@ -169,8 +168,6 @@ const entryInfoFormType = ref<EntryInfoType>('Phone');
 const showCreateEntryInfoModal = (textType: EntryInfoType) => {
     if (props.withEdit) {
         entryInfoFormType.value = textType;
-        // entryInfoCreateStore.model.actualStartAt = new Date().toISOString();
-        // entryInfoCreateStore.model.textType = textType;
         isShowCreateModal.value = true
     }
 }

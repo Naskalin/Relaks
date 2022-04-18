@@ -1,12 +1,14 @@
 ﻿<template>
-    <q-avatar v-if="isImage && imgSrc" @dblclick="onDblclick">
-        <img :src="imgSrc" alt="">
-    </q-avatar>
-    <q-avatar v-else size="50px"
-              font-size="34px"
-              color="grey-5"
-              text-color="grey-4"
-              :icon="iconClass"/>
+    <q-btn round @dblclick="emit('dblclick', file)">
+        <q-avatar clickable v-if="isImage && imgSrc">
+            <img :src="imgSrc" alt="">
+        </q-avatar>
+        <q-avatar v-else size="50px"
+                  font-size="1.3rem"
+                  color="grey-5"
+                  text-color="grey-4"
+                  :icon="iconClass"/>
+    </q-btn>
 </template>
 
 <script setup lang="ts">
@@ -17,6 +19,10 @@ import {computed, ref, onMounted} from "vue";
 const props = defineProps<{
     file: FileModel
 }>()
+
+const emit = defineEmits<{
+    (e: 'dblclick', fileModel: FileModel): void,
+}>();
 
 const getImgSrc = async () => {
     const resp = await apiFiles.download({
@@ -88,7 +94,7 @@ onMounted(async () => {
         imgSrc.value = await getImgSrc();
     }
 })
-const onDblclick = () => {
-  return imgSrc.value;
-}
+// const onDblclick = () => {
+//     return imgSrc.value;
+// }
 </script>
