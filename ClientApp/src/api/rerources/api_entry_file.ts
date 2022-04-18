@@ -8,7 +8,7 @@ export const apiEntryFile = {
             {resource: 'entries', resourceId: entryId, subResource: subResource},
             formData,
             {
-                responseType: 'blob',
+                // responseType: 'blob',
                 headers: {'Content-Type': 'multipart/form-data'}
             }
         );

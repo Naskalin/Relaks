@@ -14,6 +14,7 @@ public class FileModel : BaseEntity, ITimestampResource, ISoftDelete
 
     public DateTime? DeletedAt { get; set; }
     public string DeletedReason { get; set; } = null!;
+    public string Discriminator { get; set; } = null!;
 
     public bool IsImage()
     {
@@ -27,18 +28,28 @@ public class EntryFile : FileModel
 {
     public Guid EntryId { get; set; }
 
-    public string GetFileDir()
+    public string GetFileRelativeDir()
     {
         return System.IO.Path.Combine(nameof(Entry).ToLowerInvariant(), EntryId.ToString());
     }
 
-    public string GetFilePath()
+    public string GetFileRelativePath()
     {
-        return System.IO.Path.Combine(GetFileDir(), Path);
+        return System.IO.Path.Combine(GetFileRelativeDir(), Path);
     }
 }
 
 public class EntryInfoFile : FileModel
 {
     public Guid EntryInfoId { get; set; }
+    
+    public string GetFileRelativeDir()
+    {
+        return System.IO.Path.Combine(nameof(Entry).ToLowerInvariant(), EntryInfoId.ToString());
+    }
+
+    public string GetFileRelativePath()
+    {
+        return System.IO.Path.Combine(GetFileRelativeDir(), Path);
+    }
 }

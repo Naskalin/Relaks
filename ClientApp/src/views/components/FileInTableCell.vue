@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import {FileModel} from "../../api/api_types";
-import {apiFileDownload} from "../../api/rerources/api_files";
+import {apiFiles} from "../../api/rerources/api_files";
 import {computed, ref, onMounted} from "vue";
 
 const props = defineProps<{
@@ -19,7 +19,7 @@ const props = defineProps<{
 }>()
 
 const downloadFile = async () => {
-    return await apiFileDownload.entryFile({
+    return await apiFiles.download({
         fileId: props.file.id,
         imageFilter: 'thumbnail'
     });

@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<EntryEmail> EntryEmails { get; set; } = null!;
     public DbSet<EntryUrl> EntryUrls { get; set; } = null!;
 
+    public DbSet<FileModel> FileModels { get; set; } = null!;
     public DbSet<EntryFile> EntryFiles { get; set; } = null!;
     public DbSet<EntryInfoFile> EntryInfoFiles { get; set; } = null!;
 

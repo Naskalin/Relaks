@@ -45,9 +45,9 @@ public class Create : EndpointBaseAsync
             var entryFile = new EntryFile {EntryId = entry.Id};
             formFile.MapToCreate(entryFile);
 
-            var folder = Path.Combine(_appPreset.FilesDir, entryFile.GetFileDir());
-            if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-            var filePath = Path.Combine(_appPreset.FilesDir, entryFile.GetFilePath());
+            var folderFull = Path.Combine(_appPreset.FilesDir, entryFile.GetFileRelativeDir());
+            if (!Directory.Exists(folderFull)) Directory.CreateDirectory(folderFull);
+            var filePath = Path.Combine(_appPreset.FilesDir, entryFile.GetFileRelativePath());
 
             await using (var stream = System.IO.File.Create(filePath))
             {

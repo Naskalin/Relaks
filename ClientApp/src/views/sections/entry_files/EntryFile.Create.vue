@@ -15,7 +15,6 @@
 
 <script setup lang="ts">
 import {useQuasar} from "quasar";
-import {apiEntryFile} from "../../../api/rerources/api_entry_file";
 import {useEntryFileCreateStore} from "../../../store/entryFile/entryFile.create.store";
 
 const props = defineProps<{
@@ -26,12 +25,13 @@ const emit = defineEmits<{
     (e: 'onUploaded'): void
 }>()
 
-// const $q = useQuasar();
 const store = useEntryFileCreateStore();
 const $q = useQuasar();
 
 const onSelectFiles = async () => {
     const resp: any = await store.uploadFiles(props.entryId);
+    console.log(resp);
+    
     $q.notify({
         message: `Файлы успешно загружены: ${resp.count} шт.`,
         type: 'positive',

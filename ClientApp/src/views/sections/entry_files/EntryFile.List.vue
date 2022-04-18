@@ -46,7 +46,7 @@ import {ref, computed, onMounted} from 'vue';
 import {EntryFile} from "../../../api/api_types";
 import {apiMappers} from "../../../api/api_mappers";
 import {apiEntryFile} from "../../../api/rerources/api_entry_file";
-import {apiFileDownload} from "../../../api/rerources/api_files";
+import {apiFiles} from "../../../api/rerources/api_files";
 
 const route = useRoute();
 const entryId = computed(() => route.params.entryId as string)
@@ -104,7 +104,7 @@ const onDelete = async () => {
 const testLinkHref = ref('');
 const testLink = ref(null);
 const openFile = async (file: EntryFile) => {
-    const url = await apiFileDownload.entryFile({fileId: file.id});
+    const url = await apiFiles.download({fileId: file.id});
     const link = document.createElement('a');
     link.href = url;
     link.setAttribute('download', file.path);

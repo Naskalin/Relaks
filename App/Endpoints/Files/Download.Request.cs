@@ -2,7 +2,7 @@
 
 namespace App.Endpoints.Files;
 
-public class FileRequest
+public class DownloadFilesRequest
 {
     [FromRoute]
     public Guid FileId { get; set; }

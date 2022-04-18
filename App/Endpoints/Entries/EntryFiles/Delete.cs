@@ -36,7 +36,7 @@ public class Delete : EndpointBaseAsync
         await _entryFileRepository.DeleteAsync(entryFile, cancellationToken);
         
         // Remove attached file
-        var filePath = Path.Combine(_appPreset.FilesDir, entryFile.GetFilePath());
+        var filePath = Path.Combine(_appPreset.FilesDir, entryFile.GetFileRelativePath());
         if (System.IO.File.Exists(filePath)) System.IO.File.Delete(filePath);
         
         return NoContent();

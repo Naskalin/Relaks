@@ -9,5 +9,7 @@ public class FileConfiguration : IEntityTypeConfiguration<FileModel>
     public void Configure(EntityTypeBuilder<FileModel> builder)
     {
         builder.ToTable("Files");
+
+        // builder.HasDiscriminator(x => x.Discriminator);
     }
 }
