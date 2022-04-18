@@ -38,7 +38,7 @@ namespace App.Migrations
                         TriggerTable = nameof(EntryFts),
                         WatchTable = "Entries",
                         TriggerTableId = nameof(EntryFts.Id),
-                        WatchTableId = nameof(Post.Id),
+                        WatchTableId = nameof(Entry.Id),
                     }
                 )
             );
