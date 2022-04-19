@@ -47,7 +47,6 @@ import {ref, computed, onMounted} from 'vue';
 import {EntryFile} from "../../../api/api_types";
 import {apiMappers} from "../../../api/api_mappers";
 import {apiEntryFile} from "../../../api/rerources/api_entry_file";
-import {apiFiles} from "../../../api/rerources/api_files";
 
 const route = useRoute();
 const entryId = computed(() => route.params.entryId as string)
@@ -65,8 +64,8 @@ const onUploaded = async () => {
 }
 
 // edit
-const onShowEdit = (value: EntryFile) => {
-    editStore.file = {...value};
+const onShowEdit = (value: any) => {
+    editStore.file = {...value as EntryFile};
     isShowEdit.value = true
 }
 

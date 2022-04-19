@@ -81,7 +81,7 @@
 import FileInTableCell from '../../components/FileInTableCell.vue';
 import {fileFieldNames as trans} from "../../../localize/messages";
 import {dateHelper} from "../../../utils/date_helper";
-import {FileModel, PaginateListRequest} from "../../../api/api_types";
+import {FileModel} from "../../../api/api_types";
 import {computed, watch} from 'vue';
 import {getFileExtension} from "../../../utils/file_helper";
 import {FileListTableStoreState} from "../../../store/entryFile/entryFile.list.table.store";
@@ -102,34 +102,34 @@ const emit = defineEmits<{
 }>()
 
 let columns = [
-    {name: 'path', field: 'path', label: 'Файл', style: {width: '80px'}},
+    {name: 'path', field: 'path', label: 'Файл', style: 'width: 80px'},
     {
         name: 'name',
         field: 'name',
         label: trans.name,
         format: (val: string, row: FileModel) => val + '.' + getFileExtension(row.path)
     },
-    {name: 'contentType', field: 'contentType', label: trans.contentType, style: {width: '180px'}},
+    {name: 'contentType', field: 'contentType', label: trans.contentType, style: 'width: 180px'},
     {
         name: 'createdAt',
         field: 'createdAt',
         label: trans.createdAt,
         format: (val: string) => dateHelper.utcFormat(val),
-        style: {width: '130px'}
+        style: 'width: 130px'
     },
     {
         name: 'updatedAt',
         field: 'updatedAt',
         label: trans.updatedAt,
         format: (val: string) => dateHelper.utcFormat(val),
-        style: {width: '130px'}
+        style: 'width: 130px'
     },
     {
         name: 'deletedAt',
         field: 'deletedAt',
         label: trans.deletedAt,
         format: (val: string) => dateHelper.utcFormat(val),
-        style: {width: '130px'}
+        style: 'width: 130px'
     },
     {name: 'deletedReason', field: 'deletedReason', label: trans.deletedReason},
 ]

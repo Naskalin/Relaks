@@ -102,18 +102,20 @@ let columns = [
     // {name: 'id', label: '#', field: 'id'},
     {name: 'avatar', label: 'Аватар', field: 'id'},
     {name: 'entryType', label: 'Тип', field: 'entryType', style: 'width: 60px'},
-    {name: 'name', label: 'name', field: 'name', sortable: true},
+    {name: 'name', label: '', field: 'name', sortable: true},
     {name: 'reputation', label: entryMessages.reputation, field: 'reputation', style: 'width: 70px', sortable: true},
     {
         name: 'startAt',
         sortable: true,
         field: 'startAt',
+        label: '',
         format: (val: string) => dateHelper.utcFormat(val),
     },
     {
         name: 'endAt',
         sortable: true,
         field: 'endAt',
+        label: '',
         format: (val: string) => dateHelper.utcFormat(val),
     },
     {

@@ -1,13 +1,9 @@
 using System.Text.Json.Serialization;
 using App.DbConfigurations;
-using App.Models;
 using App.Repository;
-using App.Seeders;
 using App.Utils;
-using App.Utils.Extensions.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.OpenApi.Models;
 
 var appPreset = new AppPresetManager(Directory.GetCurrentDirectory()).GetPreset();
@@ -84,7 +80,7 @@ using (var scope = app.Services.CreateScope())
     //     Console.WriteLine(SqliteMigrationHelper.DeleteTriggers(nameof(EntryFts)));
     }
 
-    // db.Database.Migrate();
+    db.Database.Migrate();
 }
 
 if (app.Environment.IsDevelopment())
@@ -99,12 +95,6 @@ app.MapControllers();
 app.UseDefaultFiles();
 
 app.UseStaticFiles();
-// app.UseStaticFiles(new StaticFileOptions
-// {
-//     FileProvider = new PhysicalFileProvider(appPreset.FilesDir),
-//     RequestPath = "/files"
-// });
-
 app.Run();
 
 public partial class Program
