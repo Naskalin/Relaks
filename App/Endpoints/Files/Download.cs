@@ -34,7 +34,7 @@ public class DownloadFiles : EndpointBaseAsync
         {
             return NotFound("File not found.");
         }
-        
+
         string fileRelativeDir;
 
         switch (fileModel.Discriminator)
@@ -57,14 +57,15 @@ public class DownloadFiles : EndpointBaseAsync
 
         if (fileModel.IsImage())
         {
-            var imagePath = await GetImagePath(
+            var imagePath = await TryApplyImageFilter(
                 fileStream,
                 fileRelativeDir,
                 fileModel.Path,
+                fileModel.ContentType,
                 req.ImageFilter,
                 cancellationToken
             );
-            
+
             if (imagePath != null)
             {
                 fileStream.Close();
@@ -79,15 +80,24 @@ public class DownloadFiles : EndpointBaseAsync
         };
     }
 
-    private async Task<string?> GetImagePath(
+    private async Task<string?> TryApplyImageFilter(
         FileStream fileOrigin,
         string fileRelativeDir,
         string filePath,
+        string contentType,
         string? imageFilter,
         CancellationToken cancellationToken
     )
     {
-        if (imageFilter == "thumbnail")
+        var config = Configuration.Default;
+        var isSupportedImageExtension = config.ImageFormats
+                .Where(x => config.ImageFormatsManager.FindDecoder(x) != null)
+                .SelectMany(x => x.MimeTypes)
+                .Contains(contentType)
+            ;
+        if (!isSupportedImageExtension) return null;
+
+        if (imageFilter == "square-thumbnail")
         {
             var fileCacheDir = Path.Combine(_appPreset.CacheDir, fileRelativeDir, imageFilter);
             var thumbnailPath = Path.Combine(fileCacheDir, filePath);
@@ -101,6 +111,29 @@ public class DownloadFiles : EndpointBaseAsync
                         {
                             Mode = ResizeMode.Crop,
                             Size = new Size(50, 50)
+                        })
+                    );
+                    await image.SaveAsync(thumbnailPath, cancellationToken);
+                }
+            }
+
+            return thumbnailPath;
+        }
+        
+        if (imageFilter == "square-medium")
+        {
+            var fileCacheDir = Path.Combine(_appPreset.CacheDir, fileRelativeDir, imageFilter);
+            var thumbnailPath = Path.Combine(fileCacheDir, filePath);
+            if (!System.IO.File.Exists(thumbnailPath))
+            {
+                using (Image image = await Image.LoadAsync(fileOrigin, cancellationToken))
+                {
+                    if (!Directory.Exists(fileCacheDir)) Directory.CreateDirectory(fileCacheDir);
+                    image.Mutate(
+                        x => x.Resize(new ResizeOptions()
+                        {
+                            Mode = ResizeMode.Crop,
+                            Size = new Size(200, 200)
                         })
                     );
                     await image.SaveAsync(thumbnailPath, cancellationToken);

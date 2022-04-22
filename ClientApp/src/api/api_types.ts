@@ -41,6 +41,7 @@ export declare type EntryCreateRequest = {
     reputation: number
     startAt: string | null
     endAt: string | null
+    avatar: string | null
 } & SoftDeletableType
 
 export declare type EntryUpdateRequest = {} & EntryCreateRequest

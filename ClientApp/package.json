@@ -13,6 +13,7 @@
     "countries-list": "^2.6.1",
     "dayjs": "^1.11.0",
     "flag-icons": "^6.1.1",
+    "floating-vue": "^2.0.0-beta.15",
     "pinia": "^2.0.11",
     "quasar": "^2.5.5",
     "vue": "^3.2.25",

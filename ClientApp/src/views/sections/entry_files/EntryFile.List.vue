@@ -10,16 +10,14 @@
 
     <file-list-table
         @getFiles="listStore.getFiles(entryId)"
+        class="list-table"
         with-edit
         with-download
         with-explorer
         v-model="listStore"
         @showEdit="onShowEdit"
+        @clickAvatar="file => explorer(file.id)"
     />
-<!--    v-model:is-end="listStore.isEnd"-->
-<!--    v-model:list-request="listStore.listRequest"-->
-<!--        :files="listStore.files"-->
-<!--        :is-loading="listStore.isLoading"-->
 
     <file-edit-modal
         v-if="editStore.file"
@@ -31,7 +29,6 @@
         @delete="onDelete"
         @softDelete="onSoftDelete"
     />
-    <a :href="testLinkHref" download="test.jpg" ref="testLink"></a>
 </template>
 
 <script setup lang="ts">
@@ -47,6 +44,7 @@ import {ref, computed, onMounted} from 'vue';
 import {EntryFile} from "../../../api/api_types";
 import {apiMappers} from "../../../api/api_mappers";
 import {apiEntryFile} from "../../../api/rerources/api_entry_file";
+import {apiFiles} from "../../../api/rerources/api_files";
 
 const route = useRoute();
 const entryId = computed(() => route.params.entryId as string)
@@ -55,7 +53,14 @@ const editStore = useEntryFileEditStore();
 const isShowEdit = ref(false);
 
 // initialize
-onMounted(() => listStore.$reset());
+onMounted(() => {
+    listStore.$reset();
+    editStore.$reset();
+});
+
+const explorer = async (fileId: string) => {
+    await apiFiles.explorer(fileId);
+}
 
 // create
 const onUploaded = async () => {
@@ -98,9 +103,4 @@ const onDelete = async () => {
     isShowEdit.value = false;
     editStore.$reset();
 }
-
-// open file
-// https://gist.github.com/javilobo8/097c30a233786be52070986d8cdb1743
-const testLinkHref = ref('');
-const testLink = ref(null);
 </script>

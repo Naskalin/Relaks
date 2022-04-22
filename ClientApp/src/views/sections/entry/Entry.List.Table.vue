@@ -45,9 +45,10 @@
                             :key="col.name"
                             :props="props"
                         >
-                            <q-avatar v-if="col.name === 'avatar'" size="50px" font-size="34px" color="grey-5"
-                                      text-color="grey-4"
-                                      icon="las la-question-circle"/>
+                            <q-avatar v-if="col.name === 'avatar'" size="50px" color="grey-5">
+                                <api-image v-if="props.row.avatar" :file-id="props.row.avatar" image-filter="square-thumbnail"/>
+                                <q-icon v-else name="las la-question-circle" color="grey-4" size="34px"/>
+                            </q-avatar>
                             <span v-else-if="col.name === 'entryType'" style="font-size: 1.6rem">
                                 <q-icon v-if="col.value === 'Person'" :name="entryMessages.entryType.icons.Person">
                                     <q-tooltip>{{entryMessages.entryType.names.Person}}</q-tooltip>
@@ -79,16 +80,20 @@
 </template>
 
 <script setup lang="ts">
+import ApiImage from '../../components/ApiImage.vue';
 import {useEntryListStore} from "../../../store/entry/entry.list.table.store";
 import {entryMessages} from "../../../localize/messages";
 import {Entry} from "../../../api/api_types";
 import {dateHelper} from "../../../utils/date_helper";
 import ListFilter from './Entry.List.Filter.vue';
-import {watch, ref, computed} from 'vue';
+import {watch, ref, computed, onMounted} from 'vue';
 import EntryCard from './Entry.Card.vue';
 
 // initialize
 const store = useEntryListStore();
+onMounted(() => {
+    store.$reset();
+})
 const rowDoubleClick = (row: Entry) => {
     emit('row-dblclick', row);
 }
@@ -110,6 +115,7 @@ let columns = [
         field: 'startAt',
         label: '',
         format: (val: string) => dateHelper.utcFormat(val),
+        // sort: (a: string, b: string) => (new Date(a)).getTime() - (new Date(b)).getTime()
     },
     {
         name: 'endAt',
@@ -160,6 +166,17 @@ watch([
 const labelName = computed(() => store.listRequest.entryType ? entryMessages.name[store.listRequest.entryType] : entryMessages.nameNull);
 const labelStartAt = computed(() => store.listRequest.entryType ? entryMessages.startAt[store.listRequest.entryType] : entryMessages.startAtNull);
 const labelEndAt = computed(() => store.listRequest.entryType ? entryMessages.endAt[store.listRequest.entryType] : entryMessages.endAtNull);
+
+// get avatar
+// const avatars = reactive({})
+// const getAvatar = async (fileId: string) => {
+//     const resp = await apiFiles.download({
+//         fileId: fileId,
+//         imageFilter: 'square-thumbnail'
+//     });
+//
+//     return URL.createObjectURL(resp.data);
+// }
 </script>
 
 <style lang="scss">

@@ -63,7 +63,7 @@
                     :key="col.name"
                     :props="p"
                 >
-                    <file-in-table-cell @dblclick="file => explorer(file.id)" v-if="col.name === 'path'" :file="p.row"/>
+                    <file-in-table-cell title="Открыть" @click="emit('clickAvatar', p.row)" v-if="col.name === 'path'" :file="p.row" />
                     <template v-else>{{ col.value }}</template>
                 </q-td>
                 <q-td v-if="withDownload">
@@ -98,6 +98,7 @@ const emit = defineEmits<{
     (e: 'getFiles'): void,
     (e: 'showEdit', row: FileModel): void,
     (e: 'rowClick', row: FileModel): void,
+    (e: 'clickAvatar', row: FileModel): void,
     (e: 'update:modelValue', val: FileListTableStoreState): void 
 }>()
 
@@ -168,11 +169,5 @@ const download = async (fileId: string) => {
     document.body.appendChild(link);
     link.click();
     link.remove();
-    
-}
-
-const explorer = async (fileId: string) => {
-    if (!props.withExplorer) return;
-    await apiFiles.explorer(fileId);
 }
 </script>

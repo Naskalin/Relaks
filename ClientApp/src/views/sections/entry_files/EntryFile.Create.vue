@@ -18,6 +18,13 @@
 <script setup lang="ts">
 import {useQuasar} from "quasar";
 import {useEntryFileCreateStore} from "../../../store/entryFile/entryFile.create.store";
+import {onMounted} from "vue";
+
+const store = useEntryFileCreateStore();
+
+onMounted(() => {
+    store.$reset();
+});
 
 const props = defineProps<{
     entryId: string
@@ -27,7 +34,6 @@ const emit = defineEmits<{
     (e: 'onUploaded'): void
 }>()
 
-const store = useEntryFileCreateStore();
 const $q = useQuasar();
 
 const onSelectFiles = async () => {

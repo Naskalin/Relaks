@@ -1,13 +1,9 @@
 ﻿<template>
-    <q-btn round @dblclick="emit('dblclick', file)">
-        <q-avatar clickable v-if="isImage && imgSrc">
-            <img :src="imgSrc" alt="">
+    <q-btn round @click="emit('click', file)">
+        <q-avatar size="50px" color="grey-5">
+            <img v-if="isImage && imgSrc" :src="imgSrc" alt="">
+            <q-icon v-else :name="iconClass" color="grey-4" size="2.4rem" />
         </q-avatar>
-        <q-avatar v-else size="50px"
-                  font-size="1.3rem"
-                  color="grey-5"
-                  text-color="grey-4"
-                  :icon="iconClass"/>
     </q-btn>
 </template>
 
@@ -21,13 +17,13 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-    (e: 'dblclick', fileModel: FileModel): void,
+    (e: 'click', fileModel: FileModel): void,
 }>();
 
 const getImgSrc = async () => {
     const resp = await apiFiles.download({
         fileId: props.file.id,
-        imageFilter: 'thumbnail'
+        imageFilter: 'square-thumbnail'
     });
 
     return URL.createObjectURL(resp.data);
@@ -94,7 +90,4 @@ onMounted(async () => {
         imgSrc.value = await getImgSrc();
     }
 })
-// const onDblclick = () => {
-//     return imgSrc.value;
-// }
 </script>

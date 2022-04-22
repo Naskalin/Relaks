@@ -30,11 +30,9 @@ import EntryCard from "./Entry.Card.vue";
 import {onMounted} from "vue";
 import {useRoute} from 'vue-router'
 import {useEntryProfileStore} from "../../../store/entry/entry.profile.store";
-// import {useEntryEditStore} from "../../../store/entry/entry.edit.store";
 import {entryMessages} from "../../../localize/messages";
 
 const profileStore = useEntryProfileStore();
-// const editStore = useEntryEditStore();
 
 const route = useRoute();
 const entryId = route.params.entryId as string;

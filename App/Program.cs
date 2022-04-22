@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using App.DbConfigurations;
 using App.Repository;
+using App.Seeders;
 using App.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -47,10 +48,11 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
 
     if (app.Environment.IsDevelopment())
     {
-    //     new DatabaseSeeder(db).SeedAll();
+        // new DatabaseSeeder(db).SeedAll();
     //     var columns = new[]
     //     {
     //         nameof(EntryFts.Id),
@@ -79,8 +81,6 @@ using (var scope = app.Services.CreateScope())
     //     Console.WriteLine(triggers);
     //     Console.WriteLine(SqliteMigrationHelper.DeleteTriggers(nameof(EntryFts)));
     }
-
-    db.Database.Migrate();
 }
 
 if (app.Environment.IsDevelopment())

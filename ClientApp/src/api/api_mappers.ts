@@ -1,7 +1,6 @@
 ﻿import {
     Entry,
     EntryUpdateRequest,
-
     EntryEmailFormRequest,
     EntryNoteFormRequest,
     EntryPhoneFormRequest,
@@ -35,6 +34,7 @@ export const apiMappers = {
             endAt: entry.endAt,
             deletedAt: entry.deletedAt,
             deletedReason: entry.deletedReason,
+            avatar: entry.avatar,
         }
     },
     toEntryInfoFormRequest: {

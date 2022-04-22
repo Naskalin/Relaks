@@ -36,14 +36,7 @@
 import EntryInfoFields from './EntryInfo.Fields.vue';
 import Modal from '../../components/Modal.vue';
 import {deletedMessages} from "../../../localize/messages";
-import {
-    EntryNoteFormRequest,
-    EntryEmailFormRequest,
-    EntryUrlFormRequest,
-    EntryDateFormRequest,
-    EntryPhoneFormRequest,
-    EntryInfoType
-} from "../../../api/api_types";
+import {EntryInfoType} from "../../../api/api_types";
 import {computed} from "vue";
 import {useQuasar} from "quasar";
 

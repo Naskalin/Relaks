@@ -2,17 +2,12 @@
     <template v-if="contactsStore.phones.length">
         <q-card-section class="q-gutter-y-sm">
             <q-list separator>
-                <q-item v-for="eInfo in contactsStore.phones" :class="{'bg-pink-1': eInfo.deletedAt}" :key="eInfo.id">
-                    <q-item-section>
-                        <phone :phone="eInfo"></phone>
-                        <q-item-label v-if="eInfo.title" :lines="1" class="text-grey-9">{{ eInfo.title }}</q-item-label>
-                        <q-item-label v-if="eInfo.deletedReason" :lines="1" class="text-negative">{{ eInfo.deletedReason }}</q-item-label>
-                        <entry-info-tooltip :e-info="eInfo"/>
-                    </q-item-section>
-                    <q-item-section side v-if="withEdit">
-                        <q-btn icon="las la-edit" @click="showEditForm(eInfo)" flat round color="primary"/>
-                    </q-item-section>
-                </q-item>
+                <entry-info-item
+                    @showEditForm="showEditForm(eInfo)"
+                    :with-edit="withEdit"
+                    v-for="eInfo in contactsStore.phones"
+                    :e-info="eInfo"
+                    :key="eInfo.id"/>
             </q-list>
         </q-card-section>
         <q-separator></q-separator>
@@ -20,17 +15,12 @@
     <template v-if="contactsStore.emails.length">
         <q-card-section class="q-gutter-y-sm">
             <q-list separator>
-                <q-item v-for="eInfo in contactsStore.emails" :class="{'bg-pink-1': eInfo.deletedAt}" :key="eInfo.id">
-                    <q-item-section>
-                        <email :email="eInfo.email" with-link></email>
-                        <q-item-label v-if="eInfo.title" :lines="1" class="text-grey-9">{{ eInfo.title }}</q-item-label>
-                        <q-item-label v-if="eInfo.deletedReason" :lines="1" class="text-negative">{{ eInfo.deletedReason }}</q-item-label>
-                        <entry-info-tooltip :e-info="eInfo"/>
-                    </q-item-section>
-                    <q-item-section side v-if="withEdit">
-                        <q-btn icon="las la-edit" @click="showEditForm(eInfo)" flat round color="primary"/>
-                    </q-item-section>
-                </q-item>
+                <entry-info-item
+                    @showEditForm="showEditForm(eInfo)"
+                    :with-edit="withEdit"
+                    v-for="eInfo in contactsStore.emails"
+                    :e-info="eInfo"
+                    :key="eInfo.id"/>
             </q-list>
         </q-card-section>
         <q-separator></q-separator>
@@ -38,17 +28,12 @@
     <template v-if="contactsStore.urls.length">
         <q-card-section class="q-gutter-y-sm">
             <q-list separator>
-                <q-item v-for="eInfo in contactsStore.urls" :class="{'bg-pink-1': eInfo.deletedAt}" :key="eInfo.id">
-                    <q-item-section>
-                        <url :url="eInfo.url" with-link></url>
-                        <q-item-label :lines="1" v-if="eInfo.title" class="text-grey-9">{{ eInfo.title }}</q-item-label>
-                        <q-item-label v-if="eInfo.deletedReason" :lines="1" class="text-negative">{{ eInfo.deletedReason }}</q-item-label>
-                        <entry-info-tooltip :e-info="eInfo"/>
-                    </q-item-section>
-                    <q-item-section side v-if="withEdit">
-                        <q-btn icon="las la-edit" @click="showEditForm(eInfo)" flat round color="primary"/>
-                    </q-item-section>
-                </q-item>
+                <entry-info-item
+                    @showEditForm="showEditForm(eInfo)"
+                    :with-edit="withEdit"
+                    v-for="eInfo in contactsStore.urls"
+                    :e-info="eInfo"
+                    :key="eInfo.id"/>
             </q-list>
         </q-card-section>
         <q-separator></q-separator>
@@ -56,17 +41,12 @@
     <template v-if="contactsStore.dates.length">
         <q-card-section class="q-gutter-y-sm">
             <q-list separator>
-                <q-item v-for="eInfo in contactsStore.dates" :class="{'bg-pink-1': eInfo.deletedAt}" :key="eInfo.id">
-                    <q-item-section>
-                        <date :date="eInfo.date"></date>
-                        <q-item-label v-if="eInfo.title" :lines="1" class="text-grey-9">{{ eInfo.title }}</q-item-label>
-                        <q-item-label v-if="eInfo.deletedReason" :lines="1" class="text-negative">{{ eInfo.deletedReason }}</q-item-label>
-                        <entry-info-tooltip :e-info="eInfo"/>
-                    </q-item-section>
-                    <q-item-section side v-if="withEdit">
-                        <q-btn icon="las la-edit" @click="showEditForm(eInfo)" flat round color="primary"/>
-                    </q-item-section>
-                </q-item>
+                <entry-info-item
+                    @showEditForm="showEditForm(eInfo)"
+                    :with-edit="withEdit"
+                    v-for="eInfo in contactsStore.dates"
+                    :e-info="eInfo"
+                    :key="eInfo.id"/>
             </q-list>
         </q-card-section>
         <q-separator></q-separator>
@@ -90,12 +70,8 @@
 <script setup lang="ts">
 import {watch, ref, withDefaults} from "vue";
 import {useEntryCardContactsStore} from "../../../store/entry/entryCard.contacts.store";
-import Phone from '../../components/Phone.vue';
-import Email from '../../components/Email.vue';
-import Url from '../../components/Url.vue';
-import Date from '../../components/Date.vue';
 import EntryInfoFormModal from '../entry_info/EntryInfo.Form.Modal.vue';
-import EntryInfoTooltip from '../entry_info/EntryInfo.Tooltip.vue';
+import EntryInfoItem from '../entry_info/EntryInfo.Item.vue';
 import {apiEntryInfo} from "../../../api/rerources/api_entry_info";
 import {useEntryInfoEditStore} from "../../../store/entry_info/entryInfo.edit.store";
 import {entryInfoMessages} from "../../../localize/messages";

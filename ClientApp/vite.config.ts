@@ -36,27 +36,3 @@ export default defineConfig(({ command, mode }) => {
         }
     }
 })
-
-// export default defineConfig({
-//     plugins: [
-//         vue({
-//             template: {transformAssetUrls}
-//         }),
-//         quasar({
-//             sassVariables: 'src/quasar-variables.sass',
-//         })
-//     ],
-//     server: {
-//         proxy: {
-//             // '/files': {target: 'https://localhost:7125', secure: false, changeOrigin: true},
-//             '/api': {target: 'https://localhost:7125', secure: false, changeOrigin: true},
-//         },
-//         fs: {
-//             // Allow serving files from one level up to the project root
-//             allow: [
-//                 searchForWorkspaceRoot(fs.realpathSync(process.cwd())),
-//                 'C:/app/RiderProjects/Relaks/ClientApp',
-//             ]
-//         }
-//     }
-// })
