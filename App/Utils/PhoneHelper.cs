@@ -1,28 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+﻿using App.Models;
 using PhoneNumbers;
 
 namespace App.Utils;
 
-public class Phone
-{
-    public string Number { get; set; } = null!;
-    public string Region { get; set; } = null!;
-
-    public override string ToString()
-    {
-        return Region + "|" + Number;
-    }
-}
-
 public static class PhoneHelper
 {
-    public static Phone ToPhone(string number, string region)
+    public static PhoneInfo ToPhone(string number, string region)
     {
         var phoneNumberUtil = PhoneNumberUtil.GetInstance();
         try
         {
-            var phone = new Phone();
-            phone.Region = region.ToUpper();
+            var phone = new PhoneInfo
+            {
+                Region = region.ToUpper()
+            };
             var phoneNumber = phoneNumberUtil.Parse(number, phone.Region);
             if (!phoneNumberUtil.IsValidNumber(phoneNumber))
             {
@@ -40,14 +31,16 @@ public static class PhoneHelper
     }
     
     // Предполагается, что это будет строка вида RU|1234567890
-    public static Phone ToPhone(string regionWithNumber)
+    public static PhoneInfo ToPhone(string regionWithNumber)
     {
         var phoneArr = regionWithNumber.Split("|");
         var phoneNumberUtil = PhoneNumberUtil.GetInstance();
         try
         {
-            var phone = new Phone();
-            phone.Region = phoneArr[0].ToUpper();
+            var phone = new PhoneInfo
+            {
+                Region = phoneArr[0].ToUpper()
+            };
             var phoneNumber = phoneNumberUtil.Parse(phoneArr[1], phone.Region);
             if (!phoneNumberUtil.IsValidNumber(phoneNumber))
             {

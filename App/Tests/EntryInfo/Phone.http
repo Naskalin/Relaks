@@ -1,9 +1,9 @@
-DELETE http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/phones/07315DD9-8587-4B73-A53A-0C399968647E
+DELETE http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/entry-infos/07315DD9-8587-4B73-A53A-0C399968647E
 Accept: application/json
 Content-Type: application/json
 ###
 
-PUT http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/phones/07315DD9-8587-4B73-A53A-0C399968647E
+PUT http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/entry-infos/07315DD9-8587-4B73-A53A-0C399968647E
 Accept: application/json
 Content-Type: application/json
 
@@ -18,25 +18,32 @@ Content-Type: application/json
 ###
 
 // SINGLE
-GET http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/phones/07315DD9-8587-4B73-A53A-0C399968647E
+GET http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/entry-infos/07315DD9-8587-4B73-A53A-0C399968647E
 Accept: application/json
 Content-Type: application/json
 
 ###
 // ALL
-GET http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/phones
-Accept: application/json
-Content-Type: application/json
-
-###
-// CREATE
-POST http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/phones
+GET http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/entry-infos?type=phone
 Accept: application/json
 Content-Type: application/json
 
 {
-  "phoneNumber": "8 812 123-45-67",
-  "phoneRegion": "ru",
+  "type": "Phone"
+}
+
+###
+// CREATE
+POST http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/entry-infos
+Accept: application/json
+Content-Type: application/json
+
+{
+  "type": "phone",
+  "data": {
+    "number": "8 812 123-45-67",
+    "region": "ru"
+  },
   "Title": "M",
   "deletedReason": "asd"
 }

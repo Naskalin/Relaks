@@ -31,9 +31,22 @@ public static class EntryInfoMapper
                 email.Email = email.Email.Trim().ToLower();
                 eInfo.Value = JsonSerializer.Serialize(email, InfoValue.WriteOptions);
                 break;
-            default:
-                eInfo.Value = JsonSerializer.Serialize(details.Data, InfoValue.WriteOptions);
+            case EntryInfoType.Phone:
+                eInfo.Value = JsonSerializer.Serialize(details.Phone()!, InfoValue.WriteOptions);
                 break;
+            case EntryInfoType.Url:
+                var url = details.Url()!;
+                url.Url = url.Url.Trim();
+                eInfo.Value = JsonSerializer.Serialize(url, InfoValue.WriteOptions);
+                break;
+            case EntryInfoType.Date:
+                eInfo.Value = JsonSerializer.Serialize(details.Date()!, InfoValue.WriteOptions);
+                break;
+            case EntryInfoType.Note:
+                eInfo.Value = JsonSerializer.Serialize(details.Note()!, InfoValue.WriteOptions);
+                break;
+            default:
+                throw new ArgumentException($"EntryInfo Mapper for type: {eInfo.Type} not found.");
         }
     }
     // public static void MapTo(this RequestEmailDetails details, EntryEmail eInfo)

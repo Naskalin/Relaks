@@ -1,6 +1,5 @@
 ﻿using App.Models;
 using App.Repository;
-using App.Repository.EntryInfoExtends;
 using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +25,7 @@ public class List : EndpointBaseAsync
         CancellationToken cancellationToken = new()
     )
     {
-        var eInfos = await _entryInfoRepository.EmailsAsync(request, cancellationToken);
+        var eInfos = await _entryInfoRepository.PaginateAsync(request, cancellationToken);
         return Ok(eInfos);
     }
 }

@@ -65,31 +65,40 @@ public class EntryInfoFts : IFtsEntity
     public string? Note { get; set; }
 }
 
-// public class EntryNote : EntryInfo
-// {
-//     public string Note { get; set; } = null!;
-// }
+public class NoteInfo
+{
+    public string Note { get; set; } = null!;
+}
 //
-// public class EntryPhone : EntryInfo
+// public class InfoPhone : EntryInfo
 // {
 //     public string PhoneNumber { get; set; } = null!;
 //     public string PhoneRegion { get; set; } = null!;
 // }
-//
-public class InfoEmail
+
+public class PhoneInfo
+{
+    public string Number { get; set; } = null!;
+    public string Region { get; set; } = null!;
+
+    public override string ToString()
+    {
+        return Region + "|" + Number;
+    }
+}
+public class EmailInfo
 {
     public string Email { get; set; } = null!;
 }
-//
-// public class EntryUrl : EntryInfo
-// {
-//     public string Url { get; set; } = null!;
-// }
-//
-// public class EntryDate : EntryInfo
-// {
-//     public DateTime Date { get; set; }
-// }
+public class UrlInfo
+{
+    public string Url { get; set; } = null!;
+}
+
+public class DateInfo
+{
+    public DateTime Date { get; set; }
+}
 
 // public enum Gender
 // {
