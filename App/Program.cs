@@ -35,11 +35,12 @@ builder.Services.Configure<ApiBehaviorOptions>(o => { o.SuppressInferBindingSour
 builder.Services.AddTransient<EntryRepository>();
 
 // EntryInfo
-builder.Services.AddTransient<EntryDateRepository>();
-builder.Services.AddTransient<EntryEmailRepository>();
-builder.Services.AddTransient<EntryNoteRepository>();
-builder.Services.AddTransient<EntryPhoneRepository>();
-builder.Services.AddTransient<EntryUrlRepository>();
+builder.Services.AddTransient<EntryInfoRepository>();
+// builder.Services.AddTransient<EntryDateRepository>();
+// builder.Services.AddTransient<EntryEmailRepository>();
+// builder.Services.AddTransient<EntryNoteRepository>();
+// builder.Services.AddTransient<EntryPhoneRepository>();
+// builder.Services.AddTransient<EntryUrlRepository>();
 
 builder.Services.AddTransient<EntryFileRepository>();
 
@@ -90,11 +91,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseFileServer();
+// app.UseHttpsRedirection();
 app.MapControllers();
-app.UseDefaultFiles();
-
-app.UseStaticFiles();
 app.Run();
 
 public partial class Program

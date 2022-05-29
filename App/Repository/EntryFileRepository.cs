@@ -18,8 +18,8 @@ public class EntryFileRepository : BaseRepository<EntryFile>
     {
         var query = Entities.Where(x => x.EntryId == request.EntryId);
 
-        if (request.isDeleted != null)
-            query = query.Where(x => request.isDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
+        if (request.IsDeleted != null)
+            query = query.Where(x => request.IsDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
 
         if (!string.IsNullOrEmpty(request.Search))
             query = query.Where(x => EF.Functions.Like(x.Name, "%" + request.Search + "%")

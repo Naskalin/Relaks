@@ -19,12 +19,14 @@ public class Entry : BaseEntity, ITimestampResource, ISoftDelete
 
     public Guid? Avatar { get; set; }
 
-    public List<EntryDate> Dates { get; set; } = new();
-    public List<EntryNote> Notes { get; set; } = new();
-    public List<EntryEmail> Emails { get; set; } = new();
-    public List<EntryPhone> Phones { get; set; } = new();
-    public List<EntryUrl> Urls { get; set; } = new();
+    public List<EntryInfo> EntryInfos { get; set; } = new();
     public List<EntryFile> Files { get; set; } = new();
+    
+    // public List<EntryDate> Dates { get; set; } = new();
+    // public List<EntryNote> Notes { get; set; } = new();
+    // public List<EntryEmail> Emails { get; set; } = new();
+    // public List<EntryPhone> Phones { get; set; } = new();
+    // public List<EntryUrl> Urls { get; set; } = new();
 }
 
 public class EntryFts : IFtsEntity

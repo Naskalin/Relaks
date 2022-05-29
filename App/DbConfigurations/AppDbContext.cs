@@ -9,11 +9,11 @@ public class AppDbContext : DbContext
     public DbSet<Entry> Entries { get; set; } = null!;
 
     public DbSet<EntryInfo> EntryInfos { get; set; } = null!;
-    public DbSet<EntryDate> EntryDates { get; set; } = null!;
-    public DbSet<EntryNote> EntryNotes { get; set; } = null!;
-    public DbSet<EntryPhone> EntryPhones { get; set; } = null!;
-    public DbSet<EntryEmail> EntryEmails { get; set; } = null!;
-    public DbSet<EntryUrl> EntryUrls { get; set; } = null!;
+    // public DbSet<EntryDate> EntryDates { get; set; } = null!;
+    // public DbSet<EntryNote> EntryNotes { get; set; } = null!;
+    // public DbSet<EntryPhone> EntryPhones { get; set; } = null!;
+    // public DbSet<EntryEmail> EntryEmails { get; set; } = null!;
+    // public DbSet<EntryUrl> EntryUrls { get; set; } = null!;
 
     public DbSet<FileModel> FileModels { get; set; } = null!;
     public DbSet<EntryFile> EntryFiles { get; set; } = null!;

@@ -22,10 +22,10 @@ public class DatabaseSeeder
         Db.Database.ExecuteSqlRaw("delete from Entries;");
 
         new EntrySeeder(Db).Seed();
-        new EntryDateSeeder(Db).Seed();
-        new EntryNoteSeeder(Db).Seed();
-        new EntryPhoneSeeder(Db).Seed();
-        new EntryUrlSeeder(Db).Seed();
-        new EntryEmailSeeder(Db).Seed();
+        // new EntryDateSeeder(Db).Seed();
+        // new EntryNoteSeeder(Db).Seed();
+        // new EntryPhoneSeeder(Db).Seed();
+        // new EntryUrlSeeder(Db).Seed();
+        // new EntryEmailSeeder(Db).Seed();
     }
 }

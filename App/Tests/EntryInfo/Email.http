@@ -1,9 +1,9 @@
-DELETE https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/emails/11434594-3FD0-46B5-94D3-B6C1DE188824
+DELETE http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/emails/11434594-3FD0-46B5-94D3-B6C1DE188824
 Accept: application/json
 Content-Type: application/json
 ###
 
-PUT https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/emails/11434594-3FD0-46B5-94D3-B6C1DE188824
+PUT http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/emails/11434594-3FD0-46B5-94D3-B6C1DE188824
 Accept: application/json
 Content-Type: application/json
 
@@ -17,19 +17,19 @@ Content-Type: application/json
 ###
 
 // SINGLE
-GET https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/emails/11434594-3FD0-46B5-94D3-B6C1DE188824
+GET http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/emails/11434594-3FD0-46B5-94D3-B6C1DE188824
 Accept: application/json
 Content-Type: application/json
 
 ###
 // ALL
-GET https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/emails
+GET http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/emails
 Accept: application/json
 Content-Type: application/json
 
 ###
 // CREATE
-POST https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/emails
+POST http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/emails
 Accept: application/json
 Content-Type: application/json
 

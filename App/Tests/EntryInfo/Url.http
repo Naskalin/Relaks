@@ -1,9 +1,9 @@
-DELETE https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/urls/07C18674-296E-41BE-9087-E92675007059
+DELETE http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/urls/07C18674-296E-41BE-9087-E92675007059
 Accept: application/json
 Content-Type: application/json
 ###
 
-PUT https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/urls/07C18674-296E-41BE-9087-E92675007059
+PUT http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/urls/07C18674-296E-41BE-9087-E92675007059
 Accept: application/json
 Content-Type: application/json
 
@@ -17,19 +17,19 @@ Content-Type: application/json
 ###
 
 // SINGLE
-GET https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/urls/07C18674-296E-41BE-9087-E92675007059
+GET http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/urls/07C18674-296E-41BE-9087-E92675007059
 Accept: application/json
 Content-Type: application/json
 
 ###
 // ALL
-GET https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/urls
+GET http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/urls
 Accept: application/json
 Content-Type: application/json
 
 ###
 // CREATE
-POST https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/urls
+POST http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/urls
 Accept: application/json
 Content-Type: application/json
 

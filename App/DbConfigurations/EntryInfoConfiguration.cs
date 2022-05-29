@@ -11,13 +11,19 @@ public class EntryInfoConfiguration : IEntityTypeConfiguration<EntryInfo>
     {
         builder.ToTable("EntryInfos");
 
-        builder.HasDiscriminator(x => x.Discriminator)
-            .HasValue<EntryEmail>(EntryInfo.EmailType)
-            .HasValue<EntryPhone>(EntryInfo.PhoneType)
-            .HasValue<EntryUrl>(EntryInfo.UrlType)
-            .HasValue<EntryNote>(EntryInfo.NoteType)
-            .HasValue<EntryDate>(EntryInfo.DateType)
-            ;
+        builder
+            .Property(x => x.Type)
+            .HasConversion(new EnumToStringConverter<EntryInfoType>());
+
+        // builder.Property(x => x.Discriminator)
+        // .HasConversion<EnumToStringConverter<EntryInfoType>>();
+        // builder.HasDiscriminator(x => x.Discriminator)
+        //     .HasValue<EntryEmail>(EntryInfo.EmailType)
+        //     .HasValue<EntryPhone>(EntryInfo.PhoneType)
+        //     .HasValue<EntryUrl>(EntryInfo.UrlType)
+        //     .HasValue<EntryNote>(EntryInfo.NoteType)
+        //     .HasValue<EntryDate>(EntryInfo.DateType)
+        //     ;
     }
 }
 
@@ -26,7 +32,7 @@ public class EntryInfoFtsConfiguration : IEntityTypeConfiguration<EntryInfoFts>
     public void Configure(EntityTypeBuilder<EntryInfoFts> builder)
     {
         builder.HasKey(fts => fts.RowId);
-        
+
         builder
             .Property(fts => fts.Match)
             .HasColumnName(nameof(EntryInfoFts));

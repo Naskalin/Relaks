@@ -27,7 +27,7 @@ public class BaseRepository<TEntity> where TEntity : BaseEntity
         return await Entities.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    protected IQueryable<TEntity> PaginateQuery(IQueryable<TEntity> query, IPaginableRequest request)
+    public IQueryable<TEntity> PaginateQuery(IQueryable<TEntity> query, IPaginableRequest request)
     {
         var perPage = request.PerPage ?? 50;
         var page = request.Page ?? 1;

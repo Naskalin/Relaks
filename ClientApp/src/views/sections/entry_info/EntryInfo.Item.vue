@@ -36,6 +36,6 @@ const emit = defineEmits<{
 }>()
 defineProps<{
     eInfo: any,
-    withEdit: boolean
+    withEdit?: boolean
 }>()
 </script>

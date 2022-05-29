@@ -225,59 +225,6 @@ namespace App.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("FileModel");
                 });
 
-            modelBuilder.Entity("App.Models.Post", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("AnyField")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Posts");
-                });
-
-            modelBuilder.Entity("App.Models.PostFts", b =>
-                {
-                    b.Property<int>("RowId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Match")
-                        .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasColumnName("PostFts");
-
-                    b.Property<double?>("Rank")
-                        .HasColumnType("REAL");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("RowId");
-
-                    b.ToTable("PostFts");
-                });
-
             modelBuilder.Entity("App.Models.EntryDate", b =>
                 {
                     b.HasBaseType("App.Models.EntryInfo");

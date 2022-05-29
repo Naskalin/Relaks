@@ -18,7 +18,8 @@ export const useEntryCreateStore = defineStore('entryCreateStore', {
                 startAt: null,
                 endAt: null,
                 deletedReason: '',
-                deletedAt: null
+                deletedAt: null,
+                avatar: null,
             },
             isLoading: false,
         }

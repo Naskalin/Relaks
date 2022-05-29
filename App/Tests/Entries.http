@@ -1,9 +1,9 @@
-DELETE https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4
+DELETE http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4
 Accept: application/json
 Content-Type: application/json
 ###
 
-PUT https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4
+PUT http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4
 Accept: application/json
 Content-Type: application/json
 #"description": "asd"
@@ -19,19 +19,19 @@ Content-Type: application/json
 ###
 
 // SINGLE
-GET https://localhost:7125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4
+GET http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4
 Accept: application/json
 Content-Type: application/json
 
 ###
 // ALL
-GET https://localhost:7125/api/entries?perPage=1&page=2
+GET http://localhost:5125/api/entries?perPage=1&page=2
 Accept: application/json
 Content-Type: application/json
 
 ###
 // CREATE
-POST https://localhost:7125/api/entries
+POST http://localhost:5125/api/entries
 Accept: application/json
 Content-Type: application/json
 

@@ -62,7 +62,7 @@ namespace App.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Entries", (string)null);
+                    b.ToTable("Entries");
                 });
 
             modelBuilder.Entity("App.Models.EntryFts", b =>
@@ -96,7 +96,7 @@ namespace App.Migrations
 
                     b.HasKey("RowId");
 
-                    b.ToTable("EntryFts", (string)null);
+                    b.ToTable("EntryFts");
                 });
 
             modelBuilder.Entity("App.Models.EntryInfo", b =>
@@ -115,10 +115,6 @@ namespace App.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<Guid>("EntryId")
                         .HasColumnType("TEXT");
 
@@ -126,14 +122,22 @@ namespace App.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.ToTable("EntryInfos", (string)null);
+                    b.HasIndex("EntryId");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("EntryInfo");
+                    b.ToTable("EntryInfos", (string)null);
                 });
 
             modelBuilder.Entity("App.Models.EntryInfoFts", b =>
@@ -178,7 +182,7 @@ namespace App.Migrations
 
                     b.HasKey("RowId");
 
-                    b.ToTable("EntryInfoFts", (string)null);
+                    b.ToTable("EntryInfoFts");
                 });
 
             modelBuilder.Entity("App.Models.FileModel", b =>
@@ -223,84 +227,6 @@ namespace App.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("FileModel");
                 });
 
-            modelBuilder.Entity("App.Models.Post", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("AnyField")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Posts", (string)null);
-                });
-
-            modelBuilder.Entity("App.Models.PostFts", b =>
-                {
-                    b.Property<int>("RowId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Match")
-                        .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasColumnName("PostFts");
-
-                    b.Property<double?>("Rank")
-                        .HasColumnType("REAL");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("RowId");
-
-                    b.ToTable("PostFts", (string)null);
-                });
-
-            modelBuilder.Entity("App.Models.EntryDate", b =>
-                {
-                    b.HasBaseType("App.Models.EntryInfo");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
-
-                    b.HasIndex("EntryId");
-
-                    b.HasDiscriminator().HasValue("Date");
-                });
-
-            modelBuilder.Entity("App.Models.EntryEmail", b =>
-                {
-                    b.HasBaseType("App.Models.EntryInfo");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasIndex("EntryId");
-
-                    b.HasDiscriminator().HasValue("Email");
-                });
-
             modelBuilder.Entity("App.Models.EntryFile", b =>
                 {
                     b.HasBaseType("App.Models.FileModel");
@@ -325,62 +251,10 @@ namespace App.Migrations
                     b.HasDiscriminator().HasValue("EntryInfoFile");
                 });
 
-            modelBuilder.Entity("App.Models.EntryNote", b =>
-                {
-                    b.HasBaseType("App.Models.EntryInfo");
-
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasIndex("EntryId");
-
-                    b.HasDiscriminator().HasValue("Note");
-                });
-
-            modelBuilder.Entity("App.Models.EntryPhone", b =>
-                {
-                    b.HasBaseType("App.Models.EntryInfo");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PhoneRegion")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasIndex("EntryId");
-
-                    b.HasDiscriminator().HasValue("Phone");
-                });
-
-            modelBuilder.Entity("App.Models.EntryUrl", b =>
-                {
-                    b.HasBaseType("App.Models.EntryInfo");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasIndex("EntryId");
-
-                    b.HasDiscriminator().HasValue("Url");
-                });
-
-            modelBuilder.Entity("App.Models.EntryDate", b =>
+            modelBuilder.Entity("App.Models.EntryInfo", b =>
                 {
                     b.HasOne("App.Models.Entry", null)
-                        .WithMany("Dates")
-                        .HasForeignKey("EntryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("App.Models.EntryEmail", b =>
-                {
-                    b.HasOne("App.Models.Entry", null)
-                        .WithMany("Emails")
+                        .WithMany("EntryInfos")
                         .HasForeignKey("EntryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -404,46 +278,11 @@ namespace App.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("App.Models.EntryNote", b =>
-                {
-                    b.HasOne("App.Models.Entry", null)
-                        .WithMany("Notes")
-                        .HasForeignKey("EntryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("App.Models.EntryPhone", b =>
-                {
-                    b.HasOne("App.Models.Entry", null)
-                        .WithMany("Phones")
-                        .HasForeignKey("EntryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("App.Models.EntryUrl", b =>
-                {
-                    b.HasOne("App.Models.Entry", null)
-                        .WithMany("Urls")
-                        .HasForeignKey("EntryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("App.Models.Entry", b =>
                 {
-                    b.Navigation("Dates");
-
-                    b.Navigation("Emails");
+                    b.Navigation("EntryInfos");
 
                     b.Navigation("Files");
-
-                    b.Navigation("Notes");
-
-                    b.Navigation("Phones");
-
-                    b.Navigation("Urls");
                 });
 
             modelBuilder.Entity("App.Models.EntryInfo", b =>

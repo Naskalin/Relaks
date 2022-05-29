@@ -50,8 +50,8 @@ public class EntryRepository : BaseRepository<Entry>
             query = FtsSearch(req.Search);
         }
     
-        if (req.isDeleted != null)
-            query = query.Where(x => req.isDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
+        if (req.IsDeleted != null)
+            query = query.Where(x => req.IsDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
     
         if (req.EntryType != null)
             query = query.Where(x => x.EntryType == req.EntryType);
