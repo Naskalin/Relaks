@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using App.DbConfigurations;
+using App.DbEvents;
 using App.Repository;
 using App.Seeders;
 using App.Utils;

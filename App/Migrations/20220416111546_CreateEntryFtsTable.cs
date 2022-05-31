@@ -13,18 +13,18 @@ namespace App.Migrations
         {
             var columns = new[]
             {
-                nameof(EntryFts.Id),
-                nameof(EntryFts.Name),
-                nameof(EntryFts.Description),
-                nameof(EntryFts.DeletedReason),
+                "Id",
+                "Name",
+                "Description",
+                "DeletedReason",
             };
             
             migrationBuilder.Sql(
                 SqliteMigrationHelper.CreateFtsTable(
                     new TableNames() 
                     {
-                        Table = nameof(EntryFts),
-                        Unindexed = new []{nameof(EntryFts.Id)},
+                        Table = "EntryFts",
+                        Unindexed = new []{"Id"},
                         Columns = columns,
                     }
                 )
@@ -35,9 +35,9 @@ namespace App.Migrations
                     new TriggerNames()
                     {
                         Columns = columns,
-                        TriggerTable = nameof(EntryFts),
+                        TriggerTable = "EntryFts",
                         WatchTable = "Entries",
-                        TriggerTableId = nameof(EntryFts.Id),
+                        TriggerTableId = "Id",
                         WatchTableId = nameof(Entry.Id),
                     }
                 )
@@ -47,7 +47,7 @@ namespace App.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(
-                SqliteMigrationHelper.DeleteTriggers(nameof(EntryFts))
+                SqliteMigrationHelper.DeleteTriggers(nameof(FtsEntry))
             );
             
             migrationBuilder.DropTable(

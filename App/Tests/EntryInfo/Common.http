@@ -1,9 +1,9 @@
-DELETE http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/entry-infos/11434594-3FD0-46B5-94D3-B6C1DE188824
+DELETE http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/entry-infos/459fc66d-5218-4e45-8545-de92feb0a620
 Accept: application/json
 Content-Type: application/json
 ###
 
-PUT http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/entry-infos/11434594-3FD0-46B5-94D3-B6C1DE188824
+PUT http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/entry-infos/61a8f78b-e1ed-46f2-bda3-fcf13e6b62de
 Accept: application/json
 Content-Type: application/json
 
@@ -12,7 +12,7 @@ Content-Type: application/json
   "deletedReason": "",
   "type": "Email",
   "data":  {
-    "email": "asd@mail.ru"
+    "email": "bbbasd@mail.ru"
   }
 }
 
@@ -37,7 +37,7 @@ Content-Type: application/json
 
 {
   "data":  {
-    "email": "asd@mail.ru"
+    "email": "1asd@mail.ru"
   },
   "type": "Email",
   "Title": "M",

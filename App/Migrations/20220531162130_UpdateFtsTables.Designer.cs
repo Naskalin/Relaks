@@ -3,6 +3,7 @@ using System;
 using App.DbConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220531162130_UpdateFtsTables")]
+    partial class UpdateFtsTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
@@ -62,7 +64,41 @@ namespace App.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Entries", (string)null);
+                    b.ToTable("Entries");
+                });
+
+            modelBuilder.Entity("App.Models.EntryFts", b =>
+                {
+                    b.Property<int>("RowId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("DeletedReason")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Match")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("EntryFts");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<double?>("Rank")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("RowId");
+
+                    b.ToTable("EntryFts");
                 });
 
             modelBuilder.Entity("App.Models.EntryInfo", b =>
@@ -106,6 +142,51 @@ namespace App.Migrations
                     b.ToTable("EntryInfos", (string)null);
                 });
 
+            modelBuilder.Entity("App.Models.EntryInfoFts", b =>
+                {
+                    b.Property<int>("RowId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("DeletedReason")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("EntryId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Match")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("EntryInfoFts");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double?>("Rank")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("RowId");
+
+                    b.ToTable("EntryInfoFts");
+                });
+
             modelBuilder.Entity("App.Models.FileModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -146,61 +227,6 @@ namespace App.Migrations
                     b.ToTable("Files", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("FileModel");
-                });
-
-            modelBuilder.Entity("App.Models.FtsEntry", b =>
-                {
-                    b.Property<int>("RowId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Data")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Match")
-                        .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasColumnName("FtsEntry");
-
-                    b.Property<double?>("Rank")
-                        .HasColumnType("REAL");
-
-                    b.HasKey("RowId");
-
-                    b.ToTable("FtsEntries", (string)null);
-                });
-
-            modelBuilder.Entity("App.Models.FtsEntryInfo", b =>
-                {
-                    b.Property<int>("RowId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Data")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("EntryId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Match")
-                        .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasColumnName("FtsEntryInfo");
-
-                    b.Property<double?>("Rank")
-                        .HasColumnType("REAL");
-
-                    b.HasKey("RowId");
-
-                    b.ToTable("FtsEntryInfos", (string)null);
                 });
 
             modelBuilder.Entity("App.Models.EntryFile", b =>

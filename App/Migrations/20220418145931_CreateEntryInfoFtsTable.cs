@@ -13,21 +13,21 @@ namespace App.Migrations
         {
             var columns = new[]
             {
-                nameof(EntryInfoFts.Id),
-                nameof(EntryInfoFts.EntryId),
-                nameof(EntryInfoFts.Title),
-                nameof(EntryInfoFts.DeletedReason),
-                nameof(EntryInfoFts.PhoneNumber),
-                nameof(EntryInfoFts.Email),
-                nameof(EntryInfoFts.Url),
-                nameof(EntryInfoFts.Note),
+                "Id",
+                "EntryId",
+                "Title",
+                "DeletedReason",
+                "PhoneNumber",
+                "Email",
+                "Url",
+                "Note",
             };
 
             migrationBuilder.Sql(
                 SqliteMigrationHelper.CreateFtsTable(new TableNames()
                 {
-                    Table = nameof(EntryInfoFts),
-                    Unindexed = new []{nameof(EntryInfoFts.Id), nameof(EntryInfoFts.EntryId)},
+                    Table = "EntryInfoFts",
+                    Unindexed = new []{"Id", "EntryId"},
                     Columns = columns
                 })
             );
@@ -36,10 +36,10 @@ namespace App.Migrations
                 SqliteMigrationHelper.CreateTriggers(new TriggerNames()
                 {
                     Columns = columns,
-                    TriggerTable = nameof(EntryInfoFts),
+                    TriggerTable = "EntryInfoFts",
                     WatchTable = "EntryInfos",
-                    TriggerTableId = nameof(EntryInfoFts.Id),
-                    WatchTableId = nameof(EntryInfo.Id),
+                    TriggerTableId = "Id",
+                    WatchTableId = "Id",
                 })
             );
         }
@@ -47,7 +47,7 @@ namespace App.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(
-                SqliteMigrationHelper.DeleteTriggers(nameof(EntryInfoFts))
+                SqliteMigrationHelper.DeleteTriggers("EntryInfoFts")
             );
             migrationBuilder.DropTable(
                 name: "EntryInfoFts");

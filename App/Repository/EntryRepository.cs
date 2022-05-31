@@ -70,7 +70,7 @@ public class EntryRepository : BaseRepository<Entry>
         var entryFtsPriority = 10;
         var s = $"\"{search}\"*";
         
-        var fts1 = Db.Set<EntryFts>()
+        var fts1 = Db.Set<FtsEntry>()
                 .Where(x => x.Match == s)
                 .Select(x => new EntryFtsDto()
                 {
@@ -80,7 +80,7 @@ public class EntryRepository : BaseRepository<Entry>
                 })
             ;
         
-        var fts2 = Db.Set<EntryInfoFts>()
+        var fts2 = Db.Set<FtsEntryInfo>()
                 .Where(x => x.Match == s)
                 .Select(x => new EntryFtsDto()
                 {

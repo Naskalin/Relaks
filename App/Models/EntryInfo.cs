@@ -8,14 +8,6 @@ namespace App.Models;
 
 public class EntryInfo : BaseEntity, ITimestampResource, ISoftDelete, IInfoData
 {
-    // public const string PhoneType = "Phone";
-    // public const string EmailType = "Email";
-    // public const string UrlType = "Url";
-    // public const string NoteType = "Note";
-    // public const string DateType = "Date";
-    // public const string PassportType = "Passport";
-    // public const string CompanyDetailsType = "CompanyDetails";
-
     public Guid EntryId { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
@@ -48,7 +40,7 @@ public enum EntryInfoType
     Custom,
 }
 
-public class EntryInfoFts : IFtsEntity
+public class FtsEntryInfo : IFtsEntity
 {
     public int RowId { get; set; }
     public string Match { get; set; } = null!;
@@ -57,12 +49,7 @@ public class EntryInfoFts : IFtsEntity
     public Guid Id { get; set; }
     public Guid EntryId { get; set; }
 
-    public string Title { get; set; } = null!;
-    public string DeletedReason { get; set; } = null!;
-    public string? PhoneNumber { get; set; }
-    public string? Email { get; set; }
-    public string? Url { get; set; }
-    public string? Note { get; set; }
+    public string Data { get; set; } = null!;
 }
 
 public class NoteInfo
@@ -86,10 +73,12 @@ public class PhoneInfo
         return Region + "|" + Number;
     }
 }
+
 public class EmailInfo
 {
     public string Email { get; set; } = null!;
 }
+
 public class UrlInfo
 {
     public string Url { get; set; } = null!;
