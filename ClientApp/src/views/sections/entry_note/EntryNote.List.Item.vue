@@ -31,10 +31,10 @@
 import Date from '../../components/Date.vue';
 import Deleted from '../../components/Deleted.vue';
 import {entryInfoMessages} from "../../../localize/messages";
-import {EntryNote} from "../../../api/api_types";
+import {InfoNote} from "../../../api/api_types";
 
 defineProps<{
-    eNote: EntryNote,
+    eNote: InfoNote,
 }>()
 const emit = defineEmits<{
     (e: 'showEditForm'): void

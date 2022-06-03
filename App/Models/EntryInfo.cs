@@ -6,7 +6,7 @@ using App.Utils;
 
 namespace App.Models;
 
-public class EntryInfo : BaseEntity, ITimestampResource, ISoftDelete, IInfoData
+public class EntryInfo : BaseEntity, ITimestampResource, ISoftDelete, IInfoData, ICloneable
 {
     public Guid EntryId { get; set; }
     public DateTime CreatedAt { get; set; }
@@ -18,26 +18,62 @@ public class EntryInfo : BaseEntity, ITimestampResource, ISoftDelete, IInfoData
 
     public List<EntryInfoFile> Files { get; set; } = new();
 
-    public EntryInfoType Type { get; set; }
+    public string Type { get; set; } = null!;
 
     [JsonIgnore]
     public string Value { get; set; } = null!;
 
     [NotMapped]
     // Для сериализации в json вместо Value, иначе мы получаем строку в Value: "{...}"
-    public JsonObject Data => JsonSerializer.Deserialize<JsonObject>(Value, InfoValue.WriteOptions)!;
+    public JsonObject Info => JsonSerializer.Deserialize<JsonObject>(Value)!;
+
+    public object Clone()
+    {
+        return MemberwiseClone();
+    }
 }
 
-public enum EntryInfoType
+// public enum EntryInfoType
+// {
+//     Phone,
+//     Email,
+//     Url,
+//     Note,
+//     Date,
+//     Passport,
+//     CompanyDetails,
+//     Custom,
+// }
+
+public class EntryInfoType : InfoBaseType
 {
-    Phone,
-    Email,
-    Url,
-    Note,
-    Date,
-    Passport,
-    CompanyDetails,
-    Custom,
+    public static readonly InfoBaseType Passport = new("Passport");
+    public static readonly InfoBaseType CompanyDetails = new("CompanyDetails");
+    public static readonly InfoBaseType Custom = new("Custom");
+
+    public EntryInfoType(string value) : base(value)
+    {
+    }
+}
+
+public class InfoBaseType
+{
+    public static readonly InfoBaseType Phone = new("Phone");
+    public static readonly InfoBaseType Email = new("Email");
+    public static readonly InfoBaseType Url = new("Url");
+    public static readonly InfoBaseType Note = new("Note");
+    public static readonly InfoBaseType Date = new("Date");
+    public string Value { get; protected set; }
+
+    public override string ToString() => Value;
+
+    public bool Equals(string s) => s == Value;
+    public bool Equals(InfoBaseType other) => Value == other.Value;
+
+    public InfoBaseType(string value)
+    {
+        Value = value;
+    }
 }
 
 public class FtsEntryInfo : IFtsEntity
@@ -52,18 +88,12 @@ public class FtsEntryInfo : IFtsEntity
     public string Data { get; set; } = null!;
 }
 
-public class NoteInfo
+public record NoteInfo
 {
     public string Note { get; set; } = null!;
 }
-//
-// public class InfoPhone : EntryInfo
-// {
-//     public string PhoneNumber { get; set; } = null!;
-//     public string PhoneRegion { get; set; } = null!;
-// }
 
-public class PhoneInfo
+public record PhoneInfo
 {
     public string Number { get; set; } = null!;
     public string Region { get; set; } = null!;
@@ -74,38 +104,60 @@ public class PhoneInfo
     }
 }
 
-public class EmailInfo
+public record EmailInfo
 {
     public string Email { get; set; } = null!;
 }
 
-public class UrlInfo
+public record UrlInfo
 {
     public string Url { get; set; } = null!;
 }
 
-public class DateInfo
+public record DateInfo
 {
     public DateTime Date { get; set; }
 }
 
-// public enum Gender
+// public enum PassportGender
 // {
 //     Male,
 //     Female
 // }
-// public record InfoPassport
+
+public enum CustomInfoType
+{
+    Phone,
+    Email,
+    Url,
+    Note,
+    Date
+}
+
+public record CustomItem
+{
+    public string Key { get; set; } = null!;
+    public CustomInfoType Type { get; set; }
+    public string Val { get; set; } = null!;
+}
+
+public record CustomInfo
+{
+    public List<CustomItem> Items { get; set; } = new();
+}
+
+// public record PassportInfo
 // {
 //     public string? DocType { get; set; }
 //     public string? DocCode { get; set; }
 //     public string? DocNumber { get; set; }
 //     public string? Nationality { get; set; }
-//     
+//
 //     public string? Fio { get; set; } = null!;
-//     public Gender? Gender { get; set; }
+//     public PassportGender? Gender { get; set; }
 //     public string? Birthplace { get; set; }
 //     public DateTime? Birthday { get; set; }
-//     
+//
 //     public DateTime? IssueAt { get; set; }
 //     public DateTime? ExpireAt { get; set; }
 //     public string? PlaceIssue { get; set; }
@@ -115,11 +167,14 @@ public class DateInfo
 //     public string? Description { get; set; }
 // }
 //
-// public record InfoCompanyDetails
+// public record CompanyDetailsInfo
 // {
 //     public string? Name { get; set; } = null!;
+//     public string? Okved { get; set; } = null!;
 //     public string? Inn { get; set; } = null!;
+//     public string? Kpp { get; set; } = null!;
 //     public string? Okpo { get; set; } = null!;
+//     public string? Ogrn { get; set; } = null!;
 //     public string? Ogrnip { get; set; } = null!;
 //     public string? Oktmo { get; set; } = null!;
 //     public string? Address { get; set; } = null!;

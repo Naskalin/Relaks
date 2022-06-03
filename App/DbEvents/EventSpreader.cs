@@ -1,6 +1,6 @@
 ﻿using App.DbConfigurations;
+using App.DbEvents.Fts;
 using App.Models;
-using App.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace App.DbEvents;
@@ -11,15 +11,24 @@ public static class EventSpreader
     {
         if (sender == null || sender is AppDbContext == false) return;
         var db = (AppDbContext) sender;
-        // var hasChanges = false;
-        // var trackStates = new List<EntityState>{EntityState.Added, EntityState.Modified, EntityState.Deleted};
-        // var addRows = new List<string> {};
 
         foreach (var trackEntry in db.ChangeTracker.Entries())
         {
             switch (trackEntry.Entity)
             {
                 case Entry entry:
+                    switch (trackEntry.State)
+                    {
+                        case EntityState.Added:
+                            EntryEvents.Create(db, entry);
+                            break;
+                        case EntityState.Modified:
+                            EntryEvents.Update(db, entry);
+                            break;
+                        case EntityState.Deleted:
+                            EntryEvents.Delete(db, entry);
+                            break;
+                    }
                     break;
                 case EntryInfo eInfo:
                     switch (trackEntry.State)

@@ -14,18 +14,22 @@
         type="textarea"
     />
     
-    <q-input v-if="entryInfoType === 'Email'" type="email" :label="entryInfoMessages.val.names.Email" v-model="model.email"/>
-    <q-input v-else-if="entryInfoType === 'Url'" type="url" :label="entryInfoMessages.val.names.Url" v-model="model.url"/>
-    <phone-field v-else-if="entryInfoType === 'Phone'" v-model="model"/>
-    <date-field v-else-if="entryInfoType === 'Date'" v-model="model.date"/>
-    <q-editor v-else-if="entryInfoType === 'Note'"
-              @paste="onPaste"
-              ref="editorRef"
-              toolbar-bg="grey-4"
-              toolbar-toggle-color="positive"
-              content-class="bg-none"
-              class="bg-transparent q-my-md"
-              v-model="model.note"/>
+    <q-input v-if="entryInfoType === 'Email'" type="email" :label="entryInfoMessages.val.names.Email" v-model="model.info.email"/>
+    <q-input v-else-if="entryInfoType === 'Url'" type="url" :label="entryInfoMessages.val.names.Url" v-model="model.info.url"/>
+    <phone-field v-else-if="entryInfoType === 'Phone'" v-model="model.info"/>
+    <date-field v-else-if="entryInfoType === 'Date'" v-model="model.info.date"/>
+    <q-input v-else-if="entryInfoType === 'Note'" 
+             v-model="model.info.note" :label="entryInfoMessages.val.names.Note"
+             type="text"
+    />
+<!--    <q-editor v-else-if="entryInfoType === 'Note'"-->
+<!--              @paste="onPaste"-->
+<!--              ref="editorRef"-->
+<!--              toolbar-bg="grey-4"-->
+<!--              toolbar-toggle-color="positive"-->
+<!--              content-class="bg-none"-->
+<!--              class="bg-transparent q-my-md"-->
+<!--              v-model="model.info.note"/>-->
     <q-banner v-else class="bg-negative text-white">
         <q-icon name="las la-exclamation-triangle la-fw"/>
         Что то пошло не так, EntryText.textType не определён.
@@ -33,16 +37,8 @@
 </template>
 
 <script setup lang="ts">
-import {
-    EntryEmailFormRequest,
-    EntryUrlFormRequest,
-    EntryPhoneFormRequest,
-    EntryDateFormRequest,
-    EntryNoteFormRequest,
-    EntryInfoType
-} from "../../../api/api_types";
+import {EntryInfoFormRequest, EntryInfoType} from "../../../api/api_types";
 import {computed, ref} from "vue";
-// import ActualFieldset from '../../fieldsets/Actual.Fieldset.vue';
 import {deletedMessages} from "../../../localize/messages";
 import PhoneField from '../../fields/Phone.Field.vue';
 import DateField from '../../fields/Date.Field.vue';
@@ -51,17 +47,17 @@ import {editorHelper} from "../../../utils/editorOnPaste";
 import Date from '../../components/Date.vue';
 
 const props = defineProps<{
-    modelValue: EntryEmailFormRequest | EntryUrlFormRequest | EntryPhoneFormRequest | EntryDateFormRequest | EntryNoteFormRequest,
+    modelValue: EntryInfoFormRequest,
     entryInfoType: EntryInfoType
 }>()
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: EntryEmailFormRequest | EntryUrlFormRequest | EntryPhoneFormRequest | EntryDateFormRequest | EntryNoteFormRequest): void
+    (e: 'update:modelValue', value: EntryInfoFormRequest): void
 }>()
 const model = computed({
     get: (): any => {
         return props.modelValue
     },
-    set: (val) => emit('update:modelValue', val as any)
+    set: (val) => emit('update:modelValue', val)
 })
 
 const editorRef = ref(null)

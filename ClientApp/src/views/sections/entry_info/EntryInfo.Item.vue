@@ -4,15 +4,15 @@
             <div class="row q-col-gutter-x-sm">
                 <div class="col-auto">
                     <meta-tooltip :meta="eInfo">
-                        <q-icon name="las la-info-circle" size="1.6rem"/>
+                        <q-icon name="las la-info-circle" size="1.6rem" color="grey-7"/>
                     </meta-tooltip>
                 </div>
                 <div class="col">
-                    <date v-if="eInfo.discriminator === 'Date'" :date="eInfo.date"></date>
-                    <url v-else-if="eInfo.discriminator === 'Url'" :url="eInfo.url"></url>
-                    <email v-else-if="eInfo.discriminator === 'Email'" :email="eInfo.email"></email>
-                    <phone v-else-if="eInfo.discriminator === 'Phone'" :phone="eInfo"></phone>
-                    
+                    <date v-if="eInfo.type === 'Date'" :date="eInfo.info.date"></date>
+                    <url v-else-if="eInfo.type === 'Url'" :url="eInfo.info"></url>
+                    <email v-else-if="eInfo.type === 'Email'" :email="eInfo.info"></email>
+                    <phone v-else-if="eInfo.type === 'Phone'" :phone="eInfo.info"></phone>
+                    <note v-else-if="eInfo.type === 'Note'" :note="eInfo.info"/>
                     <q-item-label v-if="eInfo.title" class="text-grey-9">{{ eInfo.title }}</q-item-label>
                     <q-item-label v-if="eInfo.deletedReason" class="text-negative">{{ eInfo.deletedReason }}</q-item-label>
                 </div>
@@ -30,12 +30,14 @@ import Phone from '../../components/Phone.vue';
 import Email from '../../components/Email.vue';
 import Url from '../../components/Url.vue';
 import Date from '../../components/Date.vue';
+import Note from '../../components/Note.vue';
+import {EntryInfo} from "../../../api/api_types";
 
 const emit = defineEmits<{
-    (e: 'showEditForm', eInfo: any): void
+    (e: 'showEditForm', eInfo: EntryInfo): void
 }>()
 defineProps<{
-    eInfo: any,
+    eInfo: EntryInfo,
     withEdit?: boolean
 }>()
 </script>

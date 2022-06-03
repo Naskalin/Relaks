@@ -36,12 +36,12 @@
 import EntryInfoFields from './EntryInfo.Fields.vue';
 import Modal from '../../components/Modal.vue';
 import {deletedMessages} from "../../../localize/messages";
-import {EntryInfoType} from "../../../api/api_types";
+import {EntryInfoFormRequest, EntryInfoType} from "../../../api/api_types";
 import {computed} from "vue";
 import {useQuasar} from "quasar";
 
 const props = defineProps<{
-    modelValue: any,
+    modelValue: EntryInfoFormRequest,
     entryInfoType: EntryInfoType,
     isCreate: boolean,
     isShow: boolean,
@@ -51,13 +51,14 @@ const props = defineProps<{
     isLoading: boolean
 }>()
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: any): void
+    (e: 'update:modelValue', value: EntryInfoFormRequest): void
     (e: 'update:isShow', value: boolean): void
     (e: 'delete'): void
     (e: 'softDelete'): void
     (e: 'recover'): void
     (e: 'submit', value: any): void
 }>()
+
 const model = computed({
     get: () => props.modelValue,
     set: (val) => emit('update:modelValue', val)

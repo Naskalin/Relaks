@@ -12,36 +12,36 @@ public class RequestDetailsValidator : AbstractValidator<EntryInfoRequestDetails
         RuleFor(x => x.DeletedAt).NotEqual(default(DateTime));
         RuleFor(x => x.DeletedReason).NotNull().Length(0, 250);
 
-        When(x => x.Type == EntryInfoType.Email, () =>
+        When(x => InfoBaseType.Email.Equals(x.Type), () =>
         {
             RuleFor(x => x.Email()).NotEmpty();
             RuleFor(x => x.Email()!.Email).NotEmpty().EmailAddress();
         });
 
-        When(x => x.Type == EntryInfoType.Phone, () =>
+        When(x => InfoBaseType.Phone.Equals(x.Type), () =>
         {
             RuleFor(x => x.PhoneUnformatted()).NotEmpty();
             RuleFor(x => x.PhoneUnformatted()!.Number).NotEmpty();
             RuleFor(x => x.PhoneUnformatted()!.Region).NotEmpty().Length(2, 2);
             RuleFor(x => x.PhoneUnformatted()!)
-                .Must((x, phone) => IsPhoneValid(phone.Number, phone.Region))
+                .Must((_, phone) => IsPhoneValid(phone.Number, phone.Region))
                 .WithMessage("Данный номер телефона не может существовать для выбранного региона.")
                 ;
         });
         
-        When(x => x.Type == EntryInfoType.Note, () =>
+        When(x => InfoBaseType.Note.Equals(x.Type), () =>
         {
             RuleFor(x => x.Note()).NotEmpty();
             RuleFor(x => x.Note()!.Note).NotEmpty().MaximumLength(10000);
         });
         
-        When(x => x.Type == EntryInfoType.Date, () =>
+        When(x => InfoBaseType.Date.Equals(x.Type), () =>
         {
             RuleFor(x => x.Date()).NotEmpty();
             RuleFor(x => x.Date()!.Date).NotEmpty().NotEqual(default(DateTime));
         });
         
-        When(x => x.Type == EntryInfoType.Url, () =>
+        When(x => InfoBaseType.Url.Equals(x.Type), () =>
         {
             RuleFor(x => x.Url()).NotEmpty();
             RuleFor(x => x.Url()!.Url)

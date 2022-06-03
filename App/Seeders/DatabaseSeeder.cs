@@ -1,5 +1,4 @@
 ﻿using App.DbConfigurations;
-using App.Models;
 using Bogus;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,13 +18,11 @@ public class DatabaseSeeder
     public void SeedAll()
     {
         Db.Database.ExecuteSqlRaw("delete from EntryInfos;");
+        Db.Database.ExecuteSqlRaw("delete from FtsEntryInfos;");
         Db.Database.ExecuteSqlRaw("delete from Entries;");
+        Db.Database.ExecuteSqlRaw("delete from FtsEntries;");
 
         new EntrySeeder(Db).Seed();
-        // new EntryDateSeeder(Db).Seed();
-        // new EntryNoteSeeder(Db).Seed();
-        // new EntryPhoneSeeder(Db).Seed();
-        // new EntryUrlSeeder(Db).Seed();
-        // new EntryEmailSeeder(Db).Seed();
+        new EntryInfoSeeder(Db).Seed();
     }
 }

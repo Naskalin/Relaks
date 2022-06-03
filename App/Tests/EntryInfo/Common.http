@@ -11,7 +11,7 @@ Content-Type: application/json
   "title": "New title",
   "deletedReason": "",
   "type": "Email",
-  "data":  {
+  "info":  {
     "email": "bbbasd@mail.ru"
   }
 }
@@ -25,7 +25,7 @@ Content-Type: application/json
 
 ###
 // ALL
-GET http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/entry-infos?type=email
+GET http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/entry-infos
 Accept: application/json
 Content-Type: application/json
 
@@ -36,7 +36,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "data":  {
+  "info":  {
     "email": "1asd@mail.ru"
   },
   "type": "Email",

@@ -33,11 +33,12 @@
             <q-btn round @click="showCreateEntryInfoModal('Email')" v-tooltip="'Добавить e-mail'" color="primary" icon="las la-envelope"/>
             <q-btn round @click="showCreateEntryInfoModal('Url')" v-tooltip="'Добавить ссылку'" color="primary" icon="las la-link"/>
             <q-btn round @click="showCreateEntryInfoModal('Date')" v-tooltip="'Добавить дату'" color="primary" icon="las la-calendar"/>
+            <q-btn round @click="showCreateEntryInfoModal('Note')" v-tooltip="'Добавить заметку'" color="primary" icon="las la-file-alt"/>
         </q-card-section>
 
         <q-card-section class="text-center">
             <q-btn-toggle
-                v-model="contactsStore.isShowDeleted"
+                v-model="isShowDeleted"
                 toggle-color="secondary"
                 size="sm"
                 :options="[
@@ -48,7 +49,11 @@
             />
         </q-card-section>
 
-        <card-contacts :entry-id="entry.id" :with-edit="withEdit"></card-contacts>
+        <entry-card-infos 
+            :entry-id="entry.id"
+            :with-edit="withEdit"
+            :is-show-deleted="isShowDeleted"
+        />
 
         <template v-if="entry.startAt || entry.endAt">
             <q-card-section>
@@ -104,7 +109,7 @@
         :entry-info-type="entryInfoFormType"
         :is-loading="entryInfoCreateStore.isLoading"
         v-model:is-show="isShowCreateModal"
-        v-model="entryInfoCreateStore[entryInfoFormType]"
+        v-model="entryInfoCreateStore.request"
         btn-title="Добавить"
         @submit="createEntryInfo"
     />
@@ -119,8 +124,7 @@
 </template>
 
 <script setup lang="ts">
-import CardContacts from './Entry.Card.Contacts.vue';
-// import ArrowTooltip from '../../components/Arrow.Tooltip.vue';
+import EntryCardInfos from './Entry.Card.Infos.vue';
 import EntryFormModal from './Entry.Form.Modal.vue';
 import EntryInfoFormModal from '../entry_info/EntryInfo.Form.Modal.vue';
 import FileSelectModal from '../../fields/File.Select.Modal.vue';
@@ -135,11 +139,12 @@ import {dateHelper} from "../../../utils/date_helper";
 import {useEntryEditStore} from "../../../store/entry/entry.edit.store";
 import {apiMappers} from "../../../api/api_mappers";
 import {EntryInfoType} from "../../../api/api_types";
-import {useEntryCardContactsStore} from "../../../store/entry/entryCard.contacts.store";
+import {useEntryInfoListStore} from "../../../store/entry_info/entryInfo.list.store";
 
 const editStore = useEntryEditStore();
 const isShowEditModal = ref(false);
 const isShowAvatarSelect = ref(false);
+const isShowDeleted = ref<boolean | null>(false);
 
 const props = withDefaults(defineProps<{
     entry: Entry,
@@ -176,21 +181,24 @@ const updateEntry = async () => {
 const entryInfoCreateStore = useEntryInfoCreateStore();
 const isShowCreateModal = ref(false);
 const entryInfoFormType = ref<EntryInfoType>('Phone');
-const showCreateEntryInfoModal = (textType: EntryInfoType) => {
+const showCreateEntryInfoModal = (type: EntryInfoType) => {
     if (props.withEdit) {
-        entryInfoFormType.value = textType;
+        entryInfoFormType.value = type;
         isShowCreateModal.value = true
+        
+        entryInfoCreateStore.request.type = type;
+        entryInfoCreateStore.resetRequestInfo(type);
     }
 }
 
 // card contacts
-const contactsStore = useEntryCardContactsStore();
+const eInfoListStore = useEntryInfoListStore();
 const createEntryInfo = async () => {
     // Создаём entryInfo
-    await entryInfoCreateStore.create(props.entry.id, entryInfoFormType.value)
+    await entryInfoCreateStore.create(props.entry.id)
 
     // update card contacts list
-    await contactsStore.getAllContacts(props.entry.id);
+    await eInfoListStore.getAll(props.entry.id);
     isShowCreateModal.value = false;
     entryInfoCreateStore.$reset();
 }

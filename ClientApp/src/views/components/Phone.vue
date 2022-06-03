@@ -1,16 +1,15 @@
 ﻿<template>
     <div class="phone-show">
-        <span class="q-mr-sm fi" :class="'fi-' + phone.phoneRegion.toLowerCase()"></span>
-        <span>{{ phone.phoneNumber }}</span>
-        <slot></slot>
+        <span class="q-mr-sm fi" :class="'fi-' + phone.region.toLowerCase()"></span>
+        <span>{{ phone.number }}</span>
     </div>
 </template>
 
 <script setup lang="ts">
-import {PhoneType} from "../../api/api_types";
+import {InfoPhone} from "../../api/api_types";
 
 const props = defineProps<{
-    phone: PhoneType
+    phone: InfoPhone
 }>()
 </script>
 

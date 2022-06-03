@@ -20,7 +20,12 @@ public class EntryInfoRepository : BaseRepository<EntryInfo>
         var query = Entities.Where(x => x.EntryId == request.EntryId);
 
         if (request.Type != null)
-            query = query.Where(x => x.Type == request.Type);
+        {
+            if (request.Type is string reqType)
+                query = query.Where(x => x.Type == reqType);
+            else if (request.Type is string[] reqTypes)
+                query = query.Where(x => reqTypes.Contains(x.Type));
+        }
 
         if (request.IsDeleted != null)
             query = query.Where(x => request.IsDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);

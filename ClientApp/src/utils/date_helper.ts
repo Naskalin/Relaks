@@ -34,7 +34,8 @@ export const dateHelper = {
     utcFormat: (val: string | null, format: string = 'DD.MM.YYYY HH:mm'): string => {
         if (!val || val === '') return '';
         // Переводим дату в utc, если ещё не в utc
-        const d = dayjs(val).utc(!isISO(val));
-        return d.tz(appDefaults.timeZone).format(format);
+        // const d = dayjs(val).utc(!isISO(val));
+        // return d.tz(appDefaults.timeZone).format(format);
+        return dayjs(val).tz(appDefaults.timeZone).format(format);
     }
 }

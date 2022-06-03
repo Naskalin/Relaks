@@ -22,7 +22,7 @@ public class EntryInfoRequestDetails : IEntryInfoFormCommonRequest, IInfoData
     public string Title { get; set; } = null!;
     public DateTime? DeletedAt { get; set; }
     public string DeletedReason { get; set; } = null!;
-    
-    public EntryInfoType Type { get; set; }
-    public JsonObject Data { get; set; } = null!;
+
+    public string Type { get; set; } = null!;
+    public JsonObject Info { get; set; } = null!;
 }

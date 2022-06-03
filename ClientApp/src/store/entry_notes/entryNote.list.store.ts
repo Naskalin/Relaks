@@ -1,10 +1,10 @@
 ﻿import {defineStore} from 'pinia';
-import {EntryNote} from "../../api/api_types";
+import {InfoNote} from "../../api/api_types";
 import {apiEntryNote} from "../../api/rerources/api_entry_info";
 import {ApiListRequest} from "../../api";
 
 declare type EntryNoteListStoreState = {
-    notes: EntryNote[],
+    notes: InfoNote[],
     isLoading: boolean,
     listRequest: ApiListRequest
 }

@@ -9,10 +9,10 @@ namespace App.DbConfigurations;
 public sealed class AppDbContext : DbContext
 {
     public DbSet<Entry> Entries { get; set; } = null!;
-    public DbSet<FtsEntry> FtsEntries { get; set; } = null!;
+    // public DbSet<FtsEntry> FtsEntries { get; set; } = null!;
     
     public DbSet<EntryInfo> EntryInfos { get; set; } = null!;
-    public DbSet<FtsEntryInfo> FtsEntryInfos { get; set; } = null!;
+    // public DbSet<FtsEntryInfo> FtsEntryInfos { get; set; } = null!;
 
     public DbSet<FileModel> FileModels { get; set; } = null!;
     public DbSet<EntryFile> EntryFiles { get; set; } = null!;

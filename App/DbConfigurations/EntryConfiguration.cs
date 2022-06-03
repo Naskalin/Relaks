@@ -20,9 +20,11 @@ public class FtsEntryConfiguration : IEntityTypeConfiguration<FtsEntry>
     public void Configure(EntityTypeBuilder<FtsEntry> builder)
     {
         builder.HasKey(fts => fts.RowId);
+
+        builder.ToTable("FtsEntries");
         
         builder
             .Property(fts => fts.Match)
-            .HasColumnName(nameof(FtsEntry));
+            .HasColumnName("FtsEntries");
     }
 }

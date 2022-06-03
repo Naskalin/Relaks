@@ -1,83 +1,68 @@
 ﻿import {defineStore} from 'pinia';
-import {
-    EntryInfoType,
-    EntryDateFormRequest,
-    EntryEmailFormRequest,
-    EntryNoteFormRequest,
-    EntryPhoneFormRequest,
-    EntryUrlFormRequest, EntryEmail, EntryNote, EntryPhone, EntryDate, EntryUrl
-} from "../../api/api_types";
+import {EntryInfo, EntryInfoType, EntryInfoObjectType, EntryInfoFormRequest} from "../../api/api_types";
 import {apiEntryInfo} from "../../api/rerources/api_entry_info";
+import {types} from "sass";
 
 declare type EntryInfoCreateStoreState = {
-    Email: EntryEmailFormRequest,
-    Phone: EntryPhoneFormRequest,
-    Url: EntryUrlFormRequest,
-    Note: EntryNoteFormRequest,
-    Date: EntryDateFormRequest,
+    request: EntryInfoFormRequest,
     isLoading: boolean,
-}
-const commonFields = {
-    title: '',
-    deletedReason: '',
-    deletedAt: null,
 }
 
 export const useEntryInfoCreateStore = defineStore('EntryInfoCreateStore', {
     state: (): EntryInfoCreateStoreState => {
         return {
             isLoading: false,
-            Email: {
-                email: '',
-                ...commonFields,
-            },
-            Url: {
-                url: '',
-                ...commonFields,
-            },
-            Note: {
-                note: '',
-                ...commonFields,
-            },
-            Date: {
-                date: '',
-                ...commonFields,
-            },
-            Phone: {
-                phoneNumber: '',
-                phoneRegion: '',
-                ...commonFields,
-            },
+            request: {
+                title: '',
+                deletedReason: '',
+                deletedAt: null,
+                type: "Email",
+                info: {email: ''},
+            }
         }
     },
     actions: {
-        async create(entryId: string, eInfoType: EntryInfoType): Promise<any> {
+        resetRequestInfo(type: EntryInfoType)
+        {
+            switch (type)
+            {
+                case "Email":
+                    this.$state.request.info = {email: ''};
+                    break;
+                case "Phone":
+                    this.$state.request.info = {number: '', region: ''};
+                    break;
+                case "Date":
+                    this.$state.request.info = {date: ''};
+                    break;
+                case "Note":
+                    this.$state.request.info = {note: ''};
+                    break;
+                case "Url":
+                    this.$state.request.info = {url: ''};
+                    break;
+                // case "Passport":
+                //     break;
+                // case "CompanyDetails":
+                //     break;
+                // case "Custom":
+                //     break;
+                default:
+                    throw new Error(`Type ${type} is not supported. resetRequestInfo`);
+            }
+        },
+        async create(entryId: string): Promise<EntryInfo> {
             if (this.isLoading) {
                 return Promise.reject();
             }
             this.isLoading = true;
 
             try {
-                return await apiEntryInfo[eInfoType].create(entryId, this[eInfoType] as any) as any;
+                return await apiEntryInfo.create(entryId, this.request);
             } finally {
                 this.isLoading = false;
             }
         },
-        async createEmail(entryId: string): Promise<EntryEmail> {
-            return await this.create(entryId, 'Email');
-        },
-        async createNote(entryId: string): Promise<EntryNote> {
-            return await this.create(entryId, 'Note');
-        },
-        async createPhone(entryId: string): Promise<EntryPhone> {
-            return await this.create(entryId, 'Phone');
-        },
-        async createDate(entryId: string): Promise<EntryDate> {
-            return await this.create(entryId, 'Date');
-        },
-        async createUrl(entryId: string): Promise<EntryUrl> {
-            return await this.create(entryId, 'Url');
-        }
     }
 })
 

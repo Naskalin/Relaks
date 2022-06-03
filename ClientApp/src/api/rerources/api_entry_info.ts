@@ -1,10 +1,4 @@
-﻿import {
-    EntryDate, EntryDateFormRequest,
-    EntryEmail, EntryEmailFormRequest,
-    EntryNote, EntryNoteFormRequest,
-    EntryPhone, EntryPhoneFormRequest,
-    EntryUrl, EntryUrlFormRequest
-} from "../api_types";
+﻿import {EntryInfo, EntryInfoFormRequest, EntryInfoListRequest} from "../api_types";
 import {ApiListRequest, appApi} from "../index";
 
 class ApiEntryInfoGeneric<TModel, TCreateRequest, TUpdateRequest, TListRequest> {
@@ -22,21 +16,21 @@ class ApiEntryInfoGeneric<TModel, TCreateRequest, TUpdateRequest, TListRequest> 
         }, request);
         return resp.data
     }
-    update = async (entryId: string, entryTextId: string, request: TUpdateRequest): Promise<null> => {
+    update = async (entryId: string, entryInfoId: string, request: TUpdateRequest): Promise<null> => {
         const resp = await appApi.put({
             resource: 'entries',
             resourceId: entryId,
             subResource: this._subResource,
-            subResourceId: entryTextId
+            subResourceId: entryInfoId
         }, request);
         return resp.data;
     }
-    get = async (entryId: string, entryTextId: string): Promise<TModel> => {
+    get = async (entryId: string, entryInfoId: string): Promise<TModel> => {
         const resp = await appApi.get({
             resource: 'entries',
             resourceId: entryId,
             subResource: this._subResource,
-            subResourceId: entryTextId
+            subResourceId: entryInfoId
         });
         return resp.data;
     }
@@ -48,27 +42,29 @@ class ApiEntryInfoGeneric<TModel, TCreateRequest, TUpdateRequest, TListRequest> 
         }, request);
         return resp.data;
     }
-    delete = async (entryId: string, entryTextId: string): Promise<null> => {
+    delete = async (entryId: string, entryInfoId: string): Promise<null> => {
         const resp = await appApi.delete({
             resource: 'entries',
             resourceId: entryId,
             subResource: this._subResource,
-            subResourceId: entryTextId
+            subResourceId: entryInfoId
         });
         return resp.data;
     }
 }
 
-export const apiEntryPhone = new ApiEntryInfoGeneric<EntryPhone, EntryPhoneFormRequest, EntryPhoneFormRequest, ApiListRequest>('phones');
-export const apiEntryDate = new ApiEntryInfoGeneric<EntryDate, EntryDateFormRequest, EntryDateFormRequest, ApiListRequest>('dates');
-export const apiEntryNote = new ApiEntryInfoGeneric<EntryNote, EntryNoteFormRequest, EntryNoteFormRequest, ApiListRequest>('notes');
-export const apiEntryUrl = new ApiEntryInfoGeneric<EntryUrl, EntryUrlFormRequest, EntryUrlFormRequest, ApiListRequest>('urls');
-export const apiEntryEmail = new ApiEntryInfoGeneric<EntryEmail, EntryEmailFormRequest, EntryEmailFormRequest, ApiListRequest>('emails');
+// export const apiEntryPhone = new ApiEntryInfoGeneric<InfoPhone, EntryPhoneFormRequest, EntryPhoneFormRequest, ApiListRequest>('phones');
+// export const apiEntryDate = new ApiEntryInfoGeneric<InfoDate, EntryDateFormRequest, EntryDateFormRequest, ApiListRequest>('dates');
+// export const apiEntryNote = new ApiEntryInfoGeneric<InfoNote, EntryNoteFormRequest, EntryNoteFormRequest, ApiListRequest>('notes');
+// export const apiEntryUrl = new ApiEntryInfoGeneric<InfoUrl, EntryUrlFormRequest, EntryUrlFormRequest, ApiListRequest>('urls');
+// export const apiEntryEmail = new ApiEntryInfoGeneric<InfoEmail, EntryEmailFormRequest, EntryEmailFormRequest, ApiListRequest>('emails');
 
-export const apiEntryInfo = {
-    Phone: apiEntryPhone,
-    Date: apiEntryDate,
-    Note: apiEntryNote,
-    Url: apiEntryUrl,
-    Email: apiEntryEmail,
-}
+// export const apiEntryInfo = {
+//     Phone: apiEntryPhone,
+//     Date: apiEntryDate,
+//     Note: apiEntryNote,
+//     Url: apiEntryUrl,
+//     Email: apiEntryEmail,
+// }
+
+export const apiEntryInfo = new ApiEntryInfoGeneric<EntryInfo, EntryInfoFormRequest, EntryInfoFormRequest, EntryInfoListRequest>('entry-infos');

@@ -9,5 +9,5 @@ public class EntryInfoListRequest : BaseListRequest
     public Guid EntryId { get; set; }
     
     [FromQuery]
-    public EntryInfoType? Type { get; set; }
+    public object? Type { get; set; }
 }

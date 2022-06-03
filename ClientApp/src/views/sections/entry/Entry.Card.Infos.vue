@@ -1,75 +1,89 @@
 ﻿<template>
-    <template v-if="contactsStore.phones.length">
-        <q-card-section class="q-gutter-y-sm">
+    <template v-if="eInfoListStore.notes(isShowDeleted).length">
+        <q-card-section class="q-py-none">
             <q-list separator>
                 <entry-info-item
                     @showEditForm="showEditForm(eInfo)"
                     :with-edit="withEdit"
-                    v-for="eInfo in contactsStore.phones"
+                    v-for="eInfo in eInfoListStore.notes(isShowDeleted)"
                     :e-info="eInfo"
                     :key="eInfo.id"/>
             </q-list>
         </q-card-section>
         <q-separator></q-separator>
     </template>
-    <template v-if="contactsStore.emails.length">
-        <q-card-section class="q-gutter-y-sm">
+    <template v-if="eInfoListStore.phones(isShowDeleted).length">
+        <q-card-section class="q-py-none">
             <q-list separator>
                 <entry-info-item
                     @showEditForm="showEditForm(eInfo)"
                     :with-edit="withEdit"
-                    v-for="eInfo in contactsStore.emails"
+                    v-for="eInfo in eInfoListStore.phones(isShowDeleted)"
                     :e-info="eInfo"
                     :key="eInfo.id"/>
             </q-list>
         </q-card-section>
         <q-separator></q-separator>
     </template>
-    <template v-if="contactsStore.urls.length">
-        <q-card-section class="q-gutter-y-sm">
+    <template v-if="eInfoListStore.emails(isShowDeleted).length">
+        <q-card-section class="q-py-none">
             <q-list separator>
                 <entry-info-item
                     @showEditForm="showEditForm(eInfo)"
                     :with-edit="withEdit"
-                    v-for="eInfo in contactsStore.urls"
+                    v-for="eInfo in eInfoListStore.emails(isShowDeleted)"
                     :e-info="eInfo"
                     :key="eInfo.id"/>
             </q-list>
         </q-card-section>
         <q-separator></q-separator>
     </template>
-    <template v-if="contactsStore.dates.length">
-        <q-card-section class="q-gutter-y-sm">
+    <template v-if="eInfoListStore.urls(isShowDeleted).length">
+        <q-card-section class="q-py-none">
             <q-list separator>
                 <entry-info-item
                     @showEditForm="showEditForm(eInfo)"
                     :with-edit="withEdit"
-                    v-for="eInfo in contactsStore.dates"
+                    v-for="eInfo in eInfoListStore.urls(isShowDeleted)"
                     :e-info="eInfo"
                     :key="eInfo.id"/>
             </q-list>
         </q-card-section>
         <q-separator></q-separator>
     </template>
-    <entry-info-form-modal v-if="withEdit && editStore[entryInfoType].model !== null"
-                           v-model="editStore[entryInfoType].model"
-                           v-model:is-show="isShowEditModal"
-                           :entry-info-type="entryInfoType"
-                           :is-loading="editStore.isLoading"
-                           :is-create="false"
-                           :title="'Изменение: ' + entryInfoMessages.val.names[entryInfoType]"
-                           btn-title="Сохранить"
-                           btn-icon="las la-save"
-                           @submit="saveEditForm"
-                           @delete="onDelete"
-                           @softDelete="onSoftDelete"
-                           @recover="onRecover"
+    <template v-if="eInfoListStore.dates(isShowDeleted).length">
+        <q-card-section class="q-py-none">
+            <q-list separator>
+                <entry-info-item
+                    @showEditForm="showEditForm(eInfo)"
+                    :with-edit="withEdit"
+                    v-for="eInfo in eInfoListStore.dates(isShowDeleted)"
+                    :e-info="eInfo"
+                    :key="eInfo.id"/>
+            </q-list>
+        </q-card-section>
+        <q-separator></q-separator>
+    </template>
+    <entry-info-form-modal
+        v-if="withEdit && editStore.model !== null"
+        v-model="editStore.model"
+        v-model:is-show="isShowEditModal"
+        :entry-info-type="entryInfoType"
+        :is-loading="editStore.isLoading"
+        :is-create="false"
+        :title="'Изменение: ' + entryInfoMessages.val.names[entryInfoType]"
+        btn-title="Сохранить"
+        btn-icon="las la-save"
+        @submit="saveEditForm"
+        @delete="onDelete"
+        @softDelete="onSoftDelete"
+        @recover="onRecover"
     />
 </template>
 
 <script setup lang="ts">
 import {watch, ref, withDefaults} from "vue";
-import {useEntryCardContactsStore} from "../../../store/entry/entryCard.contacts.store";
+import {useEntryInfoListStore} from "../../../store/entry_info/entryInfo.list.store";
 import EntryInfoFormModal from '../entry_info/EntryInfo.Form.Modal.vue';
 import EntryInfoItem from '../entry_info/EntryInfo.Item.vue';
 import {apiEntryInfo} from "../../../api/rerources/api_entry_info";
@@ -80,15 +94,17 @@ import {EntryInfoType} from "../../../api/api_types";
 const props = withDefaults(defineProps<{
     entryId: string,
     withEdit?: boolean,
-    withDeleted?: boolean
+    withDeleted?: boolean,
+    isShowDeleted: boolean | null
 }>(), {
     withDeleted: false,
+    isShowDeleted: false,
 });
 
 // show
-const contactsStore = useEntryCardContactsStore();
+const eInfoListStore = useEntryInfoListStore();
 watch(() => props.entryId, async () => {
-    await contactsStore.getAllContacts(props.entryId);
+    await eInfoListStore.getAll(props.entryId);
 }, {immediate: true})
 
 // show edit form
@@ -101,24 +117,24 @@ const showEditForm = (eInfo: any) => {
         return;
     }
 
-    entryInfoType.value = eInfo.discriminator;
-    editStore.setModel(eInfo, eInfo.discriminator);
+    entryInfoType.value = eInfo.type;
+    editStore.setModel(eInfo);
     isShowEditModal.value = true;
     currentEditId.value = eInfo.id;
 }
 
 // save edit
 const saveEditForm = async () => {
-    await editStore.update(props.entryId, currentEditId.value, entryInfoType.value);
-    await contactsStore.getAllContacts(props.entryId);
+    await editStore.update(props.entryId, currentEditId.value);
+    await eInfoListStore.getAll(props.entryId);
     isShowEditModal.value = false;
     editStore.$reset();
 }
 
 // delete
 const onDelete = async () => {
-    await apiEntryInfo[entryInfoType.value].delete(props.entryId, currentEditId.value);
-    await contactsStore.getAllContacts(props.entryId);
+    await apiEntryInfo.delete(props.entryId, currentEditId.value);
+    await eInfoListStore.getAll(props.entryId);
     isShowEditModal.value = false;
     editStore.$reset();
 }

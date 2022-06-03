@@ -62,7 +62,7 @@ namespace App.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Entries", (string)null);
+                    b.ToTable("Entries");
                 });
 
             modelBuilder.Entity("App.Models.EntryInfo", b =>
@@ -171,7 +171,7 @@ namespace App.Migrations
 
                     b.HasKey("RowId");
 
-                    b.ToTable("FtsEntries", (string)null);
+                    b.ToTable("FtsEntry");
                 });
 
             modelBuilder.Entity("App.Models.FtsEntryInfo", b =>
@@ -200,7 +200,7 @@ namespace App.Migrations
 
                     b.HasKey("RowId");
 
-                    b.ToTable("FtsEntryInfos", (string)null);
+                    b.ToTable("FtsEntryInfo");
                 });
 
             modelBuilder.Entity("App.Models.EntryFile", b =>

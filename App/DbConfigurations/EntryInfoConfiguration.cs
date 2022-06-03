@@ -1,7 +1,6 @@
 ﻿using App.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace App.DbConfigurations;
 
@@ -11,9 +10,9 @@ public class EntryInfoConfiguration : IEntityTypeConfiguration<EntryInfo>
     {
         builder.ToTable("EntryInfos");
 
-        builder
-            .Property(x => x.Type)
-            .HasConversion(new EnumToStringConverter<EntryInfoType>());
+        // builder
+            // .Property(x => x.Type)
+            // .HasConversion(new EnumToStringConverter<EntryInfoType>());
 
         // builder.Property(x => x.Discriminator)
         // .HasConversion<EnumToStringConverter<EntryInfoType>>();
@@ -32,9 +31,11 @@ public class FtsEntryInfoConfiguration : IEntityTypeConfiguration<FtsEntryInfo>
     public void Configure(EntityTypeBuilder<FtsEntryInfo> builder)
     {
         builder.HasKey(fts => fts.RowId);
+        
+        builder.ToTable("FtsEntryInfos");
 
         builder
             .Property(fts => fts.Match)
-            .HasColumnName(nameof(FtsEntryInfo));
+            .HasColumnName("FtsEntryInfos");
     }
 }

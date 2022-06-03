@@ -7,8 +7,8 @@ namespace App.Utils;
 
 public interface IInfoData
 {
-    public EntryInfoType Type { get; }
-    public JsonObject Data { get; }
+    public string Type { get; }
+    public JsonObject Info { get; }
 }
 
 public static class InfoValue
@@ -19,40 +19,42 @@ public static class InfoValue
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
 
+    // public static EntryInfoType EntryInfoType(this IInfoData eInfoData) => new(eInfoData.Type);
+        
     public static EmailInfo? Email(this IInfoData eInfo)
     {
-        if (eInfo.Type != EntryInfoType.Email) return null;
-        return eInfo.Data.Deserialize<EmailInfo>(WriteOptions);
+        if (!InfoBaseType.Email.Equals(eInfo.Type)) return null;
+        return eInfo.Info.Deserialize<EmailInfo>(WriteOptions);
     }
     
     public static PhoneInfo? PhoneUnformatted(this IInfoData eInfo)
     {
-        if (eInfo.Type != EntryInfoType.Phone) return null;
-        return eInfo.Data.Deserialize<PhoneInfo>(WriteOptions);
+        if (!InfoBaseType.Phone.Equals(eInfo.Type)) return null;
+        return eInfo.Info.Deserialize<PhoneInfo>(WriteOptions);
     }
     
     public static PhoneInfo? Phone(this IInfoData eInfo)
     {
-        if (eInfo.Type != EntryInfoType.Phone) return null;
-        var phone = eInfo.Data.Deserialize<PhoneInfo>(WriteOptions);
+        if (!InfoBaseType.Phone.Equals(eInfo.Type)) return null;
+        var phone = eInfo.Info.Deserialize<PhoneInfo>(WriteOptions)!;
         return PhoneHelper.ToPhone(phone.Number, phone.Region);
     }
     
     public static NoteInfo? Note(this IInfoData eInfo)
     {
-        if (eInfo.Type != EntryInfoType.Note) return null;
-        return eInfo.Data.Deserialize<NoteInfo>(WriteOptions);
+        if (!InfoBaseType.Note.Equals(eInfo.Type)) return null;
+        return eInfo.Info.Deserialize<NoteInfo>(WriteOptions);
     }
     
     public static DateInfo? Date(this IInfoData eInfo)
     {
-        if (eInfo.Type != EntryInfoType.Date) return null;
-        return eInfo.Data.Deserialize<DateInfo>(WriteOptions);
+        if (!InfoBaseType.Date.Equals(eInfo.Type)) return null;
+        return eInfo.Info.Deserialize<DateInfo>(WriteOptions);
     }
     
     public static UrlInfo? Url(this IInfoData eInfo)
     {
-        if (eInfo.Type != EntryInfoType.Url) return null;
-        return eInfo.Data.Deserialize<UrlInfo>(WriteOptions);
+        if (!InfoBaseType.Url.Equals(eInfo.Type)) return null;
+        return eInfo.Info.Deserialize<UrlInfo>(WriteOptions);
     }
 }

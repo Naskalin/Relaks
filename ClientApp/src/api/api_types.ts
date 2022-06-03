@@ -1,7 +1,8 @@
 ﻿import {ApiListRequest} from "./index";
 
 export declare type EntryType = 'Person' | 'Company' | 'Meet';
-export declare type EntryInfoType = 'Note' | 'Phone' | 'Email' | 'Url' | 'Date';
+export declare type EntryInfoType = 'Note' | 'Phone' | 'Email' | 'Url' | 'Date' | 'Passport' | 'CompanyDetails' | 'Custom';
+export declare type EntryInfoObjectType = InfoDate | InfoEmail | InfoNote | InfoUrl | InfoPhone;
 
 // export declare type ActualTypes = {
 //     actualStartAt: string
@@ -19,10 +20,10 @@ export declare type TimestampTypes = {
     updatedAt: string
 }
 
-export declare type PhoneType = {
-    phoneNumber: string
-    phoneRegion: string
-}
+// export declare type PhoneType = {
+//     phoneNumber: string
+//     phoneRegion: string
+// }
 
 export declare type FtsResultType = {
     snippet?: string
@@ -51,35 +52,42 @@ export declare type EntryListRequest = {
 export declare type Entry = { id: string } & EntryCreateRequest & TimestampTypes & FtsResultType;
 
 // EntryInfo
-export declare type EntryInfoCommonFormRequest = {
+export declare type EntryInfoFormRequest = {
     title: string
+    type: EntryInfoType
+    info: EntryInfoObjectType
 } & SoftDeletableType
+export declare type EntryInfoListRequest = {
+    type?: EntryInfoType | EntryInfoType[] | null
+} & ApiListRequest
+
 export declare type EntryInfo = {
     id: string,
     entryId: string,
-    title: string,
-    discriminator: EntryInfoType
-} & SoftDeletableType & TimestampTypes
+} & SoftDeletableType & TimestampTypes & EntryInfoFormRequest
 
 // EntryDate
-export declare type EntryDateFormRequest = { date: string } & EntryInfoCommonFormRequest
-export declare type EntryDate = { date: string } & EntryInfo
+// export declare type EntryDateFormRequest = { date: string } & EntryInfoCommonFormRequest
+export declare type InfoDate = { date: string }
 
 // EntryNote
-export declare type EntryNoteFormRequest = { note: string } & EntryInfoCommonFormRequest
-export declare type EntryNote = { note: string } & EntryInfo
+// export declare type EntryNoteFormRequest = { note: string } & EntryInfoCommonFormRequest
+export declare type InfoNote = { note: string }
 
 // EntryPhone
-export declare type EntryPhoneFormRequest = { phoneNumber: string, phoneRegion: string } & EntryInfoCommonFormRequest
-export declare type EntryPhone = {} & PhoneType & EntryInfo
+// export declare type EntryPhoneFormRequest = { phoneNumber: string, phoneRegion: string } & EntryInfoCommonFormRequest
+export declare type InfoPhone = {
+    number: string
+    region: string
+}
 
 // EntryEmail
-export declare type EntryEmailFormRequest = { email: string } & EntryInfoCommonFormRequest
-export declare type EntryEmail = { email: string } & EntryInfo
+// export declare type EntryEmailFormRequest = { email: string } & EntryInfoCommonFormRequest
+export declare type InfoEmail = { email: string }
 
 // EntryUrl
-export declare type EntryUrlFormRequest = { url: string } & EntryInfoCommonFormRequest
-export declare type EntryUrl = { url: string } & EntryInfo
+// export declare type EntryUrlFormRequest = { url: string } & EntryInfoCommonFormRequest
+export declare type InfoUrl = { url: string }
 
 export declare type FileModel = {
     id: string

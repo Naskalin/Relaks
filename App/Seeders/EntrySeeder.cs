@@ -73,7 +73,7 @@ public class EntrySeeder : DatabaseSeeder
         {
             Id = Guid.Parse("01FBDDDD-1D69-4757-A8D2-5050A1AED4D4"),
             Name = "Вася Пупкин",
-            Description = Faker.Lorem.Paragraph(2),
+            Description = "Книги, Дом & Электроника Boston's most advanced compression wear technology increases muscle oxygenation, stabilizes active muscles",
             EntryType = EntryTypeEnum.Person,
             CreatedAt = Faker.Date.Past(),
             UpdatedAt = Faker.Date.Past(),

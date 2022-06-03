@@ -7,8 +7,8 @@
             <template v-if="meta.deletedAt">
                 <div class="q-pa-sm text-pink-4">
                     <small class="q-mr-sm">{{ deletedMessages.deletedAt }}</small>
-                    <date :date="meta.deletedAt"></date>
-                    <div v-if="meta.deletedReason">
+                    <date v-if="meta.deletedAt" :date="meta.deletedAt"></date>
+                    <div v-if="meta.deletedReason !== ''">
                         <small class="q-mr-sm">{{ deletedMessages.deletedReason }}</small>
                         {{ meta.deletedReason }}
                     </div>

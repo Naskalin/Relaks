@@ -1,7 +1,7 @@
 ﻿<template>
     <div class="flex q-gutter-x-md">
         <q-select
-            :model-value="model.phoneRegion"
+            :model-value="model.region"
             @update:model-value="onSelectCountry"
             use-input
             input-debounce="0"
@@ -19,15 +19,15 @@
                 </q-item>
             </template>
             <template v-slot:selected>
-                <div v-if="model.phoneRegion">
-                    <span class="q-mr-sm fi" :class="'fi-' + model.phoneRegion.toLowerCase()"></span>
-                    <span class="text-grey-8">{{model.phoneRegion}}</span>
+                <div v-if="model.region">
+                    <span class="q-mr-sm fi" :class="'fi-' + model.region.toLowerCase()"></span>
+                    <span class="text-grey-8">{{model.region}}</span>
                 </div>
                 <q-badge v-else>*none*</q-badge>
             </template>
         </q-select>
 
-        <q-input style="width: 200px" v-model="model.phoneNumber" label="Номер телефона"/>
+        <q-input style="width: 200px" v-model="model.number" label="Номер телефона"/>
     </div>
 </template>
 
@@ -35,17 +35,17 @@
 import {countries} from "countries-list";
 import {ref, computed, onMounted} from "vue";
 import {appDefaults} from "../../app_defaults";
-import {PhoneType} from "../../api/api_types";
+import {InfoPhone} from "../../api/api_types";
 
 type SelectItem = {
     value: string,
     label: string
 }
 const props = defineProps<{
-    modelValue: PhoneType
+    modelValue: InfoPhone
 }>()
 const emit = defineEmits<{
-    (e: 'update:modelValue', val: PhoneType): void
+    (e: 'update:modelValue', val: InfoPhone): void
 }>()
 
 const model = computed({
@@ -53,11 +53,11 @@ const model = computed({
     set: (val) => emit('update:modelValue', val)
 })
 onMounted(() => {
-    if (model.value.phoneRegion === '') model.value.phoneRegion = appDefaults.phoneRegion;
+    if (model.value.region === '') model.value.region = appDefaults.phoneRegion;
 })
 
 const onSelectCountry = (val: SelectItem) => {
-    model.value.phoneRegion = val.value;
+    model.value.region = val.value;
 }
 
 const allCountries: SelectItem[] = [];

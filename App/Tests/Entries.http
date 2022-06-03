@@ -3,7 +3,7 @@ Accept: application/json
 Content-Type: application/json
 ###
 
-PUT http://localhost:5125/api/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4
+PUT http://localhost:5125/api/entries/b37a48b4-7fbe-4cfd-b70e-588c606236ff
 Accept: application/json
 Content-Type: application/json
 #"description": "asd"
@@ -11,7 +11,7 @@ Content-Type: application/json
 
 {
   "name": "Test",
-  "description": "",
+  "description": "asd",
   "deletedReason": "",
   "entryType": "Company"
 }
