@@ -32,7 +32,7 @@ public class RequestDetailsValidator : AbstractValidator<EntryInfoRequestDetails
         When(x => InfoBaseType.Note.Equals(x.Type), () =>
         {
             RuleFor(x => x.Note()).NotEmpty();
-            RuleFor(x => x.Note()!.Note).NotEmpty().MaximumLength(10000);
+            RuleFor(x => x.Note()!.Note).NotEmpty().MaximumLength(300);
         });
         
         When(x => InfoBaseType.Date.Equals(x.Type), () =>

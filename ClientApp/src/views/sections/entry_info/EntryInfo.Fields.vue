@@ -19,7 +19,10 @@
     <phone-field v-else-if="entryInfoType === 'Phone'" v-model="model.info"/>
     <date-field v-else-if="entryInfoType === 'Date'" v-model="model.info.date"/>
     <q-input v-else-if="entryInfoType === 'Note'" 
-             v-model="model.info.note" :label="entryInfoMessages.val.names.Note"
+             v-model="model.info.note"
+             :label="entryInfoMessages.val.names.Note"
+             counter
+             maxlength="300"
              type="text"
     />
 <!--    <q-editor v-else-if="entryInfoType === 'Note'"-->

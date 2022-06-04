@@ -42,9 +42,9 @@
                 toggle-color="secondary"
                 size="sm"
                 :options="[
-          {label: 'Все контакты', value: null},
-          {label: 'Актуальные', value: false},
-          {label: 'Архив', value: true}
+          {label: 'Вся информация', value: null},
+          {label: 'Актуальная', value: false},
+          {label: 'Архивная', value: true}
         ]"
             />
         </q-card-section>
