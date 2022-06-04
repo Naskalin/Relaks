@@ -76,7 +76,7 @@ public class EntryRepository : BaseRepository<Entry>
                 {
                     EntryId = x.Id,
                     Rank = entryFtsPriority * (double) x.Rank!,
-                    Snippet = Db.Snippet(x.Match, "-1", "<b>", "</b>", "...", 10)
+                    Snippet = Db.Snippet(x.Match, "-1", "<b>", "</b>", "...", 5)
                 })
             ;
         
@@ -86,7 +86,7 @@ public class EntryRepository : BaseRepository<Entry>
                 {
                     EntryId = x.EntryId,
                     Rank = (double) x.Rank!,
-                    Snippet = Db.Snippet(x.Match, "-1", "<b>", "</b>", "...", 10)
+                    Snippet = Db.Snippet(x.Match, "-1", "<b>", "</b>", "...", 5)
                 })
             ;
 
