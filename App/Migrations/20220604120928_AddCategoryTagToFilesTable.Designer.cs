@@ -3,6 +3,7 @@ using System;
 using App.DbConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220604120928_AddCategoryTagToFilesTable")]
+    partial class AddCategoryTagToFilesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
@@ -177,7 +179,7 @@ namespace App.Migrations
 
                     b.HasKey("RowId");
 
-                    b.ToTable("FtsEntries", null, t => t.ExcludeFromMigrations());
+                    b.ToTable("FtsEntries", (string)null);
                 });
 
             modelBuilder.Entity("App.Models.FtsEntryInfo", b =>
@@ -206,7 +208,7 @@ namespace App.Migrations
 
                     b.HasKey("RowId");
 
-                    b.ToTable("FtsEntryInfos", null, t => t.ExcludeFromMigrations());
+                    b.ToTable("FtsEntryInfos", (string)null);
                 });
 
             modelBuilder.Entity("App.Models.EntryFile", b =>

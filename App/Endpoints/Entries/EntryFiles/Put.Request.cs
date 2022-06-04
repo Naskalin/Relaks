@@ -18,6 +18,8 @@ public class PutRequest
 public class EntryFilePutDetails : ISoftDelete
 {
     public string Name { get; set; } = null!;
+    public string? Category { get; set; }
+    public List<string>? Tags { get; set; }
     public DateTime? DeletedAt { get; set; }
     public string DeletedReason { get; set; } = null!;
 }

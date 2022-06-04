@@ -32,7 +32,7 @@ public class FtsEntryInfoConfiguration : IEntityTypeConfiguration<FtsEntryInfo>
     {
         builder.HasKey(fts => fts.RowId);
         
-        builder.ToTable("FtsEntryInfos");
+        builder.ToTable("FtsEntryInfos", x => x.ExcludeFromMigrations());
 
         builder
             .Property(fts => fts.Match)

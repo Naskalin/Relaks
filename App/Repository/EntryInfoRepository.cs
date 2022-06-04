@@ -19,12 +19,14 @@ public class EntryInfoRepository : BaseRepository<EntryInfo>
     {
         var query = Entities.Where(x => x.EntryId == request.EntryId);
 
-        if (request.Type != null)
+        if (request.Type != null && request.Type.Any())
         {
-            if (request.Type is string reqType)
-                query = query.Where(x => x.Type == reqType);
-            else if (request.Type is string[] reqTypes)
-                query = query.Where(x => reqTypes.Contains(x.Type));
+            var types = request.Type.Select(x => x.ToUpper()).ToList();
+            query = query.Where(x => types.Contains(x.Type));
+            // if (request.Type is string reqType)
+            //     query = query.Where(x => x.Type == reqType);
+            // else if (request.Type is string[] reqTypes)
+            //     query = query.Where(x => reqTypes.Contains(x.Type));
         }
 
         if (request.IsDeleted != null)

@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import parsePhoneNumber, {PhoneNumber} from 'libphonenumber-js';
+import parsePhoneNumber from 'libphonenumber-js';
 import {InfoPhone} from "../../api/api_types";
 import {computed} from 'vue';
 
@@ -20,7 +20,7 @@ const numberFormat = computed(() => {
         return phoneNumber.formatNational();
     }
     
-    return '';
+    return props.phone.number;
 });
 </script>
 

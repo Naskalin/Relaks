@@ -7,7 +7,7 @@ public class EntryInfoListRequest : BaseListRequest
 {
     [FromRoute]
     public Guid EntryId { get; set; }
-    
+
     [FromQuery]
-    public object? Type { get; set; }
+    public List<string>? Type { get; set; }
 }

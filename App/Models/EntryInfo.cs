@@ -65,10 +65,10 @@ public class InfoBaseType
     public static readonly InfoBaseType Date = new("Date");
     public string Value { get; protected set; }
 
-    public override string ToString() => Value;
-
-    public bool Equals(string s) => s == Value;
-    public bool Equals(InfoBaseType other) => Value == other.Value;
+    public override string ToString() => Value.ToUpper();
+    
+    public bool Equals(string s) => s.ToUpper() == Value.ToUpper();
+    public bool Equals(InfoBaseType other) => Value.ToUpper() == other.Value.ToUpper();
 
     public InfoBaseType(string value)
     {

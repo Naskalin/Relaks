@@ -21,7 +21,7 @@ public class FtsEntryConfiguration : IEntityTypeConfiguration<FtsEntry>
     {
         builder.HasKey(fts => fts.RowId);
 
-        builder.ToTable("FtsEntries");
+        builder.ToTable("FtsEntries", x => x.ExcludeFromMigrations());
         
         builder
             .Property(fts => fts.Match)

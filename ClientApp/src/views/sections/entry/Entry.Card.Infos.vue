@@ -1,17 +1,4 @@
 ﻿<template>
-    <template v-if="eInfoListStore.notes(isShowDeleted).length">
-        <q-card-section class="q-py-none">
-            <q-list separator>
-                <entry-info-item
-                    @showEditForm="showEditForm(eInfo)"
-                    :with-edit="withEdit"
-                    v-for="eInfo in eInfoListStore.notes(isShowDeleted)"
-                    :e-info="eInfo"
-                    :key="eInfo.id"/>
-            </q-list>
-        </q-card-section>
-        <q-separator></q-separator>
-    </template>
     <template v-if="eInfoListStore.phones(isShowDeleted).length">
         <q-card-section class="q-py-none">
             <q-list separator>
@@ -58,6 +45,19 @@
                     @showEditForm="showEditForm(eInfo)"
                     :with-edit="withEdit"
                     v-for="eInfo in eInfoListStore.dates(isShowDeleted)"
+                    :e-info="eInfo"
+                    :key="eInfo.id"/>
+            </q-list>
+        </q-card-section>
+        <q-separator></q-separator>
+    </template>
+    <template v-if="eInfoListStore.notes(isShowDeleted).length">
+        <q-card-section class="q-py-none">
+            <q-list separator>
+                <entry-info-item
+                    @showEditForm="showEditForm(eInfo)"
+                    :with-edit="withEdit"
+                    v-for="eInfo in eInfoListStore.notes(isShowDeleted)"
                     :e-info="eInfo"
                     :key="eInfo.id"/>
             </q-list>

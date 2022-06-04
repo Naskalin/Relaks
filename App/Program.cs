@@ -55,7 +55,7 @@ using (var scope = app.Services.CreateScope())
 
     if (app.Environment.IsDevelopment())
     {
-        new DatabaseSeeder(db).SeedAll();
+        // new DatabaseSeeder(db).SeedAll();
     //     var columns = new[]
     //     {
     //         nameof(EntryFts.Id),
