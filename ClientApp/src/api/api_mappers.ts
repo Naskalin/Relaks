@@ -22,6 +22,8 @@ export const apiMappers = {
             name: model.name,
             deletedAt: model.deletedAt,
             deletedReason: model.deletedReason,
+            category: model.category,
+            tags: model.tags
         }  
     },
     toEntryUpdateRequest: (entry: Entry): EntryUpdateRequest => {

@@ -13,13 +13,15 @@ namespace App.Migrations
                 name: "Category",
                 table: "Files",
                 type: "TEXT",
-                nullable: true);
+                nullable: false,
+                defaultValue: "");
 
             migrationBuilder.AddColumn<string>(
                 name: "Tags",
                 table: "Files",
                 type: "TEXT",
-                nullable: true);
+                nullable: false,
+                defaultValue: "[]");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

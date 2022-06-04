@@ -22,6 +22,8 @@ public static class EntryFileMapper
     {
         model.Name = req.Name.Trim();
         model.UpdatedAt = DateTime.UtcNow;
+        model.Category = req.Category.Trim();
+        model.Tags = req.Tags;
         req.SoftDeleteMapTo(model);
     }
 }

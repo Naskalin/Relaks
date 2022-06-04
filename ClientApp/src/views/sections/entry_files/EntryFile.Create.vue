@@ -1,4 +1,7 @@
 ﻿<template>
+<!--    <q-select v-model="store.category"-->
+<!--              :options="options"-->
+<!--    />-->
     <q-file
         v-model="store.files"
         @update:model-value="onSelectFiles"

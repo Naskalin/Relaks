@@ -13,25 +13,28 @@
         @virtual-scroll="getFiles"
     >
         <template v-slot:top>
-<!--        <p>store.isDeleted false {{store.isDeleted === false}}</p>-->
-            <q-btn-toggle
-                class="bg-grey-2"
-                v-model="store.listRequest.isDeleted"
-                toggle-color="secondary"
-                :options="[
+            <div>
+                <div>
+                    <q-btn-toggle
+                        class="bg-grey-2"
+                        v-model="store.listRequest.isDeleted"
+                        toggle-color="secondary"
+                        :options="[
                 {label: 'Все', value: null},
                 {label: 'Актуальные', value: false},
                 {label: 'Архивные', value: true},
             ]"
-            />
-            <!--            <q-btn color="primary" :disable="loading" label="Add row" @click="addRow" />-->
-            <!--            <q-btn class="q-ml-sm" color="primary" :disable="loading" label="Remove row" @click="removeRow" />-->
-            <!--            <q-space />-->
-            <!--            <q-input borderless dense debounce="300" color="primary" v-model="filter">-->
-            <!--                <template v-slot:append>-->
-            <!--                    <q-icon name="search" />-->
-            <!--                </template>-->
-            <!--            </q-input>-->
+                    />
+                </div>
+                <div>
+                    <q-select
+                        filled
+                        :options="categoryOptions"
+                        label="Single"
+                        style="width: 250px"
+                    />
+                </div>
+            </div>
         </template>
 
         <template v-slot:header="p">
@@ -81,18 +84,22 @@
 import FileInTableCell from '../../components/FileInTableCell.vue';
 import {fileFieldNames as trans} from "../../../localize/messages";
 import {dateHelper} from "../../../utils/date_helper";
-import {FileModel} from "../../../api/api_types";
+import {EntryFileMeta, FileModel} from "../../../api/api_types";
 import {computed, watch} from 'vue';
 import {getFileExtension} from "../../../utils/file_helper";
 import {FileListTableStoreState} from "../../../store/entryFile/entryFile.list.table.store";
 import {apiFiles} from "../../../api/rerources/api_files";
+import {selectHelper} from "../../../utils/select_helper";
 
 const props = defineProps<{
     modelValue: FileListTableStoreState
+    filesMeta: EntryFileMeta,
     withEdit?: boolean
     withDownload?: boolean
     withExplorer?: boolean
 }>()
+
+const categoryOptions = computed(() => selectHelper.arrayToSelectOptions(props.filesMeta.categories));
 
 const emit = defineEmits<{
     (e: 'getFiles'): void,
@@ -109,6 +116,11 @@ let columns = [
         field: 'name',
         label: trans.name,
         format: (val: string, row: FileModel) => val + '.' + getFileExtension(row.path)
+    },
+    {
+        name: 'category',  
+        field: 'category',
+        label: 'Категория'
     },
     {name: 'contentType', field: 'contentType', label: trans.contentType, style: 'width: 180px'},
     {
@@ -154,7 +166,7 @@ watch(() => store.value.listRequest.isDeleted, () => {
     store.value.isEnd = false;
     store.value.listRequest.page = 1;
     store.value.files = [];
-    emit('getFiles')
+    emit('getFiles');
 });
 
 const download = async (fileId: string) => {

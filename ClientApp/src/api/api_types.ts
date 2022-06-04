@@ -94,9 +94,13 @@ export declare type FileModel = {
     name: string
     path: string
     contentType: string
+    category: string
+    tags: string[]
 } & TimestampTypes & SoftDeletableType
 export declare type FileModelUpdateRequest = {
     name: string
+    category: string
+    tags: string[]
 } & SoftDeletableType
 // EntryFile
 export declare type EntryFile = {
@@ -104,6 +108,11 @@ export declare type EntryFile = {
 } & FileModel
 export declare type EntryFileCreateResponse = {
     count: number
+}
+
+export declare type EntryFileMeta = {
+    categories: string[],
+    tags: string[]
 }
 
 // FileDownload

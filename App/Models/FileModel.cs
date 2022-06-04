@@ -15,8 +15,8 @@ public class FileModel : BaseEntity, ITimestampResource, ISoftDelete
     public DateTime? DeletedAt { get; set; }
     public string DeletedReason { get; set; } = null!;
     public string Discriminator { get; set; } = null!;
-    public string? Category { get; set; }
-    public List<string>? Tags { get; set; }
+    public string Category { get; set; } = null!;
+    public List<string> Tags { get; set; } = new();
 
     public bool IsImage()
     {

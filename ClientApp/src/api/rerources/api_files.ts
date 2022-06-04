@@ -4,11 +4,7 @@ import {AxiosResponse} from "axios";
 
 export const apiFiles = {
     download: async (req: FileDownloadRequest): Promise<AxiosResponse> => {
-        return await appApi.get({
-            resource: 'files',
-            resourceId: req.fileId,
-            subResource: 'download',
-        }, {
+        return await appApi.get(['files', req.fileId, 'download'], {
             params: {
                 imageFilter: req.imageFilter,
             },
@@ -16,12 +12,7 @@ export const apiFiles = {
         });
     },
     explorer: async (fileId: string): Promise<null> => {
-        const resp = await appApi.get({
-            resource: 'files',
-            resourceId: fileId,
-            subResource: 'explorer',
-        });
-        
+        const resp = await appApi.get(['files', fileId, 'explorer']);
         return resp.data;
     },
 }

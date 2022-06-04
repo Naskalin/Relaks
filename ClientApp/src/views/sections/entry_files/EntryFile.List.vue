@@ -9,6 +9,8 @@
     <br>
 
     <file-list-table
+        v-if="fileMetaStore.meta"
+        :files-meta="fileMetaStore.meta"
         @getFiles="listStore.getFiles(entryId)"
         class="list-table"
         with-edit
@@ -20,9 +22,10 @@
     />
 
     <file-edit-modal
-        v-if="editStore.file"
+        v-if="editStore.file && fileMetaStore.meta"
         v-model="editStore.file"
         v-model:is-show="isShowEdit"
+        :files-meta="fileMetaStore.meta"
         :is-loading="editStore.isLoading"
         @submit="saveEditForm"
         @recover="onRecover"
@@ -45,17 +48,22 @@ import {EntryFile} from "../../../api/api_types";
 import {apiMappers} from "../../../api/api_mappers";
 import {apiEntryFile} from "../../../api/rerources/api_entry_file";
 import {apiFiles} from "../../../api/rerources/api_files";
+import {useEntryFileMetaListStore} from "../../../store/entryFile/entryFileMeta.list.store";
 
 const route = useRoute();
 const entryId = computed(() => route.params.entryId as string)
 const listStore = useFileListTableStore();
 const editStore = useEntryFileEditStore();
+const fileMetaStore = useEntryFileMetaListStore();
 const isShowEdit = ref(false);
 
 // initialize
-onMounted(() => {
+onMounted(async () => {
     listStore.$reset();
     editStore.$reset();
+    fileMetaStore.$reset();
+
+    await fileMetaStore.getMeta(entryId.value);
 });
 
 const explorer = async (fileId: string) => {
@@ -66,6 +74,7 @@ const explorer = async (fileId: string) => {
 const onUploaded = async () => {
     listStore.$reset();
     await listStore.getFiles(entryId.value);
+    await fileMetaStore.getMeta(entryId.value);
 }
 
 // edit
@@ -84,6 +93,7 @@ const saveEditForm = async () => {
     
     isShowEdit.value = false;
     editStore.$reset();
+    await fileMetaStore.getMeta(entryId.value);
 }
 const onSoftDelete = async () => {
     await saveEditForm();

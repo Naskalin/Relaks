@@ -113,6 +113,7 @@ namespace App.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Category")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ContentType")
@@ -142,6 +143,7 @@ namespace App.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Tags")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdatedAt")

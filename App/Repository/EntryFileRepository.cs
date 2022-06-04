@@ -42,4 +42,38 @@ public class EntryFileRepository : BaseRepository<EntryFile>
 
         return await query.ToListAsync(cancellationToken);
     }
+
+    public async Task<GetMetaResult> GetEntryMetaAsync(Guid entryId, CancellationToken cancellationToken)
+    {
+        var allMeta = await Entities
+            .Where(x => x.EntryId == entryId)
+            .Select(x => new {x.Tags, x.Category})
+            .ToListAsync(cancellationToken);
+
+        var categories = allMeta
+                .Where(x => !String.IsNullOrEmpty(x.Category))
+                .Select(x => x.Category)
+                .ToHashSet()
+                .OrderBy(x => x)
+                .ToList()
+            ;
+
+        var tags = new HashSet<string>();
+        var tagLists = allMeta.Select(x => x.Tags).ToList();
+        foreach (var tagList in tagLists)
+        {
+            foreach (var tag in tagList)
+            {
+                tags.Add(tag);
+            }
+        }
+        
+        var result = new GetMetaResult()
+        {
+            Categories = categories,
+            Tags = tags.OrderBy(x => x).ToList()
+        };
+
+        return result;
+    }
 }

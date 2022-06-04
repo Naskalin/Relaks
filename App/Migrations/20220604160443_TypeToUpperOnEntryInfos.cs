@@ -13,6 +13,7 @@ namespace App.Migrations
             migrationBuilder.Sql("UPDATE EntryInfos SET Type = 'NOTE' WHERE Type == 'Note';");
             migrationBuilder.Sql("UPDATE EntryInfos SET Type = 'URL' WHERE Type == 'Url';");
             migrationBuilder.Sql("UPDATE EntryInfos SET Type = 'DATE' WHERE Type == 'Date';");
+            
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

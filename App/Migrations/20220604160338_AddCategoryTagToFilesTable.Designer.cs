@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220604151302_TypeToUpperOnEntryInfos")]
-    partial class TypeToUpperOnEntryInfos
+    [Migration("20220604160338_AddCategoryTagToFilesTable")]
+    partial class AddCategoryTagToFilesTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -115,6 +115,7 @@ namespace App.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Category")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ContentType")
@@ -144,6 +145,7 @@ namespace App.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Tags")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdatedAt")

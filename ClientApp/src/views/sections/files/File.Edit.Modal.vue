@@ -16,6 +16,11 @@
                     :label="fileFieldNames.name"
                     type="text"
                 />
+
+                <category-field
+                    v-model="model.category"
+                    :options="filesMeta.categories" 
+                    label="Категория"/>                
             </q-form>
         </q-card-section>
 
@@ -41,14 +46,15 @@
 
 <script setup lang="ts">
 import Modal from '../../components/Modal.vue';
-
-import {FileModelUpdateRequest} from "../../../api/api_types";
+import CategoryField from '../../fields/Category.Field.vue';
+import {EntryFileMeta, FileModelUpdateRequest} from "../../../api/api_types";
 import {deletedMessages, fileFieldNames} from "../../../localize/messages";
 import {computed} from "vue";
 import {useQuasar} from "quasar";
 
 const props = defineProps<{
-    modelValue: FileModelUpdateRequest
+    modelValue: FileModelUpdateRequest,
+    filesMeta: EntryFileMeta
     isShow: boolean
     isLoading: boolean
 }>()
@@ -64,7 +70,6 @@ const model = computed({
     get: () => props.modelValue,
     set: (val) => emit('update:modelValue', val)
 })
-
 const $q = useQuasar();
 const onDelete = () => {
     $q.dialog({

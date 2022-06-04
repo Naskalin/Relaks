@@ -6,7 +6,7 @@ export declare type FileListTableStoreState = {
     files: FileModel[],
     isLoading: boolean,
     isEnd: boolean,
-    listRequest: PaginateListRequest
+    listRequest: PaginateListRequest,
 }
 export const useFileListTableStore = defineStore('FileListTableStore', {
     state: (): FileListTableStoreState => {
