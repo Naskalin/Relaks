@@ -17,10 +17,17 @@
                     type="text"
                 />
 
-                <category-field
+                <tag-select
+                    :multiple="false"
                     v-model="model.category"
                     :options="filesMeta.categories" 
-                    label="Категория"/>                
+                    label="Категория"/>
+
+                <tag-select
+                    :multiple="true"
+                    v-model="model.tags"
+                    :options="filesMeta.tags"
+                    label="Метки"/>
             </q-form>
         </q-card-section>
 
@@ -46,7 +53,7 @@
 
 <script setup lang="ts">
 import Modal from '../../components/Modal.vue';
-import CategoryField from '../../fields/Category.Field.vue';
+import TagSelect from '../../fields/TagSelect.Field.vue';
 import {EntryFileMeta, FileModelUpdateRequest} from "../../../api/api_types";
 import {deletedMessages, fileFieldNames} from "../../../localize/messages";
 import {computed} from "vue";

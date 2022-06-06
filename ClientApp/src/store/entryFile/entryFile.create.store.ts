@@ -2,6 +2,8 @@
 import {apiEntryFile} from "../../api/rerources/api_entry_file";
 
 declare type EntryFileCreateStoreState = {
+    isCreateCategory: boolean
+    newCategory: string
     category: string
     files: null | any
     isLoading: boolean
@@ -10,6 +12,8 @@ declare type EntryFileCreateStoreState = {
 export const useEntryFileCreateStore = defineStore('EntryFileCreateStore', {
     state: (): EntryFileCreateStoreState => {
         return {
+            isCreateCategory: false,
+            newCategory: '',
             category: '',
             files: null,
             isLoading: false,
@@ -25,7 +29,11 @@ export const useEntryFileCreateStore = defineStore('EntryFileCreateStore', {
                 for (const [key, val] of Object.entries(this.files)) {
                     formData.append('files', val as any);
                 }
-                formData.append('category', this.category);
+                if (this.isCreateCategory && this.newCategory !== '') {
+                    formData.append('category', this.newCategory);
+                } else if (this.category) {
+                    formData.append('category', this.category);
+                }
                 const resp = await apiEntryFile.create(entryId, formData);
                 this.files = null;
                 this.isError = false;

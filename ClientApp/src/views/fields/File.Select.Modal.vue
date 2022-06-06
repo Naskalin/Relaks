@@ -1,10 +1,11 @@
 ﻿<template>
     <modal :title="title" v-model:is-show="isShowModel" full-width>
         <q-card-section>
-            <file-list-table
+            <entry-file-full-comp
+                :entry-id="entryId"
                 @getFiles="listStore.getFiles(entryId)"
                 @rowClick="file => emit('fileSelect', file)"
-                v-model="listStore"
+                v-model:list-store="listStore"
             />
         </q-card-section>
     </modal>
@@ -12,7 +13,7 @@
 
 <script setup lang="ts">
 import Modal from '../components/Modal.vue';
-import FileListTable from '../sections/files/File.List.Table.vue';
+import EntryFileFullComp from '../sections/entry_files/EntryFile.Full.Comp.vue';
 import {useFileListTableStore} from "../../store/entryFile/entryFile.list.table.store";
 import {useEntryFileMetaListStore} from "../../store/entryFile/entryFileMeta.list.store";
 import {FileModel} from "../../api/api_types";

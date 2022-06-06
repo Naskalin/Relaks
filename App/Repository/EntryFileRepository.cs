@@ -21,6 +21,20 @@ public class EntryFileRepository : BaseRepository<EntryFile>
         if (request.IsDeleted != null)
             query = query.Where(x => request.IsDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
 
+        if (request.Category != null)
+        {
+            if (request.Category == "")
+                query = query.Where(x => x.Category == "");
+            else
+                query = query.Where(x => x.Category == request.Category);   
+        }
+
+        // if (request.Tags.Any())
+        // {
+        //     // query = query.Where(x => x.Tags.Any(x => x.Contains(request.Tags.Any())));
+        // }
+            // query = query.Where(x => request.Tags.Contains(x.Tags));
+
         if (!string.IsNullOrEmpty(request.Search))
             query = query.Where(x => EF.Functions.Like(x.Name, "%" + request.Search + "%")
                                      || EF.Functions.Like(x.DeletedReason, "%" + request.Search + "%")

@@ -1,7 +1,4 @@
 ﻿<template>
-<!--    <q-select v-model="store.category"-->
-<!--              :options="options"-->
-<!--    />-->
     <q-file
         v-model="store.files"
         @update:model-value="onSelectFiles"
@@ -21,7 +18,7 @@
 <script setup lang="ts">
 import {useQuasar} from "quasar";
 import {useEntryFileCreateStore} from "../../../store/entryFile/entryFile.create.store";
-import {onMounted} from "vue";
+import {onMounted, watch} from "vue";
 
 const store = useEntryFileCreateStore();
 
@@ -41,7 +38,6 @@ const $q = useQuasar();
 
 const onSelectFiles = async () => {
     const resp: any = await store.uploadFiles(props.entryId);
-    console.log(resp);
     
     $q.notify({
         message: `Файлы успешно загружены: ${resp.count} шт.`,
@@ -50,8 +46,7 @@ const onSelectFiles = async () => {
         position: 'bottom-right',
         actions: [
             {
-                label: 'Закрыть', color: 'white', handler: () => {
-                }
+                label: 'Закрыть', color: 'white', handler: () => {}
             }
         ]
     });

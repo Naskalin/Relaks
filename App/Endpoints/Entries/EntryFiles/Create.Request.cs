@@ -9,4 +9,7 @@ public class CreateRequest
 
     [FromForm]
     public List<IFormFile> Files { get; set; } = null!;
+
+    [FromForm]
+    public string? Category { get; set; }
 }

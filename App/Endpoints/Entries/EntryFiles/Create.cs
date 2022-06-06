@@ -38,11 +38,18 @@ public class Create : EndpointBaseAsync
         }
 
         var size = request.Files.Sum(f => f.Length);
+        var category = "";
+        if (request.Category != null) category = request.Category.Trim();
+        
         foreach (var formFile in request.Files)
         {
             if (formFile.Length <= 0) continue;
 
-            var entryFile = new EntryFile {EntryId = entry.Id};
+            var entryFile = new EntryFile
+            {
+                EntryId = entry.Id,
+                Category = category
+            };
             formFile.MapToCreate(entryFile);
 
             var folderFull = Path.Combine(_appPreset.FilesDir, entryFile.GetFileRelativeDir());

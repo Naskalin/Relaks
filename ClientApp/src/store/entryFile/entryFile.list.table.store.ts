@@ -1,12 +1,12 @@
 ﻿import {defineStore} from 'pinia';
-import {FileModel, PaginateListRequest} from "../../api/api_types";
+import {FileListRequest, FileModel} from "../../api/api_types";
 import {apiEntryFile} from "../../api/rerources/api_entry_file";
 
 export declare type FileListTableStoreState = {
     files: FileModel[],
     isLoading: boolean,
     isEnd: boolean,
-    listRequest: PaginateListRequest,
+    listRequest: FileListRequest,
 }
 export const useFileListTableStore = defineStore('FileListTableStore', {
     state: (): FileListTableStoreState => {
@@ -21,6 +21,8 @@ export const useFileListTableStore = defineStore('FileListTableStore', {
                 orderBy: '',
                 orderByDesc: '',
                 isDeleted: false,
+                tags: [],
+                category: null
             }
         }
     },
@@ -30,6 +32,7 @@ export const useFileListTableStore = defineStore('FileListTableStore', {
             this.isLoading = true;
 
             try {
+                console.log(this.listRequest);
                 const items = await apiEntryFile.list(entryId, this.listRequest);
                 if (this.listRequest.page > 1) {
                     this.files = this.files.concat(items);

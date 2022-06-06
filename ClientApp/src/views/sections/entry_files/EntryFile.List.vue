@@ -1,22 +1,34 @@
 ﻿<template>
-    <div class="row justify-between items-center q-mb-md">
-        <h5 class="q-my-md">{{ entryMessages.profile.tabs['entry-file-list'] }}</h5>
-        <div style="width: 400px">
+    <h5 class="q-my-md">{{ entryMessages.profile.tabs['entry-file-list'] }}</h5>
+    <div style="width: 500px">
+        <div class="q-mb-sm">
             <entry-file-create @onUploaded="onUploaded" :entry-id="entryId"/>
         </div>
+        <q-icon name="las la-info-circle la-fw" /> Файлы загрузятся в выбранную категорию.
     </div>
 
     <br>
 
-    <file-list-table
-        v-if="fileMetaStore.meta"
-        :files-meta="fileMetaStore.meta"
+<!--    <file-list-table-->
+<!--        @getFiles="listStore.getFiles(entryId)"-->
+<!--        :entry-id="entryId"-->
+<!--        class="list-table"-->
+<!--        with-edit-->
+<!--        with-download-->
+<!--        with-explorer-->
+<!--        v-model:list-store="listStore"-->
+<!--        @showEdit="onShowEdit"-->
+<!--        @clickAvatar="file => explorer(file.id)"-->
+<!--    />-->
+    
+    <entry-file-full-comp
         @getFiles="listStore.getFiles(entryId)"
+        :entry-id="entryId"
         class="list-table"
         with-edit
         with-download
         with-explorer
-        v-model="listStore"
+        v-model:list-store="listStore"
         @showEdit="onShowEdit"
         @clickAvatar="file => explorer(file.id)"
     />
@@ -35,9 +47,9 @@
 </template>
 
 <script setup lang="ts">
-import FileListTable from '../files/File.List.Table.vue';
 import FileEditModal from '../files/File.Edit.Modal.vue';
 import EntryFileCreate from './EntryFile.Create.vue';
+import EntryFileFullComp from './EntryFile.Full.Comp.vue';
 
 import {entryMessages} from "../../../localize/messages";
 import {useRoute} from "vue-router";
@@ -49,6 +61,7 @@ import {apiMappers} from "../../../api/api_mappers";
 import {apiEntryFile} from "../../../api/rerources/api_entry_file";
 import {apiFiles} from "../../../api/rerources/api_files";
 import {useEntryFileMetaListStore} from "../../../store/entryFile/entryFileMeta.list.store";
+import {useEntryFileCreateStore} from "../../../store/entryFile/entryFile.create.store";
 
 const route = useRoute();
 const entryId = computed(() => route.params.entryId as string)
@@ -61,9 +74,6 @@ const isShowEdit = ref(false);
 onMounted(async () => {
     listStore.$reset();
     editStore.$reset();
-    fileMetaStore.$reset();
-
-    await fileMetaStore.getMeta(entryId.value);
 });
 
 const explorer = async (fileId: string) => {
@@ -71,8 +81,15 @@ const explorer = async (fileId: string) => {
 }
 
 // create
+const filesCreateStore = useEntryFileCreateStore();
 const onUploaded = async () => {
+    let tempCategory = listStore.listRequest.category;
+    if(filesCreateStore.isCreateCategory && filesCreateStore.newCategory) {
+        tempCategory = filesCreateStore.newCategory;
+    }
     listStore.$reset();
+    filesCreateStore.$reset();
+    listStore.listRequest.category = tempCategory;
     await listStore.getFiles(entryId.value);
     await fileMetaStore.getMeta(entryId.value);
 }
@@ -112,5 +129,6 @@ const onDelete = async () => {
 
     isShowEdit.value = false;
     editStore.$reset();
+    await fileMetaStore.getMeta(entryId.value);
 }
 </script>

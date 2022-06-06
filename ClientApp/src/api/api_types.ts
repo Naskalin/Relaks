@@ -102,6 +102,10 @@ export declare type FileModelUpdateRequest = {
     category: string
     tags: string[]
 } & SoftDeletableType
+export declare type FileListRequest = {
+    category: string | null
+    tags: string[]
+} & PaginateListRequest
 // EntryFile
 export declare type EntryFile = {
     entryId: string

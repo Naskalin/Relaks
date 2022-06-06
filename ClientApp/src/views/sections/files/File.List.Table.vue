@@ -2,22 +2,28 @@
     <q-table
         :columns="columns"
         title="Файлы"
-        :loading="store.isLoading"
+        :loading="listStore.isLoading"
         row-key="id"
-        :rows="store.files"
+        :rows="listStore.files"
         :pagination="{rowsPerPage: 0}"
         :virtual-scroll-item-size="65"
         :virtual-scroll-sticky-size-start="65"
         virtual-scroll
         :rows-per-page-options="[0]"
-        @virtual-scroll="getFiles"
+        @virtual-scroll="onVirtualScroll"
     >
         <template v-slot:top>
             <div>
+                <h6 class="q-mb-md">
+                    <q-icon name="las la-folder-open la-lg la-fw"/>
+                    {{categoryName}}
+                </h6>
+
                 <div>
+                    <small class="text-uppercase q-mr-md">Актуальность</small>
                     <q-btn-toggle
                         class="bg-grey-2"
-                        v-model="store.listRequest.isDeleted"
+                        v-model="listStore.listRequest.isDeleted"
                         toggle-color="secondary"
                         :options="[
                 {label: 'Все', value: null},
@@ -26,17 +32,8 @@
             ]"
                     />
                 </div>
-                <div>
-                    <q-select
-                        filled
-                        :options="categoryOptions"
-                        label="Single"
-                        style="width: 250px"
-                    />
-                </div>
             </div>
         </template>
-
         <template v-slot:header="p">
             <q-tr :props="p">
                 <q-th v-if="props.withEdit" style="width: 70px"/>
@@ -66,7 +63,8 @@
                     :key="col.name"
                     :props="p"
                 >
-                    <file-in-table-cell title="Открыть" @click="emit('clickAvatar', p.row)" v-if="col.name === 'path'" :file="p.row" />
+                    <file-in-table-cell title="Открыть" @click="emit('clickAvatar', p.row)" v-if="col.name === 'path'"
+                                        :file="p.row"/>
                     <template v-else>{{ col.value }}</template>
                 </q-td>
                 <q-td v-if="withDownload">
@@ -84,29 +82,26 @@
 import FileInTableCell from '../../components/FileInTableCell.vue';
 import {fileFieldNames as trans} from "../../../localize/messages";
 import {dateHelper} from "../../../utils/date_helper";
-import {EntryFileMeta, FileModel} from "../../../api/api_types";
+import {FileModel} from "../../../api/api_types";
 import {computed, watch} from 'vue';
 import {getFileExtension} from "../../../utils/file_helper";
 import {FileListTableStoreState} from "../../../store/entryFile/entryFile.list.table.store";
 import {apiFiles} from "../../../api/rerources/api_files";
-import {selectHelper} from "../../../utils/select_helper";
+import {debounce} from "quasar";
 
 const props = defineProps<{
-    modelValue: FileListTableStoreState
-    filesMeta: EntryFileMeta,
+    listStore: FileListTableStoreState
     withEdit?: boolean
     withDownload?: boolean
     withExplorer?: boolean
 }>()
-
-const categoryOptions = computed(() => selectHelper.arrayToSelectOptions(props.filesMeta.categories));
 
 const emit = defineEmits<{
     (e: 'getFiles'): void,
     (e: 'showEdit', row: FileModel): void,
     (e: 'rowClick', row: FileModel): void,
     (e: 'clickAvatar', row: FileModel): void,
-    (e: 'update:modelValue', val: FileListTableStoreState): void 
+    (e: 'update:listStore', val: FileListTableStoreState): void
 }>()
 
 let columns = [
@@ -117,11 +112,8 @@ let columns = [
         label: trans.name,
         format: (val: string, row: FileModel) => val + '.' + getFileExtension(row.path)
     },
-    {
-        name: 'category',  
-        field: 'category',
-        label: 'Категория'
-    },
+    {name: 'category', field: 'category', label: 'Категория'},
+    {name: 'tags', field: 'tags', label: 'Метки', format: (val: string[]) => val.join(', ')},
     {name: 'contentType', field: 'contentType', label: trans.contentType, style: 'width: 180px'},
     {
         name: 'createdAt',
@@ -148,25 +140,36 @@ let columns = [
 ]
 columns = columns.map(row => ({...row, align: 'left'}));
 
-const store = computed({
-    get: () => props.modelValue,
-    set: val => emit('update:modelValue', val),
+const categoryName = computed(() => {
+    const c = listStore.value.listRequest.category;
+    if (c === null) return 'Без категории';
+    if (c === '') return 'Все';
+    return c;
+});
+const listStore = computed({
+    get: () => props.listStore,
+    set: val => emit('update:listStore', val),
 })
-const filesCount = computed(() => store.value.files.length);
-const getFiles = async ({to}: { to: number }) => {
+const filesCount = computed(() => listStore.value.files.length);
+const onVirtualScroll = async ({to}: { to: number }) => {
     if (
         to === -1
-        || (to === filesCount.value - 1 && !store.value.isEnd)
+        || (to === filesCount.value - 1 && !listStore.value.isEnd)
     ) {
-        emit('getFiles');
+        getFilesDebounce();
     }
 }
 
-watch(() => store.value.listRequest.isDeleted, () => {
-    store.value.isEnd = false;
-    store.value.listRequest.page = 1;
-    store.value.files = [];
-    emit('getFiles');
+watch(() => [
+    listStore.value.listRequest.isDeleted,
+    listStore.value.listRequest.category,
+    listStore.value.listRequest.tags,
+], () => {
+    listStore.value.isEnd = false;
+    listStore.value.listRequest.page = 1;
+    listStore.value.files = [];
+
+    getFilesDebounce();
 });
 
 const download = async (fileId: string) => {
@@ -182,4 +185,9 @@ const download = async (fileId: string) => {
     link.click();
     link.remove();
 }
+
+const getFilesDebounce = debounce(() => {
+    // Тротлинг для GetFiles, при первом обращении при обновлении страницы происходит путаница.
+    emit('getFiles')
+}, 50);
 </script>
