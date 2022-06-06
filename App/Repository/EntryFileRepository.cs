@@ -1,5 +1,6 @@
 ﻿using App.DbConfigurations;
 using App.Endpoints.Entries.EntryFiles;
+using App.Endpoints.Entries.EntryFiles.Meta;
 using App.Models;
 using App.Utils.Extensions.Database;
 using Microsoft.EntityFrameworkCore;
@@ -29,11 +30,16 @@ public class EntryFileRepository : BaseRepository<EntryFile>
                 query = query.Where(x => x.Category == request.Category);   
         }
 
-        // if (request.Tags.Any())
-        // {
-        //     // query = query.Where(x => x.Tags.Any(x => x.Contains(request.Tags.Any())));
-        // }
-            // query = query.Where(x => request.Tags.Contains(x.Tags));
+        if (request.Tags.Any())
+        {
+            var fileIds = query
+                    .AsEnumerable()
+                    .Where(x => x.Tags.Any(tag => request.Tags.Contains(tag)))
+                    .Select(x => x.Id)
+                    .ToList()
+                ;
+            query = query.Where(x => fileIds.Contains(x.Id));
+        }
 
         if (!string.IsNullOrEmpty(request.Search))
             query = query.Where(x => EF.Functions.Like(x.Name, "%" + request.Search + "%")

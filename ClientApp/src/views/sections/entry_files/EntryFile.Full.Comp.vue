@@ -12,24 +12,33 @@
                         icon="las la-plus-circle"
                         size="sm"
                         color="secondary"/>
-                    <div v-if="createStore.isCreateCategory" class="q-my-md q-pa-md" style="border: 1px solid #aaa">
-                        <q-input
-                            autofocus
-                            v-model="createStore.newCategory"
-                            label="Название категории"
-                            hint="Выберите файлы для загрузки в новую категорию"
-                            counter
-                            maxlength="200"
-                            required="required"
-                            type="text" style="max-width: 500px"/>
-                    </div>
+                    <q-card v-if="createStore.isCreateCategory" class="q-my-md">
+                        <q-card-section>
+                            <q-icon name="las la-info-circle" class="q-mx-xs" size="1.2rem"/> Введите название категории и выберите файлы для загрузки
+                            <q-input
+                                autofocus
+                                v-model="createStore.newCategory"
+                                label="Название категории"
+                                counter
+                                maxlength="200"
+                                required="required"
+                                type="text" style="max-width: 500px"/>
+                        </q-card-section>
+                    </q-card>
                 </div>
                 <div>
-                    <q-option-group
-                        :options="categoryOptions"
-                        type="radio"
-                        v-model="listStore.listRequest.category"
-                    />
+                    <div><q-radio v-model="listStore.listRequest.category" :val="''" label="Все" color="secondary"/></div>
+                    <div><q-radio v-model="listStore.listRequest.category" :val="null" label="Без категории" color="secondary"/></div>
+                    <template v-if="metaStore.meta">
+                        <div v-for="category in metaStore.meta.categories">
+                            <q-radio v-model="listStore.listRequest.category" :val="category" :label="category"/>
+                            <q-btn icon="las la-edit" size="sm" color="secondary" outline class="q-mx-md">
+                                <q-popup-edit :model-value="category" @update:model-value="val => onCategoryPopupEdit(category, val)" auto-save v-slot="scope">
+                                    <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
+                                </q-popup-edit>
+                            </q-btn>
+                        </div>
+                    </template>
                 </div>
             </div>
 
@@ -59,6 +68,7 @@ import {onMounted, computed, watch} from 'vue';
 import {selectHelper} from "../../../utils/select_helper";
 import {FileListTableStoreState} from "../../../store/entryFile/entryFile.list.table.store";
 import {useEntryFileCreateStore} from "../../../store/entryFile/entryFile.create.store";
+import {apiEntryFile} from "../../../api/rerources/api_entry_file";
 
 const props = defineProps<{
     entryId: string,
@@ -90,16 +100,28 @@ onMounted(async () => {
     await metaStore.getMeta(props.entryId);
 })
 
-const categoryOptions = computed(() => {
-    const options: any = [
-        {label: 'Все', value: '', color: 'secondary'},
-        {label: 'Без категории', value: null, color: 'secondary'}
-    ];
-    if (metaStore.meta) {
-        options.push(...selectHelper.arrayToSelectOptions(metaStore.meta.categories))
-    }
-    return options;
-});
+const onCategoryPopupEdit = async (val: string, newVal: string) => {
+    if(!props.withEdit) return;
+    
+    await apiEntryFile.updateMeta(props.entryId, {
+        value: val,
+        newValue: newVal,
+        field: 'Category'
+    })
+    
+    await metaStore.getMeta(props.entryId);
+    listStore.value.listRequest.category = newVal;
+}
+// const categoryOptions = computed(() => {
+//     const options: any = [
+//         {label: 'Все', value: '', color: 'secondary'},
+//         {label: 'Без категории', value: null, color: 'secondary'}
+//     ];
+//     if (metaStore.meta) {
+//         options.push(...selectHelper.arrayToSelectOptions(metaStore.meta.categories))
+//     }
+//     return options;
+// });
 
 // const tagsOptions = computed(() => selectHelper.arrayToSelectOptions(props.filesMeta.tags));
 </script>

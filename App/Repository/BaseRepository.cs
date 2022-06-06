@@ -55,6 +55,16 @@ public class BaseRepository<TEntity> where TEntity : BaseEntity
         await Db.SaveChangesAsync(cancellationToken);
     }
 
+    public async Task UpdateMultipleAsync(List<TEntity> entities, CancellationToken cancellationToken)
+    {
+        foreach (var entity in entities)
+        {
+            Db.Entry(entity).State = EntityState.Modified;
+        }
+        
+        await Db.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken)
     {
         Entities.Remove(entity);

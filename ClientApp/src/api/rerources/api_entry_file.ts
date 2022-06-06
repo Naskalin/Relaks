@@ -1,5 +1,12 @@
 ﻿import {ApiListRequest, appApi} from "../index";
-import {EntryFileCreateResponse, EntryFile, FileModelUpdateRequest, EntryFileMeta, FileListRequest} from "../api_types";
+import {
+    EntryFileCreateResponse,
+    EntryFile,
+    FileModelUpdateRequest,
+    EntryFileMeta,
+    FileListRequest,
+    EntryFileMetaPutRequest
+} from "../api_types";
 
 const subResource = 'files';
 export const apiEntryFile = {
@@ -29,13 +36,17 @@ export const apiEntryFile = {
         const resp = await appApi.get(['entries', entryId, subResource, fileId]);
         return resp.data;
     },
+    list: async (entryId: string, listRequest: FileListRequest): Promise<EntryFile[]> => {
+        const resp = await appApi.list(['entries', entryId, subResource], listRequest);
+
+        return resp.data;
+    },
     getMeta: async(entryId: string): Promise<EntryFileMeta> => {
         const resp = await appApi.get(['entries', entryId, subResource, 'meta']);
         return resp.data;
     },
-    list: async (entryId: string, listRequest: FileListRequest): Promise<EntryFile[]> => {
-        const resp = await appApi.list(['entries', entryId, subResource], listRequest);
-
+    updateMeta: async(entryId: string, request: EntryFileMetaPutRequest): Promise<null> => {
+        const resp = await appApi.put(['entries', entryId, subResource, 'meta'], request);
         return resp.data;
     }
 }

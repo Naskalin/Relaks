@@ -119,6 +119,12 @@ export declare type EntryFileMeta = {
     tags: string[]
 }
 
+export declare type EntryFileMetaPutRequest = {
+    value: string
+    newValue: string
+    field: 'Category' | 'Tag'
+}
+
 // FileDownload
 export declare type FileDownloadRequest = {
     fileId: string,

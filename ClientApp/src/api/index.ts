@@ -1,5 +1,6 @@
 ﻿import axios, {AxiosRequestConfig, AxiosResponse} from "axios";
 import {useApiErrorsStore} from "../store/api_errors_store";
+import qs from 'qs';
 
 axios.interceptors.response.use((resp) => resp, (error) => {
     const apiErrorsStore = useApiErrorsStore();
@@ -7,27 +8,31 @@ axios.interceptors.response.use((resp) => resp, (error) => {
     throw error;
 })
 
-const apiUrl = '/api';
+const axiosApi = axios.create({
+    baseURL: '/api',
+    paramsSerializer: params => qs.stringify(params, {arrayFormat: 'repeat'})
+})
+
 export const appApi = {
     list: async (endPoint: string[], listRequest?: ApiAnyRequest): Promise<AxiosResponse> => {
-        const url = apiUrl + endpointArrayBuilder(endPoint);
-        return (await axios.get(url, {params: listRequest}));
+        const url = endpointArrayBuilder(endPoint);
+        return (await axiosApi.get(url, {params: listRequest}));
     },
     get: async (endPoint: string[], config?: AxiosRequestConfig): Promise<AxiosResponse> => {
-        const url = apiUrl + endpointArrayBuilder(endPoint);
-        return (await axios.get(url, config));
+        const url = endpointArrayBuilder(endPoint);
+        return (await axiosApi.get(url, config));
     },
     post: async (endPoint: string[], createRequest: ApiCreateRequest, config?: AxiosRequestConfig): Promise<AxiosResponse> => {
-        const url = apiUrl + endpointArrayBuilder(endPoint);
-        return (await axios.post(url, createRequest, config));
+        const url = endpointArrayBuilder(endPoint);
+        return (await axiosApi.post(url, createRequest, config));
     },
     put: async (endPoint: string[], putRequest: ApiUpdateRequest): Promise<AxiosResponse> => {
-        const url = apiUrl + endpointArrayBuilder(endPoint);
-        return (await axios.put(url, putRequest));
+        const url = endpointArrayBuilder(endPoint);
+        return (await axiosApi.put(url, putRequest));
     },
     delete: async (endPoint: string[]): Promise<AxiosResponse> => {
-        const url = apiUrl + endpointArrayBuilder(endPoint);
-        return (await axios.delete(url));
+        const url = endpointArrayBuilder(endPoint);
+        return (await axiosApi.delete(url));
     }
 }
 

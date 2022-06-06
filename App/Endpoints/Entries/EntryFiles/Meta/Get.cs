@@ -4,21 +4,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace App.Endpoints.Entries.EntryFiles;
+namespace App.Endpoints.Entries.EntryFiles.Meta;
 
-public class GetMeta : EndpointBaseAsync
+public class Get : EndpointBaseAsync
     .WithRequest<Guid>
     .WithActionResult<GetMetaResult>
 {
     private readonly EntryFileRepository _entryFileRepository;
 
-    public GetMeta(EntryFileRepository entryFileRepository)
+    public Get(EntryFileRepository entryFileRepository)
     {
         _entryFileRepository = entryFileRepository;
     }
 
     [HttpGet("/api/entries/{entryId}/files/meta")]
-    [SwaggerOperation(OperationId = "EntryFile.GetMeta", Tags = new[] {"EntryFile"})]
+    [SwaggerOperation(OperationId = "EntryFileMeta.Get", Tags = new[] {"EntryFileMeta"})]
     public override async Task<ActionResult<GetMetaResult>> HandleAsync(
         [FromRoute] Guid entryId,
         CancellationToken cancellationToken = new()

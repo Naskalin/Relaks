@@ -1,4 +1,4 @@
-﻿namespace App.Endpoints.Entries.EntryFiles;
+﻿namespace App.Endpoints.Entries.EntryFiles.Meta;
 
 public class GetMetaResult
 {

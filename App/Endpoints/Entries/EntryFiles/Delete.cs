@@ -12,11 +12,13 @@ public class Delete : EndpointBaseAsync
     .WithActionResult
 {
     private readonly EntryFileRepository _entryFileRepository;
+    private readonly EntryRepository _entryRepository;
     private readonly AppPreset _appPreset;
 
-    public Delete(EntryFileRepository entryFileRepository, AppPreset appPreset)
+    public Delete(EntryFileRepository entryFileRepository, EntryRepository entryRepository, AppPreset appPreset)
     {
         _entryFileRepository = entryFileRepository;
+        _entryRepository = entryRepository;
         _appPreset = appPreset;
     }
 
@@ -38,6 +40,14 @@ public class Delete : EndpointBaseAsync
         // Remove attached file
         var filePath = Path.Combine(_appPreset.FilesDir, entryFile.GetFileRelativePath());
         if (System.IO.File.Exists(filePath)) System.IO.File.Delete(filePath);
+        
+        // Remove if its avatar
+        var entry = await _entryRepository.FindByIdAsync(req.EntryId, cancellationToken);
+        if (entry!.Avatar == entryFile.Id)
+        {
+            entry.Avatar = null;
+            await _entryRepository.UpdateAsync(entry, cancellationToken);
+        }
         
         return NoContent();
     }

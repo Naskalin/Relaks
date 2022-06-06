@@ -32,7 +32,6 @@ export const useFileListTableStore = defineStore('FileListTableStore', {
             this.isLoading = true;
 
             try {
-                console.log(this.listRequest);
                 const items = await apiEntryFile.list(entryId, this.listRequest);
                 if (this.listRequest.page > 1) {
                     this.files = this.files.concat(items);

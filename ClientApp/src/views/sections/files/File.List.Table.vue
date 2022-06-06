@@ -53,7 +53,7 @@
                   :class="{'bg-pink-1': p.row.deletedAt}"
                   @click="emit('rowClick', p.row)">
                 <q-td v-if="props.withEdit" class="q-gutter-x-sm">
-                    <q-btn v-if="withEdit" size="sm" color="primary" round @click="emit('showEdit', p.row)">
+                    <q-btn v-if="withEdit" color="primary" outline round @click="emit('showEdit', p.row)">
                         <q-icon name="las la-edit" size="1.2rem"/>
                         <q-tooltip>Изменить</q-tooltip>
                     </q-btn>

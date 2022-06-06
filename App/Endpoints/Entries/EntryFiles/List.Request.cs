@@ -11,7 +11,7 @@ public class ListRequest : BaseListRequest
     [FromQuery]
     [DefaultValue("")]
     public string? Category { get; set; } = "";
-    
+
     [FromQuery]
     public List<string> Tags { get; set; } = new();
 }
