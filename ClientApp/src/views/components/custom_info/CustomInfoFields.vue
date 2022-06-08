@@ -1,13 +1,4 @@
 ﻿<template>
-    <div class="q-my-md">
-        <q-btn label="Добавить группу" icon="las la-plus-circle" color="secondary" @click="addGroup"/>
-        &nbsp;
-        <q-btn @click="isMinimizeGroups = !isMinimizeGroups"
-               :label="isMinimizeGroups ? 'Раскрыть группы' : 'Минимизировать группы'"
-               :icon="isMinimizeGroups ? 'las la-eye' : 'las la-eye-slash'"
-               outline
-               color="positive"/>
-    </div>
     
     <draggable
         v-model="model.groups"
@@ -26,6 +17,18 @@
             </q-card>
         </template>
     </draggable>
+
+    <div class="q-my-md">
+        <q-btn label="Добавить группу" icon="las la-plus-circle" color="secondary" @click="addGroup"/>
+        &nbsp;
+        <q-btn
+            v-if="model.groups.length"
+            @click="isMinimizeGroups = !isMinimizeGroups"
+            :label="isMinimizeGroups ? 'Развернуть группы' : 'Свернуть группы'"
+            :icon="isMinimizeGroups ? 'las la-eye' : 'las la-eye-slash'"
+            outline
+            color="positive"/>
+    </div>
     
     <div class="q-my-lg flex justify-between">
         <q-btn label="Сохранить набор данных" @click="emit('save', model)" icon="las la-save" color="primary"/>
@@ -61,7 +64,7 @@ onMounted(() => {
 })
 
 const addGroup = () => {
-    model.value.groups.unshift({
+    model.value.groups.push({
         title: '',
         items: [{key: '', value: ''}]
     })

@@ -13,14 +13,21 @@ public static class EntryInfoEvents
         if (eInfo.Title != "") arr.Add(eInfo.Title);
         if (eInfo.DeletedReason != "") arr.Add(eInfo.DeletedReason);
 
-        if (InfoBaseType.Email.Equals(eInfo.Type))
-            arr.Add(eInfo.Email()!.Email);
-        else if (InfoBaseType.Phone.Equals(eInfo.Type))
-            arr.Add(eInfo.Phone()!.Number);
-        else if (InfoBaseType.Url.Equals(eInfo.Type))
-            arr.Add(eInfo.Url()!.Url);
-        else if (InfoBaseType.Note.Equals(eInfo.Type))
-            arr.Add(eInfo.Note()!.Note);
+        switch (eInfo.Type.ToUpper())
+        {
+            case EntryInfo.Email:
+                arr.Add(eInfo.Email()!.Email);
+                break;
+            case EntryInfo.Phone:
+                arr.Add(eInfo.Phone()!.Number);
+                break;
+            case EntryInfo.Url:
+                arr.Add(eInfo.Url()!.Url);
+                break;
+            case EntryInfo.Note:
+                arr.Add(eInfo.Note()!.Note);
+                break;
+        }
 
         return String.Join(" ", arr);
     }

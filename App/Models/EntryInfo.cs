@@ -8,6 +8,13 @@ namespace App.Models;
 
 public class EntryInfo : BaseEntity, ITimestampResource, ISoftDelete, IInfoData, ICloneable
 {
+    public const string Phone = "PHONE";
+    public const string Email = "EMAIL";
+    public const string Url = "URL";
+    public const string Note = "NOTE";
+    public const string Date = "DATE";
+    public const string Custom = "CUSTOM";
+    
     public Guid EntryId { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
@@ -45,36 +52,21 @@ public class EntryInfo : BaseEntity, ITimestampResource, ISoftDelete, IInfoData,
 //     Custom,
 // }
 
-public class EntryInfoType : InfoBaseType
-{
-    // public static readonly InfoBaseType Passport = new("PASSPORT");
-    // public static readonly InfoBaseType CompanyDetails = new("COMPANY_DETAILS");
-    public static readonly InfoBaseType Custom = new("CUSTOM");
-
-    public EntryInfoType(string value) : base(value)
-    {
-    }
-}
-
-public class InfoBaseType
-{
-    public static readonly InfoBaseType Phone = new("PHONE");
-    public static readonly InfoBaseType Email = new("EMAIL");
-    public static readonly InfoBaseType Url = new("URL");
-    public static readonly InfoBaseType Note = new("NOTE");
-    public static readonly InfoBaseType Date = new("DATE");
-    public string Value { get; protected set; }
-
-    public override string ToString() => Value.ToUpper();
-    
-    public bool Equals(string s) => s.ToUpper() == Value.ToUpper();
-    public bool Equals(InfoBaseType other) => Value.ToUpper() == other.Value.ToUpper();
-
-    public InfoBaseType(string value)
-    {
-        Value = value;
-    }
-}
+// public class EntryInfoType : InfoBaseType
+// {
+//     // public static readonly InfoBaseType Passport = new("Passport");
+//     // public static readonly InfoBaseType CompanyDetails = new("CompanyDetails");
+//     public static readonly InfoBaseType Custom = new("Custom");
+//
+//     public EntryInfoType(string value) : base(value)
+//     {
+//     }
+// }
+//
+// public class InfoBaseType
+// {
+//
+// }
 
 public class FtsEntryInfo : IFtsEntity
 {

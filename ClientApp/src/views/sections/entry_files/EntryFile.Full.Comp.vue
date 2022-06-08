@@ -65,7 +65,6 @@ import FileListTable from '../files/File.List.Table.vue';
 
 import {useEntryFileMetaListStore} from "../../../store/entryFile/entryFileMeta.list.store";
 import {onMounted, computed, watch} from 'vue';
-import {selectHelper} from "../../../utils/select_helper";
 import {FileListTableStoreState} from "../../../store/entryFile/entryFile.list.table.store";
 import {useEntryFileCreateStore} from "../../../store/entryFile/entryFile.create.store";
 import {apiEntryFile} from "../../../api/rerources/api_entry_file";
@@ -112,16 +111,6 @@ const onCategoryPopupEdit = async (val: string, newVal: string) => {
     await metaStore.getMeta(props.entryId);
     listStore.value.listRequest.category = newVal;
 }
-// const categoryOptions = computed(() => {
-//     const options: any = [
-//         {label: 'Все', value: '', color: 'secondary'},
-//         {label: 'Без категории', value: null, color: 'secondary'}
-//     ];
-//     if (metaStore.meta) {
-//         options.push(...selectHelper.arrayToSelectOptions(metaStore.meta.categories))
-//     }
-//     return options;
-// });
 
 // const tagsOptions = computed(() => selectHelper.arrayToSelectOptions(props.filesMeta.tags));
 </script>

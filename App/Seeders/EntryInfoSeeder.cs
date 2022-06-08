@@ -52,6 +52,13 @@ public class EntryInfoSeeder : DatabaseSeeder
                 ToUrl(eInfo);
                 Db.EntryInfos.Add(eInfo);
             }
+            
+            for (int j = 0; j < random.Next(5, 15); j++)
+            {
+                var eInfo = CreateEntryInfo(entry.Id);
+                ToCustom(eInfo);
+                Db.EntryInfos.Add(eInfo);
+            }
         }
 
         var entryId = Guid.Parse("01FBDDDD-1D69-4757-A8D2-5050A1AED4D4");
@@ -82,7 +89,7 @@ public class EntryInfoSeeder : DatabaseSeeder
         var note = (EntryInfo) ToNote(eInfoDefault).Clone();
         note.Title = "Note of creator";
         note.Id = Guid.Parse("f23bfe8c-beb4-450e-b28f-1d3c8e6c4bbd");
-        
+
         Db.EntryInfos.Add(phone);
         Db.EntryInfos.Add(email);
         Db.EntryInfos.Add(date);
@@ -116,7 +123,7 @@ public class EntryInfoSeeder : DatabaseSeeder
     {
         var info = new PhoneInfo {Number = "7812000000" + Faker.Random.Number(0, 9), Region = "RU"};
         eInfo.Value = JsonSerializer.Serialize(info, InfoValue.WriteOptions);
-        eInfo.Type = InfoBaseType.Phone.ToString();
+        eInfo.Type = EntryInfo.Phone;
         return eInfo;
     }
     
@@ -124,7 +131,7 @@ public class EntryInfoSeeder : DatabaseSeeder
     {
         var info = new EmailInfo() {Email = Faker.Internet.Email()};
         eInfo.Value = JsonSerializer.Serialize(info, InfoValue.WriteOptions);
-        eInfo.Type = InfoBaseType.Email.ToString();
+        eInfo.Type = EntryInfo.Email;
         return eInfo;
     }
     
@@ -132,7 +139,7 @@ public class EntryInfoSeeder : DatabaseSeeder
     {
         var info = new UrlInfo() {Url = Faker.Internet.Url()};
         eInfo.Value = JsonSerializer.Serialize(info, InfoValue.WriteOptions);
-        eInfo.Type = InfoBaseType.Url.ToString();
+        eInfo.Type = EntryInfo.Url;
         return eInfo;
     }
     
@@ -140,7 +147,7 @@ public class EntryInfoSeeder : DatabaseSeeder
     {
         var info = new NoteInfo() {Note = Faker.Random.Words()};
         eInfo.Value = JsonSerializer.Serialize(info, InfoValue.WriteOptions);
-        eInfo.Type = InfoBaseType.Note.ToString();
+        eInfo.Type = EntryInfo.Note;
         return eInfo;
     }
     
@@ -148,7 +155,45 @@ public class EntryInfoSeeder : DatabaseSeeder
     {
         var info = new DateInfo() {Date = Faker.Date.Past()};
         eInfo.Value = JsonSerializer.Serialize(info, InfoValue.WriteOptions);
-        eInfo.Type = InfoBaseType.Date.ToString();
+        eInfo.Type = EntryInfo.Date;
+        return eInfo;
+    }
+    
+    private EntryInfo ToCustom(EntryInfo eInfo)
+    {
+        List<CustomInfoGroup> groups = new();
+        var random = new Random();
+
+        for (int i = 0; i < random.Next(2, 7); i++)
+        {
+            List<CustomInfoItem> items = new();
+
+            for (int j = 0; j < random.Next(1, 20); j++)
+            {
+                var item = new CustomInfoItem
+                {
+                    Key = Faker.Random.ArrayElement(new[] {Faker.Random.Words(), ""}),
+                    Value = Faker.Lorem.Paragraph(1)
+                };
+                items.Add(item);
+            }
+            
+            var group = new CustomInfoGroup()
+            {
+                Title = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), ""}),
+                Items = items
+            };
+            
+            groups.Add(group);
+        }
+        
+        var info = new CustomInfo()
+        {
+            Groups = groups
+        };
+        
+        eInfo.Value = JsonSerializer.Serialize(info, InfoValue.WriteOptions);
+        eInfo.Type = EntryInfo.Custom;
         return eInfo;
     }
 }

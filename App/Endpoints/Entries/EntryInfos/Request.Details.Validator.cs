@@ -13,13 +13,13 @@ public class RequestDetailsValidator : AbstractValidator<EntryInfoRequestDetails
         RuleFor(x => x.DeletedReason).NotNull().Length(0, 250);
         RuleFor(x => x.Info).NotEmpty();
 
-        When(x => InfoBaseType.Email.Equals(x.Type), () =>
+        When(x => EntryInfo.Email.Equals(x.Type), () =>
         {
             RuleFor(x => x.Email()).NotEmpty();
             RuleFor(x => x.Email()!.Email).NotEmpty().EmailAddress();
         });
 
-        When(x => InfoBaseType.Phone.Equals(x.Type), () =>
+        When(x => EntryInfo.Phone.Equals(x.Type), () =>
         {
             RuleFor(x => x.PhoneUnformatted()).NotEmpty();
             RuleFor(x => x.PhoneUnformatted()!.Number).NotEmpty();
@@ -30,19 +30,19 @@ public class RequestDetailsValidator : AbstractValidator<EntryInfoRequestDetails
                 ;
         });
         
-        When(x => InfoBaseType.Note.Equals(x.Type), () =>
+        When(x => EntryInfo.Note.Equals(x.Type), () =>
         {
             RuleFor(x => x.Note()).NotEmpty();
             RuleFor(x => x.Note()!.Note).NotEmpty().MaximumLength(300);
         });
         
-        When(x => InfoBaseType.Date.Equals(x.Type), () =>
+        When(x => EntryInfo.Date.Equals(x.Type), () =>
         {
             RuleFor(x => x.Date()).NotEmpty();
             RuleFor(x => x.Date()!.Date).NotEmpty().NotEqual(default(DateTime));
         });
         
-        When(x => InfoBaseType.Url.Equals(x.Type), () =>
+        When(x => EntryInfo.Url.Equals(x.Type), () =>
         {
             RuleFor(x => x.Url()).NotEmpty();
             RuleFor(x => x.Url()!.Url)
@@ -52,7 +52,7 @@ public class RequestDetailsValidator : AbstractValidator<EntryInfoRequestDetails
                 ;
         });
         
-        When(x => EntryInfoType.Custom.Equals(x.Type), () =>
+        When(x => EntryInfo.Custom.Equals(x.Type), () =>
         {
             RuleFor(x => x.Custom()).NotEmpty();
             RuleForEach(x => x.Custom()!.Groups).NotEmpty();

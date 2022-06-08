@@ -7,11 +7,11 @@ const entryTypeNames = {
     Meet: 'Встреча',
 };
 const entryInfoTypes = {
-    Phone: 'Телефон',
-    Email: 'E-mail',
-    Url: 'Ссылка',
-    Note: 'Заметка',
-    Date: 'Дата'
+    PHONE: 'Телефон',
+    EMAIL: 'E-mail',
+    URL: 'Ссылка',
+    NOTE: 'Заметка',
+    DATE: 'Дата',
 }
 
 export const timeStampMessages = {

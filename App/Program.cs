@@ -38,11 +38,6 @@ builder.Services.AddTransient<EntryRepository>();
 
 // EntryInfo
 builder.Services.AddTransient<EntryInfoRepository>();
-// builder.Services.AddTransient<EntryDateRepository>();
-// builder.Services.AddTransient<EntryEmailRepository>();
-// builder.Services.AddTransient<EntryNoteRepository>();
-// builder.Services.AddTransient<EntryPhoneRepository>();
-// builder.Services.AddTransient<EntryUrlRepository>();
 
 builder.Services.AddTransient<EntryFileRepository>();
 

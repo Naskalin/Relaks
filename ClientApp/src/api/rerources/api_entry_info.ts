@@ -30,18 +30,4 @@ class ApiEntryInfoGeneric<TModel, TCreateRequest, TUpdateRequest, TListRequest> 
     }
 }
 
-// export const apiEntryPhone = new ApiEntryInfoGeneric<InfoPhone, EntryPhoneFormRequest, EntryPhoneFormRequest, ApiListRequest>('phones');
-// export const apiEntryDate = new ApiEntryInfoGeneric<InfoDate, EntryDateFormRequest, EntryDateFormRequest, ApiListRequest>('dates');
-// export const apiEntryNote = new ApiEntryInfoGeneric<InfoNote, EntryNoteFormRequest, EntryNoteFormRequest, ApiListRequest>('notes');
-// export const apiEntryUrl = new ApiEntryInfoGeneric<InfoUrl, EntryUrlFormRequest, EntryUrlFormRequest, ApiListRequest>('urls');
-// export const apiEntryEmail = new ApiEntryInfoGeneric<InfoEmail, EntryEmailFormRequest, EntryEmailFormRequest, ApiListRequest>('emails');
-
-// export const apiEntryInfo = {
-//     Phone: apiEntryPhone,
-//     Date: apiEntryDate,
-//     Note: apiEntryNote,
-//     Url: apiEntryUrl,
-//     Email: apiEntryEmail,
-// }
-
 export const apiEntryInfo = new ApiEntryInfoGeneric<EntryInfo, EntryInfoFormRequest, EntryInfoFormRequest, EntryInfoListRequest>('entry-infos');

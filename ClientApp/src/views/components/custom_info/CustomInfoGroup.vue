@@ -1,5 +1,4 @@
 ﻿<template>
-
     <div class="row q-col-gutter-md">
         <div class="col-auto">
             <q-btn
@@ -75,7 +74,7 @@
         </draggable>
     </q-markup-table>
     <div v-if="!isMinimize" class="q-mt-md">
-        <q-btn label="Добавить строку" icon="las la-plus-circle" color="secondary" @click="addItem"/>
+        <q-btn label="Добавить строку" icon="las la-plus-circle" color="secondary" outline @click="addItem"/>
     </div>
 </template>
 
