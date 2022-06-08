@@ -8,11 +8,11 @@
 </template>
 
 <script setup lang="ts">
-import {InfoEmail} from "../../api/api_types";
+import {EmailInfo} from "../../api/api_types";
 
 defineProps<{
     iconColor?: string
-    email: InfoEmail
+    email: EmailInfo
     withLink?: boolean
 }>()
 </script>

@@ -52,6 +52,12 @@ public static class InfoValue
         return eInfo.Info.Deserialize<DateInfo>(WriteOptions);
     }
     
+    public static CustomInfo? Custom(this IInfoData eInfo)
+    {
+        if (!EntryInfoType.Custom.Equals(eInfo.Type)) return null;
+        return eInfo.Info.Deserialize<CustomInfo>(WriteOptions);
+    }
+    
     public static UrlInfo? Url(this IInfoData eInfo)
     {
         if (!InfoBaseType.Url.Equals(eInfo.Type)) return null;

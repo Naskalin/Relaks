@@ -7,11 +7,11 @@
 
 <script setup lang="ts">
 import parsePhoneNumber from 'libphonenumber-js';
-import {InfoPhone} from "../../api/api_types";
+import {PhoneInfo} from "../../api/api_types";
 import {computed} from 'vue';
 
 const props = defineProps<{
-    phone: InfoPhone
+    phone: PhoneInfo
 }>()
 
 const numberFormat = computed(() => {

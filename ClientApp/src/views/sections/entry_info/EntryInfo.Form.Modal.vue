@@ -1,6 +1,6 @@
 ﻿<template>
     <modal v-model:is-show="isShow" :title="title">
-        <q-card-section class="q-gutter-y-md" :class="{'max-height-scrollable': entryInfoType === 'Note'}">
+        <q-card-section class="q-gutter-y-md" :class="{'max-height-scrollable': entryInfoType === 'NOTE'}">
             <q-form autocorrect="off"
                     autocapitalize="off"
                     autocomplete="off"

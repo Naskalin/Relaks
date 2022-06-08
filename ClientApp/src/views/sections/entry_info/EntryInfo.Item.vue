@@ -8,11 +8,11 @@
                     </meta-tooltip>
                 </div>
                 <div class="col">
-                    <date v-if="eInfo.type === 'Date'" :date="eInfo.info.date"></date>
-                    <url v-else-if="eInfo.type === 'Url'" :url="eInfo.info"></url>
-                    <email v-else-if="eInfo.type === 'Email'" :email="eInfo.info"></email>
-                    <phone v-else-if="eInfo.type === 'Phone'" :phone="eInfo.info"></phone>
-                    <note v-else-if="eInfo.type === 'Note'" :note="eInfo.info"/>
+                    <date v-if="eInfo.type === 'DATE'" :date="eInfo.info.date"></date>
+                    <url v-else-if="eInfo.type === 'URL'" :url="eInfo.info"></url>
+                    <email v-else-if="eInfo.type === 'EMAIL'" :email="eInfo.info"></email>
+                    <phone v-else-if="eInfo.type === 'PHONE'" :phone="eInfo.info"></phone>
+                    <note v-else-if="eInfo.type === 'NOTE'" :note="eInfo.info"/>
                     <q-item-label v-if="eInfo.title" class="text-grey-9">{{ eInfo.title }}</q-item-label>
                     <q-item-label v-if="eInfo.deletedReason" class="text-negative">{{ eInfo.deletedReason }}</q-item-label>
                 </div>

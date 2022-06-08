@@ -111,7 +111,7 @@ watch(() => props.entryId, async () => {
 const editStore = useEntryInfoEditStore();
 const isShowEditModal = ref(false);
 const currentEditId = ref('');
-const entryInfoType = ref<EntryInfoType>('Phone');
+const entryInfoType = ref<EntryInfoType>('PHONE');
 const showEditForm = (eInfo: any) => {
     if (props?.withEdit !== true) {
         return;

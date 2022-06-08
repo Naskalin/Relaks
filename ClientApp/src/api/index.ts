@@ -10,7 +10,7 @@ axios.interceptors.response.use((resp) => resp, (error) => {
 
 const axiosApi = axios.create({
     baseURL: '/api',
-    paramsSerializer: params => qs.stringify(params, {arrayFormat: 'repeat'})
+    paramsSerializer: params => qs.stringify(params, {arrayFormat: 'repeat', skipNulls: true})
 })
 
 export const appApi = {

@@ -1,19 +1,22 @@
 ﻿<template>
     <div class="row">
         <div class="col-3" style="min-width: 350px">
-            <entry-card v-if="profileStore.entry"
-                          :with-edit="true"
-                          @update-entry="reloadEntry"
-                          :entry="profileStore.entry"></entry-card>
+            <entry-card
+                v-if="profileStore.entry"
+                :with-edit="true"
+                @update-entry="reloadEntry"
+                :entry="profileStore.entry"
+            />
         </div>
         <div class="col">
             <div class="q-ml-lg">
-                <q-tabs inline-label align="left">
-                    <q-route-tab v-for="(label, routeName) in entryMessages.profile.tabs"
-                                 :key="routeName"
-                                 :label="label"
-                                 :to="{ name: routeName, params: {entryId: entryId} }"
-                                 exact
+                <q-tabs v-if="profileStore.entry" inline-label align="left">
+                    <q-route-tab
+                        v-for="(label, routeName) in entryMessages.profile.tabs(profileStore.entry.entryType)"
+                        :key="routeName"
+                        :label="label"
+                        :to="{ name: routeName, params: {entryId: entryId} }"
+                        exact
                     />
                 </q-tabs>
                 <q-separator/>
@@ -45,4 +48,5 @@ onMounted(async () => {
     // initialize entry
     await profileStore.getEntry(entryId);
 })
+
 </script>

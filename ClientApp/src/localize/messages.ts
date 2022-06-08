@@ -1,4 +1,5 @@
 ﻿import {selectHelper} from "../utils/select_helper";
+import {EntryType} from "../api/api_types";
 
 const entryTypeNames = {
     Person: 'Человек',
@@ -50,14 +51,20 @@ export const entryMessages = {
         }
     },
     profile: {
-        tabs: {
-            'entry-note-list': 'Заметки',
-            // 'entry-contact-list': 'Контакты',
-            'entry-file-list': 'Файлы',
-            // dates: 'Даты',
-            // kinship: 'Родство',
-            // structures: 'Структуры',
-        }
+        tabs: (entryType: EntryType) => {
+            let entryAboutName = 'О человеке';
+            if (entryType == 'Meet') entryAboutName = 'О встрече';
+            else if (entryType == 'Company') entryAboutName = 'О компании';
+            
+            return {
+                'entry-about': entryAboutName,
+                // 'entry-contact-list': 'Контакты',
+                'entry-file-list': 'Файлы',
+                // dates: 'Даты',
+                // kinship: 'Родство',
+                // structures: 'Структуры',
+            }
+        },
     },
     startAtNull: 'Дата рождения/регистрации/начала',
     startAt: {

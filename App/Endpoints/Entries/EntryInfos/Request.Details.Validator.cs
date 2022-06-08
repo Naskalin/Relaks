@@ -11,6 +11,7 @@ public class RequestDetailsValidator : AbstractValidator<EntryInfoRequestDetails
         RuleFor(x => x.Title).NotNull().Length(0, 255);
         RuleFor(x => x.DeletedAt).NotEqual(default(DateTime));
         RuleFor(x => x.DeletedReason).NotNull().Length(0, 250);
+        RuleFor(x => x.Info).NotEmpty();
 
         When(x => InfoBaseType.Email.Equals(x.Type), () =>
         {
@@ -49,6 +50,23 @@ public class RequestDetailsValidator : AbstractValidator<EntryInfoRequestDetails
                 .Must(uri => Uri.TryCreate(uri, UriKind.Absolute, out _))
                 .WithMessage("Здесь нужен абсолютный (полный) url.")
                 ;
+        });
+        
+        When(x => EntryInfoType.Custom.Equals(x.Type), () =>
+        {
+            RuleFor(x => x.Custom()).NotEmpty();
+            RuleForEach(x => x.Custom()!.Groups).NotEmpty();
+            RuleForEach(x => x.Custom()!.Groups)
+                .ChildRules(groups =>
+                {
+                    groups.RuleFor(x => x.Title).NotNull().Length(0, 250);
+                    groups.RuleForEach(x => x.Items).NotEmpty();
+                    groups.RuleForEach(x => x.Items).ChildRules(items =>
+                    {
+                        items.RuleFor(x => x.Key).NotNull().Length(0, 250);
+                        items.RuleFor(x => x.Value).NotNull().Length(1, 250);
+                    });
+                });
         });
     }
 

@@ -24,14 +24,14 @@ export const useEntryInfoListStore = defineStore('EntryInfoListStore', {
         }
     },
     getters: {
-        notes: (state) => (isShowDeleted: boolean | null) => filterByType(isShowDeleted, 'Note', state.list),
-        emails: (state) => (isShowDeleted: boolean | null) => filterByType(isShowDeleted, 'Email', state.list),
-        urls: (state) => (isShowDeleted: boolean | null) => filterByType(isShowDeleted, 'Url', state.list),
-        phones: (state) => (isShowDeleted: boolean | null) => filterByType(isShowDeleted, 'Phone', state.list),
-        dates: (state) => (isShowDeleted: boolean | null) => filterByType(isShowDeleted, 'Date', state.list),
-        passports: (state) => (isShowDeleted: boolean | null) => filterByType(isShowDeleted, 'Passport', state.list),
-        companyDetails: (state) => (isShowDeleted: boolean | null) => filterByType(isShowDeleted, 'CompanyDetails', state.list),
-        customs: (state) => (isShowDeleted: boolean | null) => filterByType(isShowDeleted, 'Custom', state.list),
+        notes: (state) => (isShowDeleted: boolean | null) => filterByType(isShowDeleted, 'NOTE', state.list),
+        emails: (state) => (isShowDeleted: boolean | null) => filterByType(isShowDeleted, 'EMAIL', state.list),
+        urls: (state) => (isShowDeleted: boolean | null) => filterByType(isShowDeleted, 'URL', state.list),
+        phones: (state) => (isShowDeleted: boolean | null) => filterByType(isShowDeleted, 'PHONE', state.list),
+        dates: (state) => (isShowDeleted: boolean | null) => filterByType(isShowDeleted, 'DATE', state.list),
+        passports: (state) => (isShowDeleted: boolean | null) => filterByType(isShowDeleted, 'PASSPORT', state.list),
+        companyDetails: (state) => (isShowDeleted: boolean | null) => filterByType(isShowDeleted, 'COMPANY_DETAILS', state.list),
+        customs: (state) => (isShowDeleted: boolean | null) => filterByType(isShowDeleted, 'CUSTOM', state.list),
     },
     actions: {
         async getAll(entryId: string) {

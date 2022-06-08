@@ -14,18 +14,18 @@
         type="textarea"
     />
     
-    <q-input v-if="entryInfoType === 'Email'" type="email" :label="entryInfoMessages.val.names.Email" v-model="model.info.email"/>
-    <q-input v-else-if="entryInfoType === 'Url'" type="url" :label="entryInfoMessages.val.names.Url" v-model="model.info.url"/>
-    <phone-field v-else-if="entryInfoType === 'Phone'" v-model="model.info"/>
-    <date-field v-else-if="entryInfoType === 'Date'" v-model="model.info.date"/>
-    <q-input v-else-if="entryInfoType === 'Note'" 
+    <q-input v-if="entryInfoType === 'EMAIL'" type="email" :label="entryInfoMessages.val.names.Email" v-model="model.info.email"/>
+    <q-input v-else-if="entryInfoType === 'URL'" type="url" :label="entryInfoMessages.val.names.Url" v-model="model.info.url"/>
+    <phone-field v-else-if="entryInfoType === 'PHONE'" v-model="model.info"/>
+    <date-field v-else-if="entryInfoType === 'DATE'" v-model="model.info.date"/>
+    <q-input v-else-if="entryInfoType === 'NOTE'" 
              v-model="model.info.note"
              :label="entryInfoMessages.val.names.Note"
              counter
              maxlength="300"
              type="text"
     />
-<!--    <q-editor v-else-if="entryInfoType === 'Note'"-->
+<!--    <q-editor v-else-if="entryInfoType === 'NOTE'"-->
 <!--              @paste="onPaste"-->
 <!--              ref="editorRef"-->
 <!--              toolbar-bg="grey-4"-->

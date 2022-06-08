@@ -8,11 +8,11 @@
 </template>
 
 <script setup lang="ts">
-import {InfoUrl} from "../../api/api_types";
+import {UrlInfo} from "../../api/api_types";
 
 defineProps<{
     iconColor?: string
-    url: InfoUrl
+    url: UrlInfo
     withLink?: boolean
 }>()
 </script>

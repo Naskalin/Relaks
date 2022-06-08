@@ -6,10 +6,10 @@
 </template>
 
 <script setup lang="ts">
-import {InfoNote} from "../../api/api_types";
+import {NoteInfo} from "../../api/api_types";
 
 defineProps<{
     iconColor?: string
-    note: InfoNote
+    note: NoteInfo
 }>()
 </script>

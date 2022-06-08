@@ -1,5 +1,5 @@
 ﻿<template>
-    <h5 class="q-my-md">{{ entryMessages.profile.tabs['entry-file-list'] }}</h5>
+    <h5 class="q-my-md">Файлы</h5>
     <div style="width: 500px">
         <div class="q-mb-sm">
             <entry-file-create @onUploaded="onUploaded" :entry-id="entryId"/>
@@ -8,18 +8,6 @@
     </div>
 
     <br>
-
-<!--    <file-list-table-->
-<!--        @getFiles="listStore.getFiles(entryId)"-->
-<!--        :entry-id="entryId"-->
-<!--        class="list-table"-->
-<!--        with-edit-->
-<!--        with-download-->
-<!--        with-explorer-->
-<!--        v-model:list-store="listStore"-->
-<!--        @showEdit="onShowEdit"-->
-<!--        @clickAvatar="file => explorer(file.id)"-->
-<!--    />-->
     
     <entry-file-full-comp
         @getFiles="listStore.getFiles(entryId)"
@@ -51,7 +39,6 @@ import FileEditModal from '../files/File.Edit.Modal.vue';
 import EntryFileCreate from './EntryFile.Create.vue';
 import EntryFileFullComp from './EntryFile.Full.Comp.vue';
 
-import {entryMessages} from "../../../localize/messages";
 import {useRoute} from "vue-router";
 import {useFileListTableStore} from "../../../store/entryFile/entryFile.list.table.store";
 import {useEntryFileEditStore} from "../../../store/entryFile/entryFile.edit.store";

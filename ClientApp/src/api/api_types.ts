@@ -1,8 +1,8 @@
 ﻿import {ApiListRequest} from "./index";
 
 export declare type EntryType = 'Person' | 'Company' | 'Meet';
-export declare type EntryInfoType = 'Note' | 'Phone' | 'Email' | 'Url' | 'Date' | 'Passport' | 'CompanyDetails' | 'Custom';
-export declare type EntryInfoObjectType = InfoDate | InfoEmail | InfoNote | InfoUrl | InfoPhone;
+export declare type EntryInfoType = 'NOTE' | 'PHONE' | 'EMAIL' | 'URL' | 'DATE' | 'PASSPORT' | 'COMPANY_DETAILS' | 'CUSTOM';
+export declare type EntryInfoObjectType = DateInfo | EmailInfo | NoteInfo | UrlInfo | PhoneInfo | CustomInfo;
 
 // export declare type ActualTypes = {
 //     actualStartAt: string
@@ -68,26 +68,26 @@ export declare type EntryInfo = {
 
 // EntryDate
 // export declare type EntryDateFormRequest = { date: string } & EntryInfoCommonFormRequest
-export declare type InfoDate = { date: string }
+export declare type DateInfo = { date: string }
 
 // EntryNote
 // export declare type EntryNoteFormRequest = { note: string } & EntryInfoCommonFormRequest
-export declare type InfoNote = { note: string }
+export declare type NoteInfo = { note: string }
 
 // EntryPhone
 // export declare type EntryPhoneFormRequest = { phoneNumber: string, phoneRegion: string } & EntryInfoCommonFormRequest
-export declare type InfoPhone = {
+export declare type PhoneInfo = {
     number: string
     region: string
 }
 
 // EntryEmail
 // export declare type EntryEmailFormRequest = { email: string } & EntryInfoCommonFormRequest
-export declare type InfoEmail = { email: string }
+export declare type EmailInfo = { email: string }
 
 // EntryUrl
 // export declare type EntryUrlFormRequest = { url: string } & EntryInfoCommonFormRequest
-export declare type InfoUrl = { url: string }
+export declare type UrlInfo = { url: string }
 
 export declare type FileModel = {
     id: string
@@ -131,6 +131,18 @@ export declare type FileDownloadRequest = {
     imageFilter?: string
 }
 
+export declare type CustomInfo = {
+    groups: CustomInfoGroup[]
+}
+
+export declare type CustomInfoGroup = {
+    title: string
+    items: CustomInfoItem[]
+}
+export declare type CustomInfoItem = {
+    key: string,
+    value: string
+}
 // export declare type EntryFileCreateRequest = FormData
 
 // export declare type CreateEntryTextRequest = {

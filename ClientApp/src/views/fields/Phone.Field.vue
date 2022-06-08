@@ -35,17 +35,17 @@
 import {countries} from "countries-list";
 import {ref, computed, onMounted} from "vue";
 import {appDefaults} from "../../app_defaults";
-import {InfoPhone} from "../../api/api_types";
+import {PhoneInfo} from "../../api/api_types";
 
 type SelectItem = {
     value: string,
     label: string
 }
 const props = defineProps<{
-    modelValue: InfoPhone
+    modelValue: PhoneInfo
 }>()
 const emit = defineEmits<{
-    (e: 'update:modelValue', val: InfoPhone): void
+    (e: 'update:modelValue', val: PhoneInfo): void
 }>()
 
 const model = computed({

@@ -47,9 +47,9 @@ public class EntryInfo : BaseEntity, ITimestampResource, ISoftDelete, IInfoData,
 
 public class EntryInfoType : InfoBaseType
 {
-    public static readonly InfoBaseType Passport = new("Passport");
-    public static readonly InfoBaseType CompanyDetails = new("CompanyDetails");
-    public static readonly InfoBaseType Custom = new("Custom");
+    // public static readonly InfoBaseType Passport = new("PASSPORT");
+    // public static readonly InfoBaseType CompanyDetails = new("COMPANY_DETAILS");
+    public static readonly InfoBaseType Custom = new("CUSTOM");
 
     public EntryInfoType(string value) : base(value)
     {
@@ -58,11 +58,11 @@ public class EntryInfoType : InfoBaseType
 
 public class InfoBaseType
 {
-    public static readonly InfoBaseType Phone = new("Phone");
-    public static readonly InfoBaseType Email = new("Email");
-    public static readonly InfoBaseType Url = new("Url");
-    public static readonly InfoBaseType Note = new("Note");
-    public static readonly InfoBaseType Date = new("Date");
+    public static readonly InfoBaseType Phone = new("PHONE");
+    public static readonly InfoBaseType Email = new("EMAIL");
+    public static readonly InfoBaseType Url = new("URL");
+    public static readonly InfoBaseType Note = new("NOTE");
+    public static readonly InfoBaseType Date = new("DATE");
     public string Value { get; protected set; }
 
     public override string ToString() => Value.ToUpper();
@@ -134,17 +134,36 @@ public enum CustomInfoType
     Date
 }
 
-public record CustomItem
+public record CustomInfoItem
 {
     public string Key { get; set; } = null!;
-    public CustomInfoType Type { get; set; }
-    public string Val { get; set; } = null!;
+    public string Value { get; set; } = null!;
+}
+
+public record CustomInfoGroup
+{
+    public string Title { get; set; } = null!;
+    public List<CustomInfoItem> Items { get; set; } = new();
 }
 
 public record CustomInfo
 {
-    public List<CustomItem> Items { get; set; } = new();
+    public List<CustomInfoGroup> Groups { get; set; } = new();
 }
+
+// export declare type CustomInfo = {
+//     title: string
+//     groups: CustomInfoGroup[]
+// }
+//
+// export declare type CustomInfoGroup = {
+//     title: string
+//     items: CustomInfoItem[]
+// }
+// export declare type CustomInfoItem = {
+//     key: string,
+//     value: string
+// }
 
 // public record PassportInfo
 // {

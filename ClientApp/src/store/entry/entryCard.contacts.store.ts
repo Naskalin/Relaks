@@ -51,7 +51,7 @@
 //             await this.getDates(entryId);
 //             await this.getUrls(entryId);
 //         },
-//         async getBase(entryId: string, key: 'Phone' | 'Email' | 'Url' | 'Date') {
+//         async getBase(entryId: string, key: 'PHONE' | 'EMAIL' | 'URL' | 'DATE') {
 //             if (this[key].isLoading) {
 //                 return;
 //             }
@@ -64,16 +64,16 @@
 //             }
 //         },
 //         async getPhones(entryId: string) {
-//             await this.getBase(entryId, 'Phone');
+//             await this.getBase(entryId, 'PHONE');
 //         },
 //         async getUrls(entryId: string) {
-//             await this.getBase(entryId, 'Url');
+//             await this.getBase(entryId, 'URL');
 //         },
 //         async getEmails(entryId: string) {
-//             await this.getBase(entryId, 'Email');
+//             await this.getBase(entryId, 'EMAIL');
 //         },
 //         async getDates(entryId: string) {
-//             await this.getBase(entryId, 'Date');
+//             await this.getBase(entryId, 'DATE');
 //         }
 //     }
 // })

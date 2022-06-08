@@ -29,11 +29,11 @@
         <q-card-section v-if="withEdit" class="q-gutter-x-sm text-center flex justify-center">
             <q-btn round @click="isShowEditModal = true" v-tooltip="'Изменить объединение'" color="primary" icon="las la-edit"/>
             <q-separator vertical color="grey-5" class="q-mx-sm q-ml-md"/>
-            <q-btn round @click="showCreateEntryInfoModal('Phone')" v-tooltip="'Добавить телефон'" color="primary" icon="las la-phone"/>
-            <q-btn round @click="showCreateEntryInfoModal('Email')" v-tooltip="'Добавить e-mail'" color="primary" icon="las la-envelope"/>
-            <q-btn round @click="showCreateEntryInfoModal('Url')" v-tooltip="'Добавить ссылку'" color="primary" icon="las la-link"/>
-            <q-btn round @click="showCreateEntryInfoModal('Date')" v-tooltip="'Добавить дату'" color="primary" icon="las la-calendar"/>
-            <q-btn round @click="showCreateEntryInfoModal('Note')" v-tooltip="'Добавить заметку'" color="primary" icon="las la-file-alt"/>
+            <q-btn round @click="showCreateEntryInfoModal('PHONE')" v-tooltip="'Добавить телефон'" color="primary" icon="las la-phone"/>
+            <q-btn round @click="showCreateEntryInfoModal('EMAIL')" v-tooltip="'Добавить e-mail'" color="primary" icon="las la-envelope"/>
+            <q-btn round @click="showCreateEntryInfoModal('URL')" v-tooltip="'Добавить ссылку'" color="primary" icon="las la-link"/>
+            <q-btn round @click="showCreateEntryInfoModal('DATE')" v-tooltip="'Добавить дату'" color="primary" icon="las la-calendar"/>
+            <q-btn round @click="showCreateEntryInfoModal('NOTE')" v-tooltip="'Добавить заметку'" color="primary" icon="las la-file-alt"/>
         </q-card-section>
 
         <q-card-section class="text-center">
@@ -180,7 +180,7 @@ const updateEntry = async () => {
 // Добавление entryText email/phone/url
 const entryInfoCreateStore = useEntryInfoCreateStore();
 const isShowCreateModal = ref(false);
-const entryInfoFormType = ref<EntryInfoType>('Phone');
+const entryInfoFormType = ref<EntryInfoType>('PHONE');
 const showCreateEntryInfoModal = (type: EntryInfoType) => {
     if (props.withEdit) {
         entryInfoFormType.value = type;

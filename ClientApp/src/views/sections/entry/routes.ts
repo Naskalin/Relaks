@@ -3,50 +3,20 @@
 import ListEntry from './Entry.List.vue';
 import Profile from './Entry.Profile.vue';
 import EntryFileList from '../entry_files/EntryFile.List.vue';
+import EntryAbout from '../entry_about/EntryAbout.vue';
 
-import {entryNoteRoutes} from "../entry_note/routes";
+import EntryInfoCustomNew from '../entry_about/entry_info_custom/New.vue';
 
 export const entryRoutes: RouteRecordRaw[] = [
     {path: '/entries', component: ListEntry, name: 'entry-list'},
     {
         path: '/entries/:entryId', component: Profile, name: 'entry-profile',
         redirect: (to: any) => {
-            return {name: 'entry-note-list', params: {entryId: to.params.entryId}}
+            return {name: 'entry-about', params: {entryId: to.params.entryId}}
         },
         children: [
-            ...entryNoteRoutes,
-            {component: EntryFileList, path: 'files', name: 'entry-file-list'}
+            {component: EntryAbout, path: '', name: 'entry-about'},
+            {component: EntryFileList, path: 'files', name: 'entry-file-list'},
         ]
     }
 ];
-
-// {
-//     path: '/entries',
-//         name: 'entries',
-//     component: ListEntry,
-// },
-// // {
-// //     path: '/entries/create',
-// //     name: 'entries-create',
-// //     component: CreateEntry,
-// // },
-// {
-//     path: '/entries/:id',
-//         name: 'entries-profile',
-//     component: ProfileLayout,
-//     redirect: (to: any) => {
-//     return {name: 'entry-notes', params: {id: to.params.id}}
-// },
-//     children: [
-//     {
-//         name: 'entry-notes',
-//         path: '',
-//         component: EntryNotes,
-//     },
-//     {
-//         name: 'entry-files',
-//         path: 'files',
-//         component: EntryFiles,
-//     }
-// ]
-// }
