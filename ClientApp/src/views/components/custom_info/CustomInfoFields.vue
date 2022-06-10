@@ -42,7 +42,7 @@
     </div>
     
     <div class="q-my-lg flex justify-between">
-        <q-btn label="Сохранить набор данных" @click="emit('save', model)" icon="las la-save" color="primary"/>
+        <q-btn label="Сохранить набор данных" type="submit" @click="emit('save', model)" icon="las la-save" color="primary"/>
         <q-btn color="negative" @click="onDelete" label="Удалить набор данных" icon="las la-trash"/>
     </div>
 </template>

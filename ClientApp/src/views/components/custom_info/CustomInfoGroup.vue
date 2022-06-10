@@ -56,7 +56,7 @@
                         </q-input>
                     </td>
                     <td>
-                        <q-input v-model="groupModel.items[index].value" filled counter dense maxlength="250" autogrow>
+                        <q-input v-model="groupModel.items[index].value" required="required" filled counter dense maxlength="250" autogrow>
                             <template v-slot:prepend>
                                 <q-icon name="las la-comment" />
                             </template>
