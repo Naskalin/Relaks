@@ -1,4 +1,15 @@
 ﻿<template>
+    <div class="q-my-md">
+        <q-btn label="Добавить группу в начало" icon="las la-plus-circle" outline color="secondary" @click="unshiftGroup"/>
+        &nbsp;
+        <q-btn
+            v-if="model.groups.length"
+            @click="isMinimizeGroups = !isMinimizeGroups"
+            :label="isMinimizeGroups ? 'Развернуть группы' : 'Свернуть группы'"
+            :icon="isMinimizeGroups ? 'las la-eye' : 'las la-eye-slash'"
+            outline
+            color="positive"/>
+    </div>
     
     <draggable
         v-model="model.groups"
@@ -19,7 +30,7 @@
     </draggable>
 
     <div class="q-my-md">
-        <q-btn label="Добавить группу" icon="las la-plus-circle" color="secondary" @click="addGroup"/>
+        <q-btn label="Добавить группу в конец" icon="las la-plus-circle" outline color="secondary" @click="pushGroup"/>
         &nbsp;
         <q-btn
             v-if="model.groups.length"
@@ -32,7 +43,7 @@
     
     <div class="q-my-lg flex justify-between">
         <q-btn label="Сохранить набор данных" @click="emit('save', model)" icon="las la-save" color="primary"/>
-        <q-btn color="negative" @click="onDelete" label="Удалить набор данных" icon="las la-trash" outline/>
+        <q-btn color="negative" @click="onDelete" label="Удалить набор данных" icon="las la-trash"/>
     </div>
 </template>
 
@@ -60,14 +71,18 @@ const model = computed({
 });
 
 onMounted(() => {
-    if (!model.value.groups.length) addGroup();
+    if (!model.value.groups.length) pushGroup();
 })
 
-const addGroup = () => {
-    model.value.groups.push({
-        title: '',
-        items: [{key: '', value: ''}]
-    })
+const groupData = {
+    title: '',
+    items: [{key: '', value: ''}]
+};
+const pushGroup = () => {
+    model.value.groups.push(Object.assign({}, groupData))
+}
+const unshiftGroup = () => {
+    model.value.groups.unshift(Object.assign({}, groupData))
 }
 const removeGroup = (index: number) => {
     model.value.groups.splice(index, 1);

@@ -4,26 +4,50 @@
             <h5 v-if="profileStore.entry" class="q-my-md">
                 {{ entryMessages.profile.tabs(profileStore.entry.entryType)["entry-about"] }}
             </h5>
+            <q-btn
+                v-if="formStore.status"
+                @click="formStore.$reset()"
+                label="Вернуться без сохранения"
+                icon="las la-angle-left"
+                outline
+                color="secondary"
+            />
         </div>
         <div class="col-auto">
             <q-btn
-                v-if="state !== 'new'"
-                @click="state = 'new'; formStore.$reset()"
+                v-if="!formStore.status"
+                @click="formStore.status = 'new'"
                 label="Добавить набор данных"
                 icon="las la-plus-circle"
                 color="secondary"
             />
         </div>
     </div>
-    <div v-if="state === 'new'">
-        {{formStore.model}}
+    <div v-if="formStore.status === 'new'">
         <h5 class="q-mb-sm">Добавление набора данных</h5>
-        <entry-info-custom-form @delete="state = null; formStore.$reset()" @save="createNew"/>
+        <entry-info-custom-form @delete="formStore.$reset()" @save="createNew"/>
+    </div>
+    <div v-else-if="formStore.status === 'edit'">
+        <h5 class="q-mb-sm">Изменение набора данных</h5>
+        <entry-info-custom-form @delete="onDelete" @save="createNew"/>
     </div>
     <template v-else-if="infoListStore.customs(null)">
         <q-card v-for="eInfo in infoListStore.customs(null)" class="q-mb-lg">
-            <q-card-section v-if="eInfo.title" class="q-pb-none">
-                <div class="text-h6">{{eInfo.title}}</div>
+            <q-card-section class="q-pb-none">
+                <div class="row justify-between">
+                    <div class="col">
+                        <div class="text-h6">{{eInfo.title}}</div>
+                    </div>
+                    <div class="col-auto">
+                        <q-btn
+                            @click="formStore.model = Object.assign({}, eInfo); formStore.status = 'edit'"
+                            round
+                            icon="las la-edit"
+                            color="secondary"
+                            outline
+                            v-tooltip="'Изменить'"/>
+                    </div>
+                </div>
             </q-card-section>
             <q-card-section>
                 <div class="groups">
@@ -60,23 +84,45 @@ import EntryInfoCustomForm from './entry_info_custom/Form.vue';
 import {useEntryInfoListStore} from "../../../store/entry_info/entryInfo.list.store";
 import {useRoute} from "vue-router";
 import {useEntryInfoCustomFormStore} from "./entry_info_custom/entry_info_custom_form_store";
-import {ref} from 'vue';
 import {apiEntryInfo} from "../../../api/rerources/api_entry_info";
 
 const entryId = (useRoute()).params.entryId as string;
 const profileStore = useEntryProfileStore();
 const infoListStore = useEntryInfoListStore();
 const formStore = useEntryInfoCustomFormStore();
-const state = ref<'new' | 'edit' | null>(null);
 const createNew = async (val: any) => {
     if (formStore.isLoading) return;
     formStore.isLoading = true;
 
     try {
         const eInfo = await apiEntryInfo.create(entryId, formStore.model);
-        infoListStore.list.push(eInfo);
-        state.value = null;
-        infoListStore.$reset();
+        infoListStore.list.unshift(eInfo);
+        formStore.$reset();
+    } finally {
+        formStore.isLoading = false;
+    }
+}
+const onDelete = async () => {
+    if (formStore.isLoading) return;
+    formStore.isLoading = true;
+    
+    try {
+        const eInfoId = formStore.model.id!;
+        await apiEntryInfo.delete(entryId, eInfoId);
+        await infoListStore.getAll(entryId);
+        formStore.$reset();
+    } finally {
+        formStore.isLoading = false;
+    }
+}
+const onUpdate = async () => {
+    if (formStore.isLoading) return;
+    formStore.isLoading = true;
+    try {
+        const eInfoId = formStore.model.id!;
+        await apiEntryInfo.update(entryId, eInfoId, formStore.model);
+        await infoListStore.getAll(entryId);
+        formStore.$reset();
     } finally {
         formStore.isLoading = false;
     }
