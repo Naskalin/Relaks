@@ -2,11 +2,13 @@
 import {EntryInfoFormRequest} from "../../../../api/api_types";
 
 declare type EntryInfoCustomFormStoreState = {
-    model: EntryInfoFormRequest
+    model: EntryInfoFormRequest,
+    isLoading: boolean,
 }
 export const useEntryInfoCustomFormStore = defineStore('EntryInfoCustomFormStore', {
     state: (): EntryInfoCustomFormStoreState => {
         return {
+            isLoading: false,
             model: {
                 title: '',
                 deletedAt: null,
@@ -18,7 +20,4 @@ export const useEntryInfoCustomFormStore = defineStore('EntryInfoCustomFormStore
             }
         }
     },
-    actions: {
-        
-    }
 })

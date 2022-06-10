@@ -16,6 +16,7 @@ watch(() => store.apiError, (apiError: null | ApiError) => {
         let html = '';
         if (title.length) html += `<div>${title.join(', ')}</div>`;
         
+        
         if (apiError?.errors) {
             for (const [prop, messages] of Object.entries(apiError?.errors)) {
                 html += '<ul>'

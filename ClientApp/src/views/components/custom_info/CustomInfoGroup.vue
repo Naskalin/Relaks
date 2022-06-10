@@ -11,14 +11,18 @@
         </div>
         <div class="col-auto">
             <q-btn @click="isMinimize = !isMinimize"
-                   :icon="isMinimize ? 'las la-eye-slash' : 'las la-eye'"
+                   :icon="isMinimize ? 'las la-eye' : 'las la-eye-slash'"
                    outline
                    round
-                   v-tooltip.left="isMinimize ? 'Раскрыть' : 'Минимизировать'"
+                   v-tooltip.left="isMinimize ? 'Развернуть' : 'Свернуть'"
                    color="positive"/>
         </div>
         <div class="col">
-            <q-input v-model="groupModel.title" filled label="Название группы" counter maxlength="250"/>  
+            <q-input v-model="groupModel.title" filled label="Название группы" counter maxlength="250">
+                <template v-slot:prepend>
+                    <q-icon name="las la-object-ungroup"/>
+                </template>
+            </q-input>
         </div>
         <div class="col-auto">
             <q-btn

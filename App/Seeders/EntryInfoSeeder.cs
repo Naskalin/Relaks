@@ -53,7 +53,7 @@ public class EntryInfoSeeder : DatabaseSeeder
                 Db.EntryInfos.Add(eInfo);
             }
             
-            for (int j = 0; j < random.Next(5, 15); j++)
+            for (int j = 0; j < random.Next(1, 3); j++)
             {
                 var eInfo = CreateEntryInfo(entry.Id);
                 ToCustom(eInfo);
@@ -164,11 +164,11 @@ public class EntryInfoSeeder : DatabaseSeeder
         List<CustomInfoGroup> groups = new();
         var random = new Random();
 
-        for (int i = 0; i < random.Next(2, 7); i++)
+        for (int i = 0; i < random.Next(1, 3); i++)
         {
             List<CustomInfoItem> items = new();
 
-            for (int j = 0; j < random.Next(1, 20); j++)
+            for (int j = 0; j < random.Next(3, 10); j++)
             {
                 var item = new CustomInfoItem
                 {
