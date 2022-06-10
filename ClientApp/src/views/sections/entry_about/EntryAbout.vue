@@ -29,7 +29,7 @@
     </div>
     <div v-else-if="formStore.status === 'edit'">
         <h5 class="q-mb-sm">Изменение набора данных</h5>
-        <entry-info-custom-form @delete="onDelete" @save="createNew"/>
+        <entry-info-custom-form @delete="onDelete" @save="onUpdate"/>
     </div>
     <template v-else-if="infoListStore.customs(null)">
         <q-card v-for="eInfo in infoListStore.customs(null)" class="q-mb-lg">
