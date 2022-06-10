@@ -27,11 +27,23 @@ public static class EntryInfoEvents
             case EntryInfo.Note:
                 arr.Add(eInfo.Note()!.Note);
                 break;
+            case EntryInfo.Custom:
+                foreach (var group in eInfo.Custom()!.Groups)
+                {
+                    if (group.Title != "") arr.Add(group.Title);
+
+                    foreach (var item in group.Items)
+                    {
+                        if (item.Key != "") arr.Add(item.Key);
+                        arr.Add(item.Value);
+                    }
+                }
+                break;
         }
 
         return String.Join(" ", arr);
     }
-    
+
     public static void Create(AppDbContext db, EntryInfo eInfo)
     {
         bool isValid = Guid.TryParse(eInfo.Id.ToString(), out _);
