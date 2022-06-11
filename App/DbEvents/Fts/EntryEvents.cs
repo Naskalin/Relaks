@@ -15,6 +15,20 @@ public static class EntryEvents
         return String.Join(" ", arr);
     }
 
+    public static void CheckAndRefresh(AppDbContext db)
+    {
+        var count = db.Entries.Count();
+        var ftsCount = db.Set<FtsEntry>().Count();
+        if (count == ftsCount) return;
+
+        db.Database.ExecuteSqlRaw("DELETE FROM FtsEntries;");
+        var rows = db.Entries.ToList();
+        foreach (var row in rows)
+        {
+            Create(db, row);
+        }
+    }
+    
     public static void Create(AppDbContext db, Entry entry)
     {
         bool isValid = Guid.TryParse(entry.Id.ToString(), out _);

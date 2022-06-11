@@ -43,6 +43,20 @@ public static class EntryInfoEvents
 
         return String.Join(" ", arr);
     }
+    
+    public static void CheckAndRefresh(AppDbContext db)
+    {
+        var count = db.EntryInfos.Count();
+        var ftsCount = db.Set<FtsEntryInfo>().Count();
+        if (count == ftsCount) return;
+
+        db.Database.ExecuteSqlRaw("DELETE FROM FtsEntryInfos;");
+        var rows = db.EntryInfos.ToList();
+        foreach (var row in rows)
+        {
+            Create(db, row);
+        }
+    }
 
     public static void Create(AppDbContext db, EntryInfo eInfo)
     {

@@ -40,6 +40,7 @@
     <ItemGroup>
       <Folder Include="Migrations" />
       <Folder Include="..\ClientApp" />
+      <Folder Include="Utils\Fts" />
       <Folder Include="wwwroot" />
     </ItemGroup>
 

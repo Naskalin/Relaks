@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using App.DbConfigurations;
 using App.DbEvents;
+using App.DbEvents.Fts;
 using App.Repository;
 using App.Seeders;
 using App.Utils;
@@ -47,38 +48,14 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
-
-    if (app.Environment.IsDevelopment())
-    {
-        // new DatabaseSeeder(db).SeedAll();
-    //     var columns = new[]
-    //     {
-    //         nameof(EntryFts.Id),
-    //         nameof(EntryFts.Name),
-    //         nameof(EntryFts.Description),
-    //         nameof(EntryFts.DeletedReason),
-    //     };
-    //     
-    //     var table = SqliteMigrationHelper.CreateFtsTable(new TableNames()
-    //     {
-    //         Table = nameof(EntryFts),
-    //         Unindexed = new []{nameof(EntryFts.Id)},
-    //         Columns = columns,
-    //     });
-    //     
-    //     var triggers = SqliteMigrationHelper.CreateTriggers(new TriggerNames()
-    //     {
-    //         Columns = columns,
-    //         TriggerTable = nameof(EntryFts),
-    //         WatchTable = "Entries",
-    //         TriggerTableId = nameof(EntryFts.Id),
-    //         WatchTableId = nameof(Post.Id),
-    //     });
-    //     
-    //     Console.WriteLine(table);
-    //     Console.WriteLine(triggers);
-    //     Console.WriteLine(SqliteMigrationHelper.DeleteTriggers(nameof(EntryFts)));
-    }
+    
+    EntryEvents.CheckAndRefresh(db);
+    EntryInfoEvents.CheckAndRefresh(db);
+    
+    // if (app.Environment.IsDevelopment())
+    // {
+    //     new DatabaseSeeder(db).SeedAll();
+    // }
 }
 
 if (app.Environment.IsDevelopment())
