@@ -33,7 +33,7 @@
                         <div v-for="category in metaStore.meta.categories">
                             <q-radio v-model="listStore.listRequest.category" :val="category" :label="category"/>
                             <q-btn icon="las la-edit" size="sm" color="secondary" outline class="q-mx-md">
-                                <q-popup-edit :model-value="category" @update:model-value="val => onCategoryPopupEdit(category, val)" auto-save v-slot="scope">
+                                <q-popup-edit :model-value="category" @update:model-value="val => onPopupEdit(category, val, 'Category')" auto-save v-slot="scope">
                                     <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
                                 </q-popup-edit>
                             </q-btn>
@@ -45,19 +45,29 @@
             <div>
                 <q-icon name="las la-tags la-lg la-fw"/>
                 <span class="label-caption q-mx-sm">Метки</span>
-                <div>
-                    <q-checkbox
-                        v-if="metaStore.meta && metaStore.meta.tags.length"
-                        v-for="tag in metaStore.meta.tags"
-                        v-model="listStore.listRequest.tags"
-                        :val="tag"
-                        :label="tag"
-                    />
-                </div>
+                <template v-if="metaStore.meta">
+                    <div v-for="tag in metaStore.meta.tags">
+                        <q-checkbox
+                            v-model="listStore.listRequest.tags"
+                            :val="tag"
+                            :label="tag"
+                        />
+                        <q-btn icon="las la-edit" size="sm" color="secondary" outline class="q-mx-md">
+                            <q-popup-edit :model-value="tag" @update:model-value="val => onPopupEdit(tag, val, 'Tag')" auto-save v-slot="scope">
+                                <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
+                            </q-popup-edit>
+                        </q-btn>
+                    </div>
+                </template>
             </div>
         </div>
-    
-    <file-list-table :list-store="props.listStore" :with-edit="props.withEdit" v-bind="$attrs"/>
+
+    <file-list-table
+        @getFiles="listStore.getFiles(entryId)"
+        :list-store="listStore"
+        :with-edit="props.withEdit"
+        v-bind="$attrs"
+    />
 </template>
 
 <script setup lang="ts">
@@ -68,26 +78,27 @@ import {onMounted, computed, watch} from 'vue';
 import {FileListTableStoreState} from "../../../store/entryFile/entryFile.list.table.store";
 import {useEntryFileCreateStore} from "../../../store/entryFile/entryFile.create.store";
 import {apiEntryFile} from "../../../api/rerources/api_entry_file";
+import {useFileListTableStore} from "../../../store/entryFile/entryFile.list.table.store";
 
 const props = defineProps<{
     entryId: string,
-    listStore: FileListTableStoreState,
     withEdit?: boolean
 }>();
 const emit = defineEmits<{
     (e: 'update:listStore', val: FileListTableStoreState): void
 }>()
 
+const listStore = useFileListTableStore();
 const metaStore = useEntryFileMetaListStore();
 const createStore = useEntryFileCreateStore();
-const listStore = computed({
-    get: () => props.listStore,
-    set: val => emit('update:listStore', val),
-})
+// const listStore = computed({
+//     get: () => props.listStore,
+//     set: val => emit('update:listStore', val),
+// })
 
 // При изменении категории для поиска файлов изменяем категорию для загрузки файлов
 watch(
-    () => listStore.value.listRequest.category,
+    () => listStore.listRequest.category,
     (val: string | null) => {
         if(val) {
             createStore.category = val;
@@ -99,18 +110,21 @@ onMounted(async () => {
     await metaStore.getMeta(props.entryId);
 })
 
-const onCategoryPopupEdit = async (val: string, newVal: string) => {
+const onPopupEdit = async (val: string, newVal: string, field: 'Tag' | 'Category') => {
     if(!props.withEdit) return;
     
     await apiEntryFile.updateMeta(props.entryId, {
         value: val,
         newValue: newVal,
-        field: 'Category'
+        field: field
     })
     
     await metaStore.getMeta(props.entryId);
-    listStore.value.listRequest.category = newVal;
+    if (field === 'Category') {
+        listStore.listRequest.category = newVal   
+    } else {
+        listStore.$reset();
+        await listStore.getFiles(props.entryId);
+    }
 }
-
-// const tagsOptions = computed(() => selectHelper.arrayToSelectOptions(props.filesMeta.tags));
 </script>

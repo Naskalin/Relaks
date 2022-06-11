@@ -31,12 +31,17 @@ public class Put : EndpointBaseAsync
         List<EntryFile> entryFiles = new();
         if (request.Details.Field == FileMetaFieldsEnum.Category)
         {
-            query = query.Where(x => x.Category == request.Details.Value);
-            entryFiles = await query.ToListAsync(cancellationToken);
+            entryFiles = await query
+                .Where(x => x.Category == request.Details.Value)
+                .ToListAsync(cancellationToken);
         }
         else
         {
-            //tags
+            entryFiles = query
+                    .AsEnumerable()
+                    .Where(x => x.Tags.Any(tag => tag == request.Details.Value))
+                    .ToList()
+                ;
         }
 
         if (!entryFiles.Any()) return NotFound();
@@ -50,7 +55,19 @@ public class Put : EndpointBaseAsync
         }
         else
         {
-            //tags
+            foreach (var entryFile in entryFiles)
+            {
+                var i = 0;
+                foreach (var tag in entryFile.Tags)
+                {
+                    if (tag == request.Details.Value)
+                    {
+                        entryFile.Tags[i] = request.Details.NewValue;
+                        break;
+                    };
+                    i++;
+                }
+            }
         }
 
         await _entryFileRepository.UpdateMultipleAsync(entryFiles, cancellationToken);

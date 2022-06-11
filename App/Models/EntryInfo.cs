@@ -40,34 +40,6 @@ public class EntryInfo : BaseEntity, ITimestampResource, ISoftDelete, IInfoData,
     }
 }
 
-// public enum EntryInfoType
-// {
-//     Phone,
-//     Email,
-//     Url,
-//     Note,
-//     Date,
-//     Passport,
-//     CompanyDetails,
-//     Custom,
-// }
-
-// public class EntryInfoType : InfoBaseType
-// {
-//     // public static readonly InfoBaseType Passport = new("Passport");
-//     // public static readonly InfoBaseType CompanyDetails = new("CompanyDetails");
-//     public static readonly InfoBaseType Custom = new("Custom");
-//
-//     public EntryInfoType(string value) : base(value)
-//     {
-//     }
-// }
-//
-// public class InfoBaseType
-// {
-//
-// }
-
 public class FtsEntryInfo : IFtsEntity
 {
     public int RowId { get; set; }
@@ -117,15 +89,6 @@ public record DateInfo
 //     Female
 // }
 
-public enum CustomInfoType
-{
-    Phone,
-    Email,
-    Url,
-    Note,
-    Date
-}
-
 public record CustomInfoItem
 {
     public string Key { get; set; } = null!;
@@ -142,20 +105,6 @@ public record CustomInfo
 {
     public List<CustomInfoGroup> Groups { get; set; } = new();
 }
-
-// export declare type CustomInfo = {
-//     title: string
-//     groups: CustomInfoGroup[]
-// }
-//
-// export declare type CustomInfoGroup = {
-//     title: string
-//     items: CustomInfoItem[]
-// }
-// export declare type CustomInfoItem = {
-//     key: string,
-//     value: string
-// }
 
 // public record PassportInfo
 // {

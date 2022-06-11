@@ -3,9 +3,7 @@
         <q-card-section>
             <entry-file-full-comp
                 :entry-id="entryId"
-                @getFiles="listStore.getFiles(entryId)"
                 @rowClick="file => emit('fileSelect', file)"
-                v-model:list-store="listStore"
             />
         </q-card-section>
     </modal>

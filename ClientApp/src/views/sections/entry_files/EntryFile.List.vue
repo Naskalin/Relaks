@@ -10,13 +10,11 @@
     <br>
     
     <entry-file-full-comp
-        @getFiles="listStore.getFiles(entryId)"
         :entry-id="entryId"
         class="list-table"
         with-edit
         with-download
         with-explorer
-        v-model:list-store="listStore"
         @showEdit="onShowEdit"
         @clickAvatar="file => explorer(file.id)"
     />
