@@ -1,8 +1,8 @@
 ﻿import {ApiListRequest} from "./index";
 
 export declare type EntryType = 'Person' | 'Company' | 'Meet';
-export declare type EntryInfoType = 'NOTE' | 'PHONE' | 'EMAIL' | 'URL' | 'DATE' | 'PASSPORT' | 'COMPANY_DETAILS' | 'CUSTOM';
-export declare type EntryInfoObjectType = DateInfo | EmailInfo | NoteInfo | UrlInfo | PhoneInfo | CustomInfo;
+// 'PASSPORT' | 'COMPANY_DETAILS' |
+export declare type EntryInfoType = 'NOTE' | 'PHONE' | 'EMAIL' | 'URL' | 'DATE' | 'CUSTOM';
 
 // export declare type ActualTypes = {
 //     actualStartAt: string
@@ -55,7 +55,7 @@ export declare type Entry = { id: string } & EntryCreateRequest & TimestampTypes
 export declare type EntryInfoFormRequest = {
     title: string
     type: EntryInfoType
-    info: EntryInfoObjectType
+    info: any
 } & SoftDeletableType
 export declare type EntryInfoListRequest = {
     type?: EntryInfoType | EntryInfoType[] | null

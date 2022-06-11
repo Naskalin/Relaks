@@ -41,7 +41,7 @@
             v-model="groupModel.items"
             tag="tbody"
             handle=".draggable-btn"
-            :itemKey="new String()"
+            :itemKey="randomId()"
         >
             <template #item="{element, index}">
                 <tr class="q-tr--no-hover">
@@ -86,6 +86,7 @@
 import draggable from 'vuedraggable';
 import {CustomInfoGroup} from "../../../api/api_types";
 import {computed, ref, watch} from "vue";
+import {randomId} from "../../../utils/file_helper";
 
 const props = defineProps<{
     modelValue: CustomInfoGroup,

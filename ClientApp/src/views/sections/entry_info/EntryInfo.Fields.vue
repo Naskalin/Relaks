@@ -14,13 +14,13 @@
         type="textarea"
     />
     
-    <q-input v-if="entryInfoType === 'EMAIL'" type="email" :label="entryInfoMessages.val.names.Email" v-model="model.info.email"/>
-    <q-input v-else-if="entryInfoType === 'URL'" type="url" :label="entryInfoMessages.val.names.Url" v-model="model.info.url"/>
+    <q-input v-if="entryInfoType === 'EMAIL'" type="email" :label="entryInfoMessages.val.names.EMAIL" v-model="model.info.email"/>
+    <q-input v-else-if="entryInfoType === 'URL'" type="url" :label="entryInfoMessages.val.names.URL" v-model="model.info.url"/>
     <phone-field v-else-if="entryInfoType === 'PHONE'" v-model="model.info"/>
     <date-field v-else-if="entryInfoType === 'DATE'" v-model="model.info.date"/>
     <q-input v-else-if="entryInfoType === 'NOTE'" 
              v-model="model.info.note"
-             :label="entryInfoMessages.val.names.Note"
+             :label="entryInfoMessages.val.names.NOTE"
              counter
              maxlength="300"
              type="text"

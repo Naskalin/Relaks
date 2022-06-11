@@ -8,10 +8,9 @@
 <script setup lang="ts">
 import CustomInfoFields from '../../../components/custom_info/CustomInfoFields.vue';
 import {useEntryInfoCustomFormStore} from "./entry_info_custom_form_store";
-import {CustomInfo} from "../../../../api/api_types";
 
 const formStore = useEntryInfoCustomFormStore();
 const emit = defineEmits<{
-    (e: 'save', val: CustomInfo): void
+    (e: 'save', val: any): void
 }>();
 </script>

@@ -12,6 +12,8 @@ const entryInfoTypes = {
     URL: 'Ссылка',
     NOTE: 'Заметка',
     DATE: 'Дата',
+    CUSTOM: 'Произвольные данные',
+    PASSPORT: 'Паспорт'
 }
 
 export const timeStampMessages = {

@@ -79,6 +79,7 @@ import {FileListTableStoreState} from "../../../store/entryFile/entryFile.list.t
 import {useEntryFileCreateStore} from "../../../store/entryFile/entryFile.create.store";
 import {apiEntryFile} from "../../../api/rerources/api_entry_file";
 import {useFileListTableStore} from "../../../store/entryFile/entryFile.list.table.store";
+import {FileModel} from "../../../api/api_types";
 
 const props = defineProps<{
     entryId: string,
@@ -86,6 +87,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
     (e: 'update:listStore', val: FileListTableStoreState): void
+    (e: 'rowClick', val: FileModel): void
 }>()
 
 const listStore = useFileListTableStore();

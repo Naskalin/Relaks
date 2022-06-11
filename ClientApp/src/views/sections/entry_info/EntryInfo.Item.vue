@@ -31,13 +31,12 @@ import Email from '../../components/Email.vue';
 import Url from '../../components/Url.vue';
 import Date from '../../components/Date.vue';
 import Note from '../../components/Note.vue';
-import {EntryInfo} from "../../../api/api_types";
 
 const emit = defineEmits<{
-    (e: 'showEditForm', eInfo: EntryInfo): void
+    (e: 'showEditForm', eInfo: any): void
 }>()
 defineProps<{
-    eInfo: EntryInfo,
+    eInfo: any,
     withEdit?: boolean
 }>()
 </script>

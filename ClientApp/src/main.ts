@@ -34,7 +34,6 @@ myApp.use(Quasar, {
         // // ..and many more (check Installation card on each Quasar component/directive/plugin)
     // }
 });
-// myApp.use(TooltipPlugin);
 
 myApp.directive('tooltip', VTooltip);
 myApp.component('VTooltip', Tooltip)

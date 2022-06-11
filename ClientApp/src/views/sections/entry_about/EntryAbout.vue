@@ -134,6 +134,7 @@ const onUpdate = async () => {
         td {
             white-space: normal;
             text-align: left;
+            font-size: 15px !important;
         }
     }
 </style>

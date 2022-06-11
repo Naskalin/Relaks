@@ -16,7 +16,7 @@
         with-download
         with-explorer
         @showEdit="onShowEdit"
-        @clickAvatar="file => explorer(file.id)"
+        @clickAvatar="explorer"
     />
 
     <file-edit-modal
@@ -41,7 +41,7 @@ import {useRoute} from "vue-router";
 import {useFileListTableStore} from "../../../store/entryFile/entryFile.list.table.store";
 import {useEntryFileEditStore} from "../../../store/entryFile/entryFile.edit.store";
 import {ref, computed, onMounted} from 'vue';
-import {EntryFile} from "../../../api/api_types";
+import {EntryFile, FileModel} from "../../../api/api_types";
 import {apiMappers} from "../../../api/api_mappers";
 import {apiEntryFile} from "../../../api/rerources/api_entry_file";
 import {apiFiles} from "../../../api/rerources/api_files";
@@ -61,8 +61,8 @@ onMounted(async () => {
     editStore.$reset();
 });
 
-const explorer = async (fileId: string) => {
-    await apiFiles.explorer(fileId);
+const explorer = async (file: FileModel) => {
+    await apiFiles.explorer(file.id);
 }
 
 // create

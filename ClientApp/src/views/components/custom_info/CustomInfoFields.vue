@@ -14,7 +14,7 @@
     <draggable
         v-model="model.groups"
         handle=".draggable-group-btn"
-        :itemKey="new String()"
+        :itemKey="randomId()"
     >
         <template #item="{element, index}">
             <q-card class="q-my-lg">
@@ -54,6 +54,7 @@ import draggable from 'vuedraggable';
 import {CustomInfo} from "../../../api/api_types";
 import {computed, onMounted, ref, reactive} from 'vue';
 import {useQuasar} from "quasar";
+import {randomId} from "../../../utils/file_helper";
 
 const $q = useQuasar();
 const props = defineProps<{

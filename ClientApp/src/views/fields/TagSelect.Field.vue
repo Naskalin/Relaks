@@ -17,20 +17,28 @@ import {computed, ref} from 'vue';
 
 const props = defineProps<{
     multiple: boolean,
-    modelValue: string,
+    modelValue: any,
     label: string,
     options: string[]
 }>();
 
 const emit = defineEmits<{
-    (e: 'update:modelValue', value: string): void,
+    (e: 'update:modelValue', value: any): void,
 }>();
 const arrOptions = ref<string[]>(props.options);
 
 const model = computed({
     get: () => props.modelValue,
-    set: (val?: string) => {
-        emit('update:modelValue', val ?? '')
+    set: (val?: any) => {
+        let emitVal;
+        
+        if (!props.multiple) {
+            emitVal = val ?? '';
+        } else {
+            emitVal = val ?? [];
+        }
+        
+        emit('update:modelValue', emitVal)
     }
 })
 
