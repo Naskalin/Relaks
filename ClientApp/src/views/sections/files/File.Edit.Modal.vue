@@ -12,6 +12,7 @@
                 <q-input
                     v-model="model.name"
                     counter
+                    maxlength="250"
                     color="secondary"
                     :label="fileFieldNames.name"
                     type="text"

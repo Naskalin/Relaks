@@ -27,6 +27,7 @@
     <q-input
         v-model="model.description"
         counter
+        maxlength="250"
         autogrow
         color="secondary"
         label="Краткое описание"

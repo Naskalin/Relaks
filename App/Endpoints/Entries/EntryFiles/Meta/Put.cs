@@ -2,8 +2,10 @@
 using App.Repository;
 using App.Utils;
 using Ardalis.ApiEndpoints;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace App.Endpoints.Entries.EntryFiles.Meta;
@@ -13,10 +15,12 @@ public class Put : EndpointBaseAsync
     .WithActionResult
 {
     private readonly EntryFileRepository _entryFileRepository;
+    private readonly IOptions<ApiBehaviorOptions> _apiOptions;
 
-    public Put(EntryFileRepository entryFileRepository)
+    public Put(EntryFileRepository entryFileRepository, IOptions<ApiBehaviorOptions> apiOptions)
     {
         _entryFileRepository = entryFileRepository;
+        _apiOptions = apiOptions;
     }
 
     [HttpPut("/api/entries/{entryId}/files/meta")]
@@ -27,8 +31,15 @@ public class Put : EndpointBaseAsync
     )
     {
         // validation
+        var validation = new PutRequestValidator().Validate(request.Details);
+        if (!validation.IsValid)
+        {
+            validation.Errors.ForEach(e => { ModelState.AddModelError(e.PropertyName, e.ErrorMessage); });
+            return (ActionResult) _apiOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+        }
+        
         var query = _entryFileRepository.Entities.Where(x => x.EntryId == request.EntryId);
-        List<EntryFile> entryFiles = new();
+        List<EntryFile> entryFiles;
         if (request.Details.Field == FileMetaFieldsEnum.Category)
         {
             entryFiles = await query

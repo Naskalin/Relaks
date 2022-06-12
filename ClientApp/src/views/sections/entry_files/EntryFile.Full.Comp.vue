@@ -34,7 +34,7 @@
                             <q-radio v-model="listStore.listRequest.category" :val="category" :label="category"/>
                             <q-btn icon="las la-edit" size="sm" color="secondary" outline class="q-mx-md">
                                 <q-popup-edit :model-value="category" @update:model-value="val => onPopupEdit(category, val, 'Category')" auto-save v-slot="scope">
-                                    <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
+                                    <q-input v-model="scope.value" style="min-width: 350px" dense autofocus counter maxlength="200" @keyup.enter="scope.set"/>
                                 </q-popup-edit>
                             </q-btn>
                         </div>
@@ -54,7 +54,7 @@
                         />
                         <q-btn icon="las la-edit" size="sm" color="secondary" outline class="q-mx-md">
                             <q-popup-edit :model-value="tag" @update:model-value="val => onPopupEdit(tag, val, 'Tag')" auto-save v-slot="scope">
-                                <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" />
+                                <q-input v-model="scope.value" style="min-width: 350px" dense autofocus counter maxlength="200" @keyup.enter="scope.set" />
                             </q-popup-edit>
                         </q-btn>
                     </div>
@@ -74,7 +74,7 @@
 import FileListTable from '../files/File.List.Table.vue';
 
 import {useEntryFileMetaListStore} from "../../../store/entryFile/entryFileMeta.list.store";
-import {onMounted, computed, watch} from 'vue';
+import {onMounted, watch} from 'vue';
 import {FileListTableStoreState} from "../../../store/entryFile/entryFile.list.table.store";
 import {useEntryFileCreateStore} from "../../../store/entryFile/entryFile.create.store";
 import {apiEntryFile} from "../../../api/rerources/api_entry_file";
@@ -93,10 +93,6 @@ const emit = defineEmits<{
 const listStore = useFileListTableStore();
 const metaStore = useEntryFileMetaListStore();
 const createStore = useEntryFileCreateStore();
-// const listStore = computed({
-//     get: () => props.listStore,
-//     set: val => emit('update:listStore', val),
-// })
 
 // При изменении категории для поиска файлов изменяем категорию для загрузки файлов
 watch(
