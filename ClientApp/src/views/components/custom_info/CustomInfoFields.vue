@@ -75,15 +75,17 @@ onMounted(() => {
     if (!model.value.groups.length) pushGroup();
 })
 
-const groupData = {
-    title: '',
-    items: [{key: '', value: ''}]
-};
 const pushGroup = () => {
-    model.value.groups.push(Object.assign({}, groupData))
+    model.value.groups.push({
+        title: '',
+        items: [{key: '', value: ''}]
+    })
 }
 const unshiftGroup = () => {
-    model.value.groups.unshift(Object.assign({}, groupData))
+    model.value.groups.unshift({
+        title: '',
+        items: [{key: '', value: ''}]
+    })
 }
 const removeGroup = (index: number) => {
     model.value.groups.splice(index, 1);
