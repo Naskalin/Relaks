@@ -11,7 +11,7 @@
         </div>
         <div class="col-auto">
             <q-btn @click="isMinimize = !isMinimize"
-                   :icon="isMinimize ? 'las la-eye' : 'las la-eye-slash'"
+                   :icon="isMinimize ? 'las la-eye-slash' : 'las la-eye'"
                    outline
                    round
                    v-tooltip.left="isMinimize ? 'Развернуть' : 'Свернуть'"

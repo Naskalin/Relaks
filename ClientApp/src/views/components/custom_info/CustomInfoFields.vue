@@ -6,7 +6,7 @@
             v-if="model.groups.length"
             @click="isMinimizeGroups = !isMinimizeGroups"
             :label="isMinimizeGroups ? 'Развернуть группы' : 'Свернуть группы'"
-            :icon="isMinimizeGroups ? 'las la-eye' : 'las la-eye-slash'"
+            :icon="isMinimizeGroups ? 'las la-eye-slash' : 'las la-eye'"
             outline
             color="positive"/>
     </div>
@@ -36,7 +36,7 @@
             v-if="model.groups.length"
             @click="isMinimizeGroups = !isMinimizeGroups"
             :label="isMinimizeGroups ? 'Развернуть группы' : 'Свернуть группы'"
-            :icon="isMinimizeGroups ? 'las la-eye' : 'las la-eye-slash'"
+            :icon="isMinimizeGroups ? 'las la-eye-slash' : 'las la-eye'"
             outline
             color="positive"/>
     </div>
