@@ -1,9 +1,7 @@
 using System.Text.Json.Serialization;
 using App.DbConfigurations;
-using App.DbEvents;
 using App.DbEvents.Fts;
 using App.Repository;
-using App.Seeders;
 using App.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,11 +34,9 @@ builder.Services.AddDbContext<AppDbContext>(
 builder.Services.Configure<ApiBehaviorOptions>(o => { o.SuppressInferBindingSourcesForParameters = true; });
 
 builder.Services.AddTransient<EntryRepository>();
-
-// EntryInfo
 builder.Services.AddTransient<EntryInfoRepository>();
-
 builder.Services.AddTransient<EntryFileRepository>();
+builder.Services.AddTransient<StructureRepository>();
 
 var app = builder.Build();
 

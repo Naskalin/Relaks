@@ -15,6 +15,8 @@ public sealed class AppDbContext : DbContext
     public DbSet<FileModel> FileModels { get; set; } = null!;
     public DbSet<EntryFile> EntryFiles { get; set; } = null!;
     public DbSet<EntryInfoFile> EntryInfoFiles { get; set; } = null!;
+    public DbSet<Structure> Structures { get; set; } = null!;
+    public DbSet<StructureItem> StructureItems { get; set; } = null!;
 
     // public DbSet<Post> Posts { get; set; } = null!;
     

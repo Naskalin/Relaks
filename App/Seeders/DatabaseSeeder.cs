@@ -21,8 +21,11 @@ public class DatabaseSeeder
         Db.Database.ExecuteSqlRaw("delete from FtsEntryInfos;");
         Db.Database.ExecuteSqlRaw("delete from Entries;");
         Db.Database.ExecuteSqlRaw("delete from FtsEntries;");
+        Db.Database.ExecuteSqlRaw("delete from StructureItems;");
+        Db.Database.ExecuteSqlRaw("delete from Structures;");
 
         new EntrySeeder(Db).Seed();
         new EntryInfoSeeder(Db).Seed();
+        new StructureSeeder(Db).Seed();
     }
 }

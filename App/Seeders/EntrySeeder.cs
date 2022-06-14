@@ -83,6 +83,20 @@ public class EntrySeeder : DatabaseSeeder
         };
 
         Db.Entries.Add(creator);
+        
+        var creatorCompany = new Entry()
+        {
+            Id = Guid.Parse("01B137DA-A3CF-4C08-AC3E-752B3F156ED4"),
+            Name = "Вася COMPANY",
+            Description = Faker.Lorem.Paragraph(1),
+            EntryType = EntryTypeEnum.Company,
+            CreatedAt = Faker.Date.Past(),
+            UpdatedAt = Faker.Date.Past(),
+            StartAt = Faker.Date.Past(),
+            EndAt = Faker.Date.Past(),
+            DeletedReason = "",
+        };
+        Db.Entries.Add(creatorCompany);
 
         Db.SaveChanges();
     }
