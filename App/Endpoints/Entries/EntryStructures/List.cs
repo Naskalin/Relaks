@@ -1,10 +1,7 @@
-﻿using App.Models;
-using App.Repository;
+﻿using App.Repository;
 using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace App.Endpoints.Entries.EntryStructures;
@@ -27,20 +24,7 @@ public class List : EndpointBaseAsync
         CancellationToken cancellationToken = new()
     )
     {
-        var structures = await _structureRepository
-            .Entities
-            .Where(x => x.EntryId.Equals(request.EntryId))
-            .Include(x => x.Items)
-            .ToListAsync(cancellationToken);
-        
-        
-        return Ok(structures);
+        var tree = await _structureRepository.GetTreeForEntry(request, cancellationToken);
+        return Ok(tree);
     }
-
-    // private List<Structure> ToTree(List<Structure> tree, List<Structure> structures, Guid? parentId)
-    // {
-    //     var tree = new List<Structure>();
-    //
-    //     return tree;
-    // }
 }

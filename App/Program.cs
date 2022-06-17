@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using App.DbConfigurations;
 using App.DbEvents.Fts;
 using App.Repository;
+using App.Seeders;
 using App.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -62,7 +63,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseFileServer();
-// app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
 
