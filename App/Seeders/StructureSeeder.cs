@@ -22,6 +22,9 @@ public class StructureSeeder : DatabaseSeeder
                 Description = Faker.Random.ArrayElement(new[] {"", Faker.Lorem.Paragraph(1)}),
                 StartAt = Faker.Date.Past(),
                 Title = Faker.Random.Words(Faker.Random.Int(1, 5)),
+                DeletedReason = "",
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
             parentStructures.Add(structure);
             Db.Structures.Add(structure);
@@ -57,6 +60,9 @@ public class StructureSeeder : DatabaseSeeder
                 Description = Faker.Random.ArrayElement(new[] {"", Faker.Lorem.Paragraph(1)}),
                 StartAt = Faker.Date.Past(),
                 Title = Faker.Random.Words(Faker.Random.Int(1, 5)),
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                DeletedReason = ""
             };
             Db.Structures.Add(child);
 
@@ -79,6 +85,9 @@ public class StructureSeeder : DatabaseSeeder
                 StartAt = Faker.Date.Past(),
                 EntryId = entry.Id,
                 StructureId = structure.Id,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                DeletedReason = ""
             };
             Db.StructureItems.Add(item);
         }
