@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using App.DbConfigurations;
 using App.DbEvents.Fts;
+using App.Endpoints.StructureItems;
 using App.Repository;
 using App.Seeders;
 using App.Utils;
@@ -38,6 +39,9 @@ builder.Services.AddTransient<EntryRepository>();
 builder.Services.AddTransient<EntryInfoRepository>();
 builder.Services.AddTransient<EntryFileRepository>();
 builder.Services.AddTransient<StructureRepository>();
+builder.Services.AddTransient<StructureItemRepository>();
+builder.Services.AddTransient<StructureItemRepository>();
+builder.Services.AddTransient<StructureItemDbValidate>();
 
 var app = builder.Build();
 

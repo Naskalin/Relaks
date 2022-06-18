@@ -1,5 +1,5 @@
 ﻿using App.DbConfigurations;
-using App.Endpoints.Entries.EntryStructures;
+using App.Endpoints.Structures;
 using App.Models;
 using App.Utils;
 using Microsoft.EntityFrameworkCore;

@@ -4,7 +4,7 @@ using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace App.Endpoints.Entries.EntryStructures;
+namespace App.Endpoints.Structures;
 
 public class List : EndpointBaseAsync
     .WithRequest<ListRequest>
@@ -18,7 +18,7 @@ public class List : EndpointBaseAsync
     }
 
     [HttpGet("/api/entries/{entryId}/structures")]
-    [SwaggerOperation(OperationId = "EntryStructure.List", Tags = new[] {"EntryStructure"})]
+    [SwaggerOperation(OperationId = "Structure.List", Tags = new[] {"Structure"})]
     public override async Task<ActionResult> HandleAsync(
         [FromMultiSource] ListRequest request,
         CancellationToken cancellationToken = new()

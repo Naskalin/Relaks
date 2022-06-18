@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace App.Endpoints.Entries.EntryStructures;
+namespace App.Endpoints.Structures;
 
 public class Put : EndpointBaseAsync
     .WithRequest<PutRequest>
@@ -21,7 +21,7 @@ public class Put : EndpointBaseAsync
     }
 
     [HttpPut("/api/entries/{entryId}/structures/{structureId}")]
-    [SwaggerOperation(OperationId = "EntryStructure.Put", Tags = new[] {"EntryStructure"})]
+    [SwaggerOperation(OperationId = "Structure.Put", Tags = new[] {"Structure"})]
     public override async Task<ActionResult> HandleAsync(PutRequest request, CancellationToken cancellationToken = new CancellationToken())
     {
         var validation = await new DetailsValidator().ValidateAsync(request.Details, cancellationToken);

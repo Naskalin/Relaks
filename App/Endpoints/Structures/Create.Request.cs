@@ -1,7 +1,7 @@
 ﻿using App.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace App.Endpoints.Entries.EntryStructures;
+namespace App.Endpoints.Structures;
 
 public class CreateRequest
 {
@@ -16,7 +16,7 @@ public class CreateStructureRequestDetails : ISoftDelete
 {
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
-    public DateTime StartAt { get; set; }
+    public DateTime? StartAt { get; set; }
     public Guid? ParentId { get; set; }
     public DateTime? DeletedAt { get; set; }
     public string DeletedReason { get; set; } = null!;

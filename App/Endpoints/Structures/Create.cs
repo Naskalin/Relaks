@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace App.Endpoints.Entries.EntryStructures;
+namespace App.Endpoints.Structures;
 
 public class Create : EndpointBaseAsync
     .WithRequest<CreateRequest>
@@ -23,7 +23,7 @@ public class Create : EndpointBaseAsync
     }
 
     [HttpPost("/api/entries/{entryId}/structures")]
-    [SwaggerOperation(OperationId = "EntryStructure.Create", Tags = new[] {"EntryStructure"})]
+    [SwaggerOperation(OperationId = "Structure.Create", Tags = new[] {"Structure"})]
     public override async Task<ActionResult> HandleAsync(
         [FromMultiSource] CreateRequest request, 
         CancellationToken cancellationToken = new())
@@ -43,6 +43,6 @@ public class Create : EndpointBaseAsync
         request.Details.MapTo(structure);
         await _structureRepository.CreateAsync(structure, cancellationToken);
 
-        return CreatedAtRoute("EntryStructure_Get", new {entryId = request.EntryId, structureId = structure.Id}, structure);
+        return CreatedAtRoute("Structure_Get", new {entryId = request.EntryId, structureId = structure.Id}, structure);
     }
 }

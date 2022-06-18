@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace App.Endpoints.Entries.EntryStructures;
+namespace App.Endpoints.Structures;
 
 public class Get : EndpointBaseAsync
     .WithRequest<GetRequest>
@@ -18,8 +18,8 @@ public class Get : EndpointBaseAsync
         _structureRepository = structureRepository;
     }
 
-    [HttpGet("/api/entries/{entryId}/structures/{structureId}", Name = "EntryStructure_Get")]
-    [SwaggerOperation(OperationId = "EntryStructure.Get", Tags = new[] {"EntryStructure"})]
+    [HttpGet("/api/entries/{entryId}/structures/{structureId}", Name = "Structure_Get")]
+    [SwaggerOperation(OperationId = "Structure.Get", Tags = new[] {"Structure"})]
     public override async Task<ActionResult> HandleAsync(
         [FromMultiSource] GetRequest request,
         CancellationToken cancellationToken = new()

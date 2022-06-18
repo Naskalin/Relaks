@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace App.Endpoints.Entries.EntryStructures;
+namespace App.Endpoints.Structures;
 
 public class DetailsValidator : AbstractValidator<CreateStructureRequestDetails>
 {
