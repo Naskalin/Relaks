@@ -38,10 +38,7 @@ public class StructureRepository : BaseRepository<Structure>
             query = query.Where(x => x.StartAt <= req.Date);
         }
 
-        var structures = await query
-            .Include(x => x.Items)
-            .ThenInclude(x => x.Entry)
-            .ToListAsync(cancellationToken);
+        var structures = await query.ToListAsync(cancellationToken);
 
         TreeExtensions.ITree<Structure>
             tree = structures.ToTree((parent, child) => child.ParentId == parent.Id);
