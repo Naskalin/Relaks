@@ -1,4 +1,6 @@
-﻿namespace App.Utils;
+﻿using App.Models;
+
+namespace App.Utils;
 
 // https://habr.com/ru/post/516596/
 public static class TreeExtensions

@@ -38,7 +38,9 @@ public class StructureRepository : BaseRepository<Structure>
             query = query.Where(x => x.StartAt <= req.Date);
         }
 
-        var structures = await query.ToListAsync(cancellationToken);
+        var structures = await query
+            .OrderBy(x => x.Title)
+            .ToListAsync(cancellationToken);
 
         TreeExtensions.ITree<Structure>
             tree = structures.ToTree((parent, child) => child.ParentId == parent.Id);
