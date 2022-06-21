@@ -9,20 +9,14 @@ namespace App.DbConfigurations;
 public sealed class AppDbContext : DbContext
 {
     public DbSet<Entry> Entries { get; set; } = null!;
-    
     public DbSet<EntryInfo> EntryInfos { get; set; } = null!;
-
     public DbSet<FileModel> FileModels { get; set; } = null!;
     public DbSet<EntryFile> EntryFiles { get; set; } = null!;
     public DbSet<EntryInfoFile> EntryInfoFiles { get; set; } = null!;
+    
     public DbSet<Structure> Structures { get; set; } = null!;
     public DbSet<StructureItem> StructureItems { get; set; } = null!;
-
-    // public DbSet<Post> Posts { get; set; } = null!;
-    
-    // [DbFunction]
-    // public string Highlight(string match, string column, string open, string close)
-    //     => throw new NotImplementedException();
+    public DbSet<StructureConnection> StructureConnections { get; set; } = null!;
 
     [DbFunction]
     public string Snippet(string match, string column, string open, string close, string ellips, int count)

@@ -256,6 +256,45 @@ namespace App.Migrations
                     b.ToTable("Structures");
                 });
 
+            modelBuilder.Entity("App.Models.StructureConnection", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("JsonOptions")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("StructureFirstId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("StructureSecondId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StructureFirstId");
+
+                    b.HasIndex("StructureSecondId");
+
+                    b.ToTable("StructureConnections");
+                });
+
             modelBuilder.Entity("App.Models.StructureItem", b =>
                 {
                     b.Property<Guid>("Id")
@@ -345,6 +384,25 @@ namespace App.Migrations
                     b.Navigation("Entry");
 
                     b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("App.Models.StructureConnection", b =>
+                {
+                    b.HasOne("App.Models.Structure", "StructureFirst")
+                        .WithMany()
+                        .HasForeignKey("StructureFirstId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("App.Models.Structure", "StructureSecond")
+                        .WithMany()
+                        .HasForeignKey("StructureSecondId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StructureFirst");
+
+                    b.Navigation("StructureSecond");
                 });
 
             modelBuilder.Entity("App.Models.StructureItem", b =>

@@ -1,4 +1,5 @@
-﻿using App.DbConfigurations;
+﻿using System.Text.Json.Nodes;
+using App.DbConfigurations;
 using App.Models;
 
 namespace App.Seeders;
@@ -44,6 +45,26 @@ public class StructureSeeder : DatabaseSeeder
         foreach (var structure in structures)
         {
             AddItems(structure, entries);
+
+            if (Faker.Random.Int(1, 2).Equals(1))
+            {
+                for (int i = 0; i < Faker.Random.Int(1, 3); i++)
+                {
+                    // add connection
+                    var connection = new StructureConnection()
+                    {
+                        Title = Faker.Random.ArrayElement(new [] {"", Faker.Random.Words(Faker.Random.Int(1, 4))}),
+                        Description = Faker.Random.ArrayElement(new[] {"", Faker.Lorem.Paragraph(1)}),
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow,
+                        StructureFirstId = structure.Id,
+                        StructureSecondId = structures.OrderBy(x => Guid.NewGuid()).First(x => !x.Id.Equals(structure.Id)).Id,
+                        Options = new JsonObject{}
+                    };
+
+                    Db.StructureConnections.Add(connection);   
+                }
+            }
         }
         
         Db.SaveChanges();
@@ -66,7 +87,7 @@ public class StructureSeeder : DatabaseSeeder
             };
             Db.Structures.Add(child);
 
-            if (depth <= 5 && 1 >= Faker.Random.Int(1, 2))
+            if (depth <= 5 && Faker.Random.Int(1, 2).Equals(1))
             {
                 AddChild(child, companyId, Faker.Random.Int(1, 3), depth + 1);
             }

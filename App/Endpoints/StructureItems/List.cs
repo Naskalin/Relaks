@@ -24,6 +24,9 @@ public class List : EndpointBaseAsync
         CancellationToken cancellationToken = new()
     )
     {
+        if (request.EntryId == null && request.StructureId == null)
+            return BadRequest("entryId or structureId must be in request");
+        
         var structureItems = await _structureItemRepository.FindByListRequestAsync(request, cancellationToken);
         return Ok(structureItems);
     }

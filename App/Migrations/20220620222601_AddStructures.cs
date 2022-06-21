@@ -41,6 +41,36 @@ namespace App.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "StructureConnections",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false),
+                    StructureFirstId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    StructureSecondId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    JsonOptions = table.Column<string>(type: "TEXT", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StructureConnections", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StructureConnections_Structures_StructureFirstId",
+                        column: x => x.StructureFirstId,
+                        principalTable: "Structures",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StructureConnections_Structures_StructureSecondId",
+                        column: x => x.StructureSecondId,
+                        principalTable: "Structures",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "StructureItems",
                 columns: table => new
                 {
@@ -72,6 +102,16 @@ namespace App.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_StructureConnections_StructureFirstId",
+                table: "StructureConnections",
+                column: "StructureFirstId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StructureConnections_StructureSecondId",
+                table: "StructureConnections",
+                column: "StructureSecondId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_StructureItems_EntryId",
                 table: "StructureItems",
                 column: "EntryId");
@@ -94,6 +134,9 @@ namespace App.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "StructureConnections");
+
             migrationBuilder.DropTable(
                 name: "StructureItems");
 
