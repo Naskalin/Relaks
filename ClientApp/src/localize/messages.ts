@@ -54,18 +54,25 @@ export const entryMessages = {
     },
     profile: {
         tabs: (entryType: EntryType) => {
-            let entryAboutName = 'О человеке';
-            if (entryType == 'Meet') entryAboutName = 'О встрече';
-            else if (entryType == 'Company') entryAboutName = 'О компании';
+            let tabs: {[index: string]: string} = {};
             
-            return {
-                'entry-about': entryAboutName,
-                // 'entry-contact-list': 'Контакты',
-                'entry-file-list': 'Файлы',
-                // dates: 'Даты',
-                // kinship: 'Родство',
-                // structures: 'Структуры',
+            switch (entryType) {
+                case "Person":
+                    tabs['entry-about'] = 'О человеке';
+                    break;
+                case "Company":
+                    tabs['entry-about'] = 'О компании';
+                    tabs['entry-structures'] = 'Структура компании';
+                    break;
+                case "Meet":
+                    tabs['entry-about'] = 'О встрече';
+                    tabs['entry-structures'] = 'Структура встречи';
+                    break;
             }
+            
+            tabs['entry-file-list'] = 'Файлы';
+            
+            return tabs;
         },
     },
     startAtNull: 'Дата рождения/регистрации/начала',

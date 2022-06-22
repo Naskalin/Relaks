@@ -47,6 +47,7 @@ namespace App.Migrations
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
+                    Direction = table.Column<string>(type: "TEXT", nullable: false),
                     StructureFirstId = table.Column<Guid>(type: "TEXT", nullable: false),
                     StructureSecondId = table.Column<Guid>(type: "TEXT", nullable: false),
                     JsonOptions = table.Column<string>(type: "TEXT", nullable: false),

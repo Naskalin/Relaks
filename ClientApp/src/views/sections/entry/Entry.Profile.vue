@@ -1,6 +1,6 @@
 ﻿<template>
     <div class="row">
-        <div class="col-3" style="min-width: 350px">
+        <div class="col-3" style="min-width: 320px; max-width: 360px">
             <entry-card
                 v-if="profileStore.entry"
                 :with-edit="true"

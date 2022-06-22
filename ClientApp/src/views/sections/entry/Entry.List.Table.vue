@@ -1,6 +1,6 @@
 ﻿<template>
     <div class="row q-col-gutter-md">
-        <div class="col-3 q-gutter-y-md">
+        <div class="col-auto q-gutter-y-md" style="min-width: 320px; max-width: 360px">
             <q-card class="q-pa-md">
                 <list-filter v-model="store.listRequest"></list-filter>
             </q-card>

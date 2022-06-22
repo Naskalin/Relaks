@@ -1,5 +1,5 @@
 ﻿<template>
-    <h5 class="q-my-md">Файлы</h5>
+    <h4 class="q-my-lg">Файлы</h4>
     <div style="width: 500px">
         <div class="q-mb-sm">
             <entry-file-create @onUploaded="onUploaded" :entry-id="entryId"/>

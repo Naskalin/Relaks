@@ -6,6 +6,7 @@
             behavior="desktop"
             side="left"
             class="app-sidebar"
+            :width="250"
         >
             <q-list separator>
                 <q-item to="/" clickable v-ripple exact>

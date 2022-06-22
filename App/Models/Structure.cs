@@ -47,9 +47,12 @@ public class StructureItem : BaseEntity, ISoftDelete, ITimestampResource
 
 public class StructureConnection : BaseEntity, ITimestampResource
 {
+
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
-    
+
+    public DirectionEnum Direction { get; set; }
+
     public Guid StructureFirstId { get; set; }
     public Guid StructureSecondId { get; set; }
     [JsonIgnore]
@@ -68,4 +71,11 @@ public class StructureConnection : BaseEntity, ITimestampResource
     
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    
+    public enum DirectionEnum
+    {
+        Normal,
+        Reverse,
+        Bidirectional
+    }
 }

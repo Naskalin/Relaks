@@ -269,6 +269,10 @@ namespace App.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Direction")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("JsonOptions")
                         .IsRequired()
                         .HasColumnType("TEXT");

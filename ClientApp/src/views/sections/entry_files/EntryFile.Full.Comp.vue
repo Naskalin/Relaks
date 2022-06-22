@@ -11,7 +11,7 @@
                         label="Новая категория"
                         icon="las la-plus-circle"
                         size="sm"
-                        color="secondary"/>
+                        color="primary"/>
                     <q-card v-if="createStore.isCreateCategory" class="q-my-md">
                         <q-card-section>
                             <q-icon name="las la-info-circle" class="q-mx-xs" size="1.2rem"/> Введите название категории и выберите файлы для загрузки

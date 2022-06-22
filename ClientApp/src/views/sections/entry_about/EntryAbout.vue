@@ -1,9 +1,9 @@
 ﻿<template>
     <div class="row items-center justify-between q-col-gutter-lg q-mb-lg">
         <div class="col-auto">
-            <h5 v-if="profileStore.entry" class="q-my-md">
+            <h4 v-if="profileStore.entry" class="q-my-lg">
                 {{ entryMessages.profile.tabs(profileStore.entry.entryType)["entry-about"] }}
-            </h5>
+            </h4>
             <q-btn
                 v-if="formStore.status"
                 @click="formStore.$reset()"

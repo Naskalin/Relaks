@@ -77,9 +77,7 @@ const getStructureConnections = async () => {
     const structuresEls = Array.from(document.querySelectorAll('.js-structure-connections'));
     if (!structuresEls.length) return;
     
-    // const connectionMap = [];
     let connectionItem: {[index: string]: Element};
-
     for (const [index, connection] of connections.entries()) {
         connectionItem = {};
         
@@ -95,27 +93,12 @@ const getStructureConnections = async () => {
             const connectionEl = document.createElement('div');
             connectionEl.id = item.key + '_' + connection.id;
             connectionEl.classList.add('structure-connection__el', item.key);
-            // connectionEl.innerText = connectionEl.id;
 
             boxEl.appendChild(connectionEl);
             connectionItem[item.key] = connectionEl;
-            
-            // if(structureConnections.value.hasOwnProperty(structureId))
-            // {
-            //     if(!structureConnections.value[structureId].includes(connection)) {
-            //         structureConnections.value[structureId].push(connection);
-            //     }
-            // } else {
-            //     structureConnections.value[structureId] = [connection]
-            // }
         })
         
         new LeaderLine(connectionItem.first, connectionItem.second);
-        // connectionMap.push(connectionItem);
-        // new LeaderLine(
-        //     document.getElementById('start'),
-        //     document.getElementById('end')
-        // );
     }
 }
 
@@ -136,21 +119,21 @@ const splitterModel = ref(70);
 </script>
 
 <style lang="scss">
-.structure-connection {
-    display: inline-block;
-    position: relative;
-    width: 15px;
-    height: 15px;
-    &__el {
-        position: absolute;
-        left: 0;
-        top: 0;
-        display: block;
-        width: 15px;
-        height: 15px;
-        border-radius: 50%;
-        background: $positive;
-        margin: 0 10px;
-    }
-}
+//.structure-connection {
+//    display: inline-block;
+//    position: relative;
+//    width: 15px;
+//    height: 15px;
+//    &__el {
+//        position: absolute;
+//        left: 0;
+//        top: 0;
+//        display: block;
+//        width: 15px;
+//        height: 15px;
+//        border-radius: 50%;
+//        background: $positive;
+//        margin: 0 10px;
+//    }
+//}
 </style>

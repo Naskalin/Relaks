@@ -22,5 +22,4 @@ watch(() => props.fileId, async () => {
 
     src.value = URL.createObjectURL(resp.data);
 }, {immediate: true})
-
 </script>

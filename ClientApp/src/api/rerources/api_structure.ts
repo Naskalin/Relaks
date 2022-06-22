@@ -23,13 +23,6 @@ export declare type Structure = {
     parentId: null | string,
     entryId: string,
 } & SoftDeletableType & TimestampTypes
-export declare type StructureItem = {
-    comment: string
-    startAt: string,
-    structureId: string
-    entryId: string
-    entry: Entry
-} & SoftDeletableType & TimestampTypes
 export declare type StructureListRequest = {
     isDeleted?: boolean | null
     date?: string
