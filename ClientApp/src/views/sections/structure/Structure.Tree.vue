@@ -25,14 +25,13 @@
 <script setup lang="ts">
 import {useStructureStore} from "./structure_store";
 import {useStructureConnectionsStore} from "./structure_connections_store";
-import {onMounted} from "vue";
+import {onMounted, ref} from "vue";
 
 const props = defineProps<{
     entryId: string
 }>() 
 const structureStore = useStructureStore();
 const connectionStore = useStructureConnectionsStore();
-
 onMounted(async () => {
     await structureStore.getStructuresAsync(props.entryId);
     await connectionStore.getConnectionsAsync(props.entryId);

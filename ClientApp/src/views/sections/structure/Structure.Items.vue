@@ -1,5 +1,5 @@
 ﻿<template>
-    <div v-if="itemsStore.items.length">
+    <div v-if="itemsStore.items.length" class="q-mt-lg">
         <p class="text-center text-h6 q-mb-md">Объединения</p>
         
         <div v-for="sItem in itemsStore.items" :key="sItem.id">
