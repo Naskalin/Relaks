@@ -2,6 +2,7 @@
 using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace App.Endpoints.Structures;
@@ -24,7 +25,10 @@ public class List : EndpointBaseAsync
         CancellationToken cancellationToken = new()
     )
     {
-        var tree = await _structureRepository.GetTreeForEntry(request, cancellationToken);
-        return Ok(tree);
+        var structures = await _structureRepository.FindStructures(request).ToListAsync(cancellationToken);
+        if (request.IsTree)
+            return Ok(structures.ToTree((parent, child) => child.ParentId == parent.Id));
+
+        return Ok(structures);
     }
 }

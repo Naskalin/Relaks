@@ -15,6 +15,7 @@ public static class TreeExtensions
         bool IsRoot { get; }
         bool IsLeaf { get; }
         int Level { get; }
+        Guid Id { get; }
     }
 
     // /// <summary> Flatten tree to plain list of nodes </summary>
@@ -45,17 +46,20 @@ public static class TreeExtensions
         public bool IsRoot => Parent == null;
         public bool IsLeaf => Children.Count == 0;
         public int Level => IsRoot ? 0 : Parent!.Level + 1;
+        public Guid Id { get; }
 
         private Tree(T data)
         {
             Children = new LinkedList<ITree<T>>();
             Data = data;
+            if (typeof(IBaseEntity).IsAssignableFrom(typeof(T)) && data != null)
+                Id = ((IBaseEntity) data).Id;
         }
 
         public static Tree<T> FromLookup(ILookup<T, T> lookup)
         {
             var rootData = lookup.Count == 1 ? lookup.First().Key : default(T);
-            var root = new Tree<T>(rootData);
+            var root = new Tree<T>(rootData!);
             root.LoadChildren(lookup);
             return root;
         }

@@ -1,7 +1,6 @@
 ﻿using App.DbConfigurations;
 using App.Endpoints.Structures;
 using App.Models;
-using App.Utils;
 using Microsoft.EntityFrameworkCore;
 
 namespace App.Repository;
@@ -12,10 +11,7 @@ public class StructureRepository : BaseRepository<Structure>
     {
     }
 
-    public async Task<TreeExtensions.ITree<Structure>> GetTreeForEntry(
-        ListRequest req,
-        CancellationToken cancellationToken
-    )
+    public IQueryable<Structure> FindStructures(ListRequest req)
     {
         var query = Entities
             .Where(x => x.EntryId.Equals(req.EntryId));
@@ -38,13 +34,6 @@ public class StructureRepository : BaseRepository<Structure>
             query = query.Where(x => x.StartAt <= req.Date);
         }
 
-        var structures = await query
-            .OrderBy(x => x.Title)
-            .ToListAsync(cancellationToken);
-
-        TreeExtensions.ITree<Structure>
-            tree = structures.ToTree((parent, child) => child.ParentId == parent.Id);
-
-        return tree;
+        return query.OrderBy(x => x.Title);
     }
 }

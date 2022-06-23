@@ -2,6 +2,7 @@
 
 export declare type StructureConnectionDirection = 'Normal' | 'Reverse' | 'Bidirectional';
 export declare type StructureConnection = {
+    id: string
     title: string,
     description: string,
     structureFirstId: string,
@@ -10,7 +11,6 @@ export declare type StructureConnection = {
     options: any,
     createdAt: string,
     updatedAt: string,
-    id: string
 }
 
 export declare type StructureConnectionListRequest = {

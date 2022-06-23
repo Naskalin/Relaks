@@ -11,9 +11,7 @@
         <template v-slot:default-header="prop">
             <div>
                 <div :id="prop.node.id" class="js-structure-connections structure-connection q-py-xs q-px-sm">
-                    <div>
-                        {{ prop.node.data.title }}
-                    </div>
+                    <div>{{ prop.node.data.title }}</div>
                     <div v-if="prop.node.data.description" class="text-grey-8">
                         <q-icon name="las la-comment q-mr-xs" size="1.1em"/>
                         <span style="font-size: .9rem">{{ prop.node.data.description }}</span>
@@ -26,9 +24,8 @@
 
 <script setup lang="ts">
 import {useStructureStore} from "./structure_store";
-// import {useStructureItemsStore} from "./structure_items_store";
 import {useStructureConnectionsStore} from "./structure_connections_store";
-import {onMounted, watch} from "vue";
+import {onMounted} from "vue";
 
 const props = defineProps<{
     entryId: string
@@ -37,10 +34,9 @@ const structureStore = useStructureStore();
 const connectionStore = useStructureConnectionsStore();
 
 onMounted(async () => {
-    await structureStore.getTreeAsync(props.entryId);
+    await structureStore.getStructuresAsync(props.entryId);
     await connectionStore.getConnectionsAsync(props.entryId);
     connectionStore.drawConnections(connectionStore.connections);
-    connectionStore.drawActiveStructureConnections();
 })
 </script>
 

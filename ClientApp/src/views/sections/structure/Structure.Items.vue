@@ -1,6 +1,8 @@
 ﻿<template>
     <div v-if="itemsStore.items.length">
-        <div v-for="sItem in itemsStore.items">
+        <p class="text-center text-h6 q-mb-md">Объединения</p>
+        
+        <div v-for="sItem in itemsStore.items" :key="sItem.id">
             <q-separator class="q-my-md"/>
             
             <q-item class="q-pa-none">
@@ -38,11 +40,6 @@ const connectionStore = useStructureConnectionsStore();
 watch(() => structureStore.structureSelectedId, async (structureId: any, oldVal: any) => {
     if (!structureId) return;
     await itemsStore.getItemsAsync(structureId);
-
-    if (!structureId || structureId === '') return;
-    connectionStore.drawActiveStructureConnections();
-    if (oldVal && oldVal !== '' && structureId !== oldVal) {
-        connectionStore.structureInactiveConnections(oldVal);
-    }
+    connectionStore.drawActiveStructureConnections(structureId, oldVal);
 }, {immediate: true})
 </script>

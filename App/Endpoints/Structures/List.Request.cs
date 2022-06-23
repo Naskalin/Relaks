@@ -12,4 +12,7 @@ public class ListRequest
     
     [FromQuery]
     public DateTime? Date { get; set; }
+    
+    [FromQuery]
+    public Boolean IsTree { get; set; }
 }

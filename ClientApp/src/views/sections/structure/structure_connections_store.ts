@@ -4,16 +4,14 @@ import {apiStructureConnection} from "../../../api/rerources/api_structure_conne
 import LeaderLine from "leader-line-new";
 import {useStructureStore} from "./structure_store";
 
-// const COLOR = '#ff8a65';
-const COLOR = '#ff8a652b';
-const ACTIVE_COLOR = '#42a5f5';
-const DEFAULT_OPTIONS: LeaderLine.Options = {
-    size: 3,
-    color: COLOR,
-    path: 'fluid'
-}
+const SIZE_DEFAULT = 2;
+const SIZE_ACTIVE = 4;
+const COLOR_DEFAULT = '#ff8a652b';
+const COLOR_ACTIVE_CONNECTION = '#283593';
+const COLOR_ACTIVE_STRUCTURE = '#00695c';
 
 declare type StructureConnectionsStoreState = {
+    activeConnectionId: string | null,
     connections: StructureConnection[],
     connectionLines: { [index: string]: LeaderLine }
 }
@@ -23,14 +21,12 @@ function updateLineDirection(direction: StructureConnectionDirection, options: L
         case "Normal":
             options.startPlug = 'disc';
             options.endPlug = 'arrow1';
-            // options.startSocket = 'right';
             options.endSocket = 'left';
             break;
         case "Reverse":
             options.startPlug = 'arrow1';
             options.endPlug = 'disc';
             options.startSocket = 'left';
-            // options.endSocket = 'right';
             break;
         case "Bidirectional":
             options.startPlug = 'arrow1';
@@ -46,6 +42,7 @@ function updateLineDirection(direction: StructureConnectionDirection, options: L
 export const useStructureConnectionsStore = defineStore('StructureConnectionsStore', {
     state: (): StructureConnectionsStoreState => {
         return {
+            activeConnectionId: null,
             connections: [],
             connectionLines: {}
         }
@@ -63,23 +60,46 @@ export const useStructureConnectionsStore = defineStore('StructureConnectionsSto
         async getConnectionsAsync(entryId: string) {
             this.connections = await apiStructureConnection.list({entryId: entryId});
         },
-        structureInactiveConnections(structureId: string) {
-            if (!this.connections.length) return [];
-            return this.connections.forEach(connection => {
-                if (connection.structureFirstId === structureId || connection.structureSecondId === structureId) {
-                    const line = this.connectionLines[connection.id] || null;
-                    if (line) line.color = COLOR;
-                }
-            })
+        drawActiveConnection(oldActiveConnectionId: string | null) {
+            if (this.activeConnectionId) {
+                const line = this.connectionLines[this.activeConnectionId] || null;
+                if (!line) return;
+                line.color = COLOR_ACTIVE_CONNECTION;
+                line.size = SIZE_ACTIVE;
+            }
+
+            if (!oldActiveConnectionId) return;
+            const oldLine = this.connectionLines[oldActiveConnectionId] || null;
+            if(!oldLine) return;
+            oldLine.color = COLOR_ACTIVE_STRUCTURE;
+            oldLine.size = SIZE_DEFAULT;
         },
-        drawActiveStructureConnections() {
+        drawActiveStructureConnections(structureId: string | null, oldStructureId: string | null) {
+            // Старые связи перекрашиваем в дефолтный цвет
+            if (this.connections.length && oldStructureId && oldStructureId !== '') {
+                this.connections.forEach(connection => {
+                    // Это более не активные связи => дефолтное состояние
+                    if (connection.structureFirstId === oldStructureId || connection.structureSecondId === oldStructureId) {
+                        const line = this.connectionLines[connection.id] || null;
+                        if (line) {
+                            line.color = COLOR_DEFAULT;
+                            line.size = SIZE_DEFAULT;
+                        }
+                    }
+                })
+            }
+            
+            // Выделяем новые связи структуры
             if (!this.structureConnections.length) return;
             this.structureConnections.forEach(connection => {
                 const line = this.connectionLines[connection.id] || null;
-                if (line) line.color = ACTIVE_COLOR;
+                if (line) {
+                    line.color = COLOR_ACTIVE_STRUCTURE;
+                    line.size = SIZE_DEFAULT;
+                }
             })
         },
-        drawConnections(connections: StructureConnection[], options = DEFAULT_OPTIONS, connectionIdPrefix = '') {
+        drawConnections(connections: StructureConnection[], options = {color: COLOR_DEFAULT, size: SIZE_DEFAULT}, connectionIdPrefix = '') {
             const structuresEls = Array.from(document.querySelectorAll('.js-structure-connections'));
             if (!structuresEls.length) return;
 

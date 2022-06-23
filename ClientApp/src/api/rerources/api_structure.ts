@@ -26,12 +26,23 @@ export declare type Structure = {
 export declare type StructureListRequest = {
     isDeleted?: boolean | null
     date?: string
+    isTree: boolean
 }
 
 export const apiStructure = {
     tree: async (entryId: string, listRequest: StructureListRequest): Promise<StructureTree[]> => {
-        const resp = await appApi.list(['entries', entryId, 'structures'], listRequest);
+        const resp = await appApi.list(['entries', entryId, 'structures'], {
+            ...listRequest,
+            isTree: true,
+        });
         return resp.data.children;
+    },
+    list: async (entryId: string, listRequest: StructureListRequest): Promise<Structure[]> => {
+        const resp = await appApi.list(['entries', entryId, 'structures'], {
+            ...listRequest,
+            isTree: false,
+        });
+        return resp.data;
     }
 }
 

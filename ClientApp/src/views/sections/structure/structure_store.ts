@@ -1,47 +1,39 @@
 ﻿import {defineStore} from 'pinia';
 import {apiStructure, Structure, StructureTree} from "../../../api/rerources/api_structure";
-import {apiStructureItems} from "../../../api/rerources/api_structure_items";
 
 declare type StructureStoreState = {
     tree: StructureTree[],
-    structuresById: {[index: string]: Structure}
+    list: Structure[]
     structureSelectedId: null | string
 }
 export const useStructureStore = defineStore('StructureStore', {
     state: (): StructureStoreState => {
         return {
             tree: [],
-            structuresById: {},
+            list: [],
             structureSelectedId: null
         }
     },
     getters: {
-        structureSelected: (state): null | Structure => {
-            if (!state.structureSelectedId) return null;
-            return state.structuresById[state.structureSelectedId]
+        structureSelected(): null | Structure {
+            if (!this.structureSelectedId) return null;
+            if (!Object.keys(this.structuresById).length) return null;
+            
+            return this.structuresById[this.structureSelectedId]
+        },
+        structuresById(): {[index: string]: Structure} {
+            let data: {[index: string]: Structure} = {};
+            if(!this.list.length) return data;
+            this.list.forEach(x => data[x.id] = x);
+            return data;
         }
     },
     actions: {
-        async getTreeAsync(entryId: string)
+        async getStructuresAsync(entryId: string)
         {
-            const dataTree = await apiStructure.tree(entryId, {});
-            this.structuresById = {};
-            this.rebuildTree(dataTree);
-            this.tree = dataTree;
-            if(dataTree.length) this.structureSelectedId = dataTree[0].id;
+            this.tree = await apiStructure.tree(entryId, {isTree: true});
+            this.list = await apiStructure.list(entryId, {isTree: false});
+            if(this.tree.length) this.structureSelectedId = this.tree[0].id;
         },
-        rebuildTree(items: StructureTree[]) {
-            items.forEach((tree: StructureTree, key: number) => {
-                this.structuresById[tree.data.id] = tree.data;
-
-                items[key] = {
-                    ...tree,
-                    id: tree.data.id,
-                }
-                if (tree.children.length) {
-                    this.rebuildTree(tree.children);
-                }
-            })
-        }
     }
 })
