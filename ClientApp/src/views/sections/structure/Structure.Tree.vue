@@ -2,8 +2,8 @@
     <div class="q-mb-md">
         <q-btn
             size="md"
-            @click="connectionStore.switchVisibilityLines()"
-            :icon="connectionStore.isShowLines ? 'las la-eye' : 'las la-eye-slash'"
+            @click="switchShowLines"
+            :icon="connectionStore.isShowLines ? 'las la-eye-slash' : 'las la-eye'"
             :label="connectionStore.isShowLines ? 'Скрыть связи' : 'Показать связи'"/>
     </div>
     
@@ -35,15 +35,14 @@
 <script setup lang="ts">
 import {useStructureStore} from "./structure_store";
 import {useStructureConnectionsStore} from "./structure_connections_store";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 const treeEl = ref<any>(null);
-const isShowLines = ref(true);
 const props = defineProps<{
     entryId: string
 }>() 
 const structureStore = useStructureStore();
 const connectionStore = useStructureConnectionsStore();
-
+let allExpandedCount = ref(0);
 onMounted(async () => {
     await structureStore.getStructuresAsync(props.entryId);
     await connectionStore.getConnectionsAsync(props.entryId);
@@ -51,8 +50,26 @@ onMounted(async () => {
 
     if (treeEl.value) {
         console.log(treeEl.value.getExpandedNodes().length);
+        allExpandedCount.value = treeEl.value.getExpandedNodes().length;
     }
 })
+
+watch(() => structureStore.expandedIds, (val: string[]) => {
+    if (treeEl.value && val.length !== allExpandedCount.value) {
+        connectionStore.hideLines();
+    }
+});
+const switchShowLines = () => {
+    if (connectionStore.isShowLines) {
+        connectionStore.hideLines();
+    } else {
+        treeEl.value.expandAll();
+        connectionStore.showLines();
+    }
+}
+// watch(() => connectionStore.isShowLines, (val: boolean) => {
+//     if (val && treeEl.value) treeEl.value.expandAll();
+// })
 </script>
 
 <style lang="scss">

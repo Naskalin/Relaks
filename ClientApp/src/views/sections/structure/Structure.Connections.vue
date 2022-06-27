@@ -2,10 +2,16 @@
     <div v-if="store.structureConnections.length">
         <p class="text-center text-h6 q-mb-lg">Связи</p>
         <div class="q-gutter-y-md">
-            <connection-item
-                v-for="connection in store.structureConnections"
-                :connection="connection"
-                :key="connection.id"/>
+            <q-list v-if="structureStore.structureSelectedId" bordered class="rounded-borders">
+                <connection-item
+                    v-for="connection in store.structureConnections"
+                    :connection="connection"
+                    :key="connection.id"/>
+            </q-list>
+<!--            <connection-item-->
+<!--                v-for="connection in store.structureConnections"-->
+<!--                :connection="connection"-->
+<!--                :key="connection.id"/>-->
         </div>
     </div>
 </template>

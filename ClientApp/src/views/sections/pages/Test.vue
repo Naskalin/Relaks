@@ -1,139 +1,95 @@
 ﻿<template>
-    <div>
-        <q-card>
-            <q-card-section>
-                <q-splitter
-                    v-model="splitterModel"
-                    :limits="[40, 80]"
+    
+    <q-page-sticky position="bottom-right" :offset="fabPos">
+        <div class="q-pa-md" style="width: 350px" v-touch-pan.prevent.mouse="moveFab">
+            <q-list bordered>
+                <q-expansion-item
+                    group="somegroup"
+                    icon="explore"
+                    label="First"
+                    default-opened
+                    header-class="text-primary"
                 >
-                    <template v-slot:before>
-                        <div class="q-pa-md">
-                            <q-tree
-                                v-if="structureTree.length"
-                                :nodes="structureTree"
-                                node-key="id"
-                                selected-color="primary"
-                                v-model:selected="selectedId"
-                                :default-expand-all="true"
-                                no-selection-unset
-                            >
-                                <template v-slot:default-header="prop">
-                                    <div>
-                                        <div>
-                                            {{ prop.node.data.title }}
-                                            <div :id="prop.node.id" class="js-structure-connections structure-connection"></div>
-                                        </div>
-                                        <div v-if="prop.node.data.description" class="text-grey-8">
-                                            <q-icon name="las la-comment q-mr-xs" size="1.1em"/>
-                                            <span style="font-size: .9rem">{{ prop.node.data.description }}</span>
-                                        </div>
-                                    </div>
-                                </template>
-                            </q-tree>
-                        </div>
-                    </template>
+                    <q-card>
+                        <q-card-section>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
+                            commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
+                            eveniet doloribus ullam aliquid.
+                        </q-card-section>
+                    </q-card>
+                </q-expansion-item>
 
-                    <template v-slot:after>
-                        {{ selectedId }}
-                        <hr>
-                        {{ structures[selectedId] }}
-                    </template>
-                </q-splitter>
-            </q-card-section>
-        </q-card>
+                <q-separator />
 
-    </div>
+                <q-expansion-item group="somegroup" icon="perm_identity" label="Second" header-class="text-teal">
+                    <q-card>
+                        <q-card-section>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
+                            commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
+                            eveniet doloribus ullam aliquid.
+                        </q-card-section>
+                    </q-card>
+                </q-expansion-item>
+
+                <q-separator />
+
+                <q-expansion-item group="somegroup" icon="shopping_cart" label="Third" header-class="text-purple">
+                    <q-card>
+                        <q-card-section>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
+                            commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
+                            eveniet doloribus ullam aliquid.
+                        </q-card-section>
+                    </q-card>
+                </q-expansion-item>
+
+                <q-separator />
+
+                <q-expansion-item
+                    group="somegroup"
+                    icon="bluetooth"
+                    label="Fourth"
+                    header-class="bg-teal text-white"
+                    expand-icon-class="text-white"
+                >
+                    <q-card class="bg-teal-2">
+                        <q-card-section>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
+                            commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
+                            eveniet doloribus ullam aliquid.
+                        </q-card-section>
+                    </q-card>
+                </q-expansion-item>
+            </q-list>
+        </div>
+    </q-page-sticky>
 </template>
 
-<script setup lang="ts">
-import {ref, onMounted} from 'vue'
-import {apiStructure, Structure, StructureTree} from "../../../api/rerources/api_structure";
-import {apiStructureConnection, StructureConnection} from "../../../api/rerources/api_structure_connections";
-import LeaderLine from "leader-line-new";
+<script>
+import { ref } from 'vue'
 
-onMounted(async () => {
-    await getStructures();
-    await getStructureConnections();
-});
+export default {
+    setup () {
+        const fabPos = ref([ 18, 18 ])
+        const draggingFab = ref(false)
 
-const structureTree = ref<StructureTree[]>([]);
-const selectedId = ref<null | string>(null);
-const structures = ref<{ [index: string]: Structure }>({});
-// const structureConnections = ref<{[index: string]: StructureConnection[]}>({});
-const entryId = '01b137da-a3cf-4c08-ac3e-752b3f156ed4';
+        return {
+            fabPos,
+            draggingFab,
 
-const getStructures = async () => {
-    const dataTree = await apiStructure.tree(entryId, {});
-    structures.value = {};
-    rebuildTreeWithId(dataTree);
+            onClick () {
+                // console.log('Clicked on a fab action')
+            },
 
-    structureTree.value = dataTree;
-    if (dataTree.length) selectedId.value = dataTree[0].id;
-}
+            moveFab (ev) {
+                draggingFab.value = ev.isFirst !== true && ev.isFinal !== true
 
-const getStructureConnections = async () => {
-    // list structure connections
-    const connections = await apiStructureConnection.list({entryId: entryId});
-    const structuresEls = Array.from(document.querySelectorAll('.js-structure-connections'));
-    if (!structuresEls.length) return;
-    
-    let connectionItem: {[index: string]: Element};
-    for (const [index, connection] of connections.entries()) {
-        connectionItem = {};
-        
-        [
-            {key: 'first', structureId: connection.structureFirstId},
-            {key: 'second', structureId: connection.structureSecondId}
-        ].forEach(item => {
-            const findStructuresEls = structuresEls.filter(el => el.id === item.structureId);
-            if(!findStructuresEls.length) {
-                throw new Error('structureId is missing for StructureConnection');
+                fabPos.value = [
+                    fabPos.value[ 0 ] - ev.delta.x,
+                    fabPos.value[ 1 ] - ev.delta.y
+                ]
             }
-            const boxEl = findStructuresEls[0];
-            const connectionEl = document.createElement('div');
-            connectionEl.id = item.key + '_' + connection.id;
-            connectionEl.classList.add('structure-connection__el', item.key);
-
-            boxEl.appendChild(connectionEl);
-            connectionItem[item.key] = connectionEl;
-        })
-        
-        new LeaderLine(connectionItem.first, connectionItem.second);
+        }
     }
 }
-
-const rebuildTreeWithId = (items: StructureTree[]) => {
-    items.forEach((tree: StructureTree, key: number) => {
-        structures.value[tree.data.id] = tree.data;
-
-        items[key] = {
-            ...tree,
-            id: tree.data.id,
-        }
-        if (tree.children.length) {
-            rebuildTreeWithId(tree.children);
-        }
-    })
-}
-const splitterModel = ref(70);
 </script>
-
-<style lang="scss">
-//.structure-connection {
-//    display: inline-block;
-//    position: relative;
-//    width: 15px;
-//    height: 15px;
-//    &__el {
-//        position: absolute;
-//        left: 0;
-//        top: 0;
-//        display: block;
-//        width: 15px;
-//        height: 15px;
-//        border-radius: 50%;
-//        background: $positive;
-//        margin: 0 10px;
-//    }
-//}
-</style>

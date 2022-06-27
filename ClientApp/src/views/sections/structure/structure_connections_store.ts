@@ -5,10 +5,26 @@ import LeaderLine from "leader-line-new";
 import {useStructureStore} from "./structure_store";
 
 const SIZE_DEFAULT = 2;
-const SIZE_ACTIVE = 4;
+const SIZE_ACTIVE = 5;
 const COLOR_DEFAULT = '#ff8a652b';
-const COLOR_ACTIVE_CONNECTION = '#283593';
-const COLOR_ACTIVE_STRUCTURE = '#00695c';
+// const COLOR_ACTIVE_CONNECTION = '#3c1874';
+
+const COLOR_IN = '#4D964D';
+const COLOR_OUT = '#3f51b5';
+const COLOR_DOUBLE = '#f4511e';
+const getLineColor = (arrow: ArrowType) => {
+    switch (arrow) {
+        case "in":
+            return COLOR_IN;
+        case "out":
+            return COLOR_OUT;
+        case "double":
+            return COLOR_DOUBLE;
+    }
+}
+export declare type StructureConnectionWithArrow = {
+    arrow: ArrowType
+} & StructureConnection;
 
 declare type StructureConnectionsStoreState = {
     activeConnectionId: string | null,
@@ -16,6 +32,20 @@ declare type StructureConnectionsStoreState = {
     connectionLines: { [index: string]: LeaderLine },
     isShowLines: boolean
 }
+
+export declare type ArrowType = 'in' | 'out' | 'double';
+export function getConnectionArrowType(structureSelectedId: string, connection: StructureConnection): ArrowType {
+    const isFirst = connection.structureFirstId !== structureSelectedId;
+    switch (connection.direction) {
+        case "Normal":
+            return isFirst ? 'in' : 'out';
+        case "Reverse":
+            return isFirst ? 'out' : 'in';
+        case "Bidirectional":
+            return 'double';
+    }
+}
+
 
 function updateLineDirection(direction: StructureConnectionDirection, options: LeaderLine.Options): LeaderLine.Options {
     switch (direction) {
@@ -50,25 +80,33 @@ export const useStructureConnectionsStore = defineStore('StructureConnectionsSto
         }
     },
     getters: {
-        structureConnections: (state): StructureConnection[] => {
+        structureConnections: (state): StructureConnectionWithArrow[] => {
             const structureSelectedId = (useStructureStore()).structureSelectedId;
             if (!state.connections.length || !structureSelectedId) return [];
-            return state.connections.filter(
-                x => x.structureFirstId === structureSelectedId || x.structureSecondId === structureSelectedId
-            )
+            const arr: StructureConnectionWithArrow[] = [];
+            state.connections.forEach(x => {
+                if (x.structureFirstId === structureSelectedId || x.structureSecondId === structureSelectedId) {
+                    arr.push({
+                        ...x,
+                        arrow: getConnectionArrowType(structureSelectedId, x),
+                    });
+                } 
+            });
+            
+            return arr;
         }
     },
     actions: {
-        switchVisibilityLines() {
-            this.isShowLines = !this.isShowLines;
-
+        hideLines() {
+            this.isShowLines = false;
             Object.keys(this.connectionLines).forEach(key => {
-                const line = this.connectionLines[key];
-                if (this.isShowLines) {
-                    line.show();
-                } else {
-                    line.hide();
-                }
+                this.connectionLines[key].hide()
+            })
+        },
+        showLines() {
+            this.isShowLines = true;
+            Object.keys(this.connectionLines).forEach(key => {
+                this.connectionLines[key].show()
             })
         },
         async getConnectionsAsync(entryId: string) {
@@ -78,15 +116,23 @@ export const useStructureConnectionsStore = defineStore('StructureConnectionsSto
             if (this.activeConnectionId) {
                 const line = this.connectionLines[this.activeConnectionId] || null;
                 if (!line) return;
-                line.color = COLOR_ACTIVE_CONNECTION;
+                // line.color = COLOR_ACTIVE_CONNECTION;
                 line.size = SIZE_ACTIVE;
             }
             
             if (!oldActiveConnectionId) return;
-            const activeStructureConnectionIds = this.structureConnections.map(el => el.id);
             const oldLine = this.connectionLines[oldActiveConnectionId] || null;
             if(!oldLine) return;
-            oldLine.color = activeStructureConnectionIds.includes(oldActiveConnectionId) ? COLOR_ACTIVE_STRUCTURE : COLOR_DEFAULT;
+            
+            // let changeColorTo = COLOR_DEFAULT;
+            // for (const [index, connection] of this.structureConnections.entries()) {
+            //     if (connection.id === oldActiveConnectionId) {
+            //         changeColorTo = getLineColor(connection.arrow);
+            //         break;
+            //     }
+            // }
+            // // oldLine.changeColorTo = activeStructureConnectionIds.includes(oldActiveConnectionId) ? COLOR_ACTIVE_STRUCTURE : COLOR_DEFAULT;
+            // oldLine.color = changeColorTo;
             oldLine.size = SIZE_DEFAULT;
         },
         drawActiveStructureConnections(structureId: string | null, oldStructureId: string | null) {
@@ -112,7 +158,8 @@ export const useStructureConnectionsStore = defineStore('StructureConnectionsSto
             this.structureConnections.forEach(connection => {
                 const line = this.connectionLines[connection.id] || null;
                 if (line) {
-                    line.color = COLOR_ACTIVE_STRUCTURE;
+                    // line.color = COLOR_ACTIVE_STRUCTURE;
+                    line.color = getLineColor(connection.arrow);
                     line.size = SIZE_DEFAULT;
                 }
             })
