@@ -47,7 +47,6 @@ public class StructureItem : BaseEntity, ISoftDelete, ITimestampResource
 
 public class StructureConnection : BaseEntity, ITimestampResource
 {
-
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
 
