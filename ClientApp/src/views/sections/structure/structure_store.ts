@@ -3,7 +3,8 @@ import {apiStructure, Structure, StructureTree} from "../../../api/rerources/api
 
 declare type StructureStoreState = {
     tree: StructureTree[],
-    list: Structure[]
+    list: Structure[],
+    expandedIds: string[],
     structureSelectedId: null | string
 }
 export const useStructureStore = defineStore('StructureStore', {
@@ -11,7 +12,8 @@ export const useStructureStore = defineStore('StructureStore', {
         return {
             tree: [],
             list: [],
-            structureSelectedId: null
+            structureSelectedId: null,
+            expandedIds: []
         }
     },
     getters: {

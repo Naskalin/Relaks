@@ -28,5 +28,8 @@ onMounted(() => {
 watch(() => store.activeConnectionId, (val: string | null, oldVal: string | null) => {
     store.drawActiveConnection(oldVal);
 })
-
+// watch(() => structureStore.expandedIds, (expandedIds: string[]) => {
+//     // structureStore.list.filter(x => x.parentId)
+//     console.log('expandedIds', expandedIds.length, 'list', structureStore.list.length);
+// })
 </script>

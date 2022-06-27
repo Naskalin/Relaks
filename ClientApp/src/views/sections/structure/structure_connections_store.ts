@@ -13,7 +13,8 @@ const COLOR_ACTIVE_STRUCTURE = '#00695c';
 declare type StructureConnectionsStoreState = {
     activeConnectionId: string | null,
     connections: StructureConnection[],
-    connectionLines: { [index: string]: LeaderLine }
+    connectionLines: { [index: string]: LeaderLine },
+    isShowLines: boolean
 }
 
 function updateLineDirection(direction: StructureConnectionDirection, options: LeaderLine.Options): LeaderLine.Options {
@@ -44,7 +45,8 @@ export const useStructureConnectionsStore = defineStore('StructureConnectionsSto
         return {
             activeConnectionId: null,
             connections: [],
-            connectionLines: {}
+            connectionLines: {},
+            isShowLines: true
         }
     },
     getters: {
@@ -57,6 +59,18 @@ export const useStructureConnectionsStore = defineStore('StructureConnectionsSto
         }
     },
     actions: {
+        switchVisibilityLines() {
+            this.isShowLines = !this.isShowLines;
+
+            Object.keys(this.connectionLines).forEach(key => {
+                const line = this.connectionLines[key];
+                if (this.isShowLines) {
+                    line.show();
+                } else {
+                    line.hide();
+                }
+            })
+        },
         async getConnectionsAsync(entryId: string) {
             this.connections = await apiStructureConnection.list({entryId: entryId});
         },
@@ -67,14 +81,18 @@ export const useStructureConnectionsStore = defineStore('StructureConnectionsSto
                 line.color = COLOR_ACTIVE_CONNECTION;
                 line.size = SIZE_ACTIVE;
             }
-
+            
             if (!oldActiveConnectionId) return;
+            const activeStructureConnectionIds = this.structureConnections.map(el => el.id);
             const oldLine = this.connectionLines[oldActiveConnectionId] || null;
             if(!oldLine) return;
-            oldLine.color = COLOR_ACTIVE_STRUCTURE;
+            oldLine.color = activeStructureConnectionIds.includes(oldActiveConnectionId) ? COLOR_ACTIVE_STRUCTURE : COLOR_DEFAULT;
             oldLine.size = SIZE_DEFAULT;
         },
         drawActiveStructureConnections(structureId: string | null, oldStructureId: string | null) {
+            // Сбрасываем активную выделенную связь
+            this.activeConnectionId = null;
+            
             // Старые связи перекрашиваем в дефолтный цвет
             if (this.connections.length && oldStructureId && oldStructureId !== '') {
                 this.connections.forEach(connection => {

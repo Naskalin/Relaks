@@ -1,5 +1,14 @@
 ﻿<template>
+    <div class="q-mb-md">
+        <q-btn
+            size="md"
+            @click="connectionStore.switchVisibilityLines()"
+            :icon="connectionStore.isShowLines ? 'las la-eye' : 'las la-eye-slash'"
+            :label="connectionStore.isShowLines ? 'Скрыть связи' : 'Показать связи'"/>
+    </div>
+    
     <q-tree
+        ref="treeEl"
         v-if="structureStore.tree.length"
         :nodes="structureStore.tree"
         node-key="id"
@@ -7,6 +16,7 @@
         v-model:selected="structureStore.structureSelectedId"
         :default-expand-all="true"
         no-selection-unset
+        v-model:expanded="structureStore.expandedIds"
     >
         <template v-slot:default-header="prop">
             <div>
@@ -26,16 +36,22 @@
 import {useStructureStore} from "./structure_store";
 import {useStructureConnectionsStore} from "./structure_connections_store";
 import {onMounted, ref} from "vue";
-
+const treeEl = ref<any>(null);
+const isShowLines = ref(true);
 const props = defineProps<{
     entryId: string
 }>() 
 const structureStore = useStructureStore();
 const connectionStore = useStructureConnectionsStore();
+
 onMounted(async () => {
     await structureStore.getStructuresAsync(props.entryId);
     await connectionStore.getConnectionsAsync(props.entryId);
     connectionStore.drawConnections(connectionStore.connections);
+
+    if (treeEl.value) {
+        console.log(treeEl.value.getExpandedNodes().length);
+    }
 })
 </script>
 

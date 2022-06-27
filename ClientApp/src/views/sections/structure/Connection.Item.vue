@@ -4,9 +4,9 @@
         :class="connectionsStore.activeConnectionId === connection.id ? 'bg-indigo-9 text-white' : 'bg-blue-grey-2'"
     >
         <q-card-section class="q-gutter-y-sm">
+            <div class="text-italic">{{ relationTitle }}</div>
             <div v-if="connection.title" class="text-weight-bold">{{ connection.title }}</div>
-            <div v-if="connection.description">{{ connection.description }}</div>
-            <div class="text-italic">{{ relationText }}</div>
+            <div v-if="connection.description" style="font-size: .85rem" class="text-italic">{{ connection.description }}</div>
         </q-card-section>
     </q-card>
 </template>
@@ -24,39 +24,39 @@ const connectionsStore = useStructureConnectionsStore();
 const structureStore = useStructureStore();
 const setActiveConnection = () => {
     if (connectionsStore.activeConnectionId === props.connection.id) {
+        // Если кликают на уже активный элемент, то делаем его не активным
         connectionsStore.activeConnectionId = null;
         return;
     }
     connectionsStore.activeConnectionId = props.connection.id;
 }
-const relationText = computed(() => {
+const relationTitle = computed(() => {
     if (structureStore.structureSelected && Object.keys(structureStore.structuresById).length) {
-        let str = [structureStore.structureSelected.title];
+        let str = '';
         let isFirst = false;
         let secondStructureId = props.connection.structureSecondId;
         if(props.connection.structureFirstId !== structureStore.structureSelected.id) {
             secondStructureId = props.connection.structureFirstId;
             isFirst = true; 
         }
+
+        const secondTitle = structureStore.structuresById[secondStructureId].title || '';
         
         switch (props.connection.direction) {
             case "Normal":
-                str.push(isFirst ? '<<-' : '->>');
+                // str.push(isFirst ? '<<-' : '->>');
+                str = isFirst ? '<<-' : '->>';
                 break;
             case "Reverse":
-                str.push(isFirst ? '->>' : '<<-');
+                // str.push(isFirst ? '->>' : '<<-');
+                str = isFirst ? '->>' : '<<-';
                 break;
             case "Bidirectional":
-                str.push('<<->>');
+                str = '<<->>';
                 break;
         }
-
-        const secondStructure = structureStore.structuresById[secondStructureId] || null;
-        if(secondStructure) {
-            str.push(secondStructure.title);
-        }
         
-        return str.join(' ');
+        return str + ' ' +  secondTitle;
     }
 })
 </script>

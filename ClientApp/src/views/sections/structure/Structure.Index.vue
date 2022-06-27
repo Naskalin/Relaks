@@ -33,8 +33,8 @@
                             <q-btn icon="las la-users" label="объединение" color="primary" v-tooltip="'Добавить объединение'"/>
                         </div>
                     </div>
-                    <div v-if="structureStore.structureSelected" class="text-grey-9 q-mb-lg">
-                        <b>{{structureStore.structureSelected.title}}</b>
+                    <div v-if="structureStore.structureSelected" class="text-grey-9 q-mb-md text-center" style="font-size: 1rem">
+                        <b class="text-blue-8">{{structureStore.structureSelected.title}}</b>
                     </div>
                     <connections/>
                     <items/>
