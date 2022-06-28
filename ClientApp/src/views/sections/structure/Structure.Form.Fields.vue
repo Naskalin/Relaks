@@ -1,25 +1,25 @@
 ﻿<template>
-    <q-input v-model="model.title" type="text" counter maxlength="150"/>
-    <q-input v-model="model.description" type="textarea" maxlength="250"/>
-    <date-field v-model="model.startAt" label="Дата создания" :with-time="false" required/>
-<!--    <structure-select-field v-model="model.parentId"/>-->
+    <q-input v-model="store.request.title" type="text" label="Название" counter maxlength="150" required/>
+    <q-input v-model="store.request.description" type="textarea" label="Описание" counter maxlength="250" autogrow/>
+    <date-field v-model="store.request.startAt" label="Дата создания" :with-time="false" required/>
+    <structure-select-field :entry-id="entryId" v-model="store.request.parentId" label="Родительская группа"/>
 </template>
 
 <script setup lang="ts">
 import DateField from '../../fields/Date.Field.vue';
-// import StructureSelectField from './fields/Structure.Select.Field.vue';
-import {StructureFormRequest} from "../../../api/rerources/api_structure";
+import StructureSelectField from './fields/Structure.Select.Field.vue';
+import {useStructureFormStore} from "./structure_form_store";
+import {useRoute} from "vue-router";
+import {onMounted, watch} from "vue";
 
-import {computed} from 'vue';
-
-const props = defineProps<{
-    modelValue: StructureFormRequest,
-}>()
-const emit = defineEmits<{
-    (e: 'update:modelValue', val: StructureFormRequest): void,
-}>()
-const model = computed({
-    get: () => props.modelValue,
-    set: (val: StructureFormRequest) => emit('update:modelValue', val)
-});
+const entryId = (useRoute()).params.entryId as string;
+const store = useStructureFormStore();
+onMounted(() => {
+    if (!store.request.startAt) store.request.startAt = (new Date()).toISOString();
+})
+watch(() => [store.isShowEdit, store.isShowCreate], (val: any) => {
+    if (!val) {
+        store.$reset();
+    }
+})
 </script>

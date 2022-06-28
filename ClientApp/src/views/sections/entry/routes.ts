@@ -4,8 +4,8 @@ import ListEntry from './Entry.List.vue';
 import Profile from './Entry.Profile.vue';
 import EntryFileList from '../entry_files/EntryFile.List.vue';
 import EntryAbout from '../entry_about/EntryAbout.vue';
-import Structures from '../structure/Structure.Index.vue';
-import StructureNew from '../structure/Structure.New.vue';
+
+import Structures from '../structure/Structures.vue';
 
 export const entryRoutes: RouteRecordRaw[] = [
     {path: '/entries', component: ListEntry, name: 'entry-list'},
@@ -17,13 +17,7 @@ export const entryRoutes: RouteRecordRaw[] = [
         children: [
             {component: EntryAbout, path: '', name: 'entry-about'},
             {component: EntryFileList, path: 'files', name: 'entry-file-list'},
-            {
-                component: Structures, path: 'structures', name: 'entry-structures',
-                children: [
-                    {component: StructureNew, path: 'new', name: 'entry-structures-new'},
-                    // {component: StructureForm, path: ':structureId/edit', name: 'entry-structures-edit'},
-                ]
-            },
+            {component: Structures, path: 'structures', name: 'entry-structures'},
         ]
     }
 ];

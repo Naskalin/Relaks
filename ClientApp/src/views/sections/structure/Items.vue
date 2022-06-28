@@ -1,5 +1,5 @@
 ﻿<template>
-    <div class="row q-col-gutter-md items-center q-mb-lg justify-between">
+    <div class="row q-col-gutter-md items-center q-my-lg justify-between">
         <div class="col-auto">
             <h6 class="q-ma-none">Объединения</h6>
         </div>

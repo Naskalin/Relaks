@@ -1,4 +1,5 @@
 ﻿using App.Repository;
+using App.Utils;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -19,7 +20,7 @@ public class Delete : EndpointBaseAsync
     [HttpDelete("/api/entries/{entryId}/structures/{structureId}")]
     [SwaggerOperation(OperationId = "Structure.Delete", Tags = new[] {"Structure"})]
     public override async Task<ActionResult> HandleAsync(
-        GetRequest request,
+        [FromMultiSource] GetRequest request,
         CancellationToken cancellationToken = new()
     )
     {

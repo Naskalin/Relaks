@@ -16,7 +16,6 @@
                         :key="routeName"
                         :label="label"
                         :to="{ name: routeName, params: {entryId: entryId} }"
-                        exact
                     />
                 </q-tabs>
                 <q-separator/>

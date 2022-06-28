@@ -1,6 +1,6 @@
 ﻿<template>
     <q-dialog v-model="isShowModel" v-bind="props">
-        <q-card style="width: 700px; max-width: 80vw;" :class="{'column full-height': props.fullHeight}">
+        <q-card style="width: 800px; max-width: 80vw;" :class="{'column full-height': props.fullHeight}">
             <q-card-section class="row items-center">
                 <div class="text-h6">{{ title }}</div>
                 <q-space/>

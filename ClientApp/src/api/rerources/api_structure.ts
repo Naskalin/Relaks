@@ -34,7 +34,7 @@ export const apiStructure = {
         return resp.data;
     },
     update: async (entryId: string, structureId: string, request: StructureFormRequest): Promise<null> => {
-        const resp = await appApi.post(['entries', entryId, 'structures', structureId], request);
+        const resp = await appApi.put(['entries', entryId, 'structures', structureId], request);
         return resp.data;
     },
     delete: async (entryId: string, structureId: string): Promise<null> => {

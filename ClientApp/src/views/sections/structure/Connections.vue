@@ -7,7 +7,7 @@
             <q-btn icon="las la-arrows-alt-h" round color="primary" v-tooltip="'Связать две группы'"/>
         </div>
     </div>
-    <div class="q-gutter-y-md q-mb-xl q-mt-sm" v-if="store.structureConnections.length">
+    <div class="q-gutter-y-md q-mt-sm" v-if="store.structureConnections.length">
         <q-list v-if="structureStore.structureSelectedId" bordered class="rounded-borders">
             <connections-item
                 v-for="connection in store.structureConnections"

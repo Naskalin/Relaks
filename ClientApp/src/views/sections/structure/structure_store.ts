@@ -1,14 +1,11 @@
 ﻿import {defineStore} from 'pinia';
-import {apiStructure, Structure, StructureFormRequest, StructureTree} from "../../../api/rerources/api_structure";
+import {apiStructure, Structure, StructureTree} from "../../../api/rerources/api_structure";
 
 declare type StructureStoreState = {
     tree: StructureTree[],
     list: Structure[],
     expandedIds: string[],
     structureSelectedId: null | string,
-    
-    formRequest: StructureFormRequest
-    isFormLoading: boolean,
 }
 export const useStructureStore = defineStore('StructureStore', {
     state: (): StructureStoreState => {
@@ -17,16 +14,6 @@ export const useStructureStore = defineStore('StructureStore', {
             list: [],
             structureSelectedId: null,
             expandedIds: [],
-            
-            isFormLoading: false,
-            formRequest: {
-                title: '',
-                description: '',
-                deletedReason: '',
-                parentId: null,
-                deletedAt: null,
-                startAt: null,
-            }
         }
     },
     getters: {
