@@ -1,12 +1,5 @@
 ﻿import {appApi} from "../index";
 import {Entry, SoftDeletableType, TimestampTypes} from "../api_types";
-// export declare type StructureTree = {
-//     data: null,
-//     children: TreeItem[],
-//     isRoot: boolean,
-//     isLeaf: boolean,
-//     level: number
-// }
 export declare type StructureTree = {
     id: string
     data: Structure,
@@ -28,8 +21,26 @@ export declare type StructureListRequest = {
     date?: string
     isTree: boolean
 }
+export declare type StructureFormRequest = {
+    title: string
+    description: string
+    startAt: null | string
+    parentId: null | string
+} & SoftDeletableType
 
 export const apiStructure = {
+    create: async (entryId: string, request: StructureFormRequest): Promise<Structure> => {
+        const resp = await appApi.post(['entries', entryId, 'structures'], request);
+        return resp.data;
+    },
+    update: async (entryId: string, structureId: string, request: StructureFormRequest): Promise<null> => {
+        const resp = await appApi.post(['entries', entryId, 'structures', structureId], request);
+        return resp.data;
+    },
+    delete: async (entryId: string, structureId: string): Promise<null> => {
+          const resp = await appApi.delete(['entries', entryId, 'structures', structureId]);
+          return resp.data;
+    },
     tree: async (entryId: string, listRequest: StructureListRequest): Promise<StructureTree[]> => {
         const resp = await appApi.list(['entries', entryId, 'structures'], {
             ...listRequest,

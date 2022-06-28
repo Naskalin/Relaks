@@ -1,6 +1,7 @@
 ﻿<template>
     <div class="q-mb-md">
         <q-btn
+            v-if="connectionStore.connections.length"
             size="md"
             @click="switchShowLines"
             :icon="connectionStore.isShowLines ? 'las la-eye-slash' : 'las la-eye'"

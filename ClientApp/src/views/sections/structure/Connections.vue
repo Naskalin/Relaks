@@ -1,18 +1,19 @@
 ﻿<template>
-    <div v-if="store.structureConnections.length">
-        <p class="text-center text-h6 q-mb-lg">Связи</p>
-        <div class="q-gutter-y-md">
-            <q-list v-if="structureStore.structureSelectedId" bordered class="rounded-borders">
-                <connection-item
-                    v-for="connection in store.structureConnections"
-                    :connection="connection"
-                    :key="connection.id"/>
-            </q-list>
-<!--            <connection-item-->
-<!--                v-for="connection in store.structureConnections"-->
-<!--                :connection="connection"-->
-<!--                :key="connection.id"/>-->
+    <div class="row q-col-gutter-md items-center justify-between">
+        <div class="col-auto">
+            <h6 class="q-ma-none">Связи</h6>
         </div>
+        <div class="col-auto q-gutter-sm">
+            <q-btn icon="las la-arrows-alt-h" round color="primary" v-tooltip="'Связать две группы'"/>
+        </div>
+    </div>
+    <div class="q-gutter-y-md q-mb-xl q-mt-sm" v-if="store.structureConnections.length">
+        <q-list v-if="structureStore.structureSelectedId" bordered class="rounded-borders">
+            <connections-item
+                v-for="connection in store.structureConnections"
+                :connection="connection"
+                :key="connection.id"/>
+        </q-list>
     </div>
 </template>
 
@@ -20,7 +21,7 @@
 import {useStructureConnectionsStore} from "./structure_connections_store";
 import {watch, onMounted} from 'vue';
 import {useStructureStore} from "./structure_store";
-import ConnectionItem from './Connection.Item.vue';
+import ConnectionsItem from './Connections.Item.vue';
 
 const structureStore = useStructureStore();
 const store = useStructureConnectionsStore();

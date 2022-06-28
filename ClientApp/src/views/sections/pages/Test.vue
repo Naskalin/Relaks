@@ -1,66 +1,13 @@
 ﻿<template>
-    
-    <q-page-sticky position="bottom-right" :offset="fabPos">
-        <div class="q-pa-md" style="width: 350px" v-touch-pan.prevent.mouse="moveFab">
-            <q-list bordered>
-                <q-expansion-item
-                    group="somegroup"
-                    icon="explore"
-                    label="First"
-                    default-opened
-                    header-class="text-primary"
-                >
-                    <q-card>
-                        <q-card-section>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
-                            commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
-                            eveniet doloribus ullam aliquid.
-                        </q-card-section>
-                    </q-card>
-                </q-expansion-item>
+    <p v-for="n in 30">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, assumenda beatae consequatur culpa dignissimos
+        eaque eligendi, error excepturi, fuga hic id in magni minus molestias mollitia praesentium reiciendis saepe
+        sed!</p>
 
-                <q-separator />
-
-                <q-expansion-item group="somegroup" icon="perm_identity" label="Second" header-class="text-teal">
-                    <q-card>
-                        <q-card-section>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
-                            commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
-                            eveniet doloribus ullam aliquid.
-                        </q-card-section>
-                    </q-card>
-                </q-expansion-item>
-
-                <q-separator />
-
-                <q-expansion-item group="somegroup" icon="shopping_cart" label="Third" header-class="text-purple">
-                    <q-card>
-                        <q-card-section>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
-                            commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
-                            eveniet doloribus ullam aliquid.
-                        </q-card-section>
-                    </q-card>
-                </q-expansion-item>
-
-                <q-separator />
-
-                <q-expansion-item
-                    group="somegroup"
-                    icon="bluetooth"
-                    label="Fourth"
-                    header-class="bg-teal text-white"
-                    expand-icon-class="text-white"
-                >
-                    <q-card class="bg-teal-2">
-                        <q-card-section>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
-                            commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
-                            eveniet doloribus ullam aliquid.
-                        </q-card-section>
-                    </q-card>
-                </q-expansion-item>
-            </q-list>
+    <q-page-sticky position="top" :offset="[0, 18]">
+        <div style="width: 250px">
+            <p v-for="n in 15">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto et excepturi porro quibusdam
+                soluta? Aliquam beatae consequatur dolores eius, enim laboriosam maiores minima minus obcaecati odit
+                quam quis quisquam suscipit.</p>
         </div>
     </q-page-sticky>
 </template>

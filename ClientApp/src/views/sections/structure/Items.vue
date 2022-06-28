@@ -1,11 +1,16 @@
 ﻿<template>
-    <div v-if="itemsStore.items.length" class="q-mt-md">
-        <p class="text-center text-h6 q-mb-md">Объединения</p>
-        
+    <div class="row q-col-gutter-md items-center q-mb-lg justify-between">
+        <div class="col-auto">
+            <h6 class="q-ma-none">Объединения</h6>
+        </div>
+        <div class="col-auto q-gutter-sm">
+            <q-btn icon="las la-users" round color="primary" v-tooltip="'Добавить объединение'"/>
+        </div>
+    </div>
+
+    <template v-if="itemsStore.items.length">
         <div v-for="sItem in itemsStore.items" :key="sItem.id">
-            <q-separator class="q-my-md"/>
-            
-            <q-item class="q-pa-none">
+            <q-item class="q-pa-none" :key="'item'+sItem.id">
                 <q-item-section side>
                     <q-avatar size="50px" color="grey-5">
                         <api-image v-if="sItem.entry.avatar" :file-id="sItem.entry.avatar" image-filter="square-thumbnail"/>
@@ -23,8 +28,10 @@
                     <q-btn color="primary" icon="las la-edit" round flat/>
                 </q-item-section>
             </q-item>
+
+            <q-separator class="q-my-md"/>
         </div>
-    </div>
+    </template>
 </template>
 
 <script setup lang="ts">

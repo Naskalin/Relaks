@@ -2,21 +2,27 @@
     <h4 v-if="profileStore.entry" class="q-my-lg">
         {{ entryMessages.profile.tabs(profileStore.entry.entryType)["entry-structures"] || '?'}}
     </h4>
-
+    
     <q-card>
         <q-splitter
             v-model="splitterModel"
             :limits="[50, 70]"
         >
             <template v-slot:before>
+                <router-view/>
+                
                 <q-card-section>
                     <div class="row q-col-gutter-md items-center q-mb-lg justify-between">
                         <div class="col-auto">
-                            <h5 class="q-ma-none">Группы</h5>
+                            <h6 class="q-ma-none">Группы</h6>
                         </div>
                         <div class="col-auto q-gutter-sm">
-                            <q-btn icon="las la-object-group" label="группа" color="primary" v-tooltip="'Добавить группу'"/>
-                            <q-btn icon="las la-arrows-alt-h" label="связь" color="primary" v-tooltip="'Связать две группы'"/>
+                            <q-btn 
+                                @click="$router.push({name: 'entry-structures-create', params: {entryId: entryId}})" 
+                                icon="las la-sitemap" 
+                                label="Добавить группу" 
+                                color="primary"
+                            />
                         </div>
                     </div>
                     <tree :entry-id="entryId"/>
@@ -24,18 +30,9 @@
             </template>
 
             <template v-slot:after>
-                <q-card-section>
-                    <div class="row q-col-gutter-md items-center q-mb-lg justify-between">
-                        <div class="col-auto">
-                            <h5 class="q-ma-none">Состав</h5>
-                        </div>
-                        <div class="col-auto q-gutter-sm">
-                            <q-btn icon="las la-users" label="объединение" color="primary" v-tooltip="'Добавить объединение'"/>
-                        </div>
-                    </div>
-                    <div v-if="structureStore.structureSelected" class="text-grey-9 q-mb-md text-center" style="font-size: 1rem">
-                        <b class="text-blue-8">{{structureStore.structureSelected.title}}</b>
-                    </div>
+                <q-card-section v-if="structureStore.list.length">
+                    <div class="text-grey-9 q-mb-md text-center text-h6 text-grey-9"
+                         v-if="structureStore.structureSelected">{{structureStore.structureSelected.title}}</div>
                     <connections/>
                     <items/>
                 </q-card-section>
@@ -48,20 +45,32 @@
 import {useEntryProfileStore} from "../../../store/entry/entry.profile.store";
 import {useStructureStore} from "./structure_store";
 import {entryMessages} from "../../../localize/messages";
-import {ref} from 'vue';
-import {useRoute, onBeforeRouteLeave, onBeforeRouteUpdate} from "vue-router";
+import {ref, watch} from 'vue';
+import {useRoute, onBeforeRouteLeave} from "vue-router";
 import Tree from './Structure.Tree.vue';
-import Items from './Structure.Items.vue';
-import Connections from './Structure.Connections.vue';
+import Items from './Items.vue';
+import Connections from './Connections.vue';
 import {useStructureConnectionsStore} from "./structure_connections_store";
+import {useStructureItemsStore} from "./structure_items_store";
+import {debounce} from "quasar";
 
 const entryId = (useRoute()).params.entryId as string;
 const splitterModel = ref(70);
 const profileStore = useEntryProfileStore();
 const structureStore = useStructureStore();
 const connectionsStore = useStructureConnectionsStore();
+const itemsStore = useStructureItemsStore();
 
-onBeforeRouteLeave((to, from, next) => {
+watch(() => splitterModel.value, debounce(() => {
+    deleteConnections();
+    connectionsStore.isShowLines = true; 
+    connectionsStore.drawConnections(connectionsStore.connections);
+    if (structureStore.structureSelectedId) {
+        connectionsStore.drawActiveStructureConnections(structureStore.structureSelectedId, null);
+    }
+}, 150))
+
+const deleteConnections = () => {
     Object.keys(connectionsStore.connectionLines).forEach(key => {
         const line = connectionsStore.connectionLines[key];
         const startEl = line.start as Element;
@@ -70,7 +79,12 @@ onBeforeRouteLeave((to, from, next) => {
         endEl.remove();
         line.remove();
     })
+}
+onBeforeRouteLeave((to, from, next) => {
+    deleteConnections();
     connectionsStore.$reset();
+    structureStore.$reset();
+    itemsStore.$reset();
     next();
 })
 </script>

@@ -7,7 +7,6 @@ import {useStructureStore} from "./structure_store";
 const SIZE_DEFAULT = 2;
 const SIZE_ACTIVE = 5;
 const COLOR_DEFAULT = '#ff8a652b';
-// const COLOR_ACTIVE_CONNECTION = '#3c1874';
 
 const COLOR_IN = '#4D964D';
 const COLOR_OUT = '#3f51b5';
