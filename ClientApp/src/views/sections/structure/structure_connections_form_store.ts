@@ -1,6 +1,5 @@
 ﻿import {defineStore} from 'pinia';
 import {
-    StructureConnectionDirection,
     StructureConnectionFormRequest
 } from "../../../api/rerources/api_structure_connections";
 
@@ -14,7 +13,6 @@ export const useStructureConnectionsFormStore = defineStore('StructureConnection
     state: (): StructureConnectionsFormStoreState => {
         return {
             request: {
-                title: '',
                 description: '',
                 direction: 'Normal',
                 structureFirstId: '',

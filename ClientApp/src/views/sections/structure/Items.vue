@@ -20,8 +20,8 @@
                 <q-item-section>
                     <q-item-label>{{sItem.entry.name}}</q-item-label>
                     <div v-if="sItem.entry.description" style="font-size: .85rem" class="text-grey-8">{{sItem.entry.description}}</div>
-                    <div v-if="sItem.comment" class="q-mt-sm">
-                        <q-icon name="las la-comment"/> {{sItem.comment}}
+                    <div v-if="sItem.description" class="q-mt-sm">
+                        <q-icon name="las la-comment"/> {{sItem.description}}
                     </div>
                 </q-item-section>
                 <q-item-section side>

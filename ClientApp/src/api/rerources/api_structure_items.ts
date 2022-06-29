@@ -3,7 +3,7 @@ import {Entry, EntryType, SoftDeletableType, TimestampTypes} from "../api_types"
 
 export declare type StructureItem = {
     id: string
-    comment: string
+    description: string
     startAt: string,
     structureId: string
     entryId: string

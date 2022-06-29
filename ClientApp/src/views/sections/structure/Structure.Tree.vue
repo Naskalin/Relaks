@@ -34,7 +34,7 @@
             <div :id="prop.node.id" class="js-structure-connections structure-connection q-py-xs q-px-sm">
                 <div>
                     {{ prop.node.data.title }}
-                    <q-icon v-if=" prop.node.data.description" class="q-ml-sm" name="las la-comment"/>
+                    <q-icon v-if="prop.node.data.description" v-tooltip="prop.node.data.description" class="q-ml-sm" name="las la-comment"/>
                 </div>
             </div>
         </template>

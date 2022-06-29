@@ -1,8 +1,6 @@
 ﻿<template>
-    <q-input v-model="formStore.request.title" type="text" label="Название" counter maxlength="250" required/>
-    <q-input v-model="formStore.request.title" type="text" label="Название" counter maxlength="250" required/>
+    <q-input v-model="formStore.request.description" type="text" label="Название" counter maxlength="500"/>
 
-<!--    public string Title { get; set; } = null!;-->
 <!--    public string Description { get; set; } = null!;-->
 <!--    public StructureConnection.DirectionEnum Direction { get; set; }-->
 <!--    public Guid StructureFirstId { get; set; }-->

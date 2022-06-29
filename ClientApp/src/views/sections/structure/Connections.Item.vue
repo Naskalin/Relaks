@@ -8,10 +8,29 @@
         :class="connectionsStore.activeConnectionId === connection.id ?  connection.arrow +' active' : connection.arrow +' bg-blue-grey-2'"
         class="connection-item"
     >
+        <template v-slot:header>
+            <q-item-section side>
+                <q-icon :name="relationData.icon" :size="connection.direction === 'Bidirectional' ? '1.5em' : '1.8em'"/>
+            </q-item-section>
+            <q-item-section>
+                {{relationData.text}}
+            </q-item-section>
+            <q-item-section side v-if="connection.description">
+                <q-icon name="las la-comment" v-tooltip="connection.description"/>
+            </q-item-section>
+        </template>
         <q-card>
-            <q-card-section v-if="connection.title || connection.description">
-                <div v-if="connection.title">{{ connection.title }}</div>
-                <div v-if="connection.description" style="font-size: .85rem" class="text-italic">{{ connection.description }}</div>
+            <q-card-section>
+                <div class="row justify-between q-col-gutter-sm items-center">
+                    <div class="col">
+                        <div v-if="connection.description">{{ connection.description }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="text-center">
+                            <q-btn round v-tooltip="'Изменить'" flat color="primary" icon="las la-edit" outline/>
+                        </div>
+                    </div>
+                </div>
             </q-card-section>
         </q-card>
     </q-expansion-item>
@@ -87,10 +106,10 @@ const relationData = computed(() => {
     .q-expansion-item__content {
         color: $dark;
     }
-    .q-icon.la-sign-out-alt,
-    .q-icon.la-sign-in-alt {
-        font-size: 1.8em;
-    }
+    //.q-icon.la-sign-out-alt,
+    //.q-icon.la-sign-in-alt {
+    //    font-size: 1.8em;
+    //}
     .q-icon.la-sign-out-alt {
         color: $indigo-6;
     }
@@ -101,7 +120,7 @@ const relationData = computed(() => {
         color: $deep-orange-7;
         //color: #00695c;
     }
-    &.active .q-icon {
+    &.active .q-item__section .q-icon {
         color: white
     }
 }
