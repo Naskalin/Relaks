@@ -16,7 +16,7 @@ public class Delete : EndpointBaseAsync
         _structureConnectionRepository = structureConnectionRepository;
     }
 
-    [HttpPut("/api/structure-connections/{structureConnectionId}")]
+    [HttpDelete("/api/structure-connections/{structureConnectionId}")]
     [SwaggerOperation(OperationId = "StructureConnection.Delete", Tags = new[] {"StructureConnection"})]
     public override async Task<ActionResult> HandleAsync(
         [FromRoute] Guid structureConnectionId,

@@ -26,6 +26,7 @@ const emit = defineEmits<{
 const store = useStructureConnectionsFormStore();
 const connectionsStore = useStructureConnectionsStore();
 const structureStore = useStructureStore();
+
 const createAsync = async () => {
     const connection = await apiStructureConnection.create(store.request);
     emit('onSave');
@@ -36,6 +37,7 @@ const createAsync = async () => {
     setTimeout(() => {
         connectionsStore.drawActiveStructureConnections(structureStore.structureSelectedId!);
         connectionsStore.activeConnectionId = connection.id;
+        connectionsStore.drawActiveConnection();
     }, 200)
 }
 </script>

@@ -24,7 +24,7 @@ public class BaseRepository<TEntity> where TEntity : BaseEntity
 
     public async Task<TEntity?> FindByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return await Entities.FirstOrDefaultAsync(x => x.Id.Equals(id), cancellationToken);
+        return await Entities.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
     public IQueryable<TEntity> PaginateQuery(IQueryable<TEntity> query, IPaginableRequest request)

@@ -1,5 +1,6 @@
 ﻿<template>
     <new-modal/>
+    <edit-modal/>
     
     <div class="row q-col-gutter-md items-center justify-between">
         <div class="col-auto">
@@ -8,7 +9,7 @@
         <div class="col-auto q-gutter-sm">
             <q-btn
                 @click="showNewModal"
-                icon="las la-arrows-alt-h"
+                icon="las la-exchange-alt"
                 round color="primary"
                 v-tooltip.left="'Добавить связь'"/>
         </div>
@@ -29,6 +30,7 @@ import {watch, onMounted} from 'vue';
 import {useStructureStore} from "./structure_store";
 import ConnectionsItem from './Connections.Item.vue';
 import NewModal from './Connections.New.Modal.vue';
+import EditModal from './Connections.Edit.Modal.vue';
 import {useStructureConnectionsFormStore} from "./structure_connections_form_store";
 import {useRoute} from "vue-router";
 
@@ -47,6 +49,7 @@ watch(() => connectionsStore.activeConnectionId, (val: string | null, oldVal: st
     connectionsStore.drawActiveConnection(oldVal);
 })
 const showNewModal = () => {
+    formStore.$reset();
     formStore.request.structureFirstId = structureStore.structureSelectedId!;
     formStore.isShowCreate = true;
 }

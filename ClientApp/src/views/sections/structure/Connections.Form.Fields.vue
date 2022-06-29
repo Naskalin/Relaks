@@ -2,7 +2,7 @@
     <structure-select-field label="Группа #1" v-model="store.request.structureFirstId"/>
     <div class="row items-center q-col-gutter-md q-my-sm">
         <div class="col-auto">
-            Направление связи
+            <span class="label-caption">Направление связи</span>
         </div>
         <div class="col">
             <q-btn-toggle
@@ -23,8 +23,8 @@ import {StructureConnectionDirection} from "../../../api/rerources/api_structure
 
 const store = useStructureConnectionsFormStore();
 const directionsOptions :Array<{label: string, value: StructureConnectionDirection, icon: string}> = [
-    {label: 'Прямая', value: 'Normal', icon: 'las la-arrow-right'},
-    {label: 'Обратная', value: 'Reverse', icon: 'las la-arrow-left'},
-    {label: 'Двойная', value: 'Bidirectional', icon: 'las la-arrows-alt-h'},
+    {label: '', value: 'Normal', icon: 'las la-arrow-right'},
+    {label: '', value: 'Reverse', icon: 'las la-arrow-left'},
+    {label: '', value: 'Bidirectional', icon: 'las la-arrows-alt-h'},
 ]
 </script>

@@ -111,17 +111,20 @@ export const useStructureConnectionsStore = defineStore('StructureConnectionsSto
         deleteConnections() {
             Object.keys(this.connectionLines).forEach(key => {
                 const line = this.connectionLines[key];
-                const startEl = line.start as Element;
-                const endEl = line.end as Element;
-                startEl.remove();
-                endEl.remove();
-                line.remove();
+                this.deleteLine(line);
             })  
+        },
+        deleteLine(line: LeaderLine) {
+            const startEl = line.start as Element;
+            const endEl = line.end as Element;
+            startEl.remove();
+            endEl.remove();
+            line.remove();
         },
         async getConnectionsAsync(entryId: string) {
             this.connections = await apiStructureConnection.list({entryId: entryId});
         },
-        drawActiveConnection(oldActiveConnectionId: string | null) {
+        drawActiveConnection(oldActiveConnectionId: string | null = null) {
             if (this.activeConnectionId) {
                 const line = this.connectionLines[this.activeConnectionId] || null;
                 if (!line) return;
@@ -134,7 +137,7 @@ export const useStructureConnectionsStore = defineStore('StructureConnectionsSto
             
             oldLine.size = SIZE_DEFAULT;
         },
-        drawActiveStructureConnections(structureId: string | null, oldStructureId: string | null) {
+        drawActiveStructureConnections(structureId: string | null = null, oldStructureId: string | null = null) {
             // Сбрасываем активную выделенную связь
             this.activeConnectionId = null;
             
@@ -165,6 +168,7 @@ export const useStructureConnectionsStore = defineStore('StructureConnectionsSto
         },
         drawConnections(connections: StructureConnection[], options = {color: COLOR_DEFAULT, size: SIZE_DEFAULT}, connectionIdPrefix = '') {
             const structuresEls = Array.from(document.querySelectorAll('.js-structure-connections'));
+            // console.log(structuresEls);
             if (!structuresEls.length) return;
 
             connections.forEach(connection => {

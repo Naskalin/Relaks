@@ -28,7 +28,14 @@
                     </div>
                     <div class="col-auto">
                         <div class="text-center">
-                            <q-btn round v-tooltip="'Изменить'" flat color="primary" icon="las la-edit" outline/>
+                            <q-btn 
+                                @click="showEditModal"
+                                round 
+                                v-tooltip="'Изменить'" 
+                                flat 
+                                color="primary" 
+                                icon="las la-edit" 
+                                outline/>
                         </div>
                     </div>
                 </div>
@@ -41,10 +48,12 @@
 import {useStructureConnectionsStore, StructureConnectionWithArrow} from "./structure_connections_store";
 import {computed} from 'vue';
 import {useStructureStore} from "./structure_store";
+import {useStructureConnectionsFormStore} from "./structure_connections_form_store";
 
 const props = defineProps<{
     connection: StructureConnectionWithArrow,
 }>()
+const formStore = useStructureConnectionsFormStore();
 const connectionsStore = useStructureConnectionsStore();
 const structureStore = useStructureStore();
 const setActiveConnection = (val: boolean) => {
@@ -54,6 +63,12 @@ const setActiveConnection = (val: boolean) => {
         // Если кликают на уже активный элемент, то делаем его не активным
         connectionsStore.activeConnectionId = null;
     }
+}
+const showEditModal = () => {
+    formStore.$reset();
+    formStore.isShowEdit = true;
+    formStore.editId = props.connection.id;
+    formStore.request = Object.assign({}, props.connection);
 }
 declare type RelationObj = {
     text: string,
