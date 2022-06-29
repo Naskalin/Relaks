@@ -27,7 +27,7 @@
         </q-card-section>
 
         <q-card-section v-if="withEdit" class="q-gutter-x-sm text-center flex justify-center">
-            <q-btn round @click="isShowEditModal = true" v-tooltip="'Изменить объединение'" color="primary" icon="las la-edit"/>
+            <q-btn round @click="isShowEditModal = true" v-tooltip="'Изменить объединение'" outline color="primary" icon="las la-edit"/>
             <q-separator vertical color="grey-5" class="q-mx-sm q-ml-md"/>
             <q-btn round @click="showCreateEntryInfoModal('PHONE')" v-tooltip="'Добавить телефон'" color="primary" icon="las la-phone"/>
             <q-btn round @click="showCreateEntryInfoModal('EMAIL')" v-tooltip="'Добавить e-mail'" color="primary" icon="las la-envelope"/>

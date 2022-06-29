@@ -21,7 +21,7 @@ public static class StructureMapper
     public static void MapTo(this StructureItemFormDetails details, StructureItem structureItem)
     {
         structureItem.UpdatedAt = DateTime.UtcNow;
-        structureItem.Comment = details.Comment.Trim();
+        structureItem.Description = details.Description.Trim();
         structureItem.StartAt = details.StartAt ?? DateTime.UtcNow;
         structureItem.EntryId = details.EntryId;
         structureItem.StructureId = details.StructureId;
@@ -32,7 +32,6 @@ public static class StructureMapper
     public static void MapTo(this StructureConnectionFormDetails details, StructureConnection structureConnection)
     {
         structureConnection.UpdatedAt = DateTime.UtcNow;
-        structureConnection.Title = details.Title.Trim();
         structureConnection.Description = details.Description.Trim();
         structureConnection.Direction = details.Direction;
         structureConnection.StructureFirstId = details.StructureFirstId;

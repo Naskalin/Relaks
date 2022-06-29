@@ -8,8 +8,19 @@ const axiosApi = axios.create({
 })
 
 axiosApi.interceptors.response.use((resp) => resp, (error) => {
+    console.log('error', error?.response);
     const apiErrorsStore = useApiErrorsStore();
-    apiErrorsStore.apiError = error?.response?.data;
+    if (error?.response?.data instanceof Object) {
+        apiErrorsStore.apiError = error.response.data;   
+    }
+    
+    apiErrorsStore.apiError = {
+        title: 'Серверная ошибка. Пожалуйста, оповестите разработчиков о ошибке. Максимально подробно опишите ваши действия по воспроизведению ошибки, скриншоты приветствуются.',
+        status: error?.response.status || 500,
+        type: '',
+        traceId: '',
+        errors: {}
+    };
     throw error;
 })
 

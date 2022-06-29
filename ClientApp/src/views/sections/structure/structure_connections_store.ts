@@ -108,6 +108,16 @@ export const useStructureConnectionsStore = defineStore('StructureConnectionsSto
                 this.connectionLines[key].show()
             })
         },
+        deleteConnections() {
+            Object.keys(this.connectionLines).forEach(key => {
+                const line = this.connectionLines[key];
+                const startEl = line.start as Element;
+                const endEl = line.end as Element;
+                startEl.remove();
+                endEl.remove();
+                line.remove();
+            })  
+        },
         async getConnectionsAsync(entryId: string) {
             this.connections = await apiStructureConnection.list({entryId: entryId});
         },

@@ -16,6 +16,8 @@ public class Structure : BaseEntity, ISoftDelete, ITimestampResource
     [JsonIgnore]
     public Structure? Parent { get; set; }
     public Guid? ParentId { get; set; }
+    [JsonIgnore]
+    public List<Structure> Children = new();
     
     [JsonIgnore]
     public Entry Entry { get; set; } = null!;
@@ -29,7 +31,8 @@ public class Structure : BaseEntity, ISoftDelete, ITimestampResource
 
 public class StructureItem : BaseEntity, ISoftDelete, ITimestampResource
 {
-    public string Comment { get; set; } = null!;
+    // public string Comment { get; set; } = null!;
+    public string Description { get; set; } = null!;
     public DateTime StartAt { get; set; }
     
     public Entry Entry { get; set; } = null!;
@@ -47,26 +50,23 @@ public class StructureItem : BaseEntity, ISoftDelete, ITimestampResource
 
 public class StructureConnection : BaseEntity, ITimestampResource
 {
-    public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
-
     public DirectionEnum Direction { get; set; }
-
     public Guid StructureFirstId { get; set; }
     public Guid StructureSecondId { get; set; }
     [JsonIgnore]
     public Structure StructureFirst { get; set; } = null!;
     [JsonIgnore]
     public Structure StructureSecond { get; set; } = null!;
-    [JsonIgnore]
-    public string JsonOptions { get; set; } = null!;
-    
-    [NotMapped]
-    public JsonObject Options
-    {
-        get => JsonSerializer.Deserialize<JsonObject>(JsonOptions)!;
-        set => JsonOptions = JsonSerializer.Serialize(value);
-    }
+    // [JsonIgnore]
+    // public string JsonOptions { get; set; } = null!;
+    //
+    // [NotMapped]
+    // public JsonObject Options
+    // {
+    //     get => JsonSerializer.Deserialize<JsonObject>(JsonOptions)!;
+    //     set => JsonOptions = JsonSerializer.Serialize(value);
+    // }
     
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

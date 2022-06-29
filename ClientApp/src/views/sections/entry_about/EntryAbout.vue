@@ -1,7 +1,7 @@
 ﻿<template>
-    <div class="row items-center justify-between q-col-gutter-lg q-mb-lg">
+    <div class="row items-center justify-between q-my-lg">
         <div class="col-auto">
-            <h4 v-if="profileStore.entry" class="q-my-lg">
+            <h4 v-if="profileStore.entry" class="q-my-none">
                 {{ entryMessages.profile.tabs(profileStore.entry.entryType)["entry-about"] }}
             </h4>
             <q-btn
@@ -19,7 +19,7 @@
                 @click="formStore.status = 'new'"
                 label="Добавить набор данных"
                 icon="las la-plus-circle"
-                color="secondary"
+                color="primary"
             />
         </div>
     </div>

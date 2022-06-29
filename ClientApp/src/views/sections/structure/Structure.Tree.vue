@@ -1,56 +1,41 @@
 ﻿<template>
-    <div class="q-mb-md">
-        <q-btn
-            v-if="connectionStore.connections.length"
-            size="md"
-            @click="switchShowLines"
-            :icon="connectionStore.isShowLines ? 'las la-eye-slash' : 'las la-eye'"
-            :label="connectionStore.isShowLines ? 'Скрыть связи' : 'Показать связи'"/>
+    <structure-new-modal @onSave="resetTree"/>
+    <structure-edit-modal @onUpdate="resetTree"/>
+
+    <div class="row q-mb-lg items-center">
+        <div class="col">
+            <h6 class="q-my-none">Группы</h6>
+        </div>
+        <div class="col-auto">
+            <q-btn
+                v-if="connectionsStore.connections.length"
+                size="md"
+                @click="switchShowLines"
+                color="secondary"
+                outline
+                :icon="connectionsStore.isShowLines ? 'las la-eye-slash' : 'las la-eye'"
+                :label="connectionsStore.isShowLines ? 'Скрыть связи' : 'Показать связи'"/>
+        </div>
     </div>
     
     <q-tree
-        ref="treeEl"
         v-if="structureStore.tree.length"
+        ref="treeEl"
         :nodes="structureStore.tree"
+        :duration="0"
         node-key="id"
         selected-color="primary"
-        v-model:selected="structureStore.structureSelectedId"
         default-expand-all
         no-selection-unset
+        v-model:selected="structureStore.structureSelectedId"
         v-model:expanded="structureStore.expandedIds"
     >
         <template v-slot:default-header="prop">
-            <div class="structure-connection-wrapper">
-                <div :id="prop.node.id" class="js-structure-connections structure-connection q-py-xs q-px-sm">
-                    <div>{{ prop.node.data.title }}</div>
+            <div :id="prop.node.id" class="js-structure-connections structure-connection q-py-xs q-px-sm">
+                <div>
+                    {{ prop.node.data.title }}
+                    <q-icon v-if=" prop.node.data.description" class="q-ml-sm" name="las la-comment"/>
                 </div>
-                <div class="q-gutter-x-sm">
-                    <q-btn
-                        class="structure-connection__edit-btn"
-                        color="primary"
-                        @click="showEditModal(prop.node.data)"
-                        outline
-                        icon="las la-edit"
-                        size="sm"
-                        round
-                        v-tooltip="'Изменить'"
-                        flat/>
-                    <q-btn
-                        class="structure-connection__edit-btn"
-                        color="primary"
-                        @click="showCreateModal(prop.node.id)"
-                        outline
-                        icon="las la-sitemap"
-                        size="sm"
-                        v-tooltip="'Добавить группу в эту группу'"
-                        round
-                        flat/>
-                </div>
-            </div>
-        </template>
-        <template v-slot:default-body="prop">
-            <div v-if="prop.node.data.description" class="text-grey-8">
-                <span style="font-size: .9rem">{{ prop.node.data.description }}</span>
             </div>
         </template>
     </q-tree>
@@ -60,91 +45,78 @@
 import {useStructureStore} from "./structure_store";
 import {useStructureConnectionsStore} from "./structure_connections_store";
 import {onMounted, ref, watch} from "vue";
-import {useStructureFormStore} from "./structure_form_store";
-import {Structure} from "../../../api/rerources/api_structure";
+import StructureNewModal from './Structure.New.Modal.vue';
+import StructureEditModal from './Structure.Edit.Modal.vue';
+// import {useStructureFormStore} from "./structure_form_store";
+// import {Structure} from "../../../api/rerources/api_structure";
 
 const treeEl = ref<any>(null);
 const props = defineProps<{
     entryId: string
 }>() 
 const structureStore = useStructureStore();
-const connectionStore = useStructureConnectionsStore();
-const structureFormStore = useStructureFormStore();
+const connectionsStore = useStructureConnectionsStore();
+const resetTree = async () => {
+    connectionsStore.deleteConnections();
+    connectionsStore.$reset();
 
-const showCreateModal = (structureId: string) => {
-    structureFormStore.$reset();
-    structureFormStore.request.parentId = structureId;
-    // из-за появления модалок глючит leader-line
-    // неизбежная задержка на отрисовку leader-line
-    setTimeout(() => {
-        structureFormStore.isShowCreate = true  
-    }, 250);
-}
-const showEditModal = (structure: Structure) => {
-    structureFormStore.$reset();
-    structureFormStore.editId = structure.id;
-    structureFormStore.request = Object.assign({}, structure);
-    setTimeout(() => {
-        structureFormStore.isShowEdit = true
-    }, 250);
+    await structureStore.getStructuresAsync(props.entryId);
+    await connectionsStore.getConnectionsAsync(props.entryId);
+    connectionsStore.isShowLines = true;
+    connectionsStore.drawConnections(connectionsStore.connections);
+    if (structureStore.structureSelectedId) {
+        connectionsStore.drawActiveStructureConnections(structureStore.structureSelectedId, null);
+    }
+    if (treeEl.value) treeEl.value.expandAll();
 }
 let allExpandedCount = ref(0);
 onMounted(async () => {
     await structureStore.getStructuresAsync(props.entryId);
-    await connectionStore.getConnectionsAsync(props.entryId);
-    connectionStore.drawConnections(connectionStore.connections);
+    await connectionsStore.getConnectionsAsync(props.entryId);
+    connectionsStore.drawConnections(connectionsStore.connections);
 
     if (treeEl.value) {
         allExpandedCount.value = treeEl.value.getExpandedNodes().length;
     }
 })
-
 watch(() => structureStore.expandedIds, (val: string[]) => {
-    if (treeEl.value && val.length !== allExpandedCount.value) {
-        connectionStore.hideLines();
+    if (treeEl.value && val.length && val.length !== allExpandedCount.value) {
+        connectionsStore.hideLines();
     }
 });
+// watch(() => connectionsStore.isShowLines, (val: boolean) => {
+//     if (val) {
+//         connectionsStore.hideLines();
+//     } else {
+//         treeEl.value.expandAll();
+//         setTimeout(() => {
+//             // Задержка анимации открытия, иначе линии криво отрисуются
+//             connectionsStore.showLines();
+//         }, 200)
+//     }
+// });
 const switchShowLines = () => {
-    if (connectionStore.isShowLines) {
-        connectionStore.hideLines();
+    if (connectionsStore.isShowLines) {
+        connectionsStore.hideLines();
     } else {
         treeEl.value.expandAll();
-        connectionStore.showLines();
+        setTimeout(() => {
+            // Задержка анимации открытия, иначе линии криво отрисуются
+            connectionsStore.showLines();  
+        }, 200)
     }
 }
-// watch(() => connectionStore.isShowLines, (val: boolean) => {
-//     if (val && treeEl.value) treeEl.value.expandAll();
-// })
 </script>
 
 <style lang="scss">
 .q-tree__node--selected {
     background: $indigo-2;
 }
-.structure-connection-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    column-gap: 1rem;
-}
 .q-tree__node-header:hover {
     background: $indigo-2;
-    .structure-connection__edit-btn {
-        opacity: 1;
-    }
-    //> .q-tree__node-header-content > .structure-connection > .structure-connection__edit-btn {
-    //    opacity: 1;
-    //}
 }
 .structure-connection {
     position: relative;
-    
-    &__edit-btn {
-        margin-left: .5rem;
-        opacity: 0;
-        transition: opacity .2s ease;
-    }
     &__el {
         position: absolute;
         top: 50%;

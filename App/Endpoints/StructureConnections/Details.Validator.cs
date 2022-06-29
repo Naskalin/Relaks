@@ -7,7 +7,6 @@ public class DetailsValidator : AbstractValidator<StructureConnectionFormDetails
 {
     public DetailsValidator()
     {
-        RuleFor(x => x.Title).NotNull().Length(0, 250);
         RuleFor(x => x.Description).NotNull().Length(0, 500);
         RuleFor(x => x.StructureFirstId).NotEmpty();
         RuleFor(x => x.StructureSecondId).NotEmpty();

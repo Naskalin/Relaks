@@ -53,14 +53,13 @@ public class StructureSeeder : DatabaseSeeder
                     // add connection
                     var connection = new StructureConnection()
                     {
-                        Title = Faker.Random.ArrayElement(new [] {"", Faker.Random.Words(Faker.Random.Int(1, 4))}),
                         Description = Faker.Random.ArrayElement(new[] {"", Faker.Lorem.Paragraph(1)}),
                         CreatedAt = DateTime.UtcNow,
                         UpdatedAt = DateTime.UtcNow,
                         StructureFirstId = structure.Id,
                         StructureSecondId = structures.OrderBy(x => Guid.NewGuid()).First(x => !x.Id.Equals(structure.Id)).Id,
                         Direction = Faker.Random.Enum<StructureConnection.DirectionEnum>(),
-                        Options = new JsonObject{}
+                        // Options = new JsonObject{}
                     };
 
                     Db.StructureConnections.Add(connection);   
@@ -103,7 +102,7 @@ public class StructureSeeder : DatabaseSeeder
         {
             var item = new StructureItem()
             {
-                Comment = Faker.Random.ArrayElement(new []{Faker.Random.Words(Faker.Random.Int(2, 5)), ""}),
+                Description = Faker.Random.ArrayElement(new []{Faker.Random.Words(Faker.Random.Int(2, 5)), ""}),
                 StartAt = Faker.Date.Past(),
                 EntryId = entry.Id,
                 StructureId = structure.Id,

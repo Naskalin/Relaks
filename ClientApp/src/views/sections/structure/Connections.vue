@@ -4,7 +4,7 @@
             <h6 class="q-ma-none">Связи</h6>
         </div>
         <div class="col-auto q-gutter-sm">
-            <q-btn icon="las la-arrows-alt-h" round color="primary" v-tooltip="'Связать две группы'"/>
+            <q-btn icon="las la-arrows-alt-h" round color="primary" v-tooltip.left="'Добавить связь'"/>
         </div>
     </div>
     <div class="q-gutter-y-md q-mt-sm" v-if="store.structureConnections.length">

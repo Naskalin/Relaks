@@ -4,7 +4,7 @@
             <h6 class="q-ma-none">Объединения</h6>
         </div>
         <div class="col-auto q-gutter-sm">
-            <q-btn icon="las la-users" round color="primary" v-tooltip="'Добавить объединение'"/>
+            <q-btn icon="las la-users" round color="primary" v-tooltip.left="'Добавить объединение'"/>
         </div>
     </div>
 

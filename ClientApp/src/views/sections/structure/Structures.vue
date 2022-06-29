@@ -1,10 +1,19 @@
 ﻿<template>
-    <h4 v-if="profileStore.entry" class="q-mt-lg q-mb-none">
-        {{ entryMessages.profile.tabs(profileStore.entry.entryType)["entry-structures"] || '?'}}
-    </h4>
-    
-    <structure-new-modal @onSave="resetTree"/>
-    <structure-edit-modal @onSave="resetTree"/>
+    <div class="row items-center justify-between q-my-lg">
+        <div class="col-auto">
+            <h4 v-if="profileStore.entry" class="q-my-none">
+                {{ entryMessages.profile.tabs(profileStore.entry.entryType)["entry-structures"] || '?'}}
+            </h4>
+        </div>
+        <div class="col-auto">
+            <q-btn
+                icon="las la-sitemap"
+                label="Добавить группу"
+                color="primary"
+                @click="structureFormStore.isShowCreate = true"
+            />
+        </div>
+    </div>
     
     <q-card class="q-mt-lg">
         <q-splitter
@@ -13,28 +22,43 @@
         >
             <template v-slot:before>
                 <q-card-section>
-                    <div class="row q-col-gutter-md items-center q-mb-lg justify-between">
-                        <div class="col-auto">
-                            <h6 class="q-ma-none">Группы</h6>
-                        </div>
-                        <div class="col-auto q-gutter-sm">
-                            <q-btn 
-                                icon="las la-sitemap" 
-                                label="Добавить группу" 
-                                color="primary"
-                                @click="structureFormStore.isShowCreate = true"
-                            />
-                        </div>
-                    </div>
                     <tree :entry-id="entryId"/>
                 </q-card-section>
             </template>
 
             <template v-slot:after>
                 <q-card-section v-if="structureStore.list.length">
-                    <div class="q-mb-md" v-if="structureStore.structureSelected">
-                        <div class="text-center text-h6">{{structureStore.structureSelected.title}}</div>
-                        <div v-if="structureStore.structureSelected.description" class="q-mt-sm text-grey-9">{{structureStore.structureSelected.description}}</div>
+                    <div class="q-mb-lg row q-col-gutter-md items-center" v-if="structureStore.structureSelected">
+                        <div class="col q-gutter-y-sm">
+                            <div class="text-h6">{{structureStore.structureSelected.title}}</div>
+                            <div v-if="structureStore.structureSelected.description" class="text-grey-9">
+                                <q-icon class="q-mr-xs" name="las la-comment"/>
+                                {{structureStore.structureSelected.description}}
+                            </div>
+                            <div>
+                                <small class="label-caption text-grey-7 q-mr-sm">Дата начала</small>
+                                <time>{{dateHelper.utcFormat(structureStore.structureSelected.startAt)}}</time>
+                            </div>
+                        </div>
+                        <div class="col-auto q-gutter-y-sm">
+                            <div>
+                                <q-btn
+                                    color="primary"
+                                    outline
+                                    icon="las la-edit"
+                                    round
+                                    @click="showEditModal"
+                                    v-tooltip.left="'Изменить группу'"/>
+                            </div>
+                            <div>
+                                <q-btn
+                                    color="primary"
+                                    icon="las la-sitemap"
+                                    v-tooltip.left="'Добавить группу в эту группу'"
+                                    @click="showCreateModalForSelectedStructure"
+                                    round/>
+                            </div>
+                        </div>
                     </div>
                     <connections/>
                     <items/>
@@ -51,14 +75,13 @@ import {useRoute, onBeforeRouteLeave} from "vue-router";
 import Tree from './Structure.Tree.vue';
 import Items from './Items.vue';
 import Connections from './Connections.vue';
-import StructureNewModal from './Structure.New.Modal.vue';
-import StructureEditModal from './Structure.Edit.Modal.vue';
 import {useStructureConnectionsStore} from "./structure_connections_store";
 import {useStructureItemsStore} from "./structure_items_store";
 import {debounce} from "quasar";
 import {entryMessages} from "../../../localize/messages";
 import {useEntryProfileStore} from "../../../store/entry/entry.profile.store";
 import {useStructureFormStore} from "./structure_form_store";
+import {dateHelper} from "../../../utils/date_helper";
 
 const structureFormStore = useStructureFormStore();
 const profileStore = useEntryProfileStore();
@@ -69,7 +92,7 @@ const connectionsStore = useStructureConnectionsStore();
 const itemsStore = useStructureItemsStore();
 
 watch(() => splitterModel.value, debounce(() => {
-    deleteConnections();
+    connectionsStore.deleteConnections();
     connectionsStore.isShowLines = true; 
     connectionsStore.drawConnections(connectionsStore.connections);
     if (structureStore.structureSelectedId) {
@@ -77,27 +100,29 @@ watch(() => splitterModel.value, debounce(() => {
     }
 }, 150))
 
-const resetTree = async () => {
-    deleteConnections();
-    await structureStore.getStructuresAsync(entryId);
-    connectionsStore.isShowLines = true;
-    connectionsStore.drawConnections(connectionsStore.connections);
-    if (structureStore.structureSelectedId) {
-        connectionsStore.drawActiveStructureConnections(structureStore.structureSelectedId, null);
-    }
+// const deleteConnections = () => {
+//     Object.keys(connectionsStore.connectionLines).forEach(key => {
+//         const line = connectionsStore.connectionLines[key];
+//         const startEl = line.start as Element;
+//         const endEl = line.end as Element;
+//         startEl.remove();
+//         endEl.remove();
+//         line.remove();
+//     })
+// }
+const showEditModal = () => {
+    structureFormStore.$reset();
+    structureFormStore.editId = structureStore.structureSelected!.id;
+    structureFormStore.request = Object.assign({}, structureStore.structureSelected!);
+    structureFormStore.isShowEdit = true
 }
-const deleteConnections = () => {
-    Object.keys(connectionsStore.connectionLines).forEach(key => {
-        const line = connectionsStore.connectionLines[key];
-        const startEl = line.start as Element;
-        const endEl = line.end as Element;
-        startEl.remove();
-        endEl.remove();
-        line.remove();
-    })
+const showCreateModalForSelectedStructure = () => {
+    structureFormStore.$reset();
+    structureFormStore.request.parentId = structureStore.structureSelected!.id;
+    structureFormStore.isShowCreate = true
 }
 onBeforeRouteLeave((to, from, next) => {
-    deleteConnections();
+    connectionsStore.deleteConnections();
     connectionsStore.$reset();
     structureStore.$reset();
     itemsStore.$reset();

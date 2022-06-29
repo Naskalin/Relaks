@@ -273,18 +273,10 @@ namespace App.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("JsonOptions")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<Guid>("StructureFirstId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("StructureSecondId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -305,10 +297,6 @@ namespace App.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
@@ -316,6 +304,10 @@ namespace App.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DeletedReason")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -382,8 +374,9 @@ namespace App.Migrations
                         .IsRequired();
 
                     b.HasOne("App.Models.Structure", "Parent")
-                        .WithMany()
-                        .HasForeignKey("ParentId");
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Entry");
 
@@ -462,6 +455,8 @@ namespace App.Migrations
 
             modelBuilder.Entity("App.Models.Structure", b =>
                 {
+                    b.Navigation("Children");
+
                     b.Navigation("Items");
                 });
 #pragma warning restore 612, 618

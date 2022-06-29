@@ -8,7 +8,7 @@ public class DetailsValidator : AbstractValidator<StructureItemFormDetails>
 {
     public DetailsValidator()
     {
-        RuleFor(x => x.Comment).NotNull().Length(0, 250);
+        RuleFor(x => x.Description).NotNull().Length(0, 250);
         RuleFor(x => x.EntryId).NotEmpty();
         RuleFor(x => x.StructureId).NotEmpty();
         RuleFor(x => x.StartAt).NotEqual(default(DateTime));
