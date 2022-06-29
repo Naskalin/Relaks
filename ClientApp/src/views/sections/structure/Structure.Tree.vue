@@ -84,17 +84,6 @@ watch(() => structureStore.expandedIds, (val: string[]) => {
         connectionsStore.hideLines();
     }
 });
-// watch(() => connectionsStore.isShowLines, (val: boolean) => {
-//     if (val) {
-//         connectionsStore.hideLines();
-//     } else {
-//         treeEl.value.expandAll();
-//         setTimeout(() => {
-//             // Задержка анимации открытия, иначе линии криво отрисуются
-//             connectionsStore.showLines();
-//         }, 200)
-//     }
-// });
 const switchShowLines = () => {
     if (connectionsStore.isShowLines) {
         connectionsStore.hideLines();
@@ -103,7 +92,7 @@ const switchShowLines = () => {
         setTimeout(() => {
             // Задержка анимации открытия, иначе линии криво отрисуются
             connectionsStore.showLines();  
-        }, 200)
+        }, 500)
     }
 }
 </script>
