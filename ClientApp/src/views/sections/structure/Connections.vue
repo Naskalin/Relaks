@@ -1,16 +1,22 @@
 ﻿<template>
+    <new-modal/>
+    
     <div class="row q-col-gutter-md items-center justify-between">
         <div class="col-auto">
             <h6 class="q-ma-none">Связи</h6>
         </div>
         <div class="col-auto q-gutter-sm">
-            <q-btn icon="las la-arrows-alt-h" round color="primary" v-tooltip.left="'Добавить связь'"/>
+            <q-btn
+                @click="showNewModal"
+                icon="las la-arrows-alt-h"
+                round color="primary"
+                v-tooltip.left="'Добавить связь'"/>
         </div>
     </div>
-    <div class="q-gutter-y-md q-mt-sm" v-if="store.structureConnections.length">
+    <div class="q-gutter-y-md q-mt-sm" v-if="connectionsStore.structureConnections.length">
         <q-list v-if="structureStore.structureSelectedId" bordered class="rounded-borders">
             <connections-item
-                v-for="connection in store.structureConnections"
+                v-for="connection in connectionsStore.structureConnections"
                 :connection="connection"
                 :key="connection.id"/>
         </q-list>
@@ -22,19 +28,28 @@ import {useStructureConnectionsStore} from "./structure_connections_store";
 import {watch, onMounted} from 'vue';
 import {useStructureStore} from "./structure_store";
 import ConnectionsItem from './Connections.Item.vue';
+import NewModal from './Connections.New.Modal.vue';
+import {useStructureConnectionsFormStore} from "./structure_connections_form_store";
+import {useRoute} from "vue-router";
 
 const structureStore = useStructureStore();
-const store = useStructureConnectionsStore();
+const connectionsStore = useStructureConnectionsStore();
+const formStore = useStructureConnectionsFormStore();
+const entryId = (useRoute()).params.entryId as string;
 
 onMounted(() => {
     setTimeout(() => {
         // load first connection
-        store.drawActiveStructureConnections(structureStore.structureSelectedId, null);  
+        connectionsStore.drawActiveStructureConnections(structureStore.structureSelectedId, null);  
     }, 1000)
 })
-watch(() => store.activeConnectionId, (val: string | null, oldVal: string | null) => {
-    store.drawActiveConnection(oldVal);
+watch(() => connectionsStore.activeConnectionId, (val: string | null, oldVal: string | null) => {
+    connectionsStore.drawActiveConnection(oldVal);
 })
+const showNewModal = () => {
+    formStore.request.structureFirstId = structureStore.structureSelectedId!;
+    formStore.isShowCreate = true;
+}
 // watch(() => structureStore.expandedIds, (expandedIds: string[]) => {
 //     // structureStore.list.filter(x => x.parentId)
 //     console.log('expandedIds', expandedIds.length, 'list', structureStore.list.length);

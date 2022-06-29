@@ -1,8 +1,9 @@
 ﻿<template>
     <q-expansion-item
         :group="structureStore.structureSelectedId"
-        @click="setActiveConnection"
         expand-separator
+        :model-value="connectionsStore.activeConnectionId === connection.id"
+        @update:model-value="setActiveConnection"
         :icon="relationData.icon"
         :label="relationData.text"
         :class="connectionsStore.activeConnectionId === connection.id ?  connection.arrow +' active' : connection.arrow +' bg-blue-grey-2'"
@@ -46,13 +47,13 @@ const props = defineProps<{
 }>()
 const connectionsStore = useStructureConnectionsStore();
 const structureStore = useStructureStore();
-const setActiveConnection = () => {
-    if (connectionsStore.activeConnectionId === props.connection.id) {
+const setActiveConnection = (val: boolean) => {
+    if (val) {
+        connectionsStore.activeConnectionId = props.connection.id;   
+    } else if (connectionsStore.activeConnectionId === props.connection.id) {
         // Если кликают на уже активный элемент, то делаем его не активным
         connectionsStore.activeConnectionId = null;
-        return;
     }
-    connectionsStore.activeConnectionId = props.connection.id;
 }
 declare type RelationObj = {
     text: string,

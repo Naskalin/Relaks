@@ -11,7 +11,7 @@ const COLOR_DEFAULT = '#ff8a652b';
 const COLOR_IN = '#4D964D';
 const COLOR_OUT = '#3f51b5';
 const COLOR_DOUBLE = '#f4511e';
-const getLineColor = (arrow: ArrowType) => {
+export const getLineColor = (arrow: ArrowType) => {
     switch (arrow) {
         case "in":
             return COLOR_IN;
@@ -125,7 +125,6 @@ export const useStructureConnectionsStore = defineStore('StructureConnectionsSto
             if (this.activeConnectionId) {
                 const line = this.connectionLines[this.activeConnectionId] || null;
                 if (!line) return;
-                // line.color = COLOR_ACTIVE_CONNECTION;
                 line.size = SIZE_ACTIVE;
             }
             
@@ -133,15 +132,6 @@ export const useStructureConnectionsStore = defineStore('StructureConnectionsSto
             const oldLine = this.connectionLines[oldActiveConnectionId] || null;
             if(!oldLine) return;
             
-            // let changeColorTo = COLOR_DEFAULT;
-            // for (const [index, connection] of this.structureConnections.entries()) {
-            //     if (connection.id === oldActiveConnectionId) {
-            //         changeColorTo = getLineColor(connection.arrow);
-            //         break;
-            //     }
-            // }
-            // // oldLine.changeColorTo = activeStructureConnectionIds.includes(oldActiveConnectionId) ? COLOR_ACTIVE_STRUCTURE : COLOR_DEFAULT;
-            // oldLine.color = changeColorTo;
             oldLine.size = SIZE_DEFAULT;
         },
         drawActiveStructureConnections(structureId: string | null, oldStructureId: string | null) {

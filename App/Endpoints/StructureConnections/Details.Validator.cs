@@ -11,6 +11,5 @@ public class DetailsValidator : AbstractValidator<StructureConnectionFormDetails
         RuleFor(x => x.StructureFirstId).NotEmpty();
         RuleFor(x => x.StructureSecondId).NotEmpty();
         RuleFor(x => x.StructureFirstId).Must((model, field) => !field.Equals(model.StructureSecondId));
-        RuleFor(x => x.Direction).NotEmpty();
     }
 }

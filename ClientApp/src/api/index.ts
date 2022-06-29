@@ -12,15 +12,15 @@ axiosApi.interceptors.response.use((resp) => resp, (error) => {
     const apiErrorsStore = useApiErrorsStore();
     if (error?.response?.data instanceof Object) {
         apiErrorsStore.apiError = error.response.data;   
+    } else {
+        apiErrorsStore.apiError = {
+            title: 'Серверная ошибка. Пожалуйста, оповестите разработчиков о ошибке. Максимально подробно опишите ваши действия по воспроизведению ошибки, скриншоты приветствуются.',
+            status: error?.response.status || 500,
+            type: '',
+            traceId: '',
+            errors: {}
+        };   
     }
-    
-    apiErrorsStore.apiError = {
-        title: 'Серверная ошибка. Пожалуйста, оповестите разработчиков о ошибке. Максимально подробно опишите ваши действия по воспроизведению ошибки, скриншоты приветствуются.',
-        status: error?.response.status || 500,
-        type: '',
-        traceId: '',
-        errors: {}
-    };
     throw error;
 })
 
