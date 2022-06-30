@@ -1,6 +1,6 @@
 ﻿<template>
     <template v-if="deleted.deletedAt">
-        <q-card-section class="bg-pink-1">
+        <q-card-section class="bg-pink-1 q-mb-md">
             <span class="label-caption text-grey-8">{{ deletedMessages.deletedAt }}</span>
             &nbsp;
             <date :date="deleted.deletedAt"></date>
@@ -9,7 +9,6 @@
                 {{ deleted.deletedReason }}
             </div>
         </q-card-section>
-        <q-separator/>
     </template>
 </template>
 

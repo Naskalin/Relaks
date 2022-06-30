@@ -26,7 +26,7 @@ public class List : EndpointBaseAsync
     )
     {
         var structures = await _structureRepository.FindStructures(request).ToListAsync(cancellationToken);
-        if (request.IsTree)
+        if (request.IsTree == true)
             return Ok(structures.ToTree((parent, child) => child.ParentId == parent.Id));
 
         return Ok(structures);

@@ -1,7 +1,7 @@
 ﻿<template>
     <modal title="Изменить группу" v-model:is-show="store.isShowEdit">
         <q-form @submit.prevent="editAsync" id="structure-edit-form">
-            <q-card-section class="q-gutter-y-md">
+            <q-card-section class="q-gutter-y-sm">
                 <structure-form-fields/>
             </q-card-section>
         </q-form>

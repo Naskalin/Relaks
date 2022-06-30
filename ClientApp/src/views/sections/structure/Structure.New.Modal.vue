@@ -1,7 +1,7 @@
 ﻿<template>
     <modal title="Добавление группы" v-model:is-show="store.isShowCreate">
         <q-form @submit.prevent="createAsync" id="structure-new-form">
-            <q-card-section class="q-gutter-y-md">
+            <q-card-section class="q-gutter-y-sm">
                 <structure-form-fields/>
             </q-card-section>
         </q-form>
@@ -20,13 +20,13 @@ import Modal from '../../components/Modal.vue';
 import {apiStructure} from "../../../api/rerources/api_structure";
 
 const emit = defineEmits<{
-    (e: 'onSave'): void
+    (e: 'onSave', structureId: string): void
 }>()
 const store = useStructureFormStore();
 const entryId = (useRoute()).params.entryId as string;
 const createAsync = async () => {
-    await apiStructure.create(entryId, store.request);
-    emit('onSave');
+    const structure = await apiStructure.create(entryId, store.request);
+    emit('onSave', structure.id);
     store.$reset();
 }
 </script>

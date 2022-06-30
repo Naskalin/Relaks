@@ -14,6 +14,7 @@ export declare type StructureItemListRequest = {
     entryId?: null | string
     entryType?: EntryType | null
     isDeleted?: boolean | null
+    date?: string | null
     page?: number
     perPage?: number
 }

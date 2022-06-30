@@ -17,4 +17,29 @@ public class StructureConnectionRepository : BaseRepository<StructureConnection>
             x.StructureFirst.EntryId.Equals(entryId) || x.StructureSecond.EntryId.Equals(entryId)
         );
     }
+
+    public IQueryable<StructureConnection> FindByListRequest(ListRequest req)
+    {
+        var query = FindByEntryId(req.EntryId);
+        
+        if (req.IsDeleted != null)
+        {
+            if (req.IsDeleted == true)
+            {
+                query = query.Where(x => x.DeletedAt != null && x.DeletedAt > DateTime.UtcNow);
+            }
+            else
+            {
+                // false
+                query = query.Where(x => x.DeletedAt == null || x.DeletedAt < DateTime.UtcNow);
+            }
+        }
+        
+        if (req.Date != null)
+        {
+            query = query.Where(x => x.StartAt <= req.Date);
+        }
+
+        return query;
+    }
 }

@@ -40,6 +40,11 @@ public class StructureItemRepository : BaseRepository<StructureItem>
                 query = query.Where(x => x.DeletedAt == null || x.DeletedAt < DateTime.UtcNow);
             }
         }
+        
+        if (req.Date != null)
+        {
+            query = query.Where(x => x.StartAt <= req.Date);
+        }
 
         query = query.Include(x => x.Entry);
         if (req.EntryType != null)

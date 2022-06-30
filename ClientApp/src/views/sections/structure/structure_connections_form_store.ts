@@ -16,7 +16,10 @@ export const useStructureConnectionsFormStore = defineStore('StructureConnection
                 description: '',
                 direction: 'Normal',
                 structureFirstId: '',
-                structureSecondId: ''
+                structureSecondId: '',
+                deletedAt: null,
+                deletedReason: '',
+                startAt: null
             },
             isShowEdit: false,
             isShowCreate: false,

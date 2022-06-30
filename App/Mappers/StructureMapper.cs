@@ -14,7 +14,7 @@ public static class StructureMapper
         structure.StartAt = details.StartAt ?? DateTime.UtcNow;
         structure.ParentId = details.ParentId;
         structure.UpdatedAt = DateTime.UtcNow;
-        
+
         details.SoftDeleteMapTo(structure);
     }
 
@@ -34,7 +34,10 @@ public static class StructureMapper
         structureConnection.UpdatedAt = DateTime.UtcNow;
         structureConnection.Description = details.Description.Trim();
         structureConnection.Direction = details.Direction;
+        structureConnection.StartAt = details.StartAt ?? DateTime.UtcNow;
         structureConnection.StructureFirstId = details.StructureFirstId;
         structureConnection.StructureSecondId = details.StructureSecondId;
+        
+        details.SoftDeleteMapTo(structureConnection);
     }
 }

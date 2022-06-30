@@ -31,7 +31,6 @@ public class Structure : BaseEntity, ISoftDelete, ITimestampResource
 
 public class StructureItem : BaseEntity, ISoftDelete, ITimestampResource
 {
-    // public string Comment { get; set; } = null!;
     public string Description { get; set; } = null!;
     public DateTime StartAt { get; set; }
     
@@ -48,7 +47,7 @@ public class StructureItem : BaseEntity, ISoftDelete, ITimestampResource
     public DateTime UpdatedAt { get; set; }
 }
 
-public class StructureConnection : BaseEntity, ITimestampResource
+public class StructureConnection : BaseEntity, ITimestampResource, ISoftDelete
 {
     public string Description { get; set; } = null!;
     public DirectionEnum Direction { get; set; }
@@ -67,9 +66,11 @@ public class StructureConnection : BaseEntity, ITimestampResource
     //     get => JsonSerializer.Deserialize<JsonObject>(JsonOptions)!;
     //     set => JsonOptions = JsonSerializer.Serialize(value);
     // }
-    
+    public DateTime StartAt { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public DateTime? DeletedAt { get; set; }
+    public string DeletedReason { get; set; } = null!;
     
     public enum DirectionEnum
     {

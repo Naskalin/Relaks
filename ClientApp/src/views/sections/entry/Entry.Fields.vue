@@ -1,4 +1,5 @@
 ﻿<template>
+    
     <q-btn-toggle v-if="isCreate"
                   class="bg-grey-2"
                   v-model="model.entryType"
@@ -53,7 +54,6 @@ import {EntryCreateRequest, EntryUpdateRequest} from "../../../api/api_types";
 import DateField from '../../fields/Date.Field.vue';
 import {computed} from "vue";
 import {entryMessages} from "../../../localize/messages";
-// import ActualFieldset from '../../fieldsets/Actual.Fieldset.vue';
 
 const props = defineProps<{
     modelValue: EntryCreateRequest | EntryUpdateRequest,

@@ -56,18 +56,23 @@ const props = defineProps<{
 }>() 
 const structureStore = useStructureStore();
 const connectionsStore = useStructureConnectionsStore();
-const resetTree = async () => {
+const resetTree = async (structureId?: string) => {
     connectionsStore.deleteConnections();
     connectionsStore.$reset();
+    let structureSelectedId = structureStore.structureSelectedId;
+    if (structureId) structureSelectedId = structureId;
 
+    structureStore.structureSelectedId = null;
     await structureStore.getStructuresAsync(props.entryId);
     await connectionsStore.getConnectionsAsync(props.entryId);
     connectionsStore.isShowLines = true;
     connectionsStore.drawConnections(connectionsStore.connections);
+    structureStore.structureSelectedId = structureSelectedId;
     if (structureStore.structureSelectedId) {
         connectionsStore.drawActiveStructureConnections(structureStore.structureSelectedId, null);
     }
     if (treeEl.value) treeEl.value.expandAll();
+    
 }
 let allExpandedCount = ref(0);
 onMounted(async () => {

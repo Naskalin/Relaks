@@ -59,7 +59,8 @@ public class StructureSeeder : DatabaseSeeder
                         StructureFirstId = structure.Id,
                         StructureSecondId = structures.OrderBy(x => Guid.NewGuid()).First(x => !x.Id.Equals(structure.Id)).Id,
                         Direction = Faker.Random.Enum<StructureConnection.DirectionEnum>(),
-                        // Options = new JsonObject{}
+                        StartAt = Faker.Date.Past(),
+                        DeletedReason = ""
                     };
 
                     Db.StructureConnections.Add(connection);   

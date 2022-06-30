@@ -12,7 +12,6 @@ public class DetailsValidator : AbstractValidator<StructureItemFormDetails>
         RuleFor(x => x.EntryId).NotEmpty();
         RuleFor(x => x.StructureId).NotEmpty();
         RuleFor(x => x.StartAt).NotEqual(default(DateTime));
-            
         RuleFor(x => x.DeletedAt).NotEqual(default(DateTime));
         RuleFor(x => x.DeletedReason).NotNull().Length(0, 250);
     }

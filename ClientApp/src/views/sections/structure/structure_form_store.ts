@@ -16,8 +16,8 @@ export const useStructureFormStore = defineStore('StructureFormStore', {
             request: {
                 title: '',
                 description: '',
-                deletedReason: '',
                 parentId: null,
+                deletedReason: '',
                 deletedAt: null,
                 startAt: null,
             }

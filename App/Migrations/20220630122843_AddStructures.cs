@@ -50,8 +50,11 @@ namespace App.Migrations
                     Direction = table.Column<string>(type: "TEXT", nullable: false),
                     StructureFirstId = table.Column<Guid>(type: "TEXT", nullable: false),
                     StructureSecondId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    DeletedReason = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

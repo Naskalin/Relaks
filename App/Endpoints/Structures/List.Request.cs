@@ -14,5 +14,5 @@ public class ListRequest
     public DateTime? Date { get; set; }
     
     [FromQuery]
-    public Boolean IsTree { get; set; }
+    public Boolean? IsTree { get; set; }
 }

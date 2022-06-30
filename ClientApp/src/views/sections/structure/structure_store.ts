@@ -1,11 +1,12 @@
 ﻿import {defineStore} from 'pinia';
-import {apiStructure, Structure, StructureTree} from "../../../api/rerources/api_structure";
+import {apiStructure, Structure, StructureListRequest, StructureTree} from "../../../api/rerources/api_structure";
 
 declare type StructureStoreState = {
     tree: StructureTree[],
     list: Structure[],
     expandedIds: string[],
     structureSelectedId: null | string,
+    listRequest: StructureListRequest
 }
 export const useStructureStore = defineStore('StructureStore', {
     state: (): StructureStoreState => {
@@ -14,6 +15,10 @@ export const useStructureStore = defineStore('StructureStore', {
             list: [],
             structureSelectedId: null,
             expandedIds: [],
+            listRequest: {
+                date: null,
+                isDeleted: null
+            }
         }
     },
     getters: {
@@ -33,8 +38,11 @@ export const useStructureStore = defineStore('StructureStore', {
     actions: {
         async getStructuresAsync(entryId: string)
         {
-            this.tree = await apiStructure.tree(entryId, {isTree: true});
-            this.list = await apiStructure.list(entryId, {isTree: false});
+            this.tree = await apiStructure.tree(entryId, {
+                ...this.listRequest,
+                isTree: true,
+            });
+            this.list = await apiStructure.list(entryId, this.listRequest);
             if(this.tree.length) this.structureSelectedId = this.tree[0].id;
         },
     }

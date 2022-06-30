@@ -18,8 +18,8 @@ export declare type Structure = {
 } & SoftDeletableType & TimestampTypes
 export declare type StructureListRequest = {
     isDeleted?: boolean | null
-    date?: string
-    isTree: boolean
+    date?: string | null
+    isTree?: boolean
 }
 export declare type StructureFormRequest = {
     title: string

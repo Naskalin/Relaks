@@ -1,5 +1,9 @@
 ﻿import {defineStore} from 'pinia';
-import {StructureConnection, StructureConnectionDirection} from "../../../api/rerources/api_structure_connections";
+import {
+    StructureConnection,
+    StructureConnectionDirection,
+    StructureConnectionListRequest
+} from "../../../api/rerources/api_structure_connections";
 import {apiStructureConnection} from "../../../api/rerources/api_structure_connections";
 import LeaderLine from "leader-line-new";
 import {useStructureStore} from "./structure_store";
@@ -29,7 +33,7 @@ declare type StructureConnectionsStoreState = {
     activeConnectionId: string | null,
     connections: StructureConnection[],
     connectionLines: { [index: string]: LeaderLine },
-    isShowLines: boolean
+    isShowLines: boolean,
 }
 
 export declare type ArrowType = 'in' | 'out' | 'double';
@@ -122,7 +126,12 @@ export const useStructureConnectionsStore = defineStore('StructureConnectionsSto
             line.remove();
         },
         async getConnectionsAsync(entryId: string) {
-            this.connections = await apiStructureConnection.list({entryId: entryId});
+            const structureStore = useStructureStore();
+            this.connections = await apiStructureConnection.list({
+                entryId: entryId,
+                date: structureStore.listRequest.date,
+                isDeleted: structureStore.listRequest.isDeleted
+            });
         },
         drawActiveConnection(oldActiveConnectionId: string | null = null) {
             if (this.activeConnectionId) {

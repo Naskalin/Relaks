@@ -33,6 +33,7 @@ import NewModal from './Connections.New.Modal.vue';
 import EditModal from './Connections.Edit.Modal.vue';
 import {useStructureConnectionsFormStore} from "./structure_connections_form_store";
 import {useRoute} from "vue-router";
+import {dateHelper} from "../../../utils/date_helper";
 
 const structureStore = useStructureStore();
 const connectionsStore = useStructureConnectionsStore();
@@ -51,10 +52,7 @@ watch(() => connectionsStore.activeConnectionId, (val: string | null, oldVal: st
 const showNewModal = () => {
     formStore.$reset();
     formStore.request.structureFirstId = structureStore.structureSelectedId!;
+    formStore.request.startAt = dateHelper.startOfDay();
     formStore.isShowCreate = true;
 }
-// watch(() => structureStore.expandedIds, (expandedIds: string[]) => {
-//     // structureStore.list.filter(x => x.parentId)
-//     console.log('expandedIds', expandedIds.length, 'list', structureStore.list.length);
-// })
 </script>

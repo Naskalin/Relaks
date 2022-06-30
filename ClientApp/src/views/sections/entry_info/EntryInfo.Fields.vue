@@ -1,7 +1,7 @@
 ﻿<template>
     <q-banner v-if="model.deletedAt" class="bg-pink-1">
         {{deletedMessages.deletedAt}} <date :date="model.deletedAt"/>
-        <q-input v-if="model.deletedAt" v-model="model.deletedReason" type="textarea" maxlength="250" counter autogrow :label="entryInfoMessages.deletedReason"/>
+        <q-input v-if="model.deletedAt" v-model="model.deletedReason" type="textarea" maxlength="250" counter autogrow :label="deletedMessages.deletedReason"/>
     </q-banner>
     
     <q-input

@@ -22,4 +22,7 @@ public class ListRequest : IPaginableRequest
 
     [FromQuery]
     public int? PerPage { get; set; }
+    
+    [FromQuery]
+    public DateTime? Date { get; set; }
 }

@@ -27,7 +27,7 @@ public class List : EndpointBaseAsync
     )
     {
         var items = await _structureConnectionRepository
-                .FindByEntryId(request.EntryId)
+                .FindByListRequest(request)
                 .ToListAsync(cancellationToken)
             ;
         
