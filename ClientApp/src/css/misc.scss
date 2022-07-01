@@ -6,9 +6,9 @@
     @include content-background-mixin
 }
 // svg стрелки иначе перекрываются квазаром
-//.leader-line {
-//    z-index: 9999;
-//}
+.leader-line {
+    z-index: 1001;
+}
 body {
     overflow-y: scroll;
     &.body--light {
@@ -40,10 +40,10 @@ body {
         //    color: $themeBlack;
         //}
         //
-        //.q-card__actions,
-        //.card-header {
-        //    background: $bgGreyDarken1;
-        //}
+        .q-card__actions,
+        .card-header {
+            @include content-background-mixin;
+        }
         //
         //.q-field__bottom {
         //    color: $grey-8;

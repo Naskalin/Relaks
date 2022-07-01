@@ -6,11 +6,13 @@ declare type EntryListStoreState = {
     isLoading: boolean,
     isEnd: boolean,
     listRequest: EntryListRequest,
-    entries: Entry[]
+    entries: Entry[],
+    previewEntry: Entry | null,
 }
 export const useEntryListStore = defineStore('EntryListStore', {
     state: (): EntryListStoreState => {
         return {
+            previewEntry: null,
             entries: [],
             isLoading: false,
             isEnd: false,

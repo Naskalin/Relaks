@@ -2,6 +2,22 @@
     <div class="q-mb-md">
         <div class="q-gutter-y-md">
             <div>
+                <q-input
+                    v-if="isShowSearch"
+                    v-model="model.search"
+                    debounce="250"
+                    placeholder="Поиск..."
+                    color="secondary"
+                >
+                    <template v-slot:prepend>
+                        <q-icon name="las la-search"/>
+                    </template>
+                    <template v-slot:append>
+                        <q-icon v-if="model.search" @click="model.search = ''" name="cancel" class="cursor-pointer"/>
+                    </template>
+                </q-input>
+            </div>
+            <div>
                 <q-btn-toggle
                     spread
                     class="bg-my-grey"
@@ -26,18 +42,28 @@
             </div>
         </div>
     </div>
+
+    <entry-card
+        v-if="previewEntry"
+        @card-dblclick="val => emit('preview-dblclick', val)"
+        :entry="previewEntry"
+        :with-edit="false"/>
 </template>
 
 <script setup lang="ts">
 import {computed} from "vue";
 import {entryMessages} from "../../../localize/messages";
-import {EntryListRequest} from "../../../api/api_types";
+import {Entry, EntryListRequest} from "../../../api/api_types";
+import EntryCard from './Entry.Card.vue';
 
 const props = defineProps<{
-    modelValue: EntryListRequest
+    modelValue: EntryListRequest,
+    previewEntry: null | Entry
+    isShowSearch?: boolean
 }>()
 const emit = defineEmits<{
-    (e: 'update:modelValue', val: EntryListRequest): void
+    (e: 'update:modelValue', val: EntryListRequest): void,
+    (e: 'preview-dblclick', val: Entry): void
 }>()
 const model = computed({
     get: (): EntryListRequest => props.modelValue,

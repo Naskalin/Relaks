@@ -1,10 +1,4 @@
 ﻿<template>
-    <with-sidebar>
-        <template v-slot:sidebar>
-            <entry-card v-if="previewEntry" @card-dblclick="emit('card-dblclick', previewEntry)"
-                        :entry="previewEntry" :with-edit="false"/>
-        </template>
-
         <q-infinite-scroll ref="scrollEl" @load="onLoadAsync" :disable="store.isEnd" :offset="250">
             <q-table
                 ref="entryListTable"
@@ -31,7 +25,7 @@
                     <q-tr :props="props" :key="`m_${props.row.index}`"
                           :class="{
                               'bg-pink-1': props.row.deletedAt,
-                              'bg-blue-grey-2': previewEntry && previewEntry.id === props.row.id
+                              'bg-blue-grey-2': store.previewEntry && store.previewEntry.id === props.row.id
                           }"
                           @dblclick="rowDoubleClick(props.row)"
                           @click="setPreviewEntry(props.row)">
@@ -76,18 +70,15 @@
                 </div>
             </template>
         </q-infinite-scroll>
-    </with-sidebar>
 </template>
 
 <script setup lang="ts">
-import WithSidebar from '../../layouts/_WithSidebar.vue';
 import ApiImage from '../../components/ApiImage.vue';
 import {useEntryListStore} from "../../../store/entry/entry.list.table.store";
 import {entryMessages} from "../../../localize/messages";
 import {Entry} from "../../../api/api_types";
 import {dateHelper} from "../../../utils/date_helper";
 import {ref, computed, onMounted} from 'vue';
-import EntryCard from './Entry.Card.vue';
 
 const store = useEntryListStore();
 const scrollEl = ref<any>(null);
@@ -105,7 +96,6 @@ const emit = defineEmits<{
     (e: 'card-dblclick', val: Entry | any): void
 }>();
 
-const previewEntry = ref<Entry | null>(null);
 let columns = [
     // {name: 'id', label: '#', field: 'id'},
     {name: 'avatar', label: 'Аватар', field: 'id'},
@@ -148,7 +138,7 @@ const onLoadAsync = async (index: number, done: CallableFunction) => {
     done();
 }
 const setPreviewEntry = (entry: Entry) => {
-    previewEntry.value = entry;
+    store.previewEntry = entry;
     emit('row-click', entry);
 }
 

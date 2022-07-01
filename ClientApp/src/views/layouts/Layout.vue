@@ -4,8 +4,9 @@
             <q-toolbar>
                 <q-tabs>
                     <q-route-tab label="Объединения" to="/entries"/>
-                    <q-route-tab label="Relaks" to="/" exact/>
                 </q-tabs>
+                <q-space/>
+                <q-btn flat round dense icon="info" to="/" />
             </q-toolbar>
         </q-header>
 
@@ -14,9 +15,5 @@
 </template>
 
 <script setup lang="ts">
-import { useQuasar } from 'quasar';
-import { ref } from 'vue';
 
-const $q = useQuasar()
-const drawerLeft = ref($q.screen.width > 700);
 </script>
