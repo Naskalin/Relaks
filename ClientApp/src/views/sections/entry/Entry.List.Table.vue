@@ -86,7 +86,7 @@ import {useEntryListStore} from "../../../store/entry/entry.list.table.store";
 import {entryMessages} from "../../../localize/messages";
 import {Entry} from "../../../api/api_types";
 import {dateHelper} from "../../../utils/date_helper";
-import {watch, ref, computed, onMounted} from 'vue';
+import {ref, computed, onMounted} from 'vue';
 import EntryCard from './Entry.Card.vue';
 
 const store = useEntryListStore();
@@ -151,16 +151,6 @@ const setPreviewEntry = (entry: Entry) => {
     previewEntry.value = entry;
     emit('row-click', entry);
 }
-watch([
-    () => store.listRequest.search,
-    () => store.listRequest.entryType,
-    () => store.listRequest.isDeleted
-], async () => {
-    store.listRequest.page = 1;
-    store.isEnd = false;
-    await store.getEntriesAsync();
-    
-})
 
 const labelName = computed(() => store.listRequest.entryType ? entryMessages.name[store.listRequest.entryType] : entryMessages.nameNull);
 const labelStartAt = computed(() => store.listRequest.entryType ? entryMessages.startAt[store.listRequest.entryType] : entryMessages.startAtNull);

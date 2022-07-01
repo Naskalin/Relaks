@@ -42,11 +42,11 @@ const rowDoubleClick = (entry: Entry) => {
     router.push({name: 'entry-profile', params: {entryId: entry.id}});
 }
 onMounted(() => {
-    entryListStore.$reset();
-    const searchQuery = router.currentRoute.value.query.search || '';
-        if (typeof searchQuery === 'string' && searchQuery !== '') {
-        entryListStore.listRequest.search = searchQuery;
-    }
+    // entryListStore.$reset();
+    // const searchQuery = router.currentRoute.value.query.search || '';
+    //     if (typeof searchQuery === 'string' && searchQuery !== '') {
+    //     entryListStore.listRequest.search = searchQuery;
+    // }
 })
 onBeforeRouteLeave((to, from, next) => {
     entryListStore.$reset();

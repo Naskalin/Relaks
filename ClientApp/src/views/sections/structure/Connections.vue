@@ -14,13 +14,14 @@
                 v-tooltip.left="'Добавить связь'"/>
         </div>
     </div>
-    <div class="q-gutter-y-md q-mt-sm" v-if="connectionsStore.structureConnections.length">
-        <q-list v-if="structureStore.structureSelectedId" bordered class="rounded-borders">
+    <div class="q-gutter-y-md q-mt-sm">
+        <q-list v-if="connectionsStore.structureConnections.length && structureStore.structureSelectedId" bordered class="rounded-borders">
             <connections-item
                 v-for="connection in connectionsStore.structureConnections"
                 :connection="connection"
                 :key="connection.id"/>
         </q-list>
+        <p v-else class="text-blue-grey-8 text-center">Группа не связана с другими группами</p>
     </div>
 </template>
 

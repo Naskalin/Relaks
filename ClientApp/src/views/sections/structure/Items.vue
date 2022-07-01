@@ -34,6 +34,7 @@
             <q-separator class="q-my-md"/>
         </div>
     </template>
+    <p v-else class="text-blue-grey-8 text-center">Группа не содержит объединений</p>
 </template>
 
 <script setup lang="ts">

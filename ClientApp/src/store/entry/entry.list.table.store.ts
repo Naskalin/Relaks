@@ -26,6 +26,11 @@ export const useEntryListStore = defineStore('EntryListStore', {
         }
     },
     actions: {
+        resetListRequest()
+        {
+            this.listRequest.page = 1;
+            this.isEnd = false;
+        },
         async getEntriesAsync() {
             if (this.isLoading || this.isEnd) {
                 return;

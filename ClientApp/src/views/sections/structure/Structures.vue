@@ -28,9 +28,7 @@
 
             <template v-slot:after>
                 <q-card-section v-if="structureStore.list.length && structureStore.structureSelected">
-                    <structure-item 
-                        v-if="structureStore.structureSelected" 
-                        :structure="structureStore.structureSelected"/>
+                    <structure-item :structure="structureStore.structureSelected"/>
                     <q-separator class="q-my-lg"/>
                     <connections/>
                     <items/>

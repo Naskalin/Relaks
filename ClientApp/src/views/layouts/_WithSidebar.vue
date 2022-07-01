@@ -18,9 +18,13 @@
     </q-drawer>
 
     <q-page-container>
-        <q-page padding>
+        <q-page padding class="q-pb-xl">
             <slot/>
         </q-page>
+
+        <q-page-scroller position="bottom">
+            <q-btn fab icon="keyboard_arrow_up" color="secondary"/>
+        </q-page-scroller>
     </q-page-container>
 </template>
 
@@ -40,12 +44,22 @@ const drawerLeft = ref($q.screen.width > 700);
 const scrollAreaStyles = ref({
     'margin-top': 20,
 });
+
 const isListRoute = computed(() => router.currentRoute.value.name === 'entry-list');
-watch(() => entryListStore.listRequest.search, (val: any) => {
-    if (val && val !== '' && router.currentRoute.value.name !== 'entry-list') {
-        router.push({name: 'entry-list', query: {search: val}})
-    } 
+watch(() => entryListStore.listRequest.search, async (val: any) => {
+    if (val && val !== '' && !isListRoute.value) {
+        await router.push({name: 'entry-list'})
+    }
 })
+watch([
+    () => entryListStore.listRequest.search,
+    () => entryListStore.listRequest.entryType,
+    () => entryListStore.listRequest.isDeleted
+], async () => {
+    entryListStore.resetListRequest();
+    await entryListStore.getEntriesAsync();
+})
+
 onMounted(async () => {
     if (!listFilterEl.value) return;
     await nextTick();

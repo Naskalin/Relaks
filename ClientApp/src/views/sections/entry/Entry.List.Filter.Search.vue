@@ -3,7 +3,8 @@
         <q-toolbar class="bg-secondary">
             <div class="col">
                 <q-input
-                    v-model="model.search" debounce="250"
+                    v-model="model.search"
+                    debounce="250"
                     placeholder="Поиск..."
                     color="secondary"
                     label-color="grey-2"

@@ -5,6 +5,10 @@
 .bg-my-grey {
     @include content-background-mixin
 }
+// svg стрелки иначе перекрываются квазаром
+//.leader-line {
+//    z-index: 9999;
+//}
 body {
     overflow-y: scroll;
     &.body--light {

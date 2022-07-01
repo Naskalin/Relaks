@@ -14,9 +14,10 @@
             
             <q-separator/>
             
-            <q-card-section class="scroll" style="max-height: 80vh">
-<!--                <p v-for="p in (1, 50)">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque corporis cumque earum harum illo, labore perferendis sint. A aperiam assumenda culpa ipsa iusto laboriosam, possimus sint tempore temporibus, vero voluptatum?</p>-->
-                <entry-list-table @row-click="onRowClick"/>
+            <q-card-section class="scroll q-pa-none" style="max-height: 80vh">
+                <q-layout view="lHh Lpr lFf">
+                    <entry-list-table @row-click="onRowClick"/>
+                </q-layout>
             </q-card-section>
             
             <q-separator/>
