@@ -21,10 +21,6 @@
             >
                 <q-scroll-area class="fit">
                     <div class="q-pa-md">
-<!--                        <p v-for="n in 50" :key="n">-->
-<!--                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit nihil praesentium molestias a adipisci, dolore vitae odit, quidem consequatur optio voluptates asperiores pariatur eos numquam rerum delectus commodi perferendis voluptate?-->
-<!--                        </p>-->
-<!--&lt;!&ndash;                        asd&ndash;&gt;-->
                         <entry-filter
                             :is-show-search="true"
                             v-model="entryListStore.listRequest"
@@ -37,10 +33,7 @@
 
             <q-page-container>
                 <q-page class="q-pa-md body--light q-pb-xl">
-                    <entry-list-table @row-dblclick="onSelectEntry"/>
-<!--                    <p v-for="n in 50" :key="n">-->
-<!--                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit nihil praesentium molestias a adipisci, dolore vitae odit, quidem consequatur optio voluptates asperiores pariatur eos numquam rerum delectus commodi perferendis voluptate?-->
-<!--                    </p>-->
+                    <entry-list-table @row-dblclick="onSelectEntry" :entry-selected-id="entrySelectedId"/>
                 </q-page>
 
                 <q-page-sticky position="bottom-right">
@@ -49,37 +42,6 @@
             </q-page-container>
         </q-layout>
     </q-dialog>
-    
-<!--    <q-dialog-->
-<!--        full-height-->
-<!--        full-width-->
-<!--        :model-value="isShow" -->
-<!--        @update:model-value="val => emit('update:isShow', val)" -->
-<!--        v-bind="props">-->
-<!--        -->
-<!--        <q-card>-->
-<!--            <q-card-section class="row items-center">-->
-<!--                <div class="text-h6">{{ title || 'Выбор объединения' }}</div>-->
-<!--                <q-space/>-->
-<!--                <q-btn icon="close" flat round dense v-close-popup/>-->
-<!--            </q-card-section>-->
-<!--            -->
-<!--            <q-separator/>-->
-<!--            -->
-<!--            <q-card-section class="scroll q-pa-none" style="max-height: 80vh">-->
-<!--                <q-layout view="lHh Lpr lFf">-->
-<!--                    <entry-list-table @row-click="onRowClick"/>-->
-<!--                </q-layout>-->
-<!--            </q-card-section>-->
-<!--            -->
-<!--            <q-separator/>-->
-
-<!--            <q-card-actions align="right" class="q-pa-md">-->
-<!--                <q-btn flat label="Закрыть" icon="las la-times" v-close-popup/>-->
-<!--                <q-btn v-close-popup label="Выбрать объединение" icon="las la-check-circle" color="secondary"/>-->
-<!--            </q-card-actions>-->
-<!--        </q-card>-->
-<!--    </q-dialog>-->
 </template>
 
 <script setup lang="ts">
