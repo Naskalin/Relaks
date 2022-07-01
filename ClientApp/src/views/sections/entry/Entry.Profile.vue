@@ -1,33 +1,31 @@
 ﻿<template>
-    <div class="row">
-        <div class="col-3" style="min-width: 320px; max-width: 360px">
+    <with-sidebar>
+        <template v-slot:sidebar>
             <entry-card
                 v-if="profileStore.entry"
                 :with-edit="true"
                 @update-entry="reloadEntry"
                 :entry="profileStore.entry"
             />
-        </div>
-        <div class="col">
-            <div class="q-ml-lg">
-                <q-tabs v-if="profileStore.entry" inline-label align="left">
-                    <q-route-tab
-                        v-for="(label, routeName) in entryMessages.profile.tabs(profileStore.entry.entryType)"
-                        :key="routeName"
-                        :label="label"
-                        :to="{ name: routeName, params: {entryId: entryId} }"
-                    />
-                </q-tabs>
-                <q-separator/>
-                
-                <router-view></router-view>
-            </div>
-        </div>
-    </div>
+        </template>
+
+        <q-tabs v-if="profileStore.entry" inline-label align="left">
+            <q-route-tab
+                v-for="(label, routeName) in entryMessages.profile.tabs(profileStore.entry.entryType)"
+                :key="routeName"
+                :label="label"
+                :to="{ name: routeName, params: {entryId: entryId} }"
+            />
+        </q-tabs>
+        <q-separator/>
+
+        <router-view></router-view>
+    </with-sidebar>
 </template>
 
 <script setup lang="ts">
 import EntryCard from "./Entry.Card.vue";
+import WithSidebar from '../../layouts/_WithSidebar.vue';
 
 import {onMounted} from "vue";
 import {useRoute} from 'vue-router'

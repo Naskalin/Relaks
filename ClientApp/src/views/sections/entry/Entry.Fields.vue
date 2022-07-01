@@ -9,7 +9,7 @@
     />
     <q-chip v-else color="grey-5">{{ entryMessages.entryType.names[model.entryType] }}</q-chip>
 
-    <q-input type="text" color="secondary" v-model="model.name" required="required" :label="entryMessages.name[model.entryType]"/>
+    <q-input type="text" :autofocus="isCreate" color="secondary" v-model="model.name" required="required" :label="entryMessages.name[model.entryType]"/>
 
     <div>
         <p class="q-mb-sm text-secondary">

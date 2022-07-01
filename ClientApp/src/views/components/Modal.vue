@@ -16,7 +16,7 @@ import {computed, withDefaults} from "vue";
 
 const props = withDefaults(defineProps<{
     fullHeight?: boolean,
-    persistent?: boolean
+    persistent?: boolean,
     isShow: boolean,
     title: string
 }>(), {
@@ -25,7 +25,6 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
     (e: 'update:isShow', value: boolean): void
-    // (e: 'update:modelValue', value: boolean): void
 }>();
 
 const isShowModel = computed({

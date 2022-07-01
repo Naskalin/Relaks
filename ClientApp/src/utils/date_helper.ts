@@ -38,7 +38,7 @@ export const dateHelper = {
         // return d.tz(appDefaults.timeZone).format(format);
         return dayjs(val).tz(appDefaults.timeZone).format(format);
     },
-    startOfDay: (): string => {
+    startOfDayISO: (): string => {
         return dayjs().tz(appDefaults.timeZone).startOf('day').toISOString();
     }
 }

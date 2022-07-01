@@ -26,7 +26,7 @@ export const useEntryListStore = defineStore('EntryListStore', {
         }
     },
     actions: {
-        async getEntries() {
+        async getEntriesAsync() {
             if (this.isLoading || this.isEnd) {
                 return;
             }

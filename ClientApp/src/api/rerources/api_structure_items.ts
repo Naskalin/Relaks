@@ -18,6 +18,12 @@ export declare type StructureItemListRequest = {
     page?: number
     perPage?: number
 }
+export declare type StructureItemFormRequest = {
+    structureId: string
+    entryId: string
+    description: string
+    startAt?: string | null
+} & SoftDeletableType
 
 export const apiStructureItems = {
     list: async (listRequest: StructureItemListRequest): Promise<StructureItem[]> => {

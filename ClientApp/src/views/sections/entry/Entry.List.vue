@@ -20,25 +20,36 @@
 
 <script setup lang="ts">
 import EntryFormModal from './Entry.Form.Modal.vue';
-import {ref} from 'vue';
+import {ref, onMounted} from 'vue';
 import {useEntryCreateStore} from "../../../store/entry/entry.create.store";
-import {useRouter} from 'vue-router'
+import {useRouter, onBeforeRouteLeave} from 'vue-router'
 import EntryListTable from './Entry.List.Table.vue';
 import {Entry} from "../../../api/api_types";
+import {useEntryListStore} from "../../../store/entry/entry.list.table.store";
 
 // creating
 const router = useRouter();
 const createStore = useEntryCreateStore();
 const isShowCreateForm = ref(false);
+const entryListStore = useEntryListStore();
 const createEntry = async () => {
     const entry = await createStore.createEntry();
     await router.push({name: 'entry-profile', params: {entryId: entry.id}});
     isShowCreateForm.value = false;
     createStore.$reset();
 }
-
-// list
-const rowDoubleClick = async (entry: Entry) => {
-    await router.push({name: 'entry-profile', params: {entryId: entry.id}});
+const rowDoubleClick = (entry: Entry) => {
+    router.push({name: 'entry-profile', params: {entryId: entry.id}});
 }
+onMounted(() => {
+    entryListStore.$reset();
+    const searchQuery = router.currentRoute.value.query.search || '';
+        if (typeof searchQuery === 'string' && searchQuery !== '') {
+        entryListStore.listRequest.search = searchQuery;
+    }
+})
+onBeforeRouteLeave((to, from, next) => {
+    entryListStore.$reset();
+    next();
+})
 </script>

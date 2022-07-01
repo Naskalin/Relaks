@@ -16,7 +16,7 @@ import {dateHelper} from "../../../utils/date_helper";
 
 const store = useStructureFormStore();
 onMounted(() => {
-    if (!store.request.startAt) store.request.startAt = dateHelper.startOfDay();
+    if (!store.request.startAt) store.request.startAt = dateHelper.startOfDayISO();
 })
 watch(() => [store.isShowEdit, store.isShowCreate], (val: any) => {
     if (!val) {

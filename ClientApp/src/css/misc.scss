@@ -2,8 +2,53 @@
     margin-top: 0
 }
 
+.bg-my-grey {
+    @include content-background-mixin
+}
 body {
     overflow-y: scroll;
+    &.body--light {
+        //.app-sidebar {
+        //    background: $secondary;
+        //    color: $bgColor;
+        //
+        //    .q-item.q-router-link--active, .q-item--active {
+        //        color: $bgColor;
+        //        background: lighten($secondary, 5%);
+        //    }
+        //}
+        //
+        .q-table__bottom,
+        .q-table__top,
+        .q-table,
+        .q-card {
+            @include content-background-mixin
+        }
+
+        .q-drawer--left.q-drawer--bordered {
+            border-color: lighten($secondary, 4%);
+        }
+        //.q-table {
+        //    @include content-background-mixin
+        //}
+        //
+        //.q-field__label {
+        //    color: $themeBlack;
+        //}
+        //
+        //.q-card__actions,
+        //.card-header {
+        //    background: $bgGreyDarken1;
+        //}
+        //
+        //.q-field__bottom {
+        //    color: $grey-8;
+        //}
+        //
+        //.q-table__card {
+        //    background: none;
+        //}
+    }
 }
 
 .profile-tab {
@@ -24,47 +69,6 @@ body {
 //
 .body--light {
     background: $bgColor;
-
-    .app-sidebar {
-        background: $secondary;
-        color: $bgColor;
-
-        .q-item.q-router-link--active, .q-item--active {
-            color: $bgColor;
-            background: lighten($secondary, 5%);
-        }
-    }
-
-    .q-table,
-    .q-card {
-        @include content-background-mixin
-    }
-
-    .q-table {
-        //@include content-background-mixin
-    }
-
-    .q-field__label {
-        color: $themeBlack;
-    }
-
-    .q-card__actions,
-    .card-header {
-        background: $bgGreyDarken1;
-    }
-
-    .q-field__bottom {
-        color: $grey-8;
-    }
-
-    //.q-table__card {
-    //    background: none;
-    //}
-    .q-table__bottom,
-    .q-table__top {
-        @include content-background-mixin
-        //background: none;
-    }
 }
 
 .link {

@@ -1,42 +1,52 @@
 ﻿<template>
-    <p v-for="n in 30">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, assumenda beatae consequatur culpa dignissimos
-        eaque eligendi, error excepturi, fuga hic id in magni minus molestias mollitia praesentium reiciendis saepe
-        sed!</p>
+    <div class="row">
+        <div class="col-3">
+            <div class="js-sticky" ref="sidebarEl">
+                <!--            <div class="js-sticky" ref="sidebarEl" :data-margin-top="offsetTop" data-sticky-for="1023" data-sticky-class="is-sticky">-->
+                Lorem ipsum dolor sit amet, consectetur adipisicing
+                elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua.
 
-    <q-page-sticky position="top" :offset="[0, 18]">
-        <div style="width: 250px">
-            <p v-for="n in 15">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Architecto et excepturi porro quibusdam
-                soluta? Aliquam beatae consequatur dolores eius, enim laboriosam maiores minima minus obcaecati odit
-                quam quis quisquam suscipit.</p>
+            </div>
         </div>
-    </q-page-sticky>
+        <div class="col-9">
+            <p v-for="n in 50" :key="n">
+                Lorem ipsum dolor sit amet, consectetur adipisicing
+                elit, sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua.
+            </p>
+        </div>
+    </div>
+
+    <p v-for="n in 50" :key="n">
+        Lorem ipsum dolor sit amet, consectetur adipisicing
+        elit, sed do eiusmod tempor incididunt ut labore et
+        dolore magna aliqua.
+    </p>
+
+    <!--    <entry-select-field :entry-selected-id="entryId" v-model:is-show="isShow"/>-->
+    <!--    <q-btn label="show" @click="isShow = !isShow"/>-->
+    <!--    <p>{{entryId}}</p>-->
+    <!--    <p>{{isShow}}</p>-->
 </template>
 
-<script>
-import { ref } from 'vue'
+<script setup lang="ts">
+import {onMounted, computed, ref} from "vue";
+import EntrySelectField from '../../fields/EntrySelect.Field.vue';
 
-export default {
-    setup () {
-        const fabPos = ref([ 18, 18 ])
-        const draggingFab = ref(false)
+const sidebarEl = ref<HTMLElement | null>(null);
 
-        return {
-            fabPos,
-            draggingFab,
-
-            onClick () {
-                // console.log('Clicked on a fab action')
-            },
-
-            moveFab (ev) {
-                draggingFab.value = ev.isFirst !== true && ev.isFinal !== true
-
-                fabPos.value = [
-                    fabPos.value[ 0 ] - ev.delta.x,
-                    fabPos.value[ 1 ] - ev.delta.y
-                ]
-            }
-        }
+onMounted(() => {
+    let offsetTop = 50;
+    if (sidebarEl.value) {
+        offsetTop = 50 + sidebarEl.value.offsetTop;
     }
-}
+    
+})
+// const Sticky = require('sticky-js');
+// declare let Sticky: any;
+// const sticky = new Sticky('.sticky');
+// const isShow = ref(false);
+// const entryId = ref('');
+
 </script>

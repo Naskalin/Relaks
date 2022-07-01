@@ -2,13 +2,13 @@
 
 import {entryRoutes} from "../views/sections/entry/routes";
 import {pageRoutes} from "../views/sections/pages/routes";
-import Page from '../views/layouts/Page.vue';
+import Layout from '../views/layouts/Layout.vue';
 
 const history = createWebHashHistory();
 const routes = [
     {
         path: '/',
-        component: Page,
+        component: Layout,
         children: [
             ...pageRoutes,
             ...entryRoutes

@@ -7,6 +7,7 @@
             <q-btn
                 v-if="formStore.status"
                 @click="formStore.$reset()"
+                class="q-mt-md"
                 label="Вернуться без сохранения"
                 icon="las la-angle-left"
                 outline

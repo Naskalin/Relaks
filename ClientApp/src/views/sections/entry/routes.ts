@@ -8,7 +8,9 @@ import EntryAbout from '../entry_about/EntryAbout.vue';
 import Structures from '../structure/Structures.vue';
 
 export const entryRoutes: RouteRecordRaw[] = [
-    {path: '/entries', component: ListEntry, name: 'entry-list'},
+    {
+        path: '/entries', component: ListEntry, name: 'entry-list'
+    },
     {
         path: '/entries/:entryId', component: Profile, name: 'entry-profile',
         redirect: (to: any) => {

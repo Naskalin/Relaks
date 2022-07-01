@@ -1,10 +1,12 @@
 ﻿<template>
+    <new-form/>
+    
     <div class="row q-col-gutter-md items-center q-my-lg justify-between">
         <div class="col-auto">
             <h6 class="q-ma-none">Объединения</h6>
         </div>
         <div class="col-auto q-gutter-sm">
-            <q-btn icon="las la-users" round color="primary" v-tooltip.left="'Добавить объединение'"/>
+            <q-btn @click="showNewForm" icon="las la-users" round color="primary" v-tooltip.left="'Добавить объединение'"/>
         </div>
     </div>
 
@@ -40,10 +42,22 @@ import {useStructureStore} from "./structure_store";
 import {watch} from "vue";
 import ApiImage from '../../components/ApiImage.vue';
 import {useStructureConnectionsStore} from "./structure_connections_store";
+import {useStructureItemFormStore} from "./structure_items_form_store";
+import {dateHelper} from "../../../utils/date_helper";
+import NewForm from './Items.New.vue';
 
 const itemsStore = useStructureItemsStore();
 const structureStore = useStructureStore();
 const connectionStore = useStructureConnectionsStore();
+const formStore = useStructureItemFormStore();
+
+const showNewForm = () => {
+    if (!structureStore.structureSelectedId) return;
+    formStore.$reset();
+    formStore.request.startAt = dateHelper.startOfDayISO();
+    formStore.request.structureId = structureStore.structureSelectedId;
+    formStore.isShowCreate = true;
+}
 watch(() => structureStore.structureSelectedId, async (structureId: any, oldVal: any) => {
     if (!structureId) return;
     connectionStore.drawActiveStructureConnections(structureId, oldVal);

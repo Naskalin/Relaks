@@ -1,12 +1,11 @@
 ﻿<template>
-    <div class="row q-col-gutter-md">
-        <div class="col-auto q-gutter-y-md" style="min-width: 320px; max-width: 360px">
-            <q-card class="q-pa-md">
-                <list-filter v-model="store.listRequest"></list-filter>
-            </q-card>
-            <entry-card @card-dblclick="emit('card-dblclick', previewEntry)" v-if="previewEntry" :entry="previewEntry" :with-edit="false"></entry-card>
-        </div>
-        <div class="col">
+    <with-sidebar>
+        <template v-slot:sidebar>
+            <entry-card v-if="previewEntry" @card-dblclick="emit('card-dblclick', previewEntry)"
+                        :entry="previewEntry" :with-edit="false"/>
+        </template>
+
+        <q-infinite-scroll ref="scrollEl" @load="onLoadAsync" :disable="store.isEnd" :offset="250">
             <q-table
                 ref="entryListTable"
                 class="list-table"
@@ -16,11 +15,7 @@
                 row-key="id"
                 :rows="store.entries"
                 :pagination="{rowsPerPage: 0}"
-                :virtual-scroll-item-size="65"
-                :virtual-scroll-sticky-size-start="65"
-                virtual-scroll
                 :rows-per-page-options="[0]"
-                @virtual-scroll="getEntries"
                 binary-state-sort
             >
                 <template v-slot:header-cell-name="props">
@@ -39,7 +34,7 @@
                               'bg-blue-grey-2': previewEntry && previewEntry.id === props.row.id
                           }"
                           @dblclick="rowDoubleClick(props.row)"
-                          @click="previewEntry = props.row">
+                          @click="setPreviewEntry(props.row)">
                         <q-td
                             v-for="col in props.cols"
                             :key="col.name"
@@ -75,29 +70,37 @@
                     <slot name="top-right"></slot>
                 </template>
             </q-table>
-        </div>
-    </div>
+            <template v-slot:loading>
+                <div class="row justify-center q-my-md">
+                    <q-spinner-dots color="primary" size="40px" />
+                </div>
+            </template>
+        </q-infinite-scroll>
+    </with-sidebar>
 </template>
 
 <script setup lang="ts">
+import WithSidebar from '../../layouts/_WithSidebar.vue';
 import ApiImage from '../../components/ApiImage.vue';
 import {useEntryListStore} from "../../../store/entry/entry.list.table.store";
 import {entryMessages} from "../../../localize/messages";
 import {Entry} from "../../../api/api_types";
 import {dateHelper} from "../../../utils/date_helper";
-import ListFilter from './Entry.List.Filter.vue';
 import {watch, ref, computed, onMounted} from 'vue';
 import EntryCard from './Entry.Card.vue';
 
-// initialize
 const store = useEntryListStore();
-onMounted(() => {
-    store.$reset();
+const scrollEl = ref<any>(null);
+onMounted(async () => {
+    if (scrollEl.value) {
+        scrollEl.value.trigger();
+    }
 })
 const rowDoubleClick = (row: Entry) => {
     emit('row-dblclick', row);
 }
 const emit = defineEmits<{
+    (e: 'row-click', val: Entry | any): void,
     (e: 'row-dblclick', val: Entry | any): void,
     (e: 'card-dblclick', val: Entry | any): void
 }>();
@@ -140,18 +143,13 @@ let columns = [
     },
 ]
 columns = columns.map(row => ({...row, align: 'left'}));
-
-// get entries
-const getEntries = async ({to}: { to: number}) => {
-    const rowsCount = store.entries.length;
-    if (
-        // Если ещё нет данных
-        to === -1
-        // Или если мы в конце списка и данные ещё не закончились
-        || (to === rowsCount - 1 && !store.isEnd)
-    ) {
-        await store.getEntries();
-    }
+const onLoadAsync = async (index: number, done: CallableFunction) => {
+    await store.getEntriesAsync();
+    done();
+}
+const setPreviewEntry = (entry: Entry) => {
+    previewEntry.value = entry;
+    emit('row-click', entry);
 }
 watch([
     () => store.listRequest.search,
@@ -160,47 +158,25 @@ watch([
 ], async () => {
     store.listRequest.page = 1;
     store.isEnd = false;
-    await getEntries({to: -1})
+    await store.getEntriesAsync();
+    
 })
 
 const labelName = computed(() => store.listRequest.entryType ? entryMessages.name[store.listRequest.entryType] : entryMessages.nameNull);
 const labelStartAt = computed(() => store.listRequest.entryType ? entryMessages.startAt[store.listRequest.entryType] : entryMessages.startAtNull);
 const labelEndAt = computed(() => store.listRequest.entryType ? entryMessages.endAt[store.listRequest.entryType] : entryMessages.endAtNull);
-
-// get avatar
-// const avatars = reactive({})
-// const getAvatar = async (fileId: string) => {
-//     const resp = await apiFiles.download({
-//         fileId: fileId,
-//         imageFilter: 'square-thumbnail'
-//     });
-//
-//     return URL.createObjectURL(resp.data);
-// }
 </script>
 
 <style lang="scss">
 .list-table {
-    max-height: 97vh;
-
-    tfoot tr > *,
     thead tr > * {
         position: sticky;
         opacity: 1;
         z-index: 1;
         background-color: $bgGreyDarken1;
     }
-
     thead tr:last-child > * {
         top: 0;
     }
-
-    thead tr:first-child > * {
-        bottom: 0
-    }
-}
-
-.q-body--fullscreen-mixin .list-table {
-    max-height: 100vh;
 }
 </style>

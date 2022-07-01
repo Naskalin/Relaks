@@ -1,45 +1,30 @@
 ﻿<template>
-    <div class="q-gutter-md">
-        <p class="text-center text-h6">Фильтр</p>
+    <div class="q-mb-md">
+        <div class="q-gutter-y-md">
+            <div>
+                <q-btn-toggle
+                    spread
+                    class="bg-my-grey"
+                    v-model="model.entryType"
+                    toggle-color="secondary"
+                    :options="entryTypes"
+                />
+            </div>
 
-        <div>
-            <q-btn-toggle
-                spread
-                class="bg-grey-2"
-                v-model="model.entryType"
-                toggle-color="secondary"
-                :options="entryTypes"
-            />
-        </div>
-
-        <div>
-            <q-btn-toggle
-                class="bg-grey-2"
-                spread
-                v-model="model.isDeleted"
-                toggle-color="secondary"
-                :options="[
+            <div>
+                <q-btn-toggle
+                    class="bg-my-grey"
+                    spread
+                    v-model="model.isDeleted"
+                    toggle-color="secondary"
+                    :options="[
                 {label: 'Все', value: null},
                 {label: 'Актуальные', value: false},
                 {label: 'Архивные', value: true},
             ]"
-            />
+                />
+            </div>
         </div>
-        
-<!--        <div class="text-center">-->
-<!--            <q-radio v-model="model.isDeleted" :val="null" label="Все объединения" />-->
-<!--            <q-radio v-model="model.isDeleted" :val="false" label="Актуальные" />-->
-<!--            <q-radio v-model="model.isDeleted" :val="true" label="Архив" />-->
-<!--        </div>-->
-
-        <q-input v-model="model.search" debounce="250" label="Поиск..." color="secondary">
-            <template v-slot:prepend>
-                <q-icon name="las la-search"/>
-            </template>
-            <template v-slot:append>
-                <q-icon @click="model.search = ''" name="close" class="cursor-pointer"/>
-            </template>
-        </q-input>
     </div>
 </template>
 

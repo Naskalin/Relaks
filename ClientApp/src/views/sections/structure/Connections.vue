@@ -52,7 +52,7 @@ watch(() => connectionsStore.activeConnectionId, (val: string | null, oldVal: st
 const showNewModal = () => {
     formStore.$reset();
     formStore.request.structureFirstId = structureStore.structureSelectedId!;
-    formStore.request.startAt = dateHelper.startOfDay();
+    formStore.request.startAt = dateHelper.startOfDayISO();
     formStore.isShowCreate = true;
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <router-view></router-view>
+    <router-view/>
     <api-errors-notify/>
 </template>
 
