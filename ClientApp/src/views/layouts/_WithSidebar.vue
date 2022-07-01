@@ -35,10 +35,10 @@
                         dense
                     >
                         <template v-slot:prepend>
-                            <q-icon name="las la-search text-grey-2"/>
+                            <q-icon name="las la-search text-grey-4"/>
                         </template>
                         <template v-slot:append>
-                            <q-icon v-if="sidebarStore.search" @click="sidebarStore.search = ''" name="cancel" class="cursor-pointer text-grey-2"/>
+                            <q-icon v-if="sidebarStore.search" @click="sidebarStore.search = ''" name="cancel" class="cursor-pointer text-grey-4"/>
                         </template>
                     </q-input>
                 </div>

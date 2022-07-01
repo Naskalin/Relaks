@@ -25,7 +25,8 @@
                     <q-tr :props="props" :key="`m_${props.row.index}`"
                           :class="{
                               'bg-pink-1': props.row.deletedAt,
-                              'bg-blue-grey-2': store.previewEntry && store.previewEntry.id === props.row.id
+                              'bg-blue-grey-2': store.previewEntry && store.previewEntry.id === props.row.id,
+                              'bg-blue-grey-5': myProps.entrySelectedId && myProps.entrySelectedId === props.row.id
                           }"
                           @dblclick="rowDoubleClick(props.row)"
                           @click="setPreviewEntry(props.row)">
@@ -82,6 +83,9 @@ import {ref, computed, onMounted} from 'vue';
 
 const store = useEntryListStore();
 const scrollEl = ref<any>(null);
+const myProps = defineProps<{
+    entrySelectedId?: string
+}>()
 onMounted(async () => {
     if (scrollEl.value) {
         scrollEl.value.trigger();
