@@ -71,7 +71,7 @@
         :entry-info-type="entryInfoType"
         :is-loading="editStore.isLoading"
         :is-create="false"
-        :title="'Изменение: ' + entryInfoMessages.val.names[entryInfoType]"
+        :label="'Изменение: ' + entryInfoMessages.val.names[entryInfoType]"
         btn-title="Сохранить"
         btn-icon="las la-save"
         @submit="saveEditForm"

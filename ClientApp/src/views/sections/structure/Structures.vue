@@ -14,8 +14,12 @@
             />
         </div>
     </div>
-
-    <tree :entry-id="entryId"/>
+    
+    <q-card>
+        <q-card-section>
+            <tree :entry-id="entryId"/>
+        </q-card-section>
+    </q-card>
 </template>
 
 <script setup lang="ts">

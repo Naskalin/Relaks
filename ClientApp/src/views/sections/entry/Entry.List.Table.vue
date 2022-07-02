@@ -26,7 +26,7 @@
                           :class="{
                               'bg-pink-1': props.row.deletedAt,
                               'bg-blue-grey-2': store.previewEntry && store.previewEntry.id === props.row.id,
-                              'bg-blue-grey-5': myProps.entrySelectedId && myProps.entrySelectedId === props.row.id
+                              'bg-deep-purple-2': myProps.entrySelectedId && myProps.entrySelectedId === props.row.id
                           }"
                           @dblclick="rowDoubleClick(props.row)"
                           @click="setPreviewEntry(props.row)">

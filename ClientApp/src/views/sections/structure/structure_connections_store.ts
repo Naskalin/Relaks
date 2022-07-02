@@ -2,7 +2,6 @@
 import {
     StructureConnection,
     StructureConnectionDirection,
-    StructureConnectionListRequest
 } from "../../../api/rerources/api_structure_connections";
 import {apiStructureConnection} from "../../../api/rerources/api_structure_connections";
 import LeaderLine from "leader-line-new";

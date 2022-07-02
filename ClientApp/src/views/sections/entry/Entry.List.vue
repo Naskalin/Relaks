@@ -5,7 +5,7 @@
                       :is-create="true"
                       btn-title="Добавить"
                       @submit="createEntry"
-                      title="Добавление объединения"/>
+                      label="Добавление объединения"/>
 
     <entry-list-table @row-dblclick="rowDoubleClick">
         <template v-slot:top-right>

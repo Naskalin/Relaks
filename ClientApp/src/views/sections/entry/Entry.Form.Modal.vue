@@ -1,5 +1,5 @@
 ﻿<template>
-    <modal v-model:is-show="isShow" :title="title">
+    <modal v-model:is-show="isShow" :label="label">
         <q-form autocorrect="off"
                 autocapitalize="off"
                 autocomplete="off"
@@ -32,7 +32,7 @@ import EntryFields from './Entry.Fields.vue';
 import {computed} from "vue";
 
 const props = defineProps<{
-    title: string
+    label: string
     btnTitle: string
     btnIcon?: string
     isLoading: boolean

@@ -1,6 +1,7 @@
 ﻿<template>
-    <q-layout view="lHh Lpr lFf"  class="shadow-2 rounded-borders">
-        <q-header bordered class="bg-secondary text-white">
+<!--    <q-layout view="lHh Lpr lFf"  class="shadow-2 rounded-borders">-->
+    <q-layout view="lhh LpR lff"  class="shadow-2 rounded-borders">
+        <q-header bordered reveal :reveal-offset="9999" class="bg-secondary text-white fixed-top">
             <q-toolbar>
                 <q-tabs>
                     <q-route-tab label="Объединения" to="/entries"/>
@@ -70,22 +71,21 @@
                 </q-toolbar>
             </div>
         </q-drawer>
-
         
-            <q-drawer
-                side="right"
-                :model-value="layoutStore.isRightSidebar"
-                bordered
-                :width="300"
-                :breakpoint="500"
-                class="bg-grey-3"
-            >
-                <q-scroll-area class="fit">
-                    <div class="q-pa-sm">
-                        <router-view name="RightSidebar"/>
-                    </div>
-                </q-scroll-area>
-            </q-drawer>
+        <q-drawer
+            side="right"
+            :model-value="layoutStore.isRightSidebar"
+            bordered
+            :width="390"
+            :breakpoint="700"
+            class="bg-grey-3"
+        >
+            <q-scroll-area class="fit">
+                <div class="q-py-lg q-px-md">
+                    <router-view name="RightSidebar"/>
+                </div>
+            </q-scroll-area>
+        </q-drawer>
 
         <q-page-container>
             <q-page padding class="q-pb-xl">

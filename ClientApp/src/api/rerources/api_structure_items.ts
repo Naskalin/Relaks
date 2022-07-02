@@ -15,8 +15,8 @@ export declare type StructureItemListRequest = {
     entryType?: EntryType | null
     isDeleted?: boolean | null
     date?: string | null
-    page?: number
-    perPage?: number
+    page: number
+    perPage: number
 }
 export declare type StructureItemFormRequest = {
     structureId: string
@@ -29,5 +29,21 @@ export const apiStructureItems = {
     list: async (listRequest: StructureItemListRequest): Promise<StructureItem[]> => {
         const resp = await appApi.list(['structure-items'], listRequest);
         return resp.data;
-    }
+    },
+    create: async (request: StructureItemFormRequest): Promise<StructureItem> => {
+        const resp = await appApi.post(['structure-items'], request);
+        return resp.data;
+    },
+    update: async (structureItemId: string, request: StructureItemFormRequest): Promise<null> => {
+        const resp = await appApi.put(['structure-items', structureItemId], request);
+        return resp.data;
+    },
+    get: async (structureItemId: string): Promise<StructureItem> => {
+        const resp = await appApi.get(['structure-items', structureItemId]);
+        return resp.data;
+    },
+    delete: async (structureItemId: string): Promise<null> => {
+        const resp = await appApi.delete(['structure-items', structureItemId]);
+        return resp.data;
+    },
 }

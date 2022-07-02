@@ -6,7 +6,7 @@
                 <div class="text-h6">{{structure.title}}</div>
                 <div>
                     <q-icon name="las la-calendar"/>
-                    <small class="label-caption q-mx-sm">Существует с</small>
+                    <small class="label-caption q-mx-sm">с</small>
                     <time>{{dateHelper.utcFormat(structure.startAt, 'DD.MM.YYYY')}}</time>
                 </div>
                 <div v-if="structure.description" class="text-grey-9">

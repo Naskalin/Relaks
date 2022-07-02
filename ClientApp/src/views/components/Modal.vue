@@ -2,7 +2,7 @@
     <q-dialog v-model="isShowModel" v-bind="props">
         <q-card style="width: 800px; max-width: 80vw;" :class="{'column full-height': props.fullHeight}">
             <q-card-section class="row items-center">
-                <div class="text-h6">{{ title }}</div>
+                <div class="text-h6">{{ label }}</div>
                 <q-space/>
                 <q-btn icon="close" flat round dense v-close-popup/>
             </q-card-section>
@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<{
     fullHeight?: boolean,
     persistent?: boolean,
     isShow: boolean,
-    title: string
+    label: string
 }>(), {
     persistent: false
 })

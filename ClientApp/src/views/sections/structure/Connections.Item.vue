@@ -35,7 +35,7 @@
                     <div class="row justify-between q-col-gutter-sm items-center">
                         <div class="col">
                             <q-icon name="las la-calendar"/>
-                            <small class="label-caption q-mx-sm">Существует с</small>
+                            <small class="label-caption q-mx-sm">с</small>
                             <time>{{dateHelper.utcFormat(connection.startAt, 'DD.MM.YYYY')}}</time>
                         </div>
                         <div class="col-auto">

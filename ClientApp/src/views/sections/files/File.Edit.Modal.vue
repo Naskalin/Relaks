@@ -1,5 +1,5 @@
 ﻿<template>
-    <modal v-model:is-show="isShow" title="Изменение файла">
+    <modal v-model:is-show="isShow" label="Изменение файла">
         <q-card-section>
             <q-form
                 autocorrect="off"

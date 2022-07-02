@@ -1,5 +1,5 @@
 ﻿<template>
-    <modal v-model:is-show="isShow" :title="title">
+    <modal v-model:is-show="isShow" :label="label">
         <q-card-section class="q-gutter-y-md" :class="{'max-height-scrollable': entryInfoType === 'NOTE'}">
             <q-form autocorrect="off"
                     autocapitalize="off"
@@ -45,7 +45,7 @@ const props = defineProps<{
     entryInfoType: EntryInfoType,
     isCreate: boolean,
     isShow: boolean,
-    title: string
+    label: string
     btnTitle: string
     btnIcon?: string
     isLoading: boolean

@@ -1,5 +1,5 @@
 ﻿<template>
-    <modal title="Добавление связи" v-model:is-show="store.isShowCreate">
+    <modal label="Добавление связи" v-model:is-show="store.isShowCreate">
         <q-form @submit.prevent="createAsync" id="structure-connection-new-form">
             <q-card-section class="q-gutter-y-sm">
                 <form-fields/>

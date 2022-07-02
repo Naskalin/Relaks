@@ -1,5 +1,5 @@
 ﻿<template>
-    <modal :title="title" v-model:is-show="isShowModel" full-width>
+    <modal :label="label" v-model:is-show="isShowModel" full-width>
         <q-card-section>
             <entry-file-full-comp
                 :entry-id="entryId"
@@ -22,7 +22,7 @@ const filesMetaStore = useEntryFileMetaListStore();
 const props = defineProps<{
     entryId: string,
     isShow: boolean
-    title: string
+    label: string
 }>()
 onMounted(async () => {
     await filesMetaStore.getMeta(props.entryId);

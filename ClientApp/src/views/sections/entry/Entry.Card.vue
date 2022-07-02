@@ -92,7 +92,7 @@
 
     <entry-form-modal
         v-if="withEdit && editStore.model"
-        title="Изменение объединения"
+        label="Изменение объединения"
         btn-title="Сохранить"
         btn-icon="las la-save"
         :is-loading="editStore.isLoading"
@@ -104,7 +104,7 @@
 
     <entry-info-form-modal
         v-if="withEdit"
-        :title="'Добавление: ' + entryInfoMessages.val.names[entryInfoFormType]"
+        :label="'Добавление: ' + entryInfoMessages.val.names[entryInfoFormType]"
         :is-create="true"
         :entry-info-type="entryInfoFormType"
         :is-loading="entryInfoCreateStore.isLoading"
@@ -116,7 +116,7 @@
 
     <file-select-modal
         :entry-id="entry.id"
-        title="Выбор аватара"
+        label="Выбор аватара"
         v-model:is-show="isShowAvatarSelect"
         v-if="withEdit"
         @fileSelect="onFileSelect"

@@ -1,13 +1,13 @@
 ﻿<template>
-    <modal label="Добавление объединения" v-model:is-show="formStore.isShowCreate">
-        <q-form @submit.prevent="createAsync" id="structure-items-new-form">
+    <modal label="Изменение объединения" v-model:is-show="formStore.isShowEdit">
+        <q-form @submit.prevent="editAsync" id="structure-items-edit-form">
             <q-card-section class="q-gutter-y-sm">
                 <form-fields/>
             </q-card-section>
         </q-form>
         <q-card-actions align="right" class="q-pa-md">
             <q-btn flat label="Закрыть" icon="las la-times" v-close-popup/>
-            <q-btn form="structure-items-new-form" type="submit" label="Добавить объединение" icon="las la-save" color="primary"/>
+            <q-btn form="structure-items-edit-form" type="submit" label="Сохранить изменения" icon="las la-save" color="primary"/>
         </q-card-actions>
     </modal>
 </template>
@@ -21,9 +21,14 @@ import {useStructureItemsStore} from "./structure_items_store";
 
 const formStore = useStructureItemFormStore();
 const listStore = useStructureItemsStore();
-const createAsync = async () => {
-    const structureItem = await apiStructureItems.create(formStore.request);
-    listStore.items.push(structureItem);
+const editAsync = async () => {
+    const structureItemId = formStore.editId;
+    await apiStructureItems.update(structureItemId, formStore.request);
+    const indexOf = listStore.items.findIndex(x => x.id === structureItemId);
+    if (indexOf > -1) {
+        listStore.items[indexOf] = await apiStructureItems.get(structureItemId);
+    }
+    
     formStore.$reset();
 }
 </script>

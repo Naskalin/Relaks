@@ -12,7 +12,11 @@ import StructuresRightSidebar from '../structure/Structures.Right.Sidebar.vue';
 export const entryRoutes: RouteRecordRaw[] = [
     {path: '/entries', component: ListEntry, name: 'entry-list'},
     {
-        path: '/entries/:entryId', name: 'entry-profile', components: {default: Profile, LeftSidebar: ProfileSidebar},
+        path: '/entries/:entryId', name: 'entry-profile', components: {
+            default: Profile, 
+            LeftSidebar: ProfileSidebar,
+            RightSidebar: StructuresRightSidebar,
+        },
         redirect: (to: any) => {
             return {name: 'entry-about', params: {entryId: to.params.entryId}}
         },
@@ -22,7 +26,6 @@ export const entryRoutes: RouteRecordRaw[] = [
             {
                path: 'structures', name: 'entry-structures', components: {
                     default: Structures,
-                    RightSidebar: StructuresRightSidebar,
                 }
             },
         ]

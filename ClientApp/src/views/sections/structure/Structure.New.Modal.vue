@@ -1,5 +1,5 @@
 ﻿<template>
-    <modal title="Добавление группы" v-model:is-show="store.isShowCreate">
+    <modal label="Добавление группы" v-model:is-show="store.isShowCreate">
         <q-form @submit.prevent="createAsync" id="structure-new-form">
             <q-card-section class="q-gutter-y-sm">
                 <structure-form-fields/>

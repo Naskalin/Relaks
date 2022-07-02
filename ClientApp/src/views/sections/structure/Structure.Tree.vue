@@ -89,6 +89,10 @@ watch(() => structureStore.expandedIds, (val: string[]) => {
         connectionsStore.hideLines();
     }
 });
+watch(() => structureStore.structureSelectedId, async (structureId: any, oldVal: any) => {
+    if (!structureId) return;
+    connectionsStore.drawActiveStructureConnections(structureId, oldVal);
+}, {immediate: true})
 const switchShowLines = () => {
     if (connectionsStore.isShowLines) {
         connectionsStore.hideLines();

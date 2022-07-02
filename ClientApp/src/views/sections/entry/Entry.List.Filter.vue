@@ -6,7 +6,7 @@
                     v-if="isShowSearch"
                     v-model="model.search"
                     debounce="250"
-                    placeholder="Поиск..."
+                    placeholder="Поиск объединения..."
                     color="secondary"
                 >
                     <template v-slot:prepend>

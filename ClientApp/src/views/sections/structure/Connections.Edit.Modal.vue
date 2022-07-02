@@ -1,5 +1,5 @@
 ﻿<template>
-    <modal title="Изменение связи" v-model:is-show="store.isShowEdit">
+    <modal label="Изменение связи" v-model:is-show="store.isShowEdit">
         <q-form @submit.prevent="editAsync" id="structure-connection-edit-form">
             <q-card-section class="q-gutter-y-sm">
                 <form-fields/>
