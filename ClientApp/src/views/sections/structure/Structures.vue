@@ -14,47 +14,26 @@
             />
         </div>
     </div>
-    
-    <q-card class="q-mt-lg">
-        <q-splitter
-            v-model="splitterModel"
-            :limits="[50, 70]"
-        >
-            <template v-slot:before>
-                <q-card-section>
-                    <tree :entry-id="entryId"/>
-                </q-card-section>
-            </template>
 
-            <template v-slot:after>
-                <q-card-section v-if="structureStore.list.length && structureStore.structureSelected">
-                    <structure-item :structure="structureStore.structureSelected"/>
-                    <q-separator class="q-my-lg"/>
-                    <connections/>
-                    <items/>
-                </q-card-section>
-            </template>
-        </q-splitter>
-    </q-card>
+    <tree :entry-id="entryId"/>
 </template>
 
 <script setup lang="ts">
 import {useStructureStore} from "./structure_store";
-import {ref, watch} from 'vue';
+import {ref, watch, onMounted} from 'vue';
 import {useRoute, onBeforeRouteLeave} from "vue-router";
 import Tree from './Structure.Tree.vue';
-import Items from './Items.vue';
-import Connections from './Connections.vue';
 import {useStructureConnectionsStore} from "./structure_connections_store";
 import {useStructureItemsStore} from "./structure_items_store";
 import {debounce} from "quasar";
 import {entryMessages} from "../../../localize/messages";
 import {useEntryProfileStore} from "../../../store/entry/entry.profile.store";
 import {useStructureFormStore} from "./structure_form_store";
-import StructureItem from './Structure.Item.vue';
+import {useLayoutStore} from "../../layouts/layout_store";
 
 const structureFormStore = useStructureFormStore();
 const profileStore = useEntryProfileStore();
+const layoutStore = useLayoutStore();
 const entryId = (useRoute()).params.entryId as string;
 const splitterModel = ref(70);
 const structureStore = useStructureStore();
@@ -73,12 +52,15 @@ watch(() => splitterModel.value, debounce(() => {
         connectionsStore.drawActiveStructureConnections(structureStore.structureSelectedId, null);
     }
 }, 150))
-
+onMounted(() => {
+    layoutStore.isRightSidebar = true;
+})
 onBeforeRouteLeave((to, from, next) => {
     connectionsStore.deleteConnections();
     connectionsStore.$reset();
     structureStore.$reset();
     itemsStore.$reset();
+    layoutStore.isRightSidebar = false;
     next();
 })
 </script>
