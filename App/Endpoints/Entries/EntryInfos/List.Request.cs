@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace App.Endpoints.Entries.EntryInfos;
 
-public class EntryInfoListRequest : BaseListRequest
+public class EntryInfoListDeletableRequest : BaseListDeletableRequest
 {
     [FromRoute]
     public Guid EntryId { get; set; }

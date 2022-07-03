@@ -1,7 +1,6 @@
 ﻿using App.DbEvents;
 using App.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace App.DbConfigurations;
@@ -13,7 +12,8 @@ public sealed class AppDbContext : DbContext
     public DbSet<FileModel> FileModels { get; set; } = null!;
     public DbSet<EntryFile> EntryFiles { get; set; } = null!;
     public DbSet<EntryInfoFile> EntryInfoFiles { get; set; } = null!;
-    
+    public DbSet<InfoTemplate> InfoTemplates { get; set; } = null!;
+
     public DbSet<Structure> Structures { get; set; } = null!;
     public DbSet<StructureItem> StructureItems { get; set; } = null!;
     public DbSet<StructureConnection> StructureConnections { get; set; } = null!;

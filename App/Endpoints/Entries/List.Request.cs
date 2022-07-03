@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace App.Endpoints.Entries;
 
-public class ListRequest : BaseListRequest
+public class EntryListRequest : BaseListDeletableRequest
 {
     public EntryTypeEnum? EntryType { get; set; }
 }

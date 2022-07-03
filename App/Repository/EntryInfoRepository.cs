@@ -13,20 +13,20 @@ public class EntryInfoRepository : BaseRepository<EntryInfo>
     }
     
     public async Task<List<EntryInfo>> PaginateAsync(
-        EntryInfoListRequest request,
+        EntryInfoListDeletableRequest deletableRequest,
         CancellationToken cancellationToken
     )
     {
-        var query = Entities.Where(x => x.EntryId == request.EntryId);
+        var query = Entities.Where(x => x.EntryId == deletableRequest.EntryId);
 
-        if (request.Type != null && request.Type.Any())
+        if (deletableRequest.Type != null && deletableRequest.Type.Any())
         {
-            var types = request.Type.Select(x => x.ToUpper()).ToList();
+            var types = deletableRequest.Type.Select(x => x.ToUpper()).ToList();
             query = query.Where(x => types.Contains(x.Type));
         }
 
-        if (request.IsDeleted != null)
-            query = query.Where(x => request.IsDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
+        if (deletableRequest.IsDeleted != null)
+            query = query.Where(x => deletableRequest.IsDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
         
         //TODO: Search
         // if (!string.IsNullOrEmpty(request.Search))
@@ -35,18 +35,18 @@ public class EntryInfoRepository : BaseRepository<EntryInfo>
         //                              || EF.Functions.Like(x.DeletedReason, "%" + request.Search + "%")
         //     );
 
-        if (!string.IsNullOrEmpty(request.OrderBy))
+        if (!string.IsNullOrEmpty(deletableRequest.OrderBy))
         {
-            query = query.OrderBy(request.OrderBy, request.OrderByDesc ?? false);
+            query = query.OrderBy(deletableRequest.OrderBy, deletableRequest.OrderByDesc ?? false);
         }
         else
         {
             query = query.OrderByDescending(x => x.UpdatedAt);
         }
         
-        if (request.Page != null && request.PerPage != null)
+        if (deletableRequest.Page != null && deletableRequest.PerPage != null)
         {
-            query = PaginateQuery(query, request);     
+            query = PaginateQuery(query, deletableRequest);     
         }
         
         return await query.ToListAsync(cancellationToken);

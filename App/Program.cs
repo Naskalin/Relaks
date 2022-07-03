@@ -37,6 +37,7 @@ builder.Services.Configure<ApiBehaviorOptions>(o => { o.SuppressInferBindingSour
 
 builder.Services.AddTransient<EntryRepository>();
 builder.Services.AddTransient<EntryInfoRepository>();
+builder.Services.AddTransient<InfoTemplateRepository>();
 builder.Services.AddTransient<EntryFileRepository>();
 builder.Services.AddTransient<StructureRepository>();
 builder.Services.AddTransient<StructureItemRepository>();

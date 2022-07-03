@@ -9,7 +9,15 @@
     />
     <q-chip v-else color="grey-5">{{ entryMessages.entryType.names[model.entryType] }}</q-chip>
 
-    <q-input type="text" :autofocus="isCreate" color="secondary" v-model="model.name" required="required" :label="entryMessages.name[model.entryType]"/>
+    <q-input 
+        type="text" 
+        :autofocus="isCreate" 
+        color="secondary" 
+        v-model="model.name"
+        counter
+        :maxlength="250"
+        required="required" 
+        :label="entryMessages.name[model.entryType]"/>
 
     <div>
         <p class="q-mb-sm text-secondary">
@@ -28,7 +36,7 @@
     <q-input
         v-model="model.description"
         counter
-        maxlength="250"
+        :maxlength="500"
         autogrow
         color="secondary"
         label="Краткое описание"

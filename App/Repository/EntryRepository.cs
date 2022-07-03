@@ -36,7 +36,7 @@ public class EntryRepository : BaseRepository<Entry>
         return dto;
     }
 
-    public IEnumerable<EntryDto> FindByListRequest(ListRequest req)
+    public IEnumerable<EntryDto> FindByListRequest(EntryListRequest req)
     {
         IEnumerable<EntryDto> query;
         

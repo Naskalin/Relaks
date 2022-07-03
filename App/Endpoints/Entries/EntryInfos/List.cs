@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace App.Endpoints.Entries.EntryInfos;
 
 public class List : EndpointBaseAsync
-    .WithRequest<EntryInfoListRequest>
+    .WithRequest<EntryInfoListDeletableRequest>
     .WithActionResult
 {
     private readonly EntryInfoRepository _entryInfoRepository;
@@ -21,11 +21,11 @@ public class List : EndpointBaseAsync
     [HttpGet("/api/entries/{entryId}/entry-infos")]
     [SwaggerOperation(OperationId = "EntryInfo.List", Tags = new[] {"EntryInfo"})]
     public override async Task<ActionResult> HandleAsync(
-        [FromMultiSource] EntryInfoListRequest request,
+        [FromMultiSource] EntryInfoListDeletableRequest deletableRequest,
         CancellationToken cancellationToken = new()
     )
     {
-        var eInfos = await _entryInfoRepository.PaginateAsync(request, cancellationToken);
+        var eInfos = await _entryInfoRepository.PaginateAsync(deletableRequest, cancellationToken);
         return Ok(eInfos);
     }
 }

@@ -83,12 +83,6 @@ public record DateInfo
     public DateTime Date { get; set; }
 }
 
-// public enum PassportGender
-// {
-//     Male,
-//     Female
-// }
-
 public record CustomInfoItem
 {
     public string Key { get; set; } = null!;
@@ -105,39 +99,3 @@ public record CustomInfo
 {
     public List<CustomInfoGroup> Groups { get; set; } = new();
 }
-
-// public record PassportInfo
-// {
-//     public string? DocType { get; set; }
-//     public string? DocCode { get; set; }
-//     public string? DocNumber { get; set; }
-//     public string? Nationality { get; set; }
-//
-//     public string? Fio { get; set; } = null!;
-//     public PassportGender? Gender { get; set; }
-//     public string? Birthplace { get; set; }
-//     public DateTime? Birthday { get; set; }
-//
-//     public DateTime? IssueAt { get; set; }
-//     public DateTime? ExpireAt { get; set; }
-//     public string? PlaceIssue { get; set; }
-//     public string? DivisionCode { get; set; }
-//     public string? PersonalCode { get; set; }
-//     
-//     public string? Description { get; set; }
-// }
-//
-// public record CompanyDetailsInfo
-// {
-//     public string? Name { get; set; } = null!;
-//     public string? Okved { get; set; } = null!;
-//     public string? Inn { get; set; } = null!;
-//     public string? Kpp { get; set; } = null!;
-//     public string? Okpo { get; set; } = null!;
-//     public string? Ogrn { get; set; } = null!;
-//     public string? Ogrnip { get; set; } = null!;
-//     public string? Oktmo { get; set; } = null!;
-//     public string? Address { get; set; } = null!;
-//     public DateTime? RegistrationAt { get; set; }
-//     public string? Description { get; set; }
-// }

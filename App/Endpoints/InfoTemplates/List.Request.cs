@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace App.Endpoints;
+namespace App.Endpoints.InfoTemplates;
 
-public class BaseListRequest : IListRequest
+public class ListRequest : IPaginableRequest, ISearchableRequest
 {
     [FromQuery]
     public int? Page { get; set; }
@@ -12,10 +12,4 @@ public class BaseListRequest : IListRequest
 
     [FromQuery]
     public string? Search { get; set; }
-
-    [FromQuery]
-    public string? OrderBy { get; set; }
-
-    [FromQuery]
-    public bool? OrderByDesc { get; set; }
 }

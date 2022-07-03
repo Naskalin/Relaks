@@ -211,6 +211,31 @@ namespace App.Migrations
                     b.ToTable("FtsEntryInfos", null, t => t.ExcludeFromMigrations());
                 });
 
+            modelBuilder.Entity("App.Models.InfoTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("JsonTemplate")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("InfoTemplates");
+                });
+
             modelBuilder.Entity("App.Models.Structure", b =>
                 {
                     b.Property<Guid>("Id")
