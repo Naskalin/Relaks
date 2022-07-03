@@ -1,5 +1,5 @@
 ﻿<template>
-    <q-card class="profile-card">
+    <q-card class="profile-card" v-bind="$attrs">
         <deleted :deleted="entry"></deleted>
 
         <q-card-section class="q-pb-none text-center">

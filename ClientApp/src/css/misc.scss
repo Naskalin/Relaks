@@ -5,6 +5,10 @@
 .bg-my-grey {
     @include content-background-mixin
 }
+.body--light,
+.bg-my-light {
+    background: $bgColor;
+}
 // svg стрелки иначе перекрываются квазаром
 //.leader-line {
 //    z-index: 1001;
@@ -71,9 +75,6 @@ body {
 //.q-field--float .q-field__label
 //  transform: translateY(-50%) scale(0.85)
 //
-.body--light {
-    background: $bgColor;
-}
 
 .link {
     color: $themeBlack;

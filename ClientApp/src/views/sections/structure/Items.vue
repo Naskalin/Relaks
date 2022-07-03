@@ -15,6 +15,7 @@
             v-for="sItem in itemsStore.items"
             :structure-item="sItem"
             :key="sItem.id"
+            :id="sItem.id"
         />
     </q-list>
     <p v-else class="text-blue-grey-8 text-center">Группа не содержит объединений</p>
@@ -24,6 +25,7 @@
 import NewModal from './Items.New.vue';
 import EditModal from './Items.Edit.vue';
 import StructureItemSingle from './Items.Single.vue';
+
 import {useStructureItemsStore} from "./structure_items_store";
 import {useStructureStore} from "./structure_store";
 import {useStructureItemFormStore} from "./structure_items_form_store";

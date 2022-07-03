@@ -1,7 +1,5 @@
 ﻿<template>
     <soft-delete-fields v-model="store.request"/>
-    <q-input v-model="store.request.description" type="textarea" autogrow label="Описание" counter maxlength="500"/>
-    <date-field v-model="store.request.startAt" label="Существует с" :with-time="false" required/>
     <structure-select-field label="Группа #1" v-model="store.request.structureFirstId"/>
     <div class="row items-center q-col-gutter-md q-my-sm">
         <div class="col-auto">
@@ -16,6 +14,8 @@
         </div>
     </div>
     <structure-select-field label="Группа #2" v-model="store.request.structureSecondId"/>
+    <q-input v-model="store.request.description" type="textarea" autogrow label="Описание" counter maxlength="500"/>
+    <date-field v-model="store.request.startAt" label="Существует с" :with-time="false" required/>
 </template>
 
 <script setup lang="ts">

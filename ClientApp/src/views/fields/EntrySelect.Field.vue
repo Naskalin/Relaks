@@ -67,7 +67,7 @@
                 show-if-above
                 behavior="desktop"
                 bordered
-                class="body--light"
+                class="bg-my-light"
             >
                 <q-scroll-area class="fit">
                     <div class="q-pa-md">
@@ -82,7 +82,7 @@
             </q-drawer>
 
             <q-page-container>
-                <q-page class="q-pa-md body--light q-pb-xl">
+                <q-page class="q-pa-md bg-my-light q-pb-xl">
                     <entry-list-table @row-dblclick="onSelectEntry" :entry-selected-id="entrySelectedId"/>
                 </q-page>
             </q-page-container>
@@ -97,7 +97,7 @@ import {Entry} from "../../api/api_types";
 import EntryFilter from '../sections/entry/Entry.List.Filter.vue';
 import {useEntryListStore} from "../../store/entry/entry.list.table.store";
 import {apiEntry} from "../../api/rerources/api_entry";
-import EntryItem from '../components/Entry.Item.vue';
+import EntryItem from '../components/entry_item/Entry.Item.vue';
 
 const entrySelected = ref<null | Entry>(null);
 const isShow = ref(false);

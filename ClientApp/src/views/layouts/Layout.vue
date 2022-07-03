@@ -31,7 +31,7 @@
             :breakpoint="700"
             behavior="desktop"
             bordered
-            class="body--light"
+            class="bg-my-light"
         >
             <q-scroll-area class="fit">
                 <div class="q-py-lg q-px-md" style="margin-top: 51px;">
@@ -78,10 +78,10 @@
             bordered
             :width="390"
             :breakpoint="700"
-            class="body--light"
+            class="bg-my-light"
         >
             <q-scroll-area class="fit" ref="rightScrollAreaRef">
-                <div class="q-py-lg q-px-md">
+                <div class="q-pt-lg q-pb-xl q-px-md">
                     <router-view name="RightSidebar"/>
                 </div>
             </q-scroll-area>

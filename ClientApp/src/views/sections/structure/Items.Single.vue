@@ -1,25 +1,9 @@
 ﻿<template>
-    <q-menu
-        self="center right"
-        style="width: 380px"
-        req="menuPreviewRef"
-        v-model="isShowMenuPreview"
-        :target="'#js-'+structureItem.id"
-    >
-        <entry-card
-            v-if="itemsStore.previewItem"
-            :entry="itemsStore.previewItem.entry"
-            :with-edit="false"
-            @card-dblclick="val => $router.push({name: 'entry-profile', params: {entryId: val.id}})"
-        />
-    </q-menu>
     <entry-item 
+        v-bind="$attrs"
         :entry="structureItem.entry" 
-        v-bind="$attrs" 
         clickable
-        @click="showPreview"
-        :class="{'bg-deep-purple-2': isActive}"
-        :id="'js-'+structureItem.id"
+        with-preview
     >
         <template v-slot:body>
             <div v-if="structureItem.description" class="q-mt-xs">
@@ -48,21 +32,13 @@
 </template>
 
 <script setup lang="ts">
-import EntryItem from '../../components/Entry.Item.vue';
+import EntryItem from '../../components/entry_item/Entry.Item.vue';
 import {StructureItem} from "../../../api/rerources/api_structure_items";
 import {dateHelper} from "../../../utils/date_helper";
 import {useStructureItemFormStore} from "./structure_items_form_store";
 import {useStructureItemsStore} from "./structure_items_store";
-import EntryCard from '../entry/Entry.Card.vue';
-import {computed, ref} from 'vue';
-import {QMenu} from "quasar";
+import {computed} from 'vue';
 
-const isShowMenuPreview = ref(false);
-const menuPreviewRef = ref<QMenu | null>(null);
-const showPreview = () => {
-    itemsStore.previewItem = props.structureItem;
-    if (menuPreviewRef.value) menuPreviewRef.value.show();
-}
 const isActive = computed(() => itemsStore.previewItem && props.structureItem.id === itemsStore.previewItem.id)
 const props = defineProps<{
     structureItem: StructureItem
