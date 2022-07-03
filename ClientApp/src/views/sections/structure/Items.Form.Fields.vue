@@ -1,5 +1,5 @@
 ﻿<template>
-    <soft-delete-fields v-model="formStore.request"/>
+    <soft-delete-fields v-model="formStore.request" class="q-mb-md"/>
     <entry-select-field
         :entry-selected-id="formStore.request.entryId"
         @onSelectEntry="val => formStore.request.entryId = val.id"

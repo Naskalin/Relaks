@@ -1,9 +1,9 @@
 ﻿<template>
-    <div class="q-gutter-y-sm">
-        <deleted :deleted="structure"/>
-        <div class="row q-col-gutter-md items-center">
-            <div class="col q-gutter-y-sm">
-                <div class="text-h6">{{structure.title}}</div>
+    <q-card>
+        <q-card-section>
+            <deleted :deleted="structure"/>
+            <div class="q-gutter-y-sm">
+                <div style="font-size: 1.1rem">{{structure.title}}</div>
                 <div>
                     <q-icon name="las la-calendar"/>
                     <small class="label-caption q-mx-sm">с</small>
@@ -15,27 +15,25 @@
                 </div>
                 <timestamps :timestamps="structure"/>
             </div>
-            <div class="col-auto q-gutter-y-sm">
-                <div>
-                    <q-btn
-                        color="primary"
-                        outline
-                        icon="las la-edit"
-                        round
-                        @click="showEditModal"
-                        v-tooltip.left="'Изменить группу'"/>
-                </div>
-                <div>
-                    <q-btn
-                        color="primary"
-                        icon="las la-sitemap"
-                        v-tooltip.left="'Добавить подгруппу'"
-                        @click="showCreateModalForSelectedStructure"
-                        round/>
-                </div>
-            </div>
-        </div>
-    </div>
+        </q-card-section>
+        <q-card-actions align="between">
+            <q-btn
+                color="primary"
+                outline
+                icon="las la-edit"
+                label="Изменить"
+                @click="showEditModal"
+                v-tooltip.bottom="'Изменить группу'"
+            />
+            <q-btn
+                color="primary"
+                icon="las la-sitemap"
+                label="Подгруппа"
+                v-tooltip.bottom="'Добавить подгруппу'"
+                @click="showCreateModalForSelectedStructure"
+            />
+        </q-card-actions>
+    </q-card>
 </template>
 
 <script setup lang="ts">

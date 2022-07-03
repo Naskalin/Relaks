@@ -8,6 +8,7 @@ declare type StructureItemsStoreState = {
     listRequest: StructureItemListRequest
     isEnd: boolean
     isLoading: boolean
+    previewItem: null | StructureItem
 }
 export const useStructureItemsStore = defineStore('StructureItemsStore', {
     state: (): StructureItemsStoreState => {
@@ -15,6 +16,7 @@ export const useStructureItemsStore = defineStore('StructureItemsStore', {
             items: [],
             isEnd: false,
             isLoading: false,
+            previewItem: null,
             listRequest: {
                 page: 1,
                 perPage: 50,
@@ -29,7 +31,6 @@ export const useStructureItemsStore = defineStore('StructureItemsStore', {
         },
         async getItemsAsync()
         {
-            // console.log('>> getItemsAsync',  'isEnd', this.isEnd, 'isLoading', this.isLoading)
             if (this.isLoading || this.isEnd) {
                 return;
             }

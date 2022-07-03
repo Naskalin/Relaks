@@ -1,5 +1,5 @@
 ﻿<template>
-    <q-item class="q-pa-sm" v-bind="$attrs">
+    <q-item class="q-pa-sm" v-bind="$attrs" :class="{'bg-pink-1': entry.deletedAt}">
         <slot name="start"></slot>
         <q-item-section side>
             <q-avatar size="50px" color="grey-5">
@@ -18,6 +18,8 @@
 <script setup lang="ts">
 import ApiImage from './ApiImage.vue';
 import {Entry} from "../../api/api_types";
+import {dateHelper} from "../../utils/date_helper";
+
 const props = defineProps<{
     entry: Entry
 }>()

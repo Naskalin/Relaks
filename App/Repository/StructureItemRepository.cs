@@ -49,7 +49,8 @@ public class StructureItemRepository : BaseRepository<StructureItem>
         query = query.Include(x => x.Entry);
         if (req.EntryType != null)
             query = query.Where(x => x.Entry.EntryType.Equals(req.EntryType));
-        
+
+        query = query.OrderByDescending(x => x.UpdatedAt);
         if (req.Page != null && req.PerPage != null)
         {
             query = PaginateQuery(query, req);     

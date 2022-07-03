@@ -6,7 +6,7 @@
         @update:model-value="setActiveConnection"
         :icon="relationData.icon"
         :label="relationData.text"
-        :class="connectionsStore.activeConnectionId === connection.id ?  connection.arrow +' active' : connection.arrow +' bg-blue-grey-2'"
+        :class="connectionsStore.activeConnectionId === connection.id ?  connection.arrow +' active' : connection.arrow +' bg-my-grey'"
         class="connection-item"
     >
         <template v-slot:header>
@@ -43,7 +43,6 @@
                                 <q-btn
                                     @click="showEditModal"
                                     round
-                                    v-tooltip="'Изменить'"
                                     flat
                                     color="primary"
                                     icon="las la-edit"

@@ -78,9 +78,9 @@
             bordered
             :width="390"
             :breakpoint="700"
-            class="bg-grey-3"
+            class="body--light"
         >
-            <q-scroll-area class="fit">
+            <q-scroll-area class="fit" ref="rightScrollAreaRef">
                 <div class="q-py-lg q-px-md">
                     <router-view name="RightSidebar"/>
                 </div>
@@ -101,13 +101,15 @@
 
 <script setup lang="ts">
 import EntryFilter from '../sections/entry/Entry.List.Filter.vue';
-import {useQuasar} from 'quasar';
 import {ref, onMounted, nextTick, watch, computed} from 'vue';
 import {useEntryListStore} from "../../store/entry/entry.list.table.store";
 import {useRouter} from "vue-router";
 import {useLayoutStore} from "./layout_store";
 import {Entry} from "../../api/api_types";
+import {emitter} from "../event_bus";
+import {QScrollArea} from "quasar";
 
+const rightScrollAreaRef = ref<null | QScrollArea>(null);
 const layoutStore = useLayoutStore();
 const router = useRouter();
 const listFilterEl = ref<any>(null);
@@ -116,6 +118,10 @@ const scrollAreaStyles = ref({
     'margin-top': 20,
 });
 const isListRoute = computed(() => router.currentRoute.value.name === 'entry-list');
+emitter.on('rightSidebarScrollTop', () => {
+    if (!rightScrollAreaRef.value) return;
+    rightScrollAreaRef.value.setScrollPosition('vertical', 0);
+})
 watch(() => layoutStore.search, val => {
     if (val && val !== '' && !isListRoute.value) {
         router.push({name: 'entry-list'})
@@ -132,10 +138,11 @@ watch([
     await entryListStore.getEntriesAsync();
 })
 onMounted(async () => {
-    if (!listFilterEl.value) return;
-    await nextTick();
-    const filterHeight = listFilterEl.value.offsetHeight;
-    scrollAreaStyles.value['margin-top'] = filterHeight + 20;
+    if (listFilterEl.value) {
+        await nextTick();
+        const filterHeight = listFilterEl.value.offsetHeight;
+        scrollAreaStyles.value['margin-top'] = filterHeight + 20;   
+    }
 })
 const onPreviewDbClick = (entry: Entry) => {
     router.push({name: 'entry-profile', params: {entryId: entry.id}});

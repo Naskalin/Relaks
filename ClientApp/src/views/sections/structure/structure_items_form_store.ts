@@ -3,7 +3,7 @@ import {StructureItemFormRequest} from "../../../api/rerources/api_structure_ite
 
 declare type StructureItemsFormStoreState = {
     request: StructureItemFormRequest,
-    editId: string,
+    editId: string | null,
     isShowCreate: boolean,
     isShowEdit: boolean,
 }
@@ -12,7 +12,7 @@ export const useStructureItemFormStore = defineStore('StructureItemsFormStore', 
         return {
             isShowCreate: false,
             isShowEdit: false,
-            editId: '',
+            editId: null,
             request: {
                 deletedAt: null,
                 deletedReason: '',

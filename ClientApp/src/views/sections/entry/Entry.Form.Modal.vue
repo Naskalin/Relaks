@@ -50,7 +50,4 @@ const model = computed({
     get: () => props.modelValue,
     set: (val) => emit('update:modelValue', val)
 })
-// onMounted(() => {
-//     if (props.isCreate) model.value.actualStartAt = new Date().toISOString();
-// })
 </script>
