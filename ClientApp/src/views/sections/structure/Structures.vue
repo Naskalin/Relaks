@@ -34,7 +34,9 @@ import {entryMessages} from "../../../localize/messages";
 import {useEntryProfileStore} from "../../../store/entry/entry.profile.store";
 import {useStructureFormStore} from "./structure_form_store";
 import {useLayoutStore} from "../../layouts/layout_store";
+import {useEntryItemStore} from "../../components/entry_item/entry_item_store";
 
+const entryItemStore = useEntryItemStore();
 const structureFormStore = useStructureFormStore();
 const profileStore = useEntryProfileStore();
 const layoutStore = useLayoutStore();
@@ -64,6 +66,7 @@ onBeforeRouteLeave((to, from, next) => {
     connectionsStore.$reset();
     structureStore.$reset();
     itemsStore.$reset();
+    entryItemStore.$reset(); // Предпросмотр сущности, нужна рестартить иначе активный элемент остается выделенным
     layoutStore.isRightSidebar = false;
     next();
 })
