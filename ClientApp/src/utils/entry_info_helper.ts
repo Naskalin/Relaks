@@ -1,6 +1,6 @@
 ﻿import {EntryInfo, EntryInfoType} from "../api/api_types";
 
-export function filterByType(isShowDeleted: boolean | null, type: EntryInfoType, list: EntryInfo[]) {
+export function filterByType(list: EntryInfo[], type: EntryInfoType, isShowDeleted?: boolean | null) {
     return list.filter(eInfo => {
         if (eInfo.type !== type) return false;
         if (isShowDeleted === true) return eInfo.deletedAt;

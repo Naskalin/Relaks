@@ -3,7 +3,7 @@
             v-bind="$attrs"
             :class="{
                 'bg-pink-1': entry.deletedAt,
-                'bg-deep-purple-2': withPreview && store.previewEntry && store.previewEntry.id === entry.id
+                'bg-deep-purple-2': isActive
             }"
     >
         <slot name="start"></slot>
@@ -37,6 +37,10 @@
             </q-avatar>
         </q-item-section>
         <q-item-section>
+            <div class="row items-center q-gutter-x-sm text-grey-7">
+                <q-icon :name="entryMessages.entryType.icons[entry.entryType]" size="1.1rem"/>
+                <div>{{ entryMessages.entryType.names[entry.entryType] }}</div>
+            </div>
             <q-item-label>{{entry.name}}</q-item-label>
             <slot name="body"></slot>
         </q-item-section>
@@ -48,6 +52,8 @@
 import ApiImage from '../ApiImage.vue';
 import EntryCard from '../../sections/entry/Entry.Card.vue';
 import {Entry} from "../../../api/api_types";
+import {computed} from 'vue';
+import {entryMessages} from "../../../localize/messages";
 import {useEntryItemStore} from "./entry_item_store";
 
 const props = defineProps<{
@@ -57,7 +63,7 @@ const props = defineProps<{
 const emit = defineEmits<{
     (e: 'clickAvatar', val: Entry): void
 }>()
-
+const isActive = computed(() => props.withPreview && store.previewEntry && store.previewEntry.id === props.entry.id);
 const store = useEntryItemStore();
 const onClickAvatar = () => {
     if (props.withPreview) store.previewEntry = props.entry;

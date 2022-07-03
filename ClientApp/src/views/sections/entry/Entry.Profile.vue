@@ -4,7 +4,7 @@
             v-for="(label, routeName) in entryMessages.profile.tabs(profileStore.entry.entryType)"
             :key="routeName"
             :label="label"
-            :to="{ name: routeName, params: {entryId: entryId} }"
+            :to="{ name: routeName, params: {entryId: profileStore.entry.id} }"
         />
     </q-tabs>
     <q-separator/>
@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted} from "vue";
+import {ref, watch} from "vue";
 import {useRoute} from 'vue-router'
 import {useEntryProfileStore} from "../../../store/entry/entry.profile.store";
 import {entryMessages} from "../../../localize/messages";
@@ -21,11 +21,8 @@ import {entryMessages} from "../../../localize/messages";
 const profileStore = useEntryProfileStore();
 
 const route = useRoute();
-const entryId = route.params.entryId as string;
-
-onMounted(async () => {
-    // initialize entry
-    await profileStore.getEntry(entryId);
-})
+watch(() => route.params.entryId, async (val: any) => {
+    if (val && val !== '' && typeof val === 'string') await profileStore.getEntry(val);
+}, {immediate: true})
 
 </script>

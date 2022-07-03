@@ -117,7 +117,7 @@
 </template>
 
 <script setup lang="ts">
-import {watch, ref, withDefaults, computed} from "vue";
+import {watch, ref, computed} from "vue";
 import EntryInfoFormModal from '../entry_info/EntryInfo.Form.Modal.vue';
 import EntryInfoItem from '../entry_info/EntryInfo.Item.vue';
 import {apiEntryInfo} from "../../../api/rerources/api_entry_info";
@@ -127,15 +127,11 @@ import {EntryInfo, EntryInfoType} from "../../../api/api_types";
 import {filterByType} from "../../../utils/entry_info_helper";
 import {useEntryInfoCreateStore} from "../../../store/entry_info/entryInfo.create.store";
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
     entryId: string,
     withEdit?: boolean,
-    withDeleted?: boolean,
-    isShowDeleted: boolean | null
-}>(), {
-    withDeleted: false,
-    isShowDeleted: false,
-});
+}>()
+const isShowDeleted = ref<null | boolean>(false);
 const emit = defineEmits<{
     (e: 'clickEditEntryBtn'): void
 }>()
@@ -196,11 +192,11 @@ const onRecover = async () => {
     await saveEditForm();
 }
 
-const notes = computed(() => filterByType(props.isShowDeleted, 'NOTE', allInfos.value));
-const emails = computed(() => filterByType(props.isShowDeleted, 'EMAIL', allInfos.value));
-const urls = computed(() => filterByType(props.isShowDeleted, 'URL', allInfos.value));
-const phones = computed(() => filterByType(props.isShowDeleted, 'PHONE', allInfos.value));
-const dates = computed(() => filterByType(props.isShowDeleted, 'DATE', allInfos.value));
+const notes = computed(() => filterByType(allInfos.value, 'NOTE', isShowDeleted.value));
+const emails = computed(() => filterByType(allInfos.value, 'EMAIL', isShowDeleted.value));
+const urls = computed(() => filterByType(allInfos.value, 'URL', isShowDeleted.value));
+const phones = computed(() => filterByType(allInfos.value, 'PHONE', isShowDeleted.value));
+const dates = computed(() => filterByType(allInfos.value, 'DATE', isShowDeleted.value));
 
 watch(() => props.entryId, async () => {
     await getAllAsync();

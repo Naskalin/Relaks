@@ -5,7 +5,7 @@
         <q-card-section class="q-pb-none text-center">
             <q-avatar @dblclick="emit('card-dblclick', entry)"
                       @click="isShowAvatarSelect = true"
-                      :class="{'cursor-pointer': withEdit}"
+                      :class="{'cursor-pointer': withEdit === true}"
                       size="180px"
                       color="grey-5">
                 <api-image v-if="entry.avatar" :file-id="entry.avatar" image-filter="square-medium"/>
@@ -29,7 +29,6 @@
         <entry-card-infos 
             :entry-id="entry.id"
             :with-edit="withEdit"
-            :is-show-deleted="isShowDeleted"
             @click-edit-entry-btn="editStore.isShowEditModal = true"
         />
 
@@ -105,7 +104,6 @@ import {apiMappers} from "../../../api/api_mappers";
 const editStore = useEntryEditStore();
 // const isShowEditModal = ref(false);
 const isShowAvatarSelect = ref(false);
-const isShowDeleted = ref<boolean | null>(false);
 
 const props = withDefaults(defineProps<{
     entry: Entry,
