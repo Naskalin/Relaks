@@ -34,7 +34,7 @@
         <entry-info-custom-form @delete="onDelete" @save="onUpdate"/>
     </div>
     <template v-else-if="aboutStore.customs.length">
-        <q-card v-for="eInfo in aboutStore.customs" class="q-mb-lg">
+        <q-card v-for="eInfo in aboutStore.customs" class="q-mb-lg" :id="'eInfo_custom_'+eInfo.id">
             <q-card-section class="q-pb-none">
                 <div class="row justify-between">
                     <div class="col">
@@ -88,8 +88,9 @@ import {useEntryInfoCustomFormStore} from "./entry_info_custom/entry_info_custom
 import {apiEntryInfo} from "../../../api/rerources/api_entry_info";
 import {useEntryAboutStore} from "./entry_about_store";
 import {onMounted} from "vue";
+import {useLayoutStore} from "../../layouts/layout_store";
 
-
+const layoutStore = useLayoutStore();
 const entryId = (useRoute()).params.entryId as string;
 const profileStore = useEntryProfileStore();
 const aboutStore = useEntryAboutStore();
@@ -132,6 +133,7 @@ const onUpdate = async () => {
     }
 }
 onMounted(async () => {
+    layoutStore.isRightSidebar = true;
     await aboutStore.getItems(entryId);
 })
 </script>

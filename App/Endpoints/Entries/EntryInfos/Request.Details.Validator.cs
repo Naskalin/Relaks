@@ -64,7 +64,7 @@ public class RequestDetailsValidator : AbstractValidator<EntryInfoRequestDetails
                     groups.RuleForEach(x => x.Items).ChildRules(items =>
                     {
                         items.RuleFor(x => x.Key).NotNull().Length(0, 250);
-                        items.RuleFor(x => x.Value).NotNull().Length(1, 250);
+                        items.RuleFor(x => x.Value).NotNull().Length(1, 1000);
                     });
                 });
         });
