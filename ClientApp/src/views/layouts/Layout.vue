@@ -1,20 +1,20 @@
 ﻿<template>
-<!--    <q-layout view="lHh Lpr lFf"  class="shadow-2 rounded-borders">-->
     <q-layout view="lhh LpR lff"  class="shadow-2 rounded-borders">
         <q-header bordered reveal :reveal-offset="9999" class="bg-secondary text-white fixed-top">
             <q-toolbar>
                 <q-tabs>
-                    <q-route-tab label="Объединения" to="/entries"/>
+                    <q-route-tab
+                        v-tooltip="layoutStore.isBlockLeavingMessage"
+                        :disable="layoutStore.isBlockLeaving"
+                        label="Объединения" to="/entries"/>
                 </q-tabs>
                 <q-space/>
-<!--                <q-btn flat round dense icon="info" to="/" />-->
 
                 <q-tabs>
-<!--                    <q-route-tab icon="info" to="/" exact>-->
-<!--                        <q-badge color="primary" text-color="white" floating>2</q-badge>-->
-<!--                    </q-route-tab>-->
                     <q-route-tab
                         to="/"
+                        v-tooltip="layoutStore.isBlockLeavingMessage"
+                        :disable="layoutStore.isBlockLeaving"
                         alert-icon="las la-info-circle text-positive"
                         label="Relaks"
                         exact
@@ -50,6 +50,7 @@
                     <div class="col">
                         <q-input
                             v-model="layoutStore.search"
+                            :disable="layoutStore.isBlockLeaving"
                             :autofocus="isListRoute"
                             debounce="250"
                             placeholder="Поиск объединения..."
@@ -59,6 +60,7 @@
                             dark
                             borderless
                             dense
+                            v-tooltip="layoutStore.isBlockLeavingMessage"
                         >
                             <template v-slot:prepend>
                                 <q-icon name="las la-search text-grey-4"/>

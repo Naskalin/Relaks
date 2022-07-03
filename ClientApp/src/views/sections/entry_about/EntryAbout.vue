@@ -45,7 +45,7 @@
                             @click="formStore.model = Object.assign({}, eInfo); formStore.status = 'edit'"
                             round
                             icon="las la-edit"
-                            color="secondary"
+                            color="primary"
                             outline
                             v-tooltip="'Изменить'"/>
                     </div>
@@ -87,7 +87,7 @@ import {useRoute} from "vue-router";
 import {useEntryInfoCustomFormStore} from "./entry_info_custom/entry_info_custom_form_store";
 import {apiEntryInfo} from "../../../api/rerources/api_entry_info";
 import {useEntryAboutStore} from "./entry_about_store";
-import {onMounted} from "vue";
+import {onMounted, watch} from "vue";
 import {useLayoutStore} from "../../layouts/layout_store";
 
 const layoutStore = useLayoutStore();
@@ -135,6 +135,14 @@ const onUpdate = async () => {
 onMounted(async () => {
     layoutStore.isRightSidebar = true;
     await aboutStore.getItems(entryId);
+})
+watch(() => formStore.status, val => {
+    if (val) {
+        layoutStore.isBlockLeaving = true;
+        return;
+    }
+
+    layoutStore.isBlockLeaving = false;
 })
 </script>
 

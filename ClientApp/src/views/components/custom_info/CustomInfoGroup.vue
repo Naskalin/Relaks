@@ -26,11 +26,11 @@
         </div>
         <div class="col-auto">
             <q-btn
-                v-if="!isMinimize"
+                v-if="!isMinimize && groupsLength > 1"
                 @click="emit('delete')"
                 color="negative" 
                 icon="las la-trash"
-                v-tooltip="'Удалить группу'"
+                v-tooltip.right="'Удалить группу'"
                 outline
                 round
                 />
@@ -49,14 +49,14 @@
                         <q-btn icon="las la-random" color="secondary" class="draggable-btn" outline round size="sm" v-tooltip.left="'Переместить строку'"/>
                     </td>
                     <td style="width: 400px">
-                        <q-input v-model="groupModel.items[index].key" filled counter dense maxlength="250" autogrow>
+                        <q-input v-model="groupModel.items[index].key" placeholder="Ключ" filled counter dense maxlength="250" autogrow>
                             <template v-slot:prepend>
                                 <q-icon name="las la-key" />
                             </template>
                         </q-input>
                     </td>
                     <td>
-                        <q-input v-model="groupModel.items[index].value" required="required" filled counter dense maxlength="1000" autogrow>
+                        <q-input v-model="groupModel.items[index].value" placeholder="Значение" required="required" filled counter dense maxlength="1000" autogrow>
                             <template v-slot:prepend>
                                 <q-icon name="las la-comment" />
                             </template>
@@ -66,7 +66,7 @@
                         <q-btn
                             v-if="groupModel.items.length > 1"
                             @click="removeItem(index)" 
-                            v-tooltip="'Удалить строку'" 
+                            v-tooltip.right="'Удалить строку'" 
                             icon="las la-times" 
                             color="negative" 
                             outline 
@@ -90,7 +90,8 @@ import {randomId} from "../../../utils/file_helper";
 
 const props = defineProps<{
     modelValue: CustomInfoGroup,
-    isMinimize: boolean
+    isMinimize: boolean,
+    groupsLength: number
 }>();
 const emit = defineEmits<{
     (e: 'update:modelValue', val: CustomInfoGroup): void,

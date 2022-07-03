@@ -3,7 +3,7 @@
         <div class="q-gutter-y-md">
             <div>
                 <q-input
-                    v-if="isShowSearch"
+                    v-if="isShowSearch === true"
                     v-model="model.search"
                     debounce="250"
                     placeholder="Поиск объединения..."

@@ -22,6 +22,7 @@
                     <custom-info-group 
                         v-model="model.groups[index]"
                         :is-minimize="isMinimizeGroups"
+                        :groups-length="model.groups.length"
                         @delete="removeGroup(index)"
                     />
                 </q-card-section>
