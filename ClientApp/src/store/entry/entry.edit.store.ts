@@ -5,10 +5,12 @@ import {EntryUpdateRequest} from "../../api/api_types";
 declare type EntryEditStoreState = {
     model: null | EntryUpdateRequest,
     isLoading: boolean,
+    isShowEditModal: boolean
 }
 export const useEntryEditStore = defineStore('EntryEditStore', {
     state: (): EntryEditStoreState => {
         return {
+            isShowEditModal: false,
             model: null,
             isLoading: false,
         }

@@ -1,6 +1,6 @@
 ﻿<template>
     <q-card-section v-if="withEdit" class="q-gutter-x-sm text-center flex justify-center">
-        <q-btn round @click="isShowEditModal = true" v-tooltip="'Изменить объединение'" outline color="primary" icon="las la-edit"/>
+        <q-btn round @click="emit('clickEditEntryBtn')" v-tooltip="'Изменить объединение'" outline color="primary" icon="las la-edit"/>
         <q-separator vertical color="grey-5"/>
         <q-btn round @click="showCreateEntryInfoModal('PHONE')" v-tooltip="'Добавить телефон'" color="primary" icon="las la-phone"/>
         <q-btn round @click="showCreateEntryInfoModal('EMAIL')" v-tooltip="'Добавить e-mail'" color="primary" icon="las la-envelope"/>
@@ -136,6 +136,9 @@ const props = withDefaults(defineProps<{
     withDeleted: false,
     isShowDeleted: false,
 });
+const emit = defineEmits<{
+    (e: 'clickEditEntryBtn'): void
+}>()
 const isShowCreateModal = ref(false);
 const isListLoading = ref(false);
 const allInfos = ref<EntryInfo[]>([])

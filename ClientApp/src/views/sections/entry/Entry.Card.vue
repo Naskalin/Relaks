@@ -30,6 +30,7 @@
             :entry-id="entry.id"
             :with-edit="withEdit"
             :is-show-deleted="isShowDeleted"
+            @click-edit-entry-btn="editStore.isShowEditModal = true"
         />
 
         <template v-if="entry.startAt || entry.endAt">
@@ -75,7 +76,7 @@
         :is-loading="editStore.isLoading"
         :is-create="false"
         v-model="editStore.model"
-        v-model:is-show="isShowEditModal"
+        v-model:is-show="editStore.isShowEditModal"
         @submit="updateEntry"
     />
 
@@ -102,7 +103,7 @@ import {useEntryEditStore} from "../../../store/entry/entry.edit.store";
 import {apiMappers} from "../../../api/api_mappers";
 
 const editStore = useEntryEditStore();
-const isShowEditModal = ref(false);
+// const isShowEditModal = ref(false);
 const isShowAvatarSelect = ref(false);
 const isShowDeleted = ref<boolean | null>(false);
 
@@ -115,7 +116,7 @@ const props = withDefaults(defineProps<{
 
 if (props.withEdit) {
     watch([
-        () => isShowEditModal.value,
+        () => editStore.isShowEditModal,
         () => isShowAvatarSelect.value,
     ], (val) => {
         if (val) {
@@ -132,17 +133,10 @@ const emit = defineEmits<{
 const updateEntry = async () => {
     await editStore.updateEntry(props.entry.id);
     editStore.$reset();
-    isShowEditModal.value = false;
+    editStore.isShowEditModal = false;
 
     emit('update-entry', props.entry.id);
 }
-
-// Добавление entryText email/phone/url
-
-
-// card contacts
-// const eInfoListStore = useEntryInfoListStore();
-
 // avatar select
 const onFileSelect = async (file: FileModel) => {
     if (!editStore.model) throw new Error('onFileSelect => EditStore Entry model is null');
