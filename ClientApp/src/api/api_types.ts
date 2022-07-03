@@ -58,7 +58,7 @@ export declare type EntryInfoFormRequest = {
     info: any
 } & SoftDeletableType
 export declare type EntryInfoListRequest = {
-    type?: EntryInfoType | EntryInfoType[] | null
+    type?: EntryInfoType[]
 } & ApiListRequest
 
 export declare type EntryInfo = {

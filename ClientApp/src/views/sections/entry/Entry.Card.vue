@@ -1,5 +1,5 @@
 ﻿<template>
-    <q-card class="profile-card" v-bind="$attrs">
+    <q-card v-bind="$attrs">
         <deleted :deleted="entry"></deleted>
 
         <q-card-section class="q-pb-none text-center">
@@ -13,7 +13,7 @@
                 <q-tooltip v-if="withEdit" class="bg-primary">Изменить</q-tooltip>
             </q-avatar>
         </q-card-section>
-
+        
         <q-card-section class="q-pb-xs q-gutter-y-sm">
             <div class="text-h6 text-center">{{ entry.name }}</div>
             <div v-if="entry.description" class="text-subtitle2 text-center">{{ entry.description }}</div>
@@ -24,29 +24,6 @@
                 <strong>{{ entry.reputation }}</strong>
                 <q-icon name="star" size="1.5em"/>
             </div>
-        </q-card-section>
-
-        <q-card-section v-if="withEdit" class="q-gutter-x-sm text-center flex justify-center">
-            <q-btn round @click="isShowEditModal = true" v-tooltip="'Изменить объединение'" outline color="primary" icon="las la-edit"/>
-            <q-separator vertical color="grey-5"/>
-            <q-btn round @click="showCreateEntryInfoModal('PHONE')" v-tooltip="'Добавить телефон'" color="primary" icon="las la-phone"/>
-            <q-btn round @click="showCreateEntryInfoModal('EMAIL')" v-tooltip="'Добавить e-mail'" color="primary" icon="las la-envelope"/>
-            <q-btn round @click="showCreateEntryInfoModal('URL')" v-tooltip="'Добавить ссылку'" color="primary" icon="las la-link"/>
-            <q-btn round @click="showCreateEntryInfoModal('DATE')" v-tooltip="'Добавить дату'" color="primary" icon="las la-calendar"/>
-            <q-btn round @click="showCreateEntryInfoModal('NOTE')" v-tooltip="'Добавить заметку'" color="primary" icon="las la-file-alt"/>
-        </q-card-section>
-
-        <q-card-section class="text-center">
-            <q-btn-toggle
-                v-model="isShowDeleted"
-                toggle-color="secondary"
-                size="sm"
-                :options="[
-          {label: 'Вся информация', value: null},
-          {label: 'Актуальная', value: false},
-          {label: 'Архивная', value: true}
-        ]"
-            />
         </q-card-section>
 
         <entry-card-infos 
@@ -102,18 +79,6 @@
         @submit="updateEntry"
     />
 
-    <entry-info-form-modal
-        v-if="withEdit"
-        :label="'Добавление: ' + entryInfoMessages.val.names[entryInfoFormType]"
-        :is-create="true"
-        :entry-info-type="entryInfoFormType"
-        :is-loading="entryInfoCreateStore.isLoading"
-        v-model:is-show="isShowCreateModal"
-        v-model="entryInfoCreateStore.request"
-        btn-title="Добавить"
-        @submit="createEntryInfo"
-    />
-
     <file-select-modal
         :entry-id="entry.id"
         label="Выбор аватара"
@@ -126,20 +91,15 @@
 <script setup lang="ts">
 import EntryCardInfos from './Entry.Card.Infos.vue';
 import EntryFormModal from './Entry.Form.Modal.vue';
-import EntryInfoFormModal from '../entry_info/EntryInfo.Form.Modal.vue';
 import FileSelectModal from '../../fields/File.Select.Modal.vue';
 import Deleted from '../../components/Deleted.vue';
 import ApiImage from '../../components/ApiImage.vue';
-
-import {useEntryInfoCreateStore} from "../../../store/entry_info/entryInfo.create.store";
 import {withDefaults, ref, watch, onMounted} from "vue";
-import {entryMessages, entryInfoMessages} from "../../../localize/messages";
+import {entryMessages} from "../../../localize/messages";
 import {Entry, FileModel} from "../../../api/api_types";
 import {dateHelper} from "../../../utils/date_helper";
 import {useEntryEditStore} from "../../../store/entry/entry.edit.store";
 import {apiMappers} from "../../../api/api_mappers";
-import {EntryInfoType} from "../../../api/api_types";
-import {useEntryInfoListStore} from "../../../store/entry_info/entryInfo.list.store";
 
 const editStore = useEntryEditStore();
 const isShowEditModal = ref(false);
@@ -178,30 +138,10 @@ const updateEntry = async () => {
 }
 
 // Добавление entryText email/phone/url
-const entryInfoCreateStore = useEntryInfoCreateStore();
-const isShowCreateModal = ref(false);
-const entryInfoFormType = ref<EntryInfoType>('PHONE');
-const showCreateEntryInfoModal = (type: EntryInfoType) => {
-    if (props.withEdit) {
-        entryInfoFormType.value = type;
-        isShowCreateModal.value = true
-        
-        entryInfoCreateStore.request.type = type;
-        entryInfoCreateStore.resetRequestInfo(type);
-    }
-}
+
 
 // card contacts
-const eInfoListStore = useEntryInfoListStore();
-const createEntryInfo = async () => {
-    // Создаём entryInfo
-    await entryInfoCreateStore.create(props.entry.id)
-
-    // update card contacts list
-    await eInfoListStore.getAll(props.entry.id);
-    isShowCreateModal.value = false;
-    entryInfoCreateStore.$reset();
-}
+// const eInfoListStore = useEntryInfoListStore();
 
 // avatar select
 const onFileSelect = async (file: FileModel) => {
@@ -212,25 +152,8 @@ const onFileSelect = async (file: FileModel) => {
     // await getAvatar(file.id);
 }
 
-// avatar
-// const avatarSrc = ref<string | null>(null);
-// const getAvatar = async (fileId: string) => {
-//     const resp = await apiFiles.download({
-//         fileId: fileId,
-//         imageFilter: 'square-medium'
-//     });
-//
-//     avatarSrc.value = URL.createObjectURL(resp.data);
-// }
-// onMounted(async () => {
-//     if (props.entry.avatar) {
-//         await getAvatar(props.entry.avatar);
-//     }
-// })
-
 onMounted(() => {
     editStore.$reset();
-    entryInfoCreateStore.$reset();
 })
 
 </script>

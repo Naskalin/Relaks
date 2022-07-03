@@ -23,10 +23,6 @@ public class EntryInfoRepository : BaseRepository<EntryInfo>
         {
             var types = request.Type.Select(x => x.ToUpper()).ToList();
             query = query.Where(x => types.Contains(x.Type));
-            // if (request.Type is string reqType)
-            //     query = query.Where(x => x.Type == reqType);
-            // else if (request.Type is string[] reqTypes)
-            //     query = query.Where(x => reqTypes.Contains(x.Type));
         }
 
         if (request.IsDeleted != null)
