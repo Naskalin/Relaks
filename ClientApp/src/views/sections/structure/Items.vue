@@ -10,14 +10,20 @@
             <q-btn @click="showNewModal" icon="las la-users" round color="primary" v-tooltip.left="'Добавить объединение'"/>
         </div>
     </div>
-    <q-list v-if="itemsStore.items.length" bordered separator class="bg-my-grey">
-        <structure-item-single 
-            v-for="sItem in itemsStore.items"
-            :structure-item="sItem"
-            :key="sItem.id"
-            :id="sItem.id"
-        />
-    </q-list>
+    <div v-if="itemsStore.items.length">
+        <p style="font-size: .85rem" class="text-center">
+            <q-icon name="las la-info-circle"/>
+            Клик на аватар откроет предпросмотр объединения.
+        </p>
+        <q-list bordered separator class="bg-my-grey">
+            <structure-item-single
+                v-for="sItem in itemsStore.items"
+                :structure-item="sItem"
+                :key="sItem.id"
+                :id="sItem.id"
+            />
+        </q-list>
+    </div>
     <p v-else class="text-blue-grey-8 text-center">Группа не содержит объединений</p>
 </template>
 
