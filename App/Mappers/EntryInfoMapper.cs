@@ -11,6 +11,7 @@ public static class EntryInfoMapper
     {
         details.SoftDeleteMapTo(eInfo);
         eInfo.Title = details.Title.Trim();
+        eInfo.IsFavorite = details.IsFavorite;
         eInfo.UpdatedAt = DateTime.UtcNow;
 
         switch (eInfo.Type.ToUpper())

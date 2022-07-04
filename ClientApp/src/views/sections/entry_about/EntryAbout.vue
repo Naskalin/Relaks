@@ -34,61 +34,81 @@
         <entry-info-custom-form @delete="onDelete" @save="onUpdate"/>
     </div>
     <template v-else-if="aboutStore.customs.length">
-        <q-card v-for="eInfo in aboutStore.customs" class="q-mb-xl" :id="'eInfo_custom_'+eInfo.id">
-            <q-card-section>
-                <div class="row justify-between items-center q-col-gutter-md">
-                    <div class="col">
-                        <div class="text-h6">{{eInfo.title}}</div>
-                    </div>
-                    <div class="col-auto">
-                        <q-btn
-                            @click="formStore.model = Object.assign({}, eInfo); formStore.status = 'edit'"
-                            round
-                            icon="las la-edit"
-                            color="primary"
-                            outline
-                            v-tooltip="'Изменить'"/>
-                    </div>
-                </div>
-            </q-card-section>
-            <q-separator/>
-            <q-card-section>
-                <div class="groups q-gutter-y-lg">
-                    <div v-for="group in eInfo.info.groups">
-                        <div v-if="group.title" class="q-mb-md">
-                            <q-icon name="las la-object-ungroup" color="grey" class="q-mr-xs"/>
-                            <b>{{group.title}}</b>
-                        </div>
-                        <q-markup-table flat bordered separator="cell" class="custom-table">
-                            <tbody>
-                            <tr v-for="item in group.items" class="q-tr--no-hover">
-                                <td v-if="item.key">
-                                    <q-icon name="las la-key" color="grey" class="q-mr-xs"/>
-                                    <span class="">{{item.key}}</span>
-                                </td>
-                                <td :colspan="item.key ? 1 : 2">
-                                    <q-icon name="las la-comment" color="grey" class="q-mr-xs"/>
-                                    {{item.value}}
-                                </td>
-                            </tr>
-                            </tbody>
-                        </q-markup-table>
-                    </div>
-                </div>
-            </q-card-section>
-            <q-separator/>
-            <q-card-actions align="between" class="q-px-md">
-                <div class="q-gutter-x-xs">
-                    <timestamps :timestamps="eInfo" stroke/>
-                </div>
+        <custom-info 
+            v-for="eInfo in aboutStore.customs"
+            :timestamps="eInfo" 
+            :custom-info="eInfo.info"
+            :header-title="eInfo.title"
+            :key="'eInfo_custom_'+eInfo.id"
+            :id="'eInfo_custom_'+eInfo.id"
+            class="q-mb-xl"
+            hide-keys
+            @clickChangeBtn="formStore.model = Object.assign({}, eInfo); formStore.status = 'edit'"
+        >
+            <template v-slot:card-actions>
                 <q-btn
                     size="sm"
                     label="В шаблон"
                     icon-right="las la-share-square"
                     v-tooltip="'Добавить шаблон на основе набора данных'"
                     color="primary"/>
-            </q-card-actions>
-        </q-card>
+            </template>
+        </custom-info>
+<!--        <q-card v-for="eInfo in aboutStore.customs" class="q-mb-xl" :id="'eInfo_custom_'+eInfo.id">-->
+<!--            <q-card-section>-->
+<!--                <div class="row justify-between items-center q-col-gutter-md">-->
+<!--                    <div class="col">-->
+<!--                        <div class="text-h6">{{eInfo.title}}</div>-->
+<!--                    </div>-->
+<!--                    <div class="col-auto">-->
+<!--                        <q-btn-->
+<!--                            @click="formStore.model = Object.assign({}, eInfo); formStore.status = 'edit'"-->
+<!--                            round-->
+<!--                            icon="las la-edit"-->
+<!--                            color="primary"-->
+<!--                            outline-->
+<!--                            v-tooltip="'Изменить'"/>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </q-card-section>-->
+<!--            <q-separator/>-->
+<!--            <q-card-section>-->
+<!--                <div class="groups q-gutter-y-lg">-->
+<!--                    <div v-for="group in eInfo.info.groups">-->
+<!--                        <div v-if="group.title" class="q-mb-md">-->
+<!--                            <q-icon name="las la-object-ungroup" color="grey" class="q-mr-xs"/>-->
+<!--                            <b>{{group.title}}</b>-->
+<!--                        </div>-->
+<!--                        <q-markup-table flat bordered separator="cell" class="custom-table">-->
+<!--                            <tbody>-->
+<!--                            <tr v-for="item in group.items" class="q-tr&#45;&#45;no-hover">-->
+<!--                                <td v-if="item.key">-->
+<!--                                    <q-icon name="las la-key" color="grey" class="q-mr-xs"/>-->
+<!--                                    <span class="">{{item.key}}</span>-->
+<!--                                </td>-->
+<!--                                <td :colspan="item.key ? 1 : 2">-->
+<!--                                    <q-icon name="las la-comment" color="grey" class="q-mr-xs"/>-->
+<!--                                    {{item.value}}-->
+<!--                                </td>-->
+<!--                            </tr>-->
+<!--                            </tbody>-->
+<!--                        </q-markup-table>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </q-card-section>-->
+<!--            <q-separator/>-->
+<!--            <q-card-actions align="between" class="q-px-md">-->
+<!--                <div class="q-gutter-x-xs">-->
+<!--                    <timestamps :timestamps="eInfo" stroke/>-->
+<!--                </div>-->
+<!--                <q-btn-->
+<!--                    size="sm"-->
+<!--                    label="В шаблон"-->
+<!--                    icon-right="las la-share-square"-->
+<!--                    v-tooltip="'Добавить шаблон на основе набора данных'"-->
+<!--                    color="primary"/>-->
+<!--            </q-card-actions>-->
+<!--        </q-card>-->
     </template>
 </template>
 
@@ -103,6 +123,7 @@ import {apiEntryInfo} from "../../../api/rerources/api_entry_info";
 import {useEntryAboutStore} from "./entry_about_store";
 import {onMounted, watch} from "vue";
 import {useLayoutStore} from "../../layouts/layout_store";
+import CustomInfo from '../../components/custom_info/CustomInfo.vue';
 
 const layoutStore = useLayoutStore();
 const entryId = (useRoute()).params.entryId as string;
@@ -163,13 +184,3 @@ onBeforeRouteLeave((to, from, next) => {
     next();
 })
 </script>
-
-<style lang="scss" scoped>
-    .custom-table {
-        td {
-            white-space: normal;
-            text-align: left;
-            font-size: 15px !important;
-        }
-    }
-</style>

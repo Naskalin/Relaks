@@ -1,6 +1,6 @@
 ﻿<template>
     <q-form @submit.prevent="val => emit('save', val)">
-        <q-input v-model="formStore.model.title" filled label="Название набора данных" counter maxlength="250"/>
+        <q-input v-model="formStore.model.title" filled label="Название набора данных" autogrow counter maxlength="250"/>
         <custom-info-fields v-model="formStore.model.info" v-bind="$attrs"/>
     </q-form>
 </template>

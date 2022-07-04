@@ -18,7 +18,7 @@
                    color="positive"/>
         </div>
         <div class="col">
-            <q-input v-model="groupModel.title" filled label="Название группы" counter maxlength="250">
+            <q-input v-model="groupModel.title" filled label="Название группы" autogrow counter maxlength="250">
                 <template v-slot:prepend>
                     <q-icon name="las la-object-ungroup"/>
                 </template>

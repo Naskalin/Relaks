@@ -20,5 +20,7 @@ export const useLayoutStore = defineStore('LayoutStore', {
             ? 'Поиск и навигация недоступны. Завершите явно добавление/изменение данных.'
             : ''
     },
-    actions: {}
+    actions: {
+        
+    }
 })

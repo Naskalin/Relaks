@@ -84,6 +84,9 @@ namespace App.Migrations
                     b.Property<Guid>("EntryId")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsFavorite")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");

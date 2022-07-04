@@ -48,7 +48,7 @@ public class RequestDetailsValidator : AbstractValidator<EntryInfoRequestDetails
             RuleFor(x => x.Url()!.Url)
                 .NotEmpty()
                 .Must(uri => Uri.TryCreate(uri, UriKind.Absolute, out _))
-                .WithMessage("Здесь нужен абсолютный (полный) url.")
+                .WithMessage("Здесь нужен абсолютный url, например: https://ya.ru")
                 ;
         });
         
@@ -61,15 +61,23 @@ public class RequestDetailsValidator : AbstractValidator<EntryInfoRequestDetails
                 {
                     groups.RuleFor(x => x.Title).NotNull().Length(0, 250);
                     groups.RuleForEach(x => x.Items).NotEmpty();
-                    groups.RuleForEach(x => x.Items).ChildRules(items =>
+                    groups.RuleForEach(x => x.Items).ChildRules(item =>
                     {
-                        items.RuleFor(x => x.Key).NotNull().Length(0, 250);
-                        items.RuleFor(x => x.Value).NotNull().Length(1, 1000);
+                        item.RuleFor(x => x.Key).NotNull().Length(0, 250);
+                        item.RuleFor(x => x.Value).NotNull().Length(0, 1000);
+                        item.RuleFor(x => x).Must((_, row) => IsOneNotEmpty(row))
+                            .WithMessage("Вы не можете сохранить пустую строку, ключ или значение должны быть заполнены.");
                     });
                 });
         });
     }
 
+    // Хотя бы один не пустой, иначе будут просто пустые строки
+    private bool IsOneNotEmpty(CustomInfoItem item)
+    {
+        return !String.IsNullOrEmpty(item.Key) || !String.IsNullOrEmpty(item.Value);
+    }
+    
     private bool IsPhoneValid(string number, string region)
     {
         try

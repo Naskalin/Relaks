@@ -19,6 +19,7 @@ public class EntryInfo : BaseEntity, ITimestampResource, ISoftDelete, IInfoData,
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public string Title { get; set; } = null!;
+    public bool IsFavorite { get; set; }
 
     public DateTime? DeletedAt { get; set; }
     public string DeletedReason { get; set; } = null!;
