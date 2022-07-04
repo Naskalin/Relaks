@@ -7,9 +7,6 @@
                 clickable 
                 @click="onClickItem(eInfo)"
             >
-                <q-item-section avatar>
-                    <q-icon name="las la-hand-point-right" />
-                </q-item-section>
                 <q-item-section class="q-pr-none">
                     <q-item-label :lines="3">{{ getCustomTitle(eInfo) }}</q-item-label>
                 </q-item-section>
@@ -17,7 +14,7 @@
                     <q-btn 
                         v-tooltip="eInfo.isFavorite ? 'Убрать из избранного': 'Добавить в избранное'" 
                         icon="star" 
-                        :color="eInfo.isFavorite ? 'primary' : 'secondary'" 
+                        :color="eInfo.isFavorite ? 'secondary' : 'bg-blue-grey-3'" 
                         round 
                         :flat="!eInfo.isFavorite"
                         :outline="eInfo.isFavorite"

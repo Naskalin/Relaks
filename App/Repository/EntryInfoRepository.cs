@@ -34,14 +34,16 @@ public class EntryInfoRepository : BaseRepository<EntryInfo>
         //                              || EF.Functions.Like(x.Email, "%" + request.Search + "%")
         //                              || EF.Functions.Like(x.DeletedReason, "%" + request.Search + "%")
         //     );
-
+        
         if (!string.IsNullOrEmpty(deletableRequest.OrderBy))
         {
             query = query.OrderBy(deletableRequest.OrderBy, deletableRequest.OrderByDesc ?? false);
         }
         else
         {
-            query = query.OrderByDescending(x => x.UpdatedAt);
+            query = query
+                .OrderByDescending(x => x.IsFavorite)
+                .ThenByDescending(x => x.UpdatedAt);
         }
         
         if (deletableRequest.Page != null && deletableRequest.PerPage != null)
