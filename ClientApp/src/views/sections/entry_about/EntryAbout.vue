@@ -34,9 +34,9 @@
         <entry-info-custom-form @delete="onDelete" @save="onUpdate"/>
     </div>
     <template v-else-if="aboutStore.customs.length">
-        <q-card v-for="eInfo in aboutStore.customs" class="q-mb-lg" :id="'eInfo_custom_'+eInfo.id">
-            <q-card-section class="q-pb-none">
-                <div class="row justify-between">
+        <q-card v-for="eInfo in aboutStore.customs" class="q-mb-xl" :id="'eInfo_custom_'+eInfo.id">
+            <q-card-section>
+                <div class="row justify-between items-center q-col-gutter-md">
                     <div class="col">
                         <div class="text-h6">{{eInfo.title}}</div>
                     </div>
@@ -51,9 +51,10 @@
                     </div>
                 </div>
             </q-card-section>
+            <q-separator/>
             <q-card-section>
-                <div class="groups">
-                    <div v-for="group in eInfo.info.groups" class="q-mb-lg">
+                <div class="groups q-gutter-y-lg">
+                    <div v-for="group in eInfo.info.groups">
                         <div v-if="group.title" class="q-mb-md">
                             <q-icon name="las la-object-ungroup" color="grey" class="q-mr-xs"/>
                             <b>{{group.title}}</b>
@@ -75,15 +76,28 @@
                     </div>
                 </div>
             </q-card-section>
+            <q-separator/>
+            <q-card-actions align="between" class="q-px-md">
+                <div class="q-gutter-x-xs">
+                    <timestamps :timestamps="eInfo" stroke/>
+                </div>
+                <q-btn
+                    size="sm"
+                    label="В шаблон"
+                    icon-right="las la-share-square"
+                    v-tooltip="'Добавить шаблон на основе набора данных'"
+                    color="primary"/>
+            </q-card-actions>
         </q-card>
     </template>
 </template>
 
 <script setup lang="ts">
+import Timestamps from '../../components/Timestamps.vue';
 import {useEntryProfileStore} from "../../../store/entry/entry.profile.store";
 import {entryMessages} from "../../../localize/messages";
 import EntryInfoCustomForm from './entry_info_custom/Form.vue';
-import {useRoute} from "vue-router";
+import {useRoute, onBeforeRouteLeave} from "vue-router";
 import {useEntryInfoCustomFormStore} from "./entry_info_custom/entry_info_custom_form_store";
 import {apiEntryInfo} from "../../../api/rerources/api_entry_info";
 import {useEntryAboutStore} from "./entry_about_store";
@@ -143,6 +157,10 @@ watch(() => formStore.status, val => {
     }
 
     layoutStore.isBlockLeaving = false;
+})
+onBeforeRouteLeave((to, from, next) => {
+    layoutStore.isRightSidebar = false;
+    next();
 })
 </script>
 

@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, watch} from "vue";
+import {watch} from "vue";
 import {useRoute} from 'vue-router'
 import {useEntryProfileStore} from "../../../store/entry/entry.profile.store";
 import {entryMessages} from "../../../localize/messages";
@@ -27,5 +27,4 @@ const route = useRoute();
 watch(() => route.params.entryId, async (val: any) => {
     if (val && val !== '' && typeof val === 'string') await profileStore.getEntry(val);
 }, {immediate: true})
-
 </script>
