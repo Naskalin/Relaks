@@ -56,6 +56,7 @@ export declare type EntryInfoFormRequest = {
     title: string
     type: EntryInfoType
     info: any
+    isFavorite: boolean
 } & SoftDeletableType
 export declare type EntryInfoListRequest = {
     type?: EntryInfoType[],

@@ -13,8 +13,21 @@
                 <q-item-section class="q-pr-none">
                     <q-item-label :lines="3">{{ getCustomTitle(eInfo) }}</q-item-label>
                 </q-item-section>
+                <q-item-section side>
+                    <q-btn 
+                        v-tooltip="eInfo.isFavorite ? 'Убрать из избранного': 'Добавить в избранное'" 
+                        icon="star" 
+                        :color="eInfo.isFavorite ? 'primary' : 'secondary'" 
+                        round 
+                        :flat="!eInfo.isFavorite"
+                        :outline="eInfo.isFavorite"
+                    />
+                </q-item-section>
             </q-item>
         </q-list>
+        <p class="text-center q-mt-sm" style="font-size: 0.85rem;">
+            <i class="q-icon las la-info-circle" aria-hidden="true" role="presentation"> </i> Избранные наборы будут в начале списка.
+        </p>
     </div>
 </template>
 
@@ -36,15 +49,8 @@ const getCustomTitle = (eInfo: EntryInfo) => {
 const onClickItem = (eInfo: EntryInfo) => {
     const { getScrollTarget, setVerticalScrollPosition } = scroll
     const el = document.getElementById('eInfo_custom_'+eInfo.id) as HTMLElement;
-    // console.log(el)
     const target = getScrollTarget(el);
     const offset = el.offsetTop
-    console.log(offset);
     setVerticalScrollPosition(target, offset, 300);
-    
-    // const offset = el.offsetTop
-    // const duration = 1000
-    // setVerticalScrollPosition(target, offset, duration)
-    // $router.push({name: 'entry-about', params: {entryId: $route.params.entryId}, hash: '#eInfo_custom_'+eInfo.id})
 }
 </script>
