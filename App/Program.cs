@@ -54,7 +54,7 @@ using (var scope = app.Services.CreateScope())
     EntryEvents.CheckAndRefresh(db);
     EntryInfoEvents.CheckAndRefresh(db);
     
-    if (app.Environment.IsDevelopment()) new DatabaseSeeder(db).SeedAll();
+    // if (app.Environment.IsDevelopment()) new DatabaseSeeder(db).SeedAll();
 }
 
 if (app.Environment.IsDevelopment())

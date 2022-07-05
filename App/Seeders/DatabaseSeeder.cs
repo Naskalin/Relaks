@@ -24,9 +24,11 @@ public class DatabaseSeeder
         Db.Database.ExecuteSqlRaw("delete from StructureItems;");
         Db.Database.ExecuteSqlRaw("delete from StructureConnections;");
         Db.Database.ExecuteSqlRaw("delete from Structures;");
+        Db.Database.ExecuteSqlRaw("delete from InfoTemplates;");
 
         new EntrySeeder(Db).Seed();
         new EntryInfoSeeder(Db).Seed();
         new StructureSeeder(Db).Seed();
+        new InfoTemplateSeeder(Db).Seed();
     }
 }

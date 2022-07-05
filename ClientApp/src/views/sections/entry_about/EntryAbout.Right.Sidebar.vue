@@ -14,6 +14,7 @@
                     <q-btn 
                         v-tooltip="eInfo.isFavorite ? 'Убрать из избранного': 'Добавить в избранное'" 
                         icon="star" 
+                        size="sm"
                         :color="eInfo.isFavorite ? 'secondary' : 'bg-blue-grey-3'" 
                         round 
                         :flat="!eInfo.isFavorite"
@@ -57,7 +58,7 @@ const onClickItem = (eInfo: EntryInfo) => {
     const el = document.getElementById('eInfo_custom_'+eInfo.id) as HTMLElement;
     const target = getScrollTarget(el);
     const offset = el.offsetTop
-    setVerticalScrollPosition(target, offset, 300);
+    setVerticalScrollPosition(target, offset, 200);
 }
 const isFavoriteSwitchAsync = async (eInfo: EntryInfo) => {
     eInfo.isFavorite = !eInfo.isFavorite;

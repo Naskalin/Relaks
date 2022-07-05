@@ -17,7 +17,7 @@ export const useLayoutStore = defineStore('LayoutStore', {
     },
     getters: {
         isBlockLeavingMessage: (state) => state.isBlockLeaving 
-            ? 'Поиск и навигация недоступны. Завершите явно добавление/изменение данных.'
+            ? 'Навигация и поиск недоступны. Завершите явно добавление/изменение данных.'
             : ''
     },
     actions: {

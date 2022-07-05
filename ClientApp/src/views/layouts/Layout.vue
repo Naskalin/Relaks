@@ -11,6 +11,24 @@
                 <q-space/>
 
                 <q-tabs>
+<!--                    <q-route-tab-->
+<!--                        v-tooltip="layoutStore.isBlockLeavingMessage"-->
+<!--                        :disable="layoutStore.isBlockLeaving"-->
+<!--                        label="Шаблоны данных"-->
+<!--                        to="/info-templates"/>-->
+                    
+                    <q-btn-dropdown
+                        v-tooltip="layoutStore.isBlockLeavingMessage"
+                        :disable="layoutStore.isBlockLeaving"
+                        stretch flat label="Общие данные" color="grey-4">
+                        <q-list bordered class="bg-secondary" dark>
+                            <q-item to="/info-templates" clickable v-close-popup active-class="dark-menu-is-active">
+                                <q-item-section>
+                                    <q-item-label>Шаблоны о человеке/компании/встрече</q-item-label>
+                                </q-item-section>
+                            </q-item>
+                        </q-list>
+                    </q-btn-dropdown>
                     <q-route-tab
                         to="/"
                         v-tooltip="layoutStore.isBlockLeavingMessage"
@@ -155,5 +173,9 @@ const onPreviewDbClick = (entry: Entry) => {
 .sidebar-header-search {
     border-bottom: 1px solid $dark;
     z-index: 2000;
+}
+.dark-menu-is-active {
+    background: lighten($secondary, 5%);
+    color: #fff;
 }
 </style>
