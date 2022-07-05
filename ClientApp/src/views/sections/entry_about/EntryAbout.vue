@@ -8,7 +8,7 @@
                 v-if="formStore.status"
                 @click="formStore.$reset()"
                 class="q-mt-md"
-                label="Вернуться без сохранения"
+                label="Выйти без сохранения"
                 icon="las la-angle-left"
                 outline
                 color="secondary"
@@ -27,11 +27,15 @@
 
     <div v-if="formStore.status === 'new'">
         <h5 class="q-mb-sm">Добавление набора данных</h5>
-        <entry-info-custom-form @delete="formStore.$reset()" @save="createNew"/>
+        <entry-info-custom-form @save="createNew"/>
     </div>
     <div v-else-if="formStore.status === 'edit'">
         <h5 class="q-mb-sm">Изменение набора данных</h5>
-        <entry-info-custom-form @delete="onDelete" @save="onUpdate"/>
+        <entry-info-custom-form
+            with-delete-btn
+            @delete="onDelete" 
+            @save="onUpdate"
+        />
     </div>
     <template v-else-if="aboutStore.customs.length">
         <custom-info 
@@ -51,64 +55,10 @@
                     label="В шаблон"
                     icon-right="las la-share-square"
                     v-tooltip="'Добавить шаблон на основе набора данных'"
+                    @click="onAddInfoTemplate(eInfo)"
                     color="primary"/>
             </template>
         </custom-info>
-<!--        <q-card v-for="eInfo in aboutStore.customs" class="q-mb-xl" :id="'eInfo_custom_'+eInfo.id">-->
-<!--            <q-card-section>-->
-<!--                <div class="row justify-between items-center q-col-gutter-md">-->
-<!--                    <div class="col">-->
-<!--                        <div class="text-h6">{{eInfo.title}}</div>-->
-<!--                    </div>-->
-<!--                    <div class="col-auto">-->
-<!--                        <q-btn-->
-<!--                            @click="formStore.model = Object.assign({}, eInfo); formStore.status = 'edit'"-->
-<!--                            round-->
-<!--                            icon="las la-edit"-->
-<!--                            color="primary"-->
-<!--                            outline-->
-<!--                            v-tooltip="'Изменить'"/>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </q-card-section>-->
-<!--            <q-separator/>-->
-<!--            <q-card-section>-->
-<!--                <div class="groups q-gutter-y-lg">-->
-<!--                    <div v-for="group in eInfo.info.groups">-->
-<!--                        <div v-if="group.title" class="q-mb-md">-->
-<!--                            <q-icon name="las la-object-ungroup" color="grey" class="q-mr-xs"/>-->
-<!--                            <b>{{group.title}}</b>-->
-<!--                        </div>-->
-<!--                        <q-markup-table flat bordered separator="cell" class="custom-table">-->
-<!--                            <tbody>-->
-<!--                            <tr v-for="item in group.items" class="q-tr&#45;&#45;no-hover">-->
-<!--                                <td v-if="item.key">-->
-<!--                                    <q-icon name="las la-key" color="grey" class="q-mr-xs"/>-->
-<!--                                    <span class="">{{item.key}}</span>-->
-<!--                                </td>-->
-<!--                                <td :colspan="item.key ? 1 : 2">-->
-<!--                                    <q-icon name="las la-comment" color="grey" class="q-mr-xs"/>-->
-<!--                                    {{item.value}}-->
-<!--                                </td>-->
-<!--                            </tr>-->
-<!--                            </tbody>-->
-<!--                        </q-markup-table>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </q-card-section>-->
-<!--            <q-separator/>-->
-<!--            <q-card-actions align="between" class="q-px-md">-->
-<!--                <div class="q-gutter-x-xs">-->
-<!--                    <timestamps :timestamps="eInfo" stroke/>-->
-<!--                </div>-->
-<!--                <q-btn-->
-<!--                    size="sm"-->
-<!--                    label="В шаблон"-->
-<!--                    icon-right="las la-share-square"-->
-<!--                    v-tooltip="'Добавить шаблон на основе набора данных'"-->
-<!--                    color="primary"/>-->
-<!--            </q-card-actions>-->
-<!--        </q-card>-->
     </template>
 </template>
 
@@ -117,16 +67,18 @@ import Timestamps from '../../components/Timestamps.vue';
 import {useEntryProfileStore} from "../../../store/entry/entry.profile.store";
 import {entryMessages} from "../../../localize/messages";
 import EntryInfoCustomForm from './entry_info_custom/Form.vue';
-import {useRoute, onBeforeRouteLeave} from "vue-router";
+import {onBeforeRouteLeave, useRouter} from "vue-router";
 import {useEntryInfoCustomFormStore} from "./entry_info_custom/entry_info_custom_form_store";
 import {apiEntryInfo} from "../../../api/rerources/api_entry_info";
 import {useEntryAboutStore} from "./entry_about_store";
 import {onMounted, watch} from "vue";
 import {useLayoutStore} from "../../layouts/layout_store";
 import CustomInfo from '../../components/custom_info/CustomInfo.vue';
+import {EntryInfo} from "../../../api/api_types";
 
+const router = useRouter();
 const layoutStore = useLayoutStore();
-const entryId = (useRoute()).params.entryId as string;
+const entryId = router.currentRoute.value.params.entryId as string;
 const profileStore = useEntryProfileStore();
 const aboutStore = useEntryAboutStore();
 const formStore = useEntryInfoCustomFormStore();
@@ -166,6 +118,9 @@ const onUpdate = async () => {
     } finally {
         formStore.isLoading = false;
     }
+}
+const onAddInfoTemplate = (eInfo: EntryInfo) => {
+    router.push({name: 'info-templates-new', query: {entryId: entryId, entryInfoId: eInfo.id}})
 }
 onMounted(async () => {
     layoutStore.isRightSidebar = true;

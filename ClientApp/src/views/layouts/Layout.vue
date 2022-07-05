@@ -24,7 +24,7 @@
                         <q-list bordered class="bg-secondary" dark>
                             <q-item to="/info-templates" clickable v-close-popup active-class="dark-menu-is-active">
                                 <q-item-section>
-                                    <q-item-label>Шаблоны о человеке/компании/встрече</q-item-label>
+                                    <q-item-label>Шаблоны [О объединении]</q-item-label>
                                 </q-item-section>
                             </q-item>
                         </q-list>

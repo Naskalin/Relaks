@@ -1,7 +1,6 @@
 ﻿<template>
-    <div class="q-my-md">
+    <div class="q-my-md q-gutter-x-md">
         <q-btn label="Добавить группу в начало" icon="las la-plus-circle" outline color="secondary" @click="unshiftGroup"/>
-        &nbsp;
         <q-btn
             v-if="model.groups.length"
             @click="isMinimizeGroups = !isMinimizeGroups"
@@ -9,6 +8,7 @@
             :icon="isMinimizeGroups ? 'las la-eye-slash' : 'las la-eye'"
             outline
             color="positive"/>
+        <slot name="custom-info-actions"/>
     </div>
     
     <draggable
@@ -41,11 +41,6 @@
             outline
             color="positive"/>
     </div>
-    
-    <div class="q-my-lg flex justify-between">
-        <q-btn label="Сохранить набор данных" type="submit" @click="emit('save', model)" icon="las la-save" color="primary"/>
-        <q-btn color="negative" @click="onDelete" label="Удалить набор данных" icon="las la-trash"/>
-    </div>
 </template>
 
 <script setup lang="ts">
@@ -54,10 +49,8 @@ import draggable from 'vuedraggable';
 
 import {CustomInfo} from "../../../api/api_types";
 import {computed, onMounted, ref, reactive} from 'vue';
-import {useQuasar} from "quasar";
 import {randomId} from "../../../utils/file_helper";
 
-const $q = useQuasar();
 const props = defineProps<{
     modelValue: CustomInfo
 }>()
@@ -90,17 +83,6 @@ const unshiftGroup = () => {
 }
 const removeGroup = (index: number) => {
     model.value.groups.splice(index, 1);
-}
-const onDelete = () => {
-    $q.dialog({
-        title: 'Полное удаление!',
-        message: 'Удаляем, всё верно?',
-        class: 'bg-negative text-white',
-        cancel: true,
-        persistent: true
-    }).onOk(() => {
-        emit('delete', model.value);
-    })
 }
 const isMinimizeGroups = ref(false);
 </script>

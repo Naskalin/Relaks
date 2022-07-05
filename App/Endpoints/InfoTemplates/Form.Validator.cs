@@ -13,7 +13,9 @@ public class FormRequestDetailsValidator : AbstractValidator<FormRequestDetails>
                 .ChildRules(groups =>
                 {
                     groups.RuleFor(x => x.Title).NotNull().Length(0, 250);
-                    groups.RuleForEach(x => x.Items).NotEmpty();
+                    
+                    // Позволить создавать шаблоны без строк (пустые строки по прежнему запрещены)
+                    // groups.RuleForEach(x => x.Items).NotEmpty();
                     groups.RuleForEach(x => x.Items).ChildRules(item =>
                     {
                         item.RuleFor(x => x.Key).NotNull().Length(0, 250);
