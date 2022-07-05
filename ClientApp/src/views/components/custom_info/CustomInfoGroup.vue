@@ -49,14 +49,26 @@
                         <q-btn icon="las la-random" color="secondary" class="draggable-btn" outline round size="sm" v-tooltip.left="'Переместить строку'"/>
                     </td>
                     <td style="width: 400px">
-                        <q-input v-model="groupModel.items[index].key" placeholder="Ключ" filled counter dense maxlength="250" autogrow>
+                        <q-input 
+                            v-model="groupModel.items[index].key"
+                            :rules="[_ => isItemValid(groupModel.items[index])]"
+                            placeholder="Ключ" filled counter dense maxlength="250" autogrow>
                             <template v-slot:prepend>
                                 <q-icon name="las la-key" />
                             </template>
                         </q-input>
                     </td>
                     <td>
-                        <q-input v-model="groupModel.items[index].value" placeholder="Значение" required="required" filled counter dense maxlength="1000" autogrow>
+                        <q-input 
+                            v-model="groupModel.items[index].value" 
+                            placeholder="Значение"
+                            filled 
+                            counter 
+                            dense 
+                            maxlength="1000" 
+                            autogrow
+                            :rules="[_ => isItemValid(groupModel.items[index])]"
+                        >
                             <template v-slot:prepend>
                                 <q-icon name="las la-comment" />
                             </template>
@@ -65,12 +77,12 @@
                     <td style="width: 50px">
                         <q-btn
                             v-if="groupModel.items.length > 1"
-                            @click="removeItem(index)" 
-                            v-tooltip.right="'Удалить строку'" 
-                            icon="las la-times" 
-                            color="negative" 
-                            outline 
-                            size="sm" 
+                            @click="removeItem(index)"
+                            v-tooltip.right="'Удалить строку'"
+                            icon="las la-times"
+                            color="negative"
+                            outline
+                            size="sm"
                             round />
                     </td>
                 </tr>
@@ -84,7 +96,7 @@
 
 <script setup lang="ts">
 import draggable from 'vuedraggable';
-import {CustomInfoGroup} from "../../../api/api_types";
+import {CustomInfoGroup, CustomInfoItem} from "../../../api/api_types";
 import {computed, ref, watch} from "vue";
 import {randomId} from "../../../utils/file_helper";
 
@@ -110,5 +122,9 @@ const addItem = () => {
 }
 const removeItem = (index: number) => {
     groupModel.value.items.splice(index, 1);
+}
+const isItemValid = (item: CustomInfoItem) => {
+    const isValid = Boolean(item.value) || Boolean(item.key);
+    return isValid || 'Ключ или значение должны быть заполнены';
 }
 </script>

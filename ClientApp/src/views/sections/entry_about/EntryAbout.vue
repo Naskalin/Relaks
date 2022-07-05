@@ -149,7 +149,7 @@ const onDelete = async () => {
     try {
         const eInfoId = formStore.model.id!;
         await apiEntryInfo.delete(entryId, eInfoId);
-        await aboutStore.getItems(entryId);
+        await aboutStore.getItemsAsync(entryId);
         formStore.$reset();
     } finally {
         formStore.isLoading = false;
@@ -161,7 +161,7 @@ const onUpdate = async () => {
     try {
         const eInfoId = formStore.model.id!;
         await apiEntryInfo.update(entryId, eInfoId, formStore.model);
-        await aboutStore.getItems(entryId);
+        await aboutStore.getItemsAsync(entryId);
         formStore.$reset();
     } finally {
         formStore.isLoading = false;
@@ -169,7 +169,7 @@ const onUpdate = async () => {
 }
 onMounted(async () => {
     layoutStore.isRightSidebar = true;
-    await aboutStore.getItems(entryId);
+    await aboutStore.getItemsAsync(entryId);
 })
 watch(() => formStore.status, val => {
     if (val) {

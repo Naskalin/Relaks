@@ -24,7 +24,7 @@ export const useEntryAboutStore = defineStore('EntryAboutStore', {
         customs: (state) => filterByType(state.list, 'CUSTOM', state.listRequest.isDeleted)
     },
     actions: {
-        async getItems(entryId: string) {
+        async getItemsAsync(entryId: string) {
             if (this.isLoading) return;
             this.isLoading = true;
 

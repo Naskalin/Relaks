@@ -13,6 +13,7 @@ export const useEntryInfoCustomFormStore = defineStore('EntryInfoCustomFormStore
             isLoading: false,
             model: {
                 title: '',
+                isFavorite: false,
                 deletedAt: null,
                 deletedReason: '',
                 type: 'CUSTOM',

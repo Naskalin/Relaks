@@ -18,12 +18,13 @@
                         round 
                         :flat="!eInfo.isFavorite"
                         :outline="eInfo.isFavorite"
+                        @click="isFavoriteSwitchAsync(eInfo)"
                     />
                 </q-item-section>
             </q-item>
         </q-list>
         <p class="text-center q-mt-sm" style="font-size: 0.85rem;">
-            <i class="q-icon las la-info-circle" aria-hidden="true" role="presentation"> </i> Избранные наборы будут в начале списка.
+            <i class="q-icon las la-info-circle" aria-hidden="true" role="presentation"> </i> Избранные наборы будут первыми.
         </p>
     </div>
 </template>
@@ -32,8 +33,13 @@
 import {useEntryAboutStore} from "./entry_about_store";
 import {EntryInfo, CustomInfo} from "../../../api/api_types";
 import { scroll } from 'quasar'
+import {useEntryInfoCustomFormStore} from "./entry_info_custom/entry_info_custom_form_store";
+import {apiEntryInfo} from "../../../api/rerources/api_entry_info";
+import {useRoute} from "vue-router";
 
 const aboutStore = useEntryAboutStore();
+const eInfoCustomFormStore = useEntryInfoCustomFormStore();
+const entryId = (useRoute()).params.entryId as string;
 const getCustomTitle = (eInfo: EntryInfo) => {
     if (eInfo.title) return eInfo.title;
     const custom = eInfo.info as CustomInfo;
@@ -44,10 +50,19 @@ const getCustomTitle = (eInfo: EntryInfo) => {
     return firstItem.value;
 }
 const onClickItem = (eInfo: EntryInfo) => {
+    // Если мы в режиме изменения/добавления, то не скролим, иначе ошибки сыпятся поскольку элементы для скрола скрыты
+    if (eInfoCustomFormStore.status) return;
+    
     const { getScrollTarget, setVerticalScrollPosition } = scroll
     const el = document.getElementById('eInfo_custom_'+eInfo.id) as HTMLElement;
     const target = getScrollTarget(el);
     const offset = el.offsetTop
     setVerticalScrollPosition(target, offset, 300);
+}
+const isFavoriteSwitchAsync = async (eInfo: EntryInfo) => {
+    eInfo.isFavorite = !eInfo.isFavorite;
+    await apiEntryInfo.update(entryId, eInfo.id, eInfo);
+    await aboutStore.getItemsAsync(entryId);
+    onClickItem(eInfo);
 }
 </script>
