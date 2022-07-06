@@ -7,7 +7,7 @@
                     проблему здесь</a>. Скриншоты, как воспроизвести проблему, операцинная система, версия программы
                     предоставьте как можно больше данных
                 </li>
-                <li>Предложения, ошибки, вопросы, отзывы в <a href="https://github.com/Naskalin/Relaks/discussions"
+                <li>Предложения, вопросы, отзывы в <a href="https://github.com/Naskalin/Relaks/discussions"
                                                               target="_blank">Github</a></li>
                 <li>Оповещения о новых версиях, о возможных проблемах с программой, подписывайтесь в <a
                     href="https://t.me/relaks_news" target="_blank">Telegram</a> (пишу только по делу, обещаю не
