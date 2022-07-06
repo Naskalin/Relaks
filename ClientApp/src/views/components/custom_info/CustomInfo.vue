@@ -60,20 +60,22 @@ const props = defineProps<{
     customInfo: CustomInfo,
     timestamps: TimestampTypes
     headerTitle: string
-    hideKeys?: boolean
+    hideRowsWithoutValue?: boolean
 }>()
 const emit = defineEmits<{
     (e: 'clickChangeBtn'): void
 }>()
 const isShowKey = (item: CustomInfoItem) => {
-    if (props.hideKeys === true) return false;
     return Boolean(item.key);
 }
 const isShowRow = (item: CustomInfoItem) => {
-    if (isShowKey(item)) return true;
-
-    // now isShowKey is false
-    return Boolean(item.value);
+    const isHasValue = Boolean(item.value);
+    if (isHasValue) return true;
+    
+    // isHasValue is false
+    if (props.hideRowsWithoutValue) return false;
+    
+    return isShowKey(item);
 }
 </script>
 

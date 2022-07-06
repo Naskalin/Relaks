@@ -1,6 +1,7 @@
 ﻿using App.DbConfigurations;
 using App.Endpoints.Structures;
 using App.Models;
+using App.Utils.Extensions.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace App.Repository;
@@ -28,6 +29,8 @@ public class StructureRepository : BaseRepository<Structure>
                 query = query.Where(x => x.DeletedAt == null || x.DeletedAt < DateTime.UtcNow);
             }
         }
+
+        query = query.OrderBy(x => x.Title);
 
         if (req.Date != null)
         {

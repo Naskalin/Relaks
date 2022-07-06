@@ -23,7 +23,7 @@
         :key="'eInfo_custom_'+eInfo.id"
         :id="'eInfo_custom_'+eInfo.id"
         class="q-mb-xl"
-        hide-keys
+        hide-rows-without-value
         @clickChangeBtn="$router.push({name: 'entry-about-edit', params: {entryId: entryId, entryInfoId: eInfo.id}})"
     >
         <template v-slot:card-actions>
