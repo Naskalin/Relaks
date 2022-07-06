@@ -29,10 +29,11 @@
 import FormFields from './EntryAbout.Form.Fields.vue';
 import {useQuasar} from "quasar";
 import {apiEntryInfo} from "../../../api/rerources/api_entry_info";
-import {useRouter} from "vue-router";
+import {useRouter, onBeforeRouteLeave} from "vue-router";
 import {useEntryAboutStore} from "./entry_about_store";
 import {useEntryAboutFormStore} from "./entry_about_form_store";
 import {onMounted} from "vue";
+import {useLayoutStore} from "../../layouts/layout_store";
 
 const router = useRouter();
 const $q = useQuasar();
@@ -40,6 +41,7 @@ const formStore = useEntryAboutFormStore();
 const aboutStore = useEntryAboutStore();
 const entryInfoId = router.currentRoute.value.params.entryInfoId as string;
 const entryId = router.currentRoute.value.params.entryId as string;
+const layoutStore = useLayoutStore();
 
 const onUpdate = async () => {
     if (formStore.isLoading) return;
@@ -78,5 +80,10 @@ const onDelete = async () => {
 }
 onMounted(async () => {
     formStore.model = await apiEntryInfo.get(entryId, entryInfoId);
+    layoutStore.isBlockLeaving = true;
+})
+onBeforeRouteLeave((to, from, next) => {
+    layoutStore.isBlockLeaving = false;
+    next();
 })
 </script>

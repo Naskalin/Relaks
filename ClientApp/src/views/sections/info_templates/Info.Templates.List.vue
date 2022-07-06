@@ -1,5 +1,18 @@
 ﻿<template>
-    <div class="text-h5 q-mb-lg">Список шаблонов</div>
+    <div class="row items-center justify-between q-my-lg">
+        <div class="col-auto">
+            <h4 class="q-my-none text-h4">Список шаблонов</h4>
+        </div>
+        <div class="col-auto">
+            <q-btn
+                @click="$router.push({name: 'info-templates-new'});"
+                class="q-mt-md"
+                label="Добавить шаблон"
+                icon-right="las la-plus-circle"
+                color="primary"
+            />
+        </div>
+    </div>
 
     <custom-info
         v-for="infoTemplate in listStore.items"

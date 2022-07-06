@@ -43,13 +43,14 @@
 import FormFields from './EntryAbout.Form.Fields.vue';
 import {useQuasar} from "quasar";
 import {apiEntryInfo} from "../../../api/rerources/api_entry_info";
-import {useRouter} from "vue-router";
+import {onBeforeRouteLeave, useRouter} from "vue-router";
 import {useEntryAboutStore} from "./entry_about_store";
 import {useEntryAboutFormStore} from "./entry_about_form_store";
 import Modal from '../../components/Modal.vue';
 import {ref, onMounted} from 'vue';
 import {useInfoTemplatesStore} from "../info_templates/info_templates_store";
 import {InfoTemplate} from "../../../api/rerources/api_info_templates";
+import {useLayoutStore} from "../../layouts/layout_store";
 
 const infoTemplatesStore = useInfoTemplatesStore();
 const isShowTemplateModal = ref(false);
@@ -58,6 +59,7 @@ const $q = useQuasar();
 const formStore = useEntryAboutFormStore();
 const aboutStore = useEntryAboutStore();
 const entryId = router.currentRoute.value.params.entryId as string;
+const layoutStore = useLayoutStore();
 const onClickItem = (infoTemplate: InfoTemplate) => {
     formStore.model.title = infoTemplate.title;
     formStore.model.info = infoTemplate.template;
@@ -79,6 +81,11 @@ const onSave = async () => {
 
 onMounted(async () => {
     formStore.$reset();
+    layoutStore.isBlockLeaving = true;
     await infoTemplatesStore.getItemsAsync();
+})
+onBeforeRouteLeave((to, from, next) => {
+    layoutStore.isBlockLeaving = false;
+    next();
 })
 </script>
