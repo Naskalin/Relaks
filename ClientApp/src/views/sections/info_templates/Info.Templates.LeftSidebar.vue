@@ -24,9 +24,6 @@ import {useInfoTemplateFormStore} from "./info_template_form_store";
 const formStore = useInfoTemplateFormStore();
 const listStore = useInfoTemplatesStore();
 const onClickItem = (infoTemplate: InfoTemplate) => {
-    // Если мы в режиме изменения/добавления, то не скролим, иначе ошибки сыпятся поскольку элементы для скрола скрыты
-    if (formStore.status) return;
-
     const { getScrollTarget, setVerticalScrollPosition } = scroll
     const el = document.getElementById('info_template_'+infoTemplate.id) as HTMLElement;
     const target = getScrollTarget(el);

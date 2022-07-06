@@ -3,14 +3,12 @@ import {apiInfoTemplate, InfoTemplate, InfoTemplateFormRequest} from "../../../a
 
 declare type InfoTemplateFormStoreState = {
     request: InfoTemplateFormRequest & { id?: string }
-    status: 'edit' | 'create' | null;
     isLoading: boolean,
 }
 export const useInfoTemplateFormStore = defineStore('InfoTemplateFormStore', {
     state: (): InfoTemplateFormStoreState => {
         return {
             isLoading: false,
-            status: null,
             request: {
                 title: '',
                 template: {

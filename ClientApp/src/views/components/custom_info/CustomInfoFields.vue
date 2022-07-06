@@ -46,10 +46,10 @@
 <script setup lang="ts">
 import CustomInfoGroup from './CustomInfoGroup.vue';
 import draggable from 'vuedraggable';
-
 import {CustomInfo} from "../../../api/api_types";
-import {computed, onMounted, ref, reactive} from 'vue';
+import {computed, onMounted, ref} from 'vue';
 import {randomId} from "../../../utils/file_helper";
+import {nextTick} from "vue";
 
 const props = defineProps<{
     modelValue: CustomInfo
@@ -65,11 +65,12 @@ const model = computed({
     set: (val: CustomInfo) => emit('update:modelValue', val),
 });
 
-onMounted(() => {
-    if (!model.value.groups.length) pushGroup();
+onMounted(async () => {
+    if (model.value.groups.length <= 0) await pushGroup();
 })
 
-const pushGroup = () => {
+const pushGroup = async () => {
+    await nextTick();
     model.value.groups.push({
         title: '',
         items: [{key: '', value: ''}]

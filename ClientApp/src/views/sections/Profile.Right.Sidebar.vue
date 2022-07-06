@@ -11,8 +11,13 @@ import {useRoute} from "vue-router";
 const route = useRoute();
 
 const currentSidebar = computed((): any => {
-   if (route.name === 'entry-structures') return StructuresRightSidebar;
-   if (route.name === 'entry-about') return EntryAboutRightSidebar;
-   return null;
+    if (typeof route.name === 'string') {
+        if (route.name === 'entry-structures') return StructuresRightSidebar;
+        if (['entry-about',
+            'entry-about-list',
+            'entry-about-edit',
+            'entry-about-new'].includes(route.name)) return EntryAboutRightSidebar;
+    }
+    return null;
 });
 </script>

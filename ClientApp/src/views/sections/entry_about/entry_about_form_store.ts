@@ -1,12 +1,12 @@
 ﻿import {defineStore} from 'pinia';
-import {EntryInfoFormRequest} from "../../../../api/api_types";
+import {EntryInfoFormRequest} from "../../../api/api_types";
 
-declare type EntryInfoCustomFormStoreState = {
+declare type EntryAboutFormStoreState = {
     model: EntryInfoFormRequest,
     isLoading: boolean,
 }
-export const useEntryInfoCustomFormStore = defineStore('EntryInfoCustomFormStore', {
-    state: (): EntryInfoCustomFormStoreState => {
+export const useEntryAboutFormStore = defineStore('EntryAboutFormStore', {
+    state: (): EntryAboutFormStoreState => {
         return {
             isLoading: false,
             model: {
