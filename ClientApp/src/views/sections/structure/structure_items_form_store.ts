@@ -16,7 +16,7 @@ export const useStructureItemFormStore = defineStore('StructureItemsFormStore', 
             request: {
                 deletedAt: null,
                 deletedReason: '',
-                startAt: null,
+                startAt: '',
                 structureId: '',
                 description: '',
                 entryId: ''

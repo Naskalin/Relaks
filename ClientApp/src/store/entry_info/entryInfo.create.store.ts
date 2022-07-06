@@ -13,6 +13,7 @@ export const useEntryInfoCreateStore = defineStore('EntryInfoCreateStore', {
             isLoading: false,
             request: {
                 title: '',
+                isFavorite: false,
                 deletedReason: '',
                 deletedAt: null,
                 type: "EMAIL",

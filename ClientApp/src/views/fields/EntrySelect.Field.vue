@@ -54,7 +54,7 @@
                                     color="primary"
                                     icon="las la-check-circle"
                                     label="Выбрать объединение"
-                                    @click="onSelectEntry(entryListStore.previewEntry)"/>
+                                    @click="onSelectEntry(entryListStore.previewEntry!)"/>
                             </q-card-actions>
                         </div>
                     </div>

@@ -5,7 +5,7 @@
         @onSelectEntry="val => formStore.request.entryId = val.id"
         :is-show-default="!formStore.request.entryId"
     />
-    <date-field v-model="formStore.request.startAt" label="Существует с *" :with-time="false" required/>
+    <date-field v-if="formStore.request.startAt" v-model="formStore.request.startAt" label="Существует с *" :with-time="false" required/>
     <q-input v-model="formStore.request.description" type="textarea" autogrow label="Описание" counter maxlength="250"/>
 </template>
 

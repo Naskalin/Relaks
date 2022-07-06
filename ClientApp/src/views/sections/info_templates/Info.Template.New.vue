@@ -12,7 +12,7 @@
 
         <q-btn
             v-if="entry"
-            @click="formStore.$reset();$router.push({name: 'entry-about', params: {entryId: entry.id}})"
+            @click="formStore.$reset();$router.push({name: 'entry-about', params: {entryId: entry ? entry.id : ''}})"
             label="Вернуться в объединение"
             v-tooltip.right="entry.name"
             icon-right="las la-angle-right"

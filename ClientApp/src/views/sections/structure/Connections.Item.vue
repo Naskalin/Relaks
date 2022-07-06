@@ -1,21 +1,20 @@
 ﻿<template>
     <q-expansion-item
-        :group="structureStore.structureSelectedId"
+        v-if="structureStore.structureSelectedId"
+        :group="structureStore.structureSelectedId ? structureStore.structureSelectedId : ''"
         expand-separator
         :model-value="connectionsStore.activeConnectionId === connection.id"
         @update:model-value="setActiveConnection"
-        :icon="relationData.icon"
-        :label="relationData.text"
+        :icon="relationData ? relationData.icon : ''"
+        :label="relationData ? relationData.text : ''"
         :class="connectionsStore.activeConnectionId === connection.id ?  connection.arrow +' active' : connection.arrow +' bg-my-grey'"
         class="connection-item"
     >
         <template v-slot:header>
             <q-item-section side>
-                <q-icon :name="relationData.icon" :size="connection.direction === 'Bidirectional' ? '1.5em' : '1.8em'"/>
+                <q-icon :name="relationData ? relationData.icon : ''" :size="connection.direction === 'Bidirectional' ? '1.5em' : '1.8em'"/>
             </q-item-section>
-            <q-item-section>
-                {{relationData.text}}
-            </q-item-section>
+            <q-item-section>{{relationData ? relationData.text : ''}}</q-item-section>
             <q-item-section side v-if="connection.description">
                 <q-icon name="las la-comment" v-tooltip="connection.description"/>
             </q-item-section>

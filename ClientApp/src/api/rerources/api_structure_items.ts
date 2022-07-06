@@ -22,7 +22,7 @@ export declare type StructureItemFormRequest = {
     structureId: string
     entryId: string
     description: string
-    startAt?: string | null
+    startAt?: string
 } & SoftDeletableType
 
 export const apiStructureItems = {

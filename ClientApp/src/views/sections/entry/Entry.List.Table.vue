@@ -84,7 +84,7 @@ import {ref, computed, onMounted} from 'vue';
 const store = useEntryListStore();
 const scrollEl = ref<any>(null);
 const myProps = defineProps<{
-    entrySelectedId?: string
+    entrySelectedId?: string | null
 }>()
 onMounted(async () => {
     if (scrollEl.value) {
