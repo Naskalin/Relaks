@@ -3,7 +3,7 @@
         <q-card-section class="bg-blue-grey-3">
             <div class="row justify-between items-center q-col-gutter-md">
                 <div class="col">
-                    <div class="text-h6">{{ headerTitle }}</div>
+                    <div style="font-size: 1.1rem">{{ headerTitle }}</div>
                 </div>
                 <div class="col-auto">
                     <q-btn
