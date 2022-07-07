@@ -55,17 +55,20 @@ function updateLineDirection(direction: StructureConnectionDirection, options: L
             options.startPlug = 'disc';
             options.endPlug = 'arrow1';
             options.endSocket = 'left';
+            options.path = 'fluid'
             break;
         case "Reverse":
             options.startPlug = 'arrow1';
             options.endPlug = 'disc';
             options.startSocket = 'left';
+            options.path = 'fluid'
             break;
         case "Bidirectional":
             options.startPlug = 'arrow1';
             options.endPlug = 'arrow1';
             options.startSocket = 'left';
             options.endSocket = 'left';
+            options.path = 'magnet'
             break;
     }
 

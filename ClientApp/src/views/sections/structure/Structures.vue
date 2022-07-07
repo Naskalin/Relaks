@@ -2,7 +2,7 @@
     <div class="row items-center justify-between q-my-lg">
         <div class="col-auto">
             <h4 v-if="profileStore.entry" class="q-my-none">
-                {{ entryMessages.profile.tabs(profileStore.entry.entryType)["entry-structures"] || '?'}}
+                {{ entryMessages.profile.tabs(profileStore.entry.entryType)["entry-structures"] || '?' }}
             </h4>
         </div>
         <div class="col-auto">
