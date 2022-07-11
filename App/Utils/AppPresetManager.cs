@@ -35,19 +35,17 @@ public class AppPresetManager
 
     public void CreateDefaultPreset(string dirPath, string configPath)
     {
-        if (!File.Exists(configPath))
-        {
-            if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+        if (File.Exists(configPath)) return;
+        if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
 
-            var data = new AppPresetWriteModel()
-            {
-                DataDir = dirPath,
-                Timezone = AppDefaultPreset.Timezone,
-                PhoneRegion = AppDefaultPreset.PhoneRegion
-            };
-            var json = JsonSerializer.Serialize(data);
-            File.WriteAllText(configPath, json);
-        }
+        var data = new AppPresetWriteModel()
+        {
+            DataDir = dirPath,
+            Timezone = AppDefaultPreset.Timezone,
+            PhoneRegion = AppDefaultPreset.PhoneRegion
+        };
+        var json = JsonSerializer.Serialize(data);
+        File.WriteAllText(configPath, json);
     }
 
     public AppPreset GetPreset()
@@ -62,28 +60,26 @@ public class AppPresetManager
             throw new ArgumentException("AppPreset, файл конфигурации не найден.");
         }
 
-        using (StreamReader r = new StreamReader(configPath))
+        using var r = new StreamReader(configPath);
+        var json = r.ReadToEnd();
+        var appPresetModel = JsonSerializer.Deserialize<AppPreset>(json);
+
+        if (appPresetModel == null)
         {
-            string json = r.ReadToEnd();
-            var appPresetModel = JsonSerializer.Deserialize<AppPreset>(json);
-
-            if (appPresetModel == null)
-            {
-                throw new ArgumentException("AppPreset, файл конфигурации не распознан.");
-            }
-
-            var dbPath = Path.Combine(appPresetModel.DataDir, "db.sqlite");
-            appPresetModel.SqliteConnection = "Data Source=" + dbPath;
-
-            var filesDir = Path.Combine(appPresetModel.DataDir, "files");
-            if (!Directory.Exists(filesDir)) Directory.CreateDirectory(filesDir);
-            appPresetModel.FilesDir = filesDir;
-
-            var cacheDir = Path.Combine(appPresetModel.DataDir, "cache");
-            if (!Directory.Exists(cacheDir)) Directory.CreateDirectory(cacheDir);
-            appPresetModel.CacheDir = cacheDir;
-
-            return appPresetModel;
+            throw new ArgumentException("AppPreset, файл конфигурации не распознан.");
         }
+
+        var dbPath = Path.Combine(appPresetModel.DataDir, "db.sqlite");
+        appPresetModel.SqliteConnection = "Data Source=" + dbPath;
+
+        var filesDir = Path.Combine(appPresetModel.DataDir, "files");
+        if (!Directory.Exists(filesDir)) Directory.CreateDirectory(filesDir);
+        appPresetModel.FilesDir = filesDir;
+
+        var cacheDir = Path.Combine(appPresetModel.DataDir, "cache");
+        if (!Directory.Exists(cacheDir)) Directory.CreateDirectory(cacheDir);
+        appPresetModel.CacheDir = cacheDir;
+
+        return appPresetModel;
     }
 }

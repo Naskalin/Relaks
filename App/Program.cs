@@ -3,8 +3,8 @@ using App.DbConfigurations;
 using App.DbEvents.Fts;
 using App.Endpoints.StructureItems;
 using App.Repository;
-using App.Seeders;
 using App.Utils;
+using ElectronNET.API;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -13,7 +13,7 @@ var appPreset = new AppPresetManager(Directory.GetCurrentDirectory()).GetPreset(
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseWebRoot("wwwroot");
-
+builder.WebHost.UseElectron(args);
 builder.Services.AddSingleton(appPreset);
 
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -45,6 +45,11 @@ builder.Services.AddTransient<StructureConnectionRepository>();
 builder.Services.AddTransient<StructureItemDbValidate>();
 
 var app = builder.Build();
+
+if (app.Environment.IsProduction())
+{
+    Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());   
+}
 
 using (var scope = app.Services.CreateScope())
 {
