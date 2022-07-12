@@ -32,5 +32,6 @@ const appPresetStore = useAppPresetStore();
 const isShow = ref(true);
 const setDataDirAsync = async () => {
     await appApi.post(['app-data-dir'], {dataDir: appPresetStore.dataDir});
+    window.close();
 }
 </script>
