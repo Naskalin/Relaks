@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace App.Utils.AppPreset;
+namespace App.Utils.App;
 
 public class AppDefaultPreset
 {
@@ -15,7 +15,7 @@ public class AppPresetPublic
     public string PhoneRegion { get; set; } = null!;
 }
 
-public class AppPreset : AppPresetPublic
+public class AppPresetModel : AppPresetPublic
 {
     public string SqliteConnection { get; set; } = null!;
     public string FilesDir { get; set; } = null!;
@@ -26,7 +26,7 @@ public static class AppPresetManager
 {
     public static void CreateDefaultPreset(string dataDir, string configPath)
     {
-        if (!Directory.Exists(dataDir)) Directory.CreateDirectory(dataDir);
+        if (!Directory.Exists(dataDir)) throw new ArgumentException($"Directory not exists: {dataDir}");
 
         var data = new AppPresetPublic()
         {
@@ -37,26 +37,28 @@ public static class AppPresetManager
         File.WriteAllText(configPath, json);
     }
 
-    public static AppPreset GetPreset(string dataDir)
+    public static AppPresetModel? GetPreset(string projectDir)
     {
-        var configPath = Path.Combine(dataDir, AppDefaultPreset.PresetName);
-
-        if (!File.Exists(configPath)) CreateDefaultPreset(dataDir, configPath);
+        var dirPath = AppDataDirManager.GetDirPath(projectDir);
+        if (!Directory.Exists(dirPath)) return null;
+        
+        var configPath = Path.Combine(dirPath, AppDefaultPreset.PresetName);
+        if (!File.Exists(configPath)) CreateDefaultPreset(dirPath, configPath);
 
         using var r = new StreamReader(configPath);
         var json = r.ReadToEnd();
-        var appPresetModel = JsonSerializer.Deserialize<AppPreset>(json);
+        var appPresetModel = JsonSerializer.Deserialize<AppPresetModel>(json);
 
         if (appPresetModel == null) throw new ArgumentException("AppPreset, файл конфигурации не распознан.");
 
-        var dbPath = Path.Combine(dataDir, "db.sqlite");
+        var dbPath = Path.Combine(dirPath, "db.sqlite");
         appPresetModel.SqliteConnection = "Data Source=" + dbPath;
 
-        var filesDir = Path.Combine(dataDir, "files");
+        var filesDir = Path.Combine(dirPath, "files");
         if (!Directory.Exists(filesDir)) Directory.CreateDirectory(filesDir);
         appPresetModel.FilesDir = filesDir;
 
-        var cacheDir = Path.Combine(dataDir, "cache");
+        var cacheDir = Path.Combine(dirPath, "cache");
         if (!Directory.Exists(cacheDir)) Directory.CreateDirectory(cacheDir);
         appPresetModel.CacheDir = cacheDir;
 

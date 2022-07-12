@@ -17,7 +17,7 @@
         </q-card-section>
         
         <q-card-actions align="right" class="q-pa-md">
-            <q-btn form="app-data-dir-form" type="submit" label="Задать директорию" icon="las la-save" color="primary"/>
+            <q-btn form="app-data-dir-form" type="submit" label="Сохранить путь к директории" icon="las la-save" color="primary"/>
         </q-card-actions>
     </modal>
 </template>

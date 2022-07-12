@@ -1,6 +1,5 @@
 ﻿import {defineStore} from 'pinia';
 import {appApi} from "../../../api";
-const remote = require('electron').remote;
 
 export declare type AppPresetModel = {
     timezone: string,
@@ -25,9 +24,6 @@ export const useAppPresetStore = defineStore('AppPresetStore', {
         async updateDataDir() {
             await appApi.post(['app-data-dir'], {dataDir: this.dataDir})
             this.dataDir = '';
-            
-            const window = remote.getCurrentWindow();
-            window.close();
         }
     }
 })

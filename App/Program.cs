@@ -3,7 +3,7 @@ using App.DbConfigurations;
 using App.DbEvents.Fts;
 using App.Endpoints.StructureItems;
 using App.Repository;
-using App.Utils.AppPreset;
+using App.Utils.App;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -15,14 +15,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseWebRoot("wwwroot");
 builder.WebHost.UseElectron(args);
 
-var appDataDir = AppDataDirManager.GetDataDir(Directory.GetCurrentDirectory());
+var projectDir = Directory.GetCurrentDirectory();
+var appDataDir = AppDataDirManager.GetDirPath(projectDir);
 var connectionString = "";
 if (appDataDir != null)
 {
     builder.Services.AddSingleton(appDataDir);
-    var appPreset = AppPresetManager.GetPreset(appDataDir.DirPath);
-    builder.Services.AddSingleton(appPreset);
-    connectionString = appPreset.SqliteConnection;
+    var appPreset = AppPresetManager.GetPreset(projectDir);
+
+    if (appPreset != null)
+    {
+        builder.Services.AddSingleton(appPreset);
+        connectionString = appPreset.SqliteConnection;   
+    }
 }
 
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -59,8 +64,8 @@ if (HybridSupport.IsElectronActive)
 {
     Task.Run(async () => await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions
     {
-        Width = 1024,
-        Height = 768,
+        Width = 1200,
+        Height = 864,
         Center = true,
         Closable = true,
         Minimizable = true,

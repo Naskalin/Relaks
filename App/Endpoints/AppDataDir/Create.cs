@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 using App.DbConfigurations;
 using App.Utils;
-using App.Utils.AppPreset;
+using App.Utils.App;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -36,8 +36,8 @@ public class Create : EndpointBaseAsync
             return (ActionResult) _apiOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
         }
         
-        AppDataDirManager.SaveDataDir(_projectDir, request.Details.DataDir);
-        var dataDir = AppDataDirManager.GetDataDir(_projectDir);
+        AppDataDirManager.UpdateConfigDir(_projectDir, request.Details.DataDir);
+        var dataDir = AppDataDirManager.GetDirPath(_projectDir);
         if (dataDir == null) return BadRequest();
         
         return Ok(dataDir);
