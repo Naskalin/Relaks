@@ -4,7 +4,7 @@
             <q-card-section class="row items-center">
                 <div class="text-h6">{{ label }}</div>
                 <q-space/>
-                <q-btn icon="close" flat round dense v-close-popup/>
+                <q-btn v-if="isShowCloseIcon" icon="close" flat round dense v-close-popup/>
             </q-card-section>
             <slot></slot>
         </q-card>
@@ -17,10 +17,12 @@ import {computed, withDefaults} from "vue";
 const props = withDefaults(defineProps<{
     fullHeight?: boolean,
     persistent?: boolean,
+    isShowCloseIcon?: boolean
     isShow: boolean,
     label: string
 }>(), {
-    persistent: false
+    persistent: false,
+    isShowCloseIcon: true
 })
 
 const emit = defineEmits<{

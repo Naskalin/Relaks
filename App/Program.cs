@@ -3,18 +3,27 @@ using App.DbConfigurations;
 using App.DbEvents.Fts;
 using App.Endpoints.StructureItems;
 using App.Repository;
-using App.Utils;
+using App.Utils.AppPreset;
 using ElectronNET.API;
+using ElectronNET.API.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
-var appPreset = new AppPresetManager(Directory.GetCurrentDirectory()).GetPreset();
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseWebRoot("wwwroot");
 builder.WebHost.UseElectron(args);
-builder.Services.AddSingleton(appPreset);
+
+var appDataDir = AppDataDirManager.GetDataDir(Directory.GetCurrentDirectory());
+var connectionString = "";
+if (appDataDir != null)
+{
+    builder.Services.AddSingleton(appDataDir);
+    var appPreset = AppPresetManager.GetPreset(appDataDir.DirPath);
+    builder.Services.AddSingleton(appPreset);
+    connectionString = appPreset.SqliteConnection;
+}
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -30,11 +39,10 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseSqlite(appPreset.SqliteConnection)
+    options => options.UseSqlite(connectionString)
 );
 
 builder.Services.Configure<ApiBehaviorOptions>(o => { o.SuppressInferBindingSourcesForParameters = true; });
-
 builder.Services.AddTransient<EntryRepository>();
 builder.Services.AddTransient<EntryInfoRepository>();
 builder.Services.AddTransient<InfoTemplateRepository>();
@@ -46,20 +54,29 @@ builder.Services.AddTransient<StructureItemDbValidate>();
 
 var app = builder.Build();
 
-if (app.Environment.IsProduction())
+// Electron Window
+if (HybridSupport.IsElectronActive)
 {
-    Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());   
+    Task.Run(async () => await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions
+    {
+        Width = 1024,
+        Height = 768,
+        Center = true,
+        Closable = true,
+        Minimizable = true,
+        Maximizable = true,
+        // AutoHideMenuBar = true,
+        BackgroundColor = "#E0E7F7"
+    }));
 }
 
-using (var scope = app.Services.CreateScope())
+if (!String.IsNullOrEmpty(connectionString))
 {
+    using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
-    
     EntryEvents.CheckAndRefresh(db);
     EntryInfoEvents.CheckAndRefresh(db);
-    
-    // if (app.Environment.IsDevelopment()) new DatabaseSeeder(db).SeedAll();
 }
 
 if (app.Environment.IsDevelopment())
@@ -72,7 +89,6 @@ if (app.Environment.IsDevelopment())
 app.UseFileServer();
 app.MapControllers();
 app.Run();
-
 public partial class Program
 {
 }

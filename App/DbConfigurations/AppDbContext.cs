@@ -25,7 +25,6 @@ public sealed class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
         SavingChanges += EventSpreader.OnSavingChanges;
-
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

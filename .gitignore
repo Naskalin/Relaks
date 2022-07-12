@@ -1,3 +1,4 @@
+App/dir_config.json
 /Data/*
 *.sqlite
 .idea

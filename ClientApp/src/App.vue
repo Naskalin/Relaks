@@ -5,7 +5,6 @@
 
 <script setup lang="ts">
 import ApiErrorsNotify from './views/components/ApiErrorsNotify.vue';
-
 </script>
 
 <style lang="scss">
