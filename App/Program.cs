@@ -70,7 +70,7 @@ if (HybridSupport.IsElectronActive)
         Closable = true,
         Minimizable = true,
         Maximizable = true,
-        // AutoHideMenuBar = true,
+        AutoHideMenuBar = true,
         BackgroundColor = "#E0E7F7"
     }));
 }
