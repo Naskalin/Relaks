@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Nodes;
-using App.DbConfigurations;
-using App.Utils;
+﻿using App.Utils;
 using App.Utils.App;
 using Ardalis.ApiEndpoints;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +17,7 @@ public class Create : EndpointBaseAsync
     public Create(IConfiguration configuration, IOptions<ApiBehaviorOptions> apiOptions)
     {
         _apiOptions = apiOptions;
-        _projectDir = configuration.GetValue<string>(WebHostDefaults.ContentRootKey);;
+        _projectDir = configuration.GetValue<string>(WebHostDefaults.ContentRootKey);
     }
 
     [HttpPost("/api/app-data-dir")]
