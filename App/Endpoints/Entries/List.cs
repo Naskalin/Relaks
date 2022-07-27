@@ -1,13 +1,11 @@
-﻿using App.Repository;
-using Ardalis.ApiEndpoints;
-using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
+﻿using App.Models;
+using App.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace App.Endpoints.Entries;
 
-public class List : EndpointBaseAsync
-    .WithRequest<EntryListRequest>
-    .WithActionResult<List<EntryDto>>
+[HttpGet("/api/entries"), AllowAnonymous]
+public class List : Endpoint<EntryListRequest, List<EntryDto>>
 {
     private readonly EntryRepository _entryRepository;
 
@@ -15,14 +13,10 @@ public class List : EndpointBaseAsync
     {
         _entryRepository = entryRepository;
     }
-
-    [HttpGet("/api/entries")]
-    [SwaggerOperation(OperationId = "Entry.List", Tags = new[] {"Entry"})]
-    public override async Task<ActionResult<List<EntryDto>>> HandleAsync(
-        [FromQuery] EntryListRequest entryListRequest,
-        CancellationToken cancellationToken = new())
+    
+    public override async Task HandleAsync(EntryListRequest req, CancellationToken ct)
     {
-        var query = _entryRepository.FindByListRequest(entryListRequest);
-        return await Task.FromResult<ActionResult>(Ok(query.ToList()));
+        var query = _entryRepository.FindByListRequest(req);
+        await SendAsync(query.ToList(), cancellation: ct);
     }
 }

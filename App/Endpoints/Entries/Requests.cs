@@ -2,7 +2,7 @@
 
 namespace App.Endpoints.Entries;
 
-public class CreateRequest : ISoftDelete
+public class EntryFormRequest : ISoftDelete
 {
     public string Name { get; set; } = null!;
     public string EntryType { get; set; } = null!;
@@ -14,4 +14,23 @@ public class CreateRequest : ISoftDelete
 
     public DateTime? DeletedAt { get; set; }
     public string DeletedReason { get; set; } = null!;
+}
+
+public class EntryCreateRequest : EntryFormRequest
+{
+}
+
+public class EntryPutRequest : EntryFormRequest
+{
+    public Guid EntryId { get; set; }
+}
+
+public class EntryGetRequest
+{
+    public Guid EntryId { get; set; }
+}
+
+public class EntryListRequest : BaseListRequest
+{
+    public EntryTypeEnum? EntryType { get; set; }
 }

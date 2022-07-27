@@ -1,15 +1,11 @@
 ﻿using App.Repository;
-using App.Utils;
-using Ardalis.ApiEndpoints;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace App.Endpoints.InfoTemplates;
 
-public class List : EndpointBaseAsync
-    .WithRequest<ListRequest>
-    .WithActionResult
+[HttpGet("/api/info-templates"), AllowAnonymous]
+public class List : Endpoint<ListRequest>
 {
     private readonly InfoTemplateRepository _infoTemplateRepository;
 
@@ -17,17 +13,13 @@ public class List : EndpointBaseAsync
     {
         _infoTemplateRepository = infoTemplateRepository;
     }
-
-    [HttpGet("/api/info-templates")]
-    [SwaggerOperation(OperationId = "InfoTemplate.List", Tags = new[] {"InfoTemplate"})]
-    public override async Task<ActionResult> HandleAsync(
-        [FromMultiSource] ListRequest listRequest,
-        CancellationToken cancellationToken = new())
+    
+    public override async Task HandleAsync(ListRequest listRequest, CancellationToken ct)
     {
         var templates = await _infoTemplateRepository
             .FindByListRequest(listRequest)
-            .ToListAsync(cancellationToken);
+            .ToListAsync(ct);
 
-        return Ok(templates);
+        await SendOkAsync(templates, ct);
     }
 }

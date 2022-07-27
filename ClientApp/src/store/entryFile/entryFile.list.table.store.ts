@@ -19,7 +19,7 @@ export const useFileListTableStore = defineStore('FileListTableStore', {
                 perPage: 50,
                 search: '',
                 orderBy: '',
-                orderByDesc: '',
+                orderByDesc: false,
                 isDeleted: false,
                 tags: [],
                 category: null

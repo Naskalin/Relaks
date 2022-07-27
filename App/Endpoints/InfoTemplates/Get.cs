@@ -1,13 +1,10 @@
 ﻿using App.Repository;
-using Ardalis.ApiEndpoints;
-using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace App.Endpoints.InfoTemplates;
 
-public class Get : EndpointBaseAsync
-    .WithRequest<Guid>
-    .WithActionResult
+[HttpGet("/api/info-templates/{infoTemplateId:guid}"), AllowAnonymous]
+public class Get : Endpoint<GetRequest>
 {
     private readonly InfoTemplateRepository _infoTemplateRepository;
 
@@ -15,16 +12,16 @@ public class Get : EndpointBaseAsync
     {
         _infoTemplateRepository = infoTemplateRepository;
     }
-
-    [HttpGet("/api/info-templates/{infoTemplateId}", Name = "InfoTemplate_Get")]
-    [SwaggerOperation(OperationId = "InfoTemplate.Get", Tags = new[] {"InfoTemplate"})]
-    public override async Task<ActionResult> HandleAsync(
-        [FromRoute] Guid infoTemplateId,
-        CancellationToken cancellationToken = new()
-    )
+    
+    public override async Task HandleAsync(GetRequest req, CancellationToken ct)
     {
-        var infoTemplate = await _infoTemplateRepository.FindByIdAsync(infoTemplateId, cancellationToken);
-        if (infoTemplate == null) return NotFound();
-        return Ok(infoTemplate);
+        var infoTemplate = await _infoTemplateRepository.FindByIdAsync(req.InfoTemplateId, ct);
+        if (infoTemplate == null)
+        {
+            await SendNotFoundAsync(ct);
+            return;
+        }
+
+        await SendOkAsync(infoTemplate, ct);
     }
 }

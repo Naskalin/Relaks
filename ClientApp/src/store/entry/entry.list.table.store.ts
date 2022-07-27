@@ -21,7 +21,7 @@ export const useEntryListStore = defineStore('EntryListStore', {
                 perPage: 50,
                 search: '',
                 orderBy: '',
-                orderByDesc: '',
+                orderByDesc: false,
                 entryType: null,
                 isDeleted: false,
             }

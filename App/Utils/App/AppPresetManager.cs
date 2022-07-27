@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace App.Utils.App;
 
@@ -15,10 +16,15 @@ public class AppPresetPublic
     public string PhoneRegion { get; set; } = null!;
 }
 
-public class AppPresetModel : AppPresetPublic
+public class AppPresetFull : AppPresetPublic
 {
+    [JsonIgnore]
     public string SqliteConnection { get; set; } = null!;
+    
+    [JsonIgnore]
     public string FilesDir { get; set; } = null!;
+    
+    [JsonIgnore]
     public string CacheDir { get; set; } = null!;
 }
 
@@ -33,11 +39,12 @@ public static class AppPresetManager
             Timezone = AppDefaultPreset.Timezone,
             PhoneRegion = AppDefaultPreset.PhoneRegion
         };
+        
         var json = JsonSerializer.Serialize(data);
         File.WriteAllText(configPath, json);
     }
 
-    public static AppPresetModel? GetPreset(string projectDir)
+    public static AppPresetFull? GetPreset(string projectDir)
     {
         var dirPath = AppDataDirManager.GetDirPath(projectDir);
         if (!Directory.Exists(dirPath)) return null;
@@ -47,7 +54,7 @@ public static class AppPresetManager
 
         using var r = new StreamReader(configPath);
         var json = r.ReadToEnd();
-        var appPresetModel = JsonSerializer.Deserialize<AppPresetModel>(json);
+        var appPresetModel = JsonSerializer.Deserialize<AppPresetFull>(json);
 
         if (appPresetModel == null) throw new ArgumentException("AppPreset, файл конфигурации не распознан.");
 

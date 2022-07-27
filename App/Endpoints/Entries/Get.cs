@@ -1,14 +1,11 @@
 ﻿using App.Models;
 using App.Repository;
-using Ardalis.ApiEndpoints;
-using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace App.Endpoints.Entries;
 
-public class Get : EndpointBaseAsync
-    .WithRequest<Guid>
-    .WithActionResult<Entry>
+[HttpGet("/api/entries/{entryId:guid}"), AllowAnonymous]
+public class Get : Endpoint<EntryGetRequest, Entry>
 {
     private readonly EntryRepository _entryRepository;
 
@@ -16,17 +13,11 @@ public class Get : EndpointBaseAsync
     {
         _entryRepository = entryRepository;
     }
-
-    [HttpGet("/api/entries/{entryId}", Name = "Entry_Get")]
-    [SwaggerOperation(OperationId = "Entry.Get", Tags = new[] {"Entry"})]
-    public override async Task<ActionResult<Entry>> HandleAsync(
-        [FromRoute] Guid entryId, 
-        CancellationToken cancellationToken = new())
+    
+    public override async Task HandleAsync(EntryGetRequest req, CancellationToken ct)
     {
-        var entry = await _entryRepository.FindByIdAsync(entryId, cancellationToken);
-
-        if (entry == null) return NotFound();
-
-        return Ok(entry);
+        var entry = await _entryRepository.FindByIdAsync(req.EntryId, ct);
+        if (entry == null) await SendNotFoundAsync(ct);
+        else await SendAsync(entry, cancellation: ct);
     }
 }

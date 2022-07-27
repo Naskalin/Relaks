@@ -1,3 +1,6 @@
+global using FastEndpoints;
+global using FluentValidation;
+
 using System.Text.Json.Serialization;
 using App.DbConfigurations;
 using App.DbEvents.Fts;
@@ -8,10 +11,9 @@ using ElectronNET.API;
 using ElectronNET.API.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
-
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddFastEndpoints();
 builder.WebHost.UseWebRoot("wwwroot");
 builder.WebHost.UseElectron(args);
 
@@ -30,19 +32,6 @@ if (appDataDir != null)
     }
 }
 
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-    options.JsonSerializerOptions.WriteIndented = true;
-});
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo {Title = "API", Version = "v1"});
-    c.EnableAnnotations();
-});
-
 builder.Services.AddDbContext<AppDbContext>(
     options => options.UseSqlite(connectionString)
 );
@@ -58,6 +47,17 @@ builder.Services.AddTransient<StructureConnectionRepository>();
 builder.Services.AddTransient<StructureItemDbValidate>();
 
 var app = builder.Build();
+
+app.UseAuthorization();
+app.UseFastEndpoints(c =>
+{
+    c.SerializerOptions = options =>
+    {
+        options.Converters.Add(new JsonStringEnumConverter());
+        options.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.WriteIndented = true;
+    };
+});
 
 // Electron Window
 if (HybridSupport.IsElectronActive)
@@ -84,16 +84,5 @@ if (!String.IsNullOrEmpty(connectionString))
     EntryInfoEvents.CheckAndRefresh(db);
 }
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseHsts();
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
 app.UseFileServer();
-app.MapControllers();
 app.Run();
-public partial class Program
-{
-}

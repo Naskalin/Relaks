@@ -1,5 +1,5 @@
 ﻿using App.DbConfigurations;
-using App.Endpoints.Entries.EntryInfos;
+using App.Endpoints.EntryInfos;
 using App.Models;
 using App.Utils.Extensions.Database;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +13,7 @@ public class EntryInfoRepository : BaseRepository<EntryInfo>
     }
     
     public async Task<List<EntryInfo>> PaginateAsync(
-        EntryInfoListDeletableRequest deletableRequest,
+        EntryInfoListRequest deletableRequest,
         CancellationToken cancellationToken
     )
     {
@@ -28,7 +28,7 @@ public class EntryInfoRepository : BaseRepository<EntryInfo>
         if (deletableRequest.IsDeleted != null)
             query = query.Where(x => deletableRequest.IsDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
         
-        //TODO: Search
+        //TODO: FTS Search?
         // if (!string.IsNullOrEmpty(request.Search))
         //     query = query.Where(x => EF.Functions.Like(x.Title, "%" + request.Search + "%")
         //                              || EF.Functions.Like(x.Email, "%" + request.Search + "%")

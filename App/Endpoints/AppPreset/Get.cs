@@ -1,29 +1,16 @@
 ﻿using App.Utils.App;
-using Ardalis.ApiEndpoints;
-using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace App.Endpoints.AppPreset;
 
-public class Get : EndpointBaseAsync
-    .WithoutRequest
-    .WithActionResult
+[HttpGet("/api/app-preset"), AllowAnonymous]
+public class Get : EndpointWithoutRequest<AppPresetPublic>
 {
-    private readonly string _projectDir;
-
-    public Get(IConfiguration configuration)
+    public override async Task HandleAsync(CancellationToken ct)
     {
-        _projectDir = configuration.GetValue<string>(WebHostDefaults.ContentRootKey);
-    }
-    
-    [HttpGet("/api/app-preset")]
-    [SwaggerOperation(OperationId = "AppPreset.Get", Tags = new[] {"AppPreset"})]
-    public override Task<ActionResult> HandleAsync(
-        CancellationToken cancellationToken = new()
-    )
-    {
-        var appPreset = AppPresetManager.GetPreset(_projectDir);
-        if (appPreset == null) return Task.FromResult<ActionResult>(NoContent());
-        return Task.FromResult<ActionResult>(Ok(appPreset));
+        var projectDir = Config.GetValue<string>(WebHostDefaults.ContentRootKey);
+        var appPreset = (AppPresetPublic?) AppPresetManager.GetPreset(projectDir);
+        if (appPreset == null) await SendNoContentAsync(ct);
+        else await SendAsync(appPreset, cancellation: ct);
     }
 }

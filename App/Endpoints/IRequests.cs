@@ -1,8 +1,6 @@
-﻿using App.Models;
+﻿namespace App.Endpoints;
 
-namespace App.Endpoints;
-
-public interface IListRequest : IPaginableRequest, ISearchableRequest, IOrderableRequest
+public interface IListRequest : IPaginableRequest, ISearchableRequest, IOrderableRequest, ISoftDeleteRequest
 {
 }
 
@@ -22,13 +20,8 @@ public interface IOrderableRequest
     public string? OrderBy { get; set; }
     public bool? OrderByDesc { get; set; }
 }
-// public interface ISoftDeleteRequest
-// {
-//     public bool? IsFullDelete { get; set; }
-//     public string DeletedReason { get; set; }
-// }
 
-// public interface ISoftDeletableRequest
-// {
-//     public string DeletedReason { get; set; }   
-// }
+public interface ISoftDeleteRequest
+{
+    public bool? IsDeleted { get; set; }
+}

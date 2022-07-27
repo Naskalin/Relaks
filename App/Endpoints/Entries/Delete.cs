@@ -1,13 +1,10 @@
 ﻿using App.Repository;
-using Ardalis.ApiEndpoints;
-using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace App.Endpoints.Entries;
 
-public class Delete : EndpointBaseAsync
-    .WithRequest<Guid>
-    .WithActionResult
+[HttpDelete("/api/entries/{entryId:guid}"), AllowAnonymous]
+public class Delete : Endpoint<EntryGetRequest>
 {
     private readonly EntryRepository _entryRepository;
 
@@ -16,19 +13,14 @@ public class Delete : EndpointBaseAsync
         _entryRepository = entryRepository;
     }
 
-    [HttpDelete("/api/entries/{entryId}")]
-    [SwaggerOperation(OperationId = "Entry.Delete", Tags = new[] {"Entry"})]
-    public override async Task<ActionResult> HandleAsync(
-        [FromRoute] Guid entryId,
-        CancellationToken cancellationToken = new())
+    public override async Task HandleAsync(EntryGetRequest req, CancellationToken ct)
     {
-        var entry = await _entryRepository.FindByIdAsync(entryId, cancellationToken);
-        if (entry == null)
+        var entry = await _entryRepository.FindByIdAsync(req.EntryId, ct);
+        if (entry == null) await SendNotFoundAsync(ct);
+        else
         {
-            return NotFound();
+            await _entryRepository.DeleteAsync(entry, ct);
+            await SendNoContentAsync(ct);
         }
-
-        await _entryRepository.DeleteAsync(entry, cancellationToken);
-        return NoContent();
     }
 }

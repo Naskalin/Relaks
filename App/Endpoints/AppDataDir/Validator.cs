@@ -1,22 +1,25 @@
-﻿using FluentValidation;
+﻿namespace App.Endpoints.AppDataDir;
 
-namespace App.Endpoints.AppDataDir;
-
-public class FormDetailsValidator : AbstractValidator<FormRequestDetails>
+public class CreateRequestValidator : FormRequestValidator<CreateRequest>
 {
-    public FormDetailsValidator()
+    
+}
+
+public class FormRequestValidator<T> : Validator<T> where T : FormRequest
+{
+    public FormRequestValidator()
     {
         RuleFor(x => x.DataDir)
             .NotEmpty()
-            .WithMessage("Введите путь к директории для размещения ваших данных.");
-
-        RuleFor(x => x.DataDir)
+            .WithMessage("Введите путь к директории для размещения ваших данных.")
+            
             .Must((_, dataDir) => Directory.Exists(dataDir))
-            .WithMessage("Введите существующий путь к директории.");
-
-        RuleFor(x => x.DataDir)
+            .WithMessage("Введите существующий путь к директории.")
+            
             .Must((_, dataDir) => IsDirectoryWritable(dataDir))
-            .WithMessage("Директория закрыта для записи (возможно, это директория системная)");
+            .WithMessage("Директория закрыта для записи (возможно, это директория системная)")
+            ;
+
     }
 
     // https://stackoverflow.com/a/6371533/5638975

@@ -1,13 +1,10 @@
 ﻿using App.Repository;
-using Ardalis.ApiEndpoints;
-using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace App.Endpoints.InfoTemplates;
 
-public class Delete : EndpointBaseAsync
-    .WithRequest<Guid>
-    .WithActionResult
+[HttpDelete("/api/info-templates/{infoTemplateId:guid}"), AllowAnonymous]
+public class Delete : Endpoint<GetRequest>
 {
     private readonly InfoTemplateRepository _infoTemplateRepository;
 
@@ -15,17 +12,17 @@ public class Delete : EndpointBaseAsync
     {
         _infoTemplateRepository = infoTemplateRepository;
     }
-
-    [HttpDelete("/api/info-templates/{infoTemplateId}")]
-    [SwaggerOperation(OperationId = "InfoTemplate.Delete", Tags = new[] {"InfoTemplate"})]
-    public override async Task<ActionResult> HandleAsync(
-        [FromRoute] Guid infoTemplateId, 
-        CancellationToken cancellationToken = new())
+    
+    public override async Task HandleAsync(GetRequest req, CancellationToken ct)
     {
-        var infoTemplate = await _infoTemplateRepository.FindByIdAsync(infoTemplateId, cancellationToken);
-        if (infoTemplate == null) return NotFound();
+        var infoTemplate = await _infoTemplateRepository.FindByIdAsync(req.InfoTemplateId, ct);
+        if (infoTemplate == null)
+        {
+            await SendNotFoundAsync(ct);
+            return;
+        }
 
-        await _infoTemplateRepository.DeleteAsync(infoTemplate, cancellationToken);
-        return NoContent();
+        await _infoTemplateRepository.DeleteAsync(infoTemplate, ct);
+        await SendNoContentAsync(ct);
     }
 }

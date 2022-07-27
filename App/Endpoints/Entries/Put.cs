@@ -1,45 +1,29 @@
 ﻿using App.Mappers;
+
 using App.Repository;
-using App.Utils;
-using Ardalis.ApiEndpoints;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace App.Endpoints.Entries;
 
-public class Put : EndpointBaseAsync
-    .WithRequest<PutRequest>
-    .WithActionResult
+[HttpPut("/api/entries/{entryId:guid}"), AllowAnonymous]
+public class Put : Endpoint<EntryPutRequest>
 {
     private readonly EntryRepository _entryRepository;
-    private readonly IOptions<ApiBehaviorOptions> _apiOptions;
 
-    public Put(EntryRepository entryRepository, IOptions<ApiBehaviorOptions> apiOptions)
+    public Put(EntryRepository entryRepository)
     {
         _entryRepository = entryRepository;
-        _apiOptions = apiOptions;
     }
 
-    [HttpPut("/api/entries/{entryId}")]
-    [SwaggerOperation(OperationId = "Entry.Put", Tags = new[] {"Entry"})]
-    public override async Task<ActionResult> HandleAsync(
-        [FromMultiSource] PutRequest putRequest,
-        CancellationToken cancellationToken = new())
+    public override async Task HandleAsync(EntryPutRequest req, CancellationToken ct)
     {
-        var validation = await new CreateRequestValidator().ValidateAsync(putRequest.Details, cancellationToken);
-        if (!validation.IsValid)
+        var entry = await _entryRepository.FindByIdAsync(req.EntryId, ct);
+        if (entry == null) await SendNotFoundAsync(ct);
+        else
         {
-            validation.Errors.ForEach(e => { ModelState.AddModelError(e.PropertyName, e.ErrorMessage); });
-            return (ActionResult) _apiOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+            req.MapTo(entry);
+            await _entryRepository.UpdateAsync(entry, ct);
+            await SendNoContentAsync(ct);
         }
-
-        var entry = await _entryRepository.FindByIdAsync(putRequest.EntryId, cancellationToken);
-        if (entry == null) return NotFound();
-        
-        putRequest.MapTo(entry);
-        await _entryRepository.UpdateAsync(entry, cancellationToken);
-
-        return NoContent();
     }
 }

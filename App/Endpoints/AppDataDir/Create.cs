@@ -1,43 +1,18 @@
-﻿using App.Utils;
-using App.Utils.App;
-using Ardalis.ApiEndpoints;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Swashbuckle.AspNetCore.Annotations;
+﻿using App.Utils.App;
+using Microsoft.AspNetCore.Authorization;
 
 namespace App.Endpoints.AppDataDir;
 
-public class Create : EndpointBaseAsync
-    .WithRequest<CreateRequest>
-    .WithActionResult
+[HttpPost("/api/app-data-dir"), AllowAnonymous]
+public class Create : Endpoint<CreateRequest>
 {
-    private readonly IOptions<ApiBehaviorOptions> _apiOptions;
-    private readonly string _projectDir;
-
-    public Create(IConfiguration configuration, IOptions<ApiBehaviorOptions> apiOptions)
+    
+    public override async Task HandleAsync(CreateRequest req, CancellationToken ct)
     {
-        _apiOptions = apiOptions;
-        _projectDir = configuration.GetValue<string>(WebHostDefaults.ContentRootKey);
-    }
-
-    [HttpPost("/api/app-data-dir")]
-    [SwaggerOperation(OperationId = "AppDataDir.Create", Tags = new[] {"AppDataDir"})]
-    public override async Task<ActionResult> HandleAsync(
-        [FromMultiSource] CreateRequest request,
-        CancellationToken cancellationToken = new()
-    )
-    {
-        var validation = await new FormDetailsValidator().ValidateAsync(request.Details, cancellationToken);
-        if (!validation.IsValid)
-        {
-            validation.Errors.ForEach(e => { ModelState.AddModelError(e.PropertyName, e.ErrorMessage); });
-            return (ActionResult) _apiOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
-        }
-        
-        AppDataDirManager.UpdateConfigDir(_projectDir, request.Details.DataDir);
-        var dataDir = AppDataDirManager.GetDirPath(_projectDir);
-        if (dataDir == null) return BadRequest();
-        
-        return Ok(dataDir);
+        var projectDir = Config.GetValue<string>(WebHostDefaults.ContentRootKey);
+        AppDataDirManager.UpdateConfigDir(projectDir, req.DataDir);
+        var dataDir = AppDataDirManager.GetDirPath(projectDir);
+        if (dataDir == null) ThrowError("dataDir is null");
+        else await SendAsync(dataDir, cancellation: ct);
     }
 }

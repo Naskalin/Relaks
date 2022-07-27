@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using App.Endpoints.Entries.EntryInfos;
+using App.Endpoints.EntryInfos;
 using App.Models;
 using App.Utils;
 
@@ -7,37 +7,36 @@ namespace App.Mappers;
 
 public static class EntryInfoMapper
 {
-    public static void MapTo(this EntryInfoRequestDetails details, EntryInfo eInfo)
+    public static void MapTo(this EntryInfoFormRequest formRequest, EntryInfo eInfo)
     {
-        details.SoftDeleteMapTo(eInfo);
-        eInfo.Title = details.Title.Trim();
-        eInfo.IsFavorite = details.IsFavorite;
+        formRequest.SoftDeleteMapTo(eInfo);
+        eInfo.Title = formRequest.Title.Trim();
+        eInfo.IsFavorite = formRequest.IsFavorite;
         eInfo.UpdatedAt = DateTime.UtcNow;
 
         switch (eInfo.Type.ToUpper())
         {
-            // case nameof(InfoBaseType.Email):
             case EntryInfo.Email:
-                var email = details.Email()!;
+                var email = formRequest.Email()!;
                 email.Email = email.Email.Trim().ToLower();
                 eInfo.Value = JsonSerializer.Serialize(email, InfoValue.WriteOptions);
                 break;
             case EntryInfo.Phone:
-                eInfo.Value = JsonSerializer.Serialize(details.Phone()!, InfoValue.WriteOptions);
+                eInfo.Value = JsonSerializer.Serialize(formRequest.Phone()!, InfoValue.WriteOptions);
                 break;
             case EntryInfo.Url:
-                var url = details.Url()!;
+                var url = formRequest.Url()!;
                 url.Url = url.Url.Trim();
                 eInfo.Value = JsonSerializer.Serialize(url, InfoValue.WriteOptions);
                 break;
             case EntryInfo.Note:
-                eInfo.Value = JsonSerializer.Serialize(details.Note()!, InfoValue.WriteOptions);
+                eInfo.Value = JsonSerializer.Serialize(formRequest.Note()!, InfoValue.WriteOptions);
                 break;
             case EntryInfo.Date:
-                eInfo.Value = JsonSerializer.Serialize(details.Date()!, InfoValue.WriteOptions);
+                eInfo.Value = JsonSerializer.Serialize(formRequest.Date()!, InfoValue.WriteOptions);
                 break;
             case EntryInfo.Custom:
-                eInfo.Value = JsonSerializer.Serialize(details.Custom()!, InfoValue.WriteOptions);
+                eInfo.Value = JsonSerializer.Serialize(formRequest.Custom()!, InfoValue.WriteOptions);
                 break;
             default:
                 throw new ArgumentException($"EntryInfo Mapper for type: {eInfo.Type} not found.");

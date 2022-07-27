@@ -1,12 +1,14 @@
 ﻿using App.Models;
 using App.Utils;
-using FluentValidation;
 
-namespace App.Endpoints.Entries.EntryInfos;
+namespace App.Endpoints.EntryInfos;
 
-public class RequestDetailsValidator : AbstractValidator<EntryInfoRequestDetails>
+public class EntryInfoCreateValidator : EntryInfoFormValidator<EntryInfoCreateRequest> {}
+public class EntryInfoUpdateValidator : EntryInfoFormValidator<EntryInfoPutRequest> {}
+
+public class EntryInfoFormValidator<T> : Validator<T> where T : EntryInfoFormRequest
 {
-    public RequestDetailsValidator()
+    public EntryInfoFormValidator()
     {
         RuleFor(x => x.Title).NotNull().Length(0, 250);
         RuleFor(x => x.DeletedAt).NotEqual(default(DateTime));
@@ -85,7 +87,7 @@ public class RequestDetailsValidator : AbstractValidator<EntryInfoRequestDetails
             PhoneHelper.ToPhone(number, region);
             return true;
         }
-        catch (Exception)
+        catch
         {
             return false;
         }

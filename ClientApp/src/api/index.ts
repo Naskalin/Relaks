@@ -52,7 +52,7 @@ export declare type ApiListRequest = {
     perPage?: number
     search?: string
     orderBy?: string
-    orderByDesc?: string
+    orderByDesc?: boolean
     isDeleted?: boolean | null
 }
 

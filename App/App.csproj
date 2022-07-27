@@ -2,7 +2,7 @@
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
-        <SpaRoot>..\ClientApp\</SpaRoot>
+        <SpaRoot>..\ClientApp</SpaRoot>
         <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
@@ -10,7 +10,7 @@
         <PackageReference Include="Ardalis.ApiEndpoints" Version="4.0.1" />
         <PackageReference Include="Bogus" Version="34.0.1" />
         <PackageReference Include="ElectronNET.API" Version="13.5.1" />
-        <PackageReference Include="FluentValidation.AspNetCore" Version="10.4.0" />
+        <PackageReference Include="FastEndpoints" Version="4.3.1" />
         <PackageReference Include="libphonenumber-csharp" Version="8.12.45" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.2">
@@ -24,17 +24,16 @@
     </ItemGroup>
     <ItemGroup>
         <Folder Include="Migrations" />
-        <Folder Include="..\ClientApp" />
-        <Folder Include="Utils\Fts" />
+        <Folder Include="$(SpaRoot)" />
         <Folder Include="wwwroot" />
     </ItemGroup>
     <ItemGroup>
-        <Content Remove="$(SpaRoot)**" />
-        <None Remove="$(SpaRoot)**" />
-        <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
-        <None Remove="..\ClientApp\dist\**" />
-        <None Remove="..\ClientApp\public\**" />
-        <None Remove="..\ClientApp\src\**" />
+        <Content Remove="$(SpaRoot)\**" />
+        <None Remove="$(SpaRoot)\**" />
+        <None Include="$(SpaRoot)\**" Exclude="$(SpaRoot)\node_modules\**" />
+        <None Remove="$(SpaRoot)\dist\**" />
+        <None Remove="$(SpaRoot)\public\**" />
+        <None Remove="$(SpaRoot)\src\**" />
     </ItemGroup>
     <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
         <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
@@ -42,7 +41,7 @@
         <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
         <!-- Include the newly-built files in the publish output -->
         <ItemGroup>
-            <DistFiles Include="$(SpaRoot)dist\**" />
+            <DistFiles Include="$(SpaRoot)\dist\**" />
             <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
                 <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
                 <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

@@ -1,5 +1,4 @@
-﻿using App.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace App.Endpoints.Entries.EntryFiles.Meta;
 

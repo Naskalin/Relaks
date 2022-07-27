@@ -1,44 +1,30 @@
 ﻿using App.Mappers;
 using App.Repository;
-using Ardalis.ApiEndpoints;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace App.Endpoints.InfoTemplates;
 
-public class Put : EndpointBaseAsync
-    .WithRequest<PutRequest>
-    .WithActionResult
+[HttpPut("/api/info-templates/{infoTemplateId}"), AllowAnonymous]
+public class Put : Endpoint<PutRequest>
 {
     private readonly InfoTemplateRepository _infoTemplateRepository;
-    private readonly IOptions<ApiBehaviorOptions> _apiOptions;
 
-    public Put(InfoTemplateRepository infoTemplateRepository, IOptions<ApiBehaviorOptions> apiOptions)
+    public Put(InfoTemplateRepository infoTemplateRepository)
     {
         _infoTemplateRepository = infoTemplateRepository;
-        _apiOptions = apiOptions;
     }
 
-    [HttpPut("/api/info-templates/{infoTemplateId}")]
-    [SwaggerOperation(OperationId = "InfoTemplate.Put", Tags = new[] {"InfoTemplate"})]
-    public override async Task<ActionResult> HandleAsync(
-        [FromRoute] PutRequest request,
-        CancellationToken cancellationToken = new()
-    )
+    public override async Task HandleAsync(PutRequest request, CancellationToken ct)
     {
-        var validation = await new FormRequestDetailsValidator().ValidateAsync(request.Details, cancellationToken);
-        if (!validation.IsValid)
+        var infoTemplate = await _infoTemplateRepository.FindByIdAsync(request.InfoTemplateId, ct);
+        if (infoTemplate == null)
         {
-            validation.Errors.ForEach(e => { ModelState.AddModelError(e.PropertyName, e.ErrorMessage); });
-            return (ActionResult) _apiOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
+            await SendNotFoundAsync(ct);
+            return;
         }
         
-        var infoTemplate = await _infoTemplateRepository.FindByIdAsync(request.InfoTemplateId, cancellationToken);
-        if (infoTemplate == null) return NotFound();
-        
-        request.Details.MapTo(infoTemplate);
-        await _infoTemplateRepository.UpdateAsync(infoTemplate, cancellationToken);
-        return NoContent();
+        request.MapTo(infoTemplate);
+        await _infoTemplateRepository.UpdateAsync(infoTemplate, ct);
+        await SendNoContentAsync(ct);
     }
 }
