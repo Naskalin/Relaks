@@ -5,7 +5,6 @@ namespace App.Endpoints.StructureConnections;
 
 public class CreateRequest
 {
-    [FromBody]
     public StructureConnectionFormDetails Details { get; set; } = null!;
 }
 

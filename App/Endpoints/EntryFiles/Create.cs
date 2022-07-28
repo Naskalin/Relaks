@@ -2,13 +2,19 @@
 using App.Models;
 using App.Repository;
 using App.Utils.App;
-using Microsoft.AspNetCore.Authorization;
 
 namespace App.Endpoints.EntryFiles;
 
-[HttpPost("/api/entries/{entryId:guid}/files"), AllowAnonymous]
 public class Create : Endpoint<EntryFileCreateRequest>
 {
+    public override void Configure()
+    {
+        Verbs(Http.POST);
+        Routes("/api/entries/{entryId:guid}/files");
+        AllowAnonymous();
+        AllowFileUploads();
+    }
+
     private readonly EntryFileRepository _entryFileRepository;
     private readonly EntryRepository _entryRepository;
 
@@ -28,11 +34,11 @@ public class Create : Endpoint<EntryFileCreateRequest>
             return;
         }
 
-        var size = req.Files.Sum(f => f.Length);
+        var size = Files.Sum(f => f.Length);
         var category = "";
         if (req.Category != null) category = req.Category.Trim();
         
-        foreach (var formFile in req.Files)
+        foreach (var formFile in Files)
         {
             if (formFile.Length <= 0) continue;
 
@@ -55,6 +61,6 @@ public class Create : Endpoint<EntryFileCreateRequest>
             await _entryFileRepository.CreateAsync(entryFile, ct);
         }
 
-        await SendOkAsync(new {count = req.Files.Count, size}, ct);
+        await SendOkAsync(new {count = Files.Count, size}, ct);
     }
 }

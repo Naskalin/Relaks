@@ -18,7 +18,7 @@ public class EntryFilePutRequest : ISoftDelete
 public class EntryFileCreateRequest
 {
     public Guid EntryId { get; set; }
-    public List<IFormFile> Files { get; set; } = null!;
+    // public List<IFormFile> Files { get; set; } = null!;
     public string? Category { get; set; }
 }
 

@@ -5,7 +5,6 @@ namespace App.Endpoints.StructureItems;
 
 public class CreateRequest
 {
-    [FromBody]
     public StructureItemFormDetails Details { get; set; } = null!;
 }
 

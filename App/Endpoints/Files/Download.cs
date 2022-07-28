@@ -11,16 +11,16 @@ namespace App.Endpoints.Files;
 public class DownloadFiles : Endpoint<DownloadFilesRequest>
 {
     private readonly AppDbContext _db;
-    private readonly AppPresetFull? _appPreset;
+    private AppPresetFull? _appPreset;
 
     public DownloadFiles(AppDbContext db)
     {
         _db = db;
-        _appPreset = AppPresetManager.GetPreset(Config.GetValue<string>(WebHostDefaults.ContentRootKey));
     }
 
     public override async Task HandleAsync(DownloadFilesRequest req, CancellationToken ct)
     {
+        _appPreset = AppPresetManager.GetPreset(Config.GetValue<string>(WebHostDefaults.ContentRootKey));
         var fileModel = await _db.FileModels.FindAsync(req.FileId);
         if (fileModel == null)
         {

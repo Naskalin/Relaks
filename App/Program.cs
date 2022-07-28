@@ -55,7 +55,7 @@ app.UseFastEndpoints(c =>
     {
         options.Converters.Add(new JsonStringEnumConverter());
         options.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-        options.WriteIndented = true;
+        // options.WriteIndented = true;
     };
 });
 

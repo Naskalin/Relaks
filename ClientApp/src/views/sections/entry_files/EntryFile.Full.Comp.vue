@@ -64,6 +64,7 @@
 
     <file-list-table
         @getFiles="listStore.getFiles(entryId)"
+        @rowClick="file => emit('rowClick', file)"
         :list-store="listStore"
         :with-edit="props.withEdit"
         v-bind="$attrs"

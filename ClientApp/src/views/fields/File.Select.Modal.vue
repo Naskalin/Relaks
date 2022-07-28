@@ -1,5 +1,5 @@
 ﻿<template>
-    <modal :label="label" v-model:is-show="isShowModel" full-width>
+    <modal :label="props.label" v-model:is-show="isShowModel" full-width>
         <q-card-section>
             <entry-file-full-comp
                 :entry-id="entryId"
