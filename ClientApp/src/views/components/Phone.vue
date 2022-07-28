@@ -17,7 +17,7 @@ const props = defineProps<{
 const numberFormat = computed(() => {
     const phoneNumber = parsePhoneNumber(props.phone.number, props.phone.region.toUpperCase() as any)
     if (phoneNumber && phoneNumber.isValid()) {
-        return phoneNumber.formatNational();
+        return phoneNumber.formatInternational();
     }
     
     return props.phone.number;
