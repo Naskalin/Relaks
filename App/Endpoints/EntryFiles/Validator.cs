@@ -1,8 +1,6 @@
-﻿using FluentValidation;
+﻿namespace App.Endpoints.EntryFiles;
 
-namespace App.Endpoints.Entries.EntryFiles;
-
-public class PutRequestValidator : AbstractValidator<EntryFilePutDetails>
+public class PutRequestValidator : Validator<EntryFilePutRequest>
 {
     public PutRequestValidator()
     {

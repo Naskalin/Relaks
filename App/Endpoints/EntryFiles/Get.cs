@@ -1,36 +1,28 @@
-﻿// using App.Models;
-// using App.Repository;
-// using App.Utils;
-// using Ardalis.ApiEndpoints;
-// using Microsoft.AspNetCore.Mvc;
-// using Swashbuckle.AspNetCore.Annotations;
-//
-// namespace App.Endpoints.Entries.EntryFiles;
-//
-// public class Get : EndpointBaseAsync
-//     .WithRequest<GetRequest>
-//     .WithActionResult<EntryFile>
-// {
-//     private readonly EntryFileRepository _entryFileRepository;
-//
-//     public Get(EntryFileRepository entryFileRepository)
-//     {
-//         _entryFileRepository = entryFileRepository;
-//     }
-//
-//     [HttpGet("/api/entries/{entryId}/files/{entryFileId}")]
-//     [SwaggerOperation(OperationId = "EntryFile.Get", Tags = new[] {"EntryFile"})]
-//     public override async Task<ActionResult<EntryFile>> HandleAsync(
-//         [FromMultiSource] GetRequest req,
-//         CancellationToken cancellationToken = new()
-//     )
-//     {
-//         var entryFile = await _entryFileRepository.FindByIdAsync(req.EntryFileId, cancellationToken);
-//         if (entryFile == null || entryFile.EntryId != req.EntryId)
-//         {
-//             return NotFound();
-//         }
-//
-//         return Ok(entryFile);
-//     }
-// }
+﻿using App.Models;
+using App.Repository;
+using Microsoft.AspNetCore.Authorization;
+
+namespace App.Endpoints.EntryFiles;
+
+[HttpGet("/api/entries/{entryId:guid}/files/{entryFileId:guid}"), AllowAnonymous]
+public class Get : Endpoint<EntryFileGetRequest, EntryFile>
+{
+    private readonly EntryFileRepository _entryFileRepository;
+
+    public Get(EntryFileRepository entryFileRepository)
+    {
+        _entryFileRepository = entryFileRepository;
+    }
+
+    public override async Task HandleAsync(EntryFileGetRequest req, CancellationToken ct)
+    {
+        var entryFile = await _entryFileRepository.FindByIdAsync(req.EntryFileId, ct);
+        if (entryFile == null || entryFile.EntryId != req.EntryId)
+        {
+            await SendNotFoundAsync(ct);
+            return;
+        }
+
+        await SendOkAsync(entryFile, ct);
+    }
+}

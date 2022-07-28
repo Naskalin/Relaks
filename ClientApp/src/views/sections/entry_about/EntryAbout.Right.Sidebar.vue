@@ -44,6 +44,7 @@ const entryId = (useRoute()).params.entryId as string;
 const getCustomTitle = (eInfo: EntryInfo) => {
     if (eInfo.title) return eInfo.title;
     const custom = eInfo.info as CustomInfo;
+    console.log(custom);
     const firstGroup = custom.groups[0];
     if (firstGroup.title) return firstGroup.title;
 

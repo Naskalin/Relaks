@@ -1,30 +1,21 @@
-﻿// using App.Models;
-// using App.Repository;
-// using App.Utils;
-// using Ardalis.ApiEndpoints;
-// using Microsoft.AspNetCore.Mvc;
-// using Swashbuckle.AspNetCore.Annotations;
-//
-// namespace App.Endpoints.Entries.EntryFiles;
-//
-// public class List : EndpointBaseAsync
-//     .WithRequest<ListRequest>
-//     .WithActionResult<List<EntryFile>>
-// {
-//     private readonly EntryFileRepository _entryFileRepository;
-//
-//     public List(EntryFileRepository entryFileRepository)
-//     {
-//         _entryFileRepository = entryFileRepository;
-//     }
-//
-//     [HttpGet("/api/entries/{entryId}/files")]
-//     [SwaggerOperation(OperationId = "EntryFile.List", Tags = new[] {"EntryFile"})]
-//     public override async Task<ActionResult<List<EntryFile>>> HandleAsync(
-//         [FromMultiSource] ListRequest request,
-//         CancellationToken cancellationToken = new())
-//     {
-//         var files = await _entryFileRepository.PaginateListAsync(request, cancellationToken);
-//         return Ok(files);
-//     }
-// }
+﻿using App.Repository;
+using Microsoft.AspNetCore.Authorization;
+
+namespace App.Endpoints.EntryFiles;
+
+[HttpGet("/api/entries/{entryId:guid}/files"), AllowAnonymous]
+public class List : Endpoint<EntryFileListRequest>
+{
+    private readonly EntryFileRepository _entryFileRepository;
+
+    public List(EntryFileRepository entryFileRepository)
+    {
+        _entryFileRepository = entryFileRepository;
+    }
+
+    public override async Task HandleAsync(EntryFileListRequest req, CancellationToken ct)
+    {
+        var files = await _entryFileRepository.PaginateListAsync(req, ct);
+        await SendOkAsync(files, ct);
+    }
+}

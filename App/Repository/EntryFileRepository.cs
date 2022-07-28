@@ -1,6 +1,6 @@
 ﻿using App.DbConfigurations;
-using App.Endpoints.Entries.EntryFiles;
-using App.Endpoints.Entries.EntryFiles.Meta;
+using App.Endpoints.EntryFiles;
+using App.Endpoints.EntryFiles.Meta;
 using App.Models;
 using App.Utils.Extensions.Database;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +14,7 @@ public class EntryFileRepository : BaseRepository<EntryFile>
     }
 
     public async Task<List<EntryFile>> PaginateListAsync(
-        ListRequest request,
+        EntryFileListRequest request,
         CancellationToken cancellationToken)
     {
         var query = Entities.Where(x => x.EntryId == request.EntryId);

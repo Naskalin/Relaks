@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace App.Endpoints.Files;
+﻿namespace App.Endpoints.Files;
 
 public class DownloadFilesRequest
 {
-    [FromRoute]
     public Guid FileId { get; set; }
-    
-    [FromQuery]
     public string? ImageFilter { get; set; }
+}
+
+public class ExplorerFilesRequest
+{
+    public Guid FileId { get; set; }
 }

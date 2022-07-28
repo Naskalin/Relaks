@@ -4,10 +4,8 @@ export declare type ApiError = {
     errors: {
         [key: string]: string[]
     }
+    title: string,
     status: number
-    title: string
-    traceId: string
-    type: string
 }
 declare type ApiErrorsStoreState = {
     apiError: null | ApiError
