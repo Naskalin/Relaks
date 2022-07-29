@@ -1,43 +1,43 @@
-﻿// using App.Endpoints.StructureConnections;
-// using App.Endpoints.StructureItems;
-// using App.Endpoints.Structures;
-// using App.Models;
-//
-// namespace App.Mappers;
-//
-// public static class StructureMapper
-// {
-//     public static void MapTo(this CreateStructureRequestDetails details, Structure structure)
-//     {
-//         structure.Description = details.Description.Trim();
-//         structure.Title = details.Title.Trim();
-//         structure.StartAt = details.StartAt ?? DateTime.UtcNow;
-//         structure.ParentId = details.ParentId;
-//         structure.UpdatedAt = DateTime.UtcNow;
-//
-//         details.SoftDeleteMapTo(structure);
-//     }
-//
-//     public static void MapTo(this StructureItemFormDetails details, StructureItem structureItem)
-//     {
-//         structureItem.UpdatedAt = DateTime.UtcNow;
-//         structureItem.Description = details.Description.Trim();
-//         structureItem.StartAt = details.StartAt ?? DateTime.UtcNow;
-//         structureItem.EntryId = details.EntryId;
-//         structureItem.StructureId = details.StructureId;
-//
-//         details.SoftDeleteMapTo(structureItem);
-//     }
-//
-//     public static void MapTo(this StructureConnectionFormDetails details, StructureConnection structureConnection)
-//     {
-//         structureConnection.UpdatedAt = DateTime.UtcNow;
-//         structureConnection.Description = details.Description.Trim();
-//         structureConnection.Direction = details.Direction;
-//         structureConnection.StartAt = details.StartAt ?? DateTime.UtcNow;
-//         structureConnection.StructureFirstId = details.StructureFirstId;
-//         structureConnection.StructureSecondId = details.StructureSecondId;
-//         
-//         details.SoftDeleteMapTo(structureConnection);
-//     }
-// }
+﻿using App.Endpoints.StructureConnections;
+using App.Endpoints.StructureItems;
+using App.Endpoints.Structures;
+using App.Models;
+
+namespace App.Mappers;
+
+public static class StructureMapper
+{
+    public static void MapTo(this StructureFormRequest formReq, Structure structure)
+    {
+        structure.Description = formReq.Description.Trim();
+        structure.Title = formReq.Title.Trim();
+        structure.StartAt = formReq.StartAt ?? DateTime.UtcNow;
+        structure.ParentId = formReq.ParentId;
+        structure.UpdatedAt = DateTime.UtcNow;
+
+        formReq.SoftDeleteMapTo(structure);
+    }
+
+    public static void MapTo(this StructureItemFormRequest formReq, StructureItem structureItem)
+    {
+        structureItem.UpdatedAt = DateTime.UtcNow;
+        structureItem.Description = formReq.Description.Trim();
+        structureItem.StartAt = formReq.StartAt ?? DateTime.UtcNow;
+        structureItem.EntryId = formReq.EntryId;
+        structureItem.StructureId = formReq.StructureId;
+
+        formReq.SoftDeleteMapTo(structureItem);
+    }
+
+    public static void MapTo(this StructureConnectionFormRequest formReq, StructureConnection structureConnection)
+    {
+        structureConnection.UpdatedAt = DateTime.UtcNow;
+        structureConnection.Description = formReq.Description.Trim();
+        structureConnection.Direction = formReq.Direction;
+        structureConnection.StartAt = formReq.StartAt ?? DateTime.UtcNow;
+        structureConnection.StructureFirstId = formReq.StructureFirstId;
+        structureConnection.StructureSecondId = formReq.StructureSecondId;
+        
+        formReq.SoftDeleteMapTo(structureConnection);
+    }
+}

@@ -1,12 +1,14 @@
 ﻿using App.Repository;
-using FluentValidation;
 using FluentValidation.Results;
 
 namespace App.Endpoints.StructureItems;
 
-public class DetailsValidator : AbstractValidator<StructureItemFormDetails>
+public class StructureItemCreateValidator : StructureItemFormValidator<StructureItemCreateRequest> {}
+public class StructureItemUpdateValidator : StructureItemFormValidator<StructureItemPutRequest> {}
+
+public class StructureItemFormValidator<T> : Validator<T> where T : StructureItemFormRequest
 {
-    public DetailsValidator()
+    public StructureItemFormValidator()
     {
         RuleFor(x => x.Description).NotNull().Length(0, 250);
         RuleFor(x => x.EntryId).NotEmpty();
@@ -28,13 +30,13 @@ public class StructureItemDbValidate
         _entryRepository = entryRepository;
     }
 
-    public async Task<List<ValidationFailure>> ValidateAsync(StructureItemFormDetails details, CancellationToken cancellationToken)
+    public async Task<List<ValidationFailure>> ValidateAsync(StructureItemFormRequest request, CancellationToken cancellationToken)
     {
         var errors = new List<ValidationFailure>();
-        var entry = await _entryRepository.FindByIdAsync(details.EntryId, cancellationToken);
+        var entry = await _entryRepository.FindByIdAsync(request.EntryId, cancellationToken);
         if (entry == null) errors.Add(new ValidationFailure("EntryId", "EntryId not found"));
         
-        var structure = await _structureRepository.FindByIdAsync(details.StructureId, cancellationToken);
+        var structure = await _structureRepository.FindByIdAsync(request.StructureId, cancellationToken);
         if (structure == null) errors.Add(new ValidationFailure("StructureId", "StructureId not found"));
 
         return errors;

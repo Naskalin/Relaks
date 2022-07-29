@@ -28,7 +28,7 @@ public class EntryFileGetRequest
     public Guid EntryFileId { get; set; }
 }
 
-public class EntryFileListRequest : BaseListDeletableRequest
+public class EntryFileListRequest : BaseListRequest
 {
     public Guid EntryId { get; set; }
 

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace App.Endpoints.EntryInfos;
 
-[HttpGet("/api/entries/{entryId}/entry-infos"), AllowAnonymous]
+[HttpGet("/api/entries/{entryId:guid}/entry-infos"), AllowAnonymous]
 public class List : Endpoint<EntryInfoListRequest>
 {
     private readonly EntryInfoRepository _entryInfoRepository;

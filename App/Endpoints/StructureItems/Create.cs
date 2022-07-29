@@ -1,56 +1,42 @@
-﻿// using App.Mappers;
-// using App.Models;
-// using App.Repository;
-// using App.Utils;
-// using Ardalis.ApiEndpoints;
-// using Microsoft.AspNetCore.Mvc;
-// using Microsoft.Extensions.Options;
-// using Swashbuckle.AspNetCore.Annotations;
-//
-// namespace App.Endpoints.StructureItems;
-//
-// public class Create : EndpointBaseAsync
-//     .WithRequest<CreateRequest>
-//     .WithActionResult
-// {
-//     private readonly StructureItemRepository _structureItemRepository;
-//     private readonly StructureItemDbValidate _structureItemDbValidate;
-//     private readonly IOptions<ApiBehaviorOptions> _apiOptions;
-//
-//     public Create(
-//         StructureItemRepository structureItemRepository,
-//         StructureItemDbValidate structureItemDbValidate,
-//         IOptions<ApiBehaviorOptions> apiOptions
-//         )
-//     {
-//         _structureItemRepository = structureItemRepository;
-//         _structureItemDbValidate = structureItemDbValidate;
-//         _apiOptions = apiOptions;
-//     }
-//
-//     [HttpPost("/api/structure-items")]
-//     [SwaggerOperation(OperationId = "StructureItem.Create", Tags = new[] {"StructureItem"})]
-//     public override async Task<ActionResult> HandleAsync(
-//         [FromMultiSource] CreateRequest request,
-//         CancellationToken cancellationToken = new()
-//     )
-//     {
-//         var validation = await new DetailsValidator().ValidateAsync(request.Details, cancellationToken);
-//         var errors = await _structureItemDbValidate.ValidateAsync(request.Details, cancellationToken);
-//         if (errors.Any()) errors.ForEach(e => {validation.Errors.Add(e);});
-//         if (!validation.IsValid)
-//         {
-//             validation.Errors.ForEach(e => { ModelState.AddModelError(e.PropertyName, e.ErrorMessage); });
-//             return (ActionResult) _apiOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
-//         }
-//
-//         var structureItem = new StructureItem()
-//         {
-//             CreatedAt = DateTime.UtcNow,
-//         };
-//         request.Details.MapTo(structureItem);
-//         await _structureItemRepository.CreateAsync(structureItem, cancellationToken);
-//
-//         return CreatedAtRoute("StructureItem_Get", new {structureItemId = structureItem.Id}, structureItem);
-//     }
-// }
+﻿using App.Mappers;
+using App.Models;
+using App.Repository;
+using Microsoft.AspNetCore.Authorization;
+
+namespace App.Endpoints.StructureItems;
+
+[HttpPost("/api/structure-items"), AllowAnonymous]
+public class Create : Endpoint<StructureItemCreateRequest>
+{
+    private readonly StructureItemRepository _structureItemRepository;
+    private readonly StructureItemDbValidate _structureItemDbValidate;
+
+    public Create(
+        StructureItemRepository structureItemRepository,
+        StructureItemDbValidate structureItemDbValidate
+        )
+    {
+        _structureItemRepository = structureItemRepository;
+        _structureItemDbValidate = structureItemDbValidate;
+    }
+
+    
+    public override async Task HandleAsync(StructureItemCreateRequest req, CancellationToken ct)
+    {
+        var errors = await _structureItemDbValidate.ValidateAsync(req, ct);
+        if (errors.Any())
+        {
+            errors.ForEach(e => AddError(e.PropertyName, e.ErrorMessage));
+            ThrowIfAnyErrors();
+            return;
+        };
+
+        var structureItem = new StructureItem()
+        {
+            CreatedAt = DateTime.UtcNow,
+        };
+        req.MapTo(structureItem);
+        await _structureItemRepository.CreateAsync(structureItem, ct);
+        await SendCreatedAtAsync<Get>(new {structureItemId = structureItem.Id}, structureItem, cancellation: ct);
+    }
+}

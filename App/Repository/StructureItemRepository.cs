@@ -18,7 +18,7 @@ public class StructureItemRepository : BaseRepository<StructureItem>
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public async Task<List<StructureItem>> FindByListRequestAsync(ListRequest req, CancellationToken cancellationToken)
+    public async Task<List<StructureItem>> FindByListRequestAsync(StructureItemListRequest req, CancellationToken cancellationToken)
     {
         var query = Entities.AsQueryable();
 

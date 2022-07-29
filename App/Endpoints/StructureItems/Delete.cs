@@ -1,31 +1,28 @@
-﻿// using App.Repository;
-// using Ardalis.ApiEndpoints;
-// using Microsoft.AspNetCore.Mvc;
-// using Swashbuckle.AspNetCore.Annotations;
-//
-// namespace App.Endpoints.StructureItems;
-//
-// public class Delete : EndpointBaseAsync
-//     .WithRequest<Guid>
-//     .WithActionResult
-// {
-//     private readonly StructureItemRepository _structureItemRepository;
-//
-//     public Delete(StructureItemRepository structureItemRepository)
-//     {
-//         _structureItemRepository = structureItemRepository;
-//     }
-//
-//     [HttpDelete("/api/structure-items/{structureItemId}")]
-//     [SwaggerOperation(OperationId = "StructureItem.Delete", Tags = new[] {"StructureItem"})]
-//     public override async Task<ActionResult> HandleAsync(
-//         [FromRoute] Guid structureItemId,
-//         CancellationToken cancellationToken = new()
-//     )
-//     {
-//         var structureItem = await _structureItemRepository.FindByIdAsync(structureItemId, cancellationToken);
-//         if (structureItem == null) return NotFound();
-//         await _structureItemRepository.DeleteAsync(structureItem, cancellationToken);
-//         return NoContent();
-//     }
-// }
+﻿using App.Repository;
+using Microsoft.AspNetCore.Authorization;
+
+namespace App.Endpoints.StructureItems;
+
+[HttpDelete("/api/structure-items/{structureItemId:guid}"), AllowAnonymous]
+public class Delete : Endpoint<StructureItemGetRequest>
+{
+    private readonly StructureItemRepository _structureItemRepository;
+
+    public Delete(StructureItemRepository structureItemRepository)
+    {
+        _structureItemRepository = structureItemRepository;
+    }
+
+    
+    public override async Task HandleAsync(StructureItemGetRequest req, CancellationToken ct)
+    {
+        var structureItem = await _structureItemRepository.FindByIdAsync(req.StructureItemId, ct);
+        if (structureItem == null)
+        {
+            await SendNotFoundAsync(ct);
+            return;
+        }
+        await _structureItemRepository.DeleteAsync(structureItem, ct);
+        await SendNoContentAsync(ct);
+    }
+}

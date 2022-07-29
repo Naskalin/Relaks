@@ -18,7 +18,7 @@ public class StructureConnectionRepository : BaseRepository<StructureConnection>
         );
     }
 
-    public IQueryable<StructureConnection> FindByListRequest(ListRequest req)
+    public IQueryable<StructureConnection> FindByListRequest(StructureConnectionListRequest req)
     {
         var query = FindByEntryId(req.EntryId);
         

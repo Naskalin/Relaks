@@ -1,34 +1,28 @@
-﻿// using App.Repository;
-// using App.Utils;
-// using Ardalis.ApiEndpoints;
-// using Microsoft.AspNetCore.Mvc;
-// using Swashbuckle.AspNetCore.Annotations;
-//
-// namespace App.Endpoints.Structures;
-//
-// public class Delete : EndpointBaseAsync
-//     .WithRequest<GetRequest>
-//     .WithActionResult
-// {
-//     private readonly StructureRepository _structureRepository;
-//
-//     public Delete(StructureRepository structureRepository)
-//     {
-//         _structureRepository = structureRepository;
-//     }
-//
-//     [HttpDelete("/api/entries/{entryId}/structures/{structureId}")]
-//     [SwaggerOperation(OperationId = "Structure.Delete", Tags = new[] {"Structure"})]
-//     public override async Task<ActionResult> HandleAsync(
-//         [FromMultiSource] GetRequest request,
-//         CancellationToken cancellationToken = new()
-//     )
-//     {
-//         var structure = await _structureRepository.FindByIdAsync(request.StructureId, cancellationToken);
-//         if (structure == null || structure.EntryId != request.EntryId) return NotFound();
-//
-//         await _structureRepository.DeleteAsync(structure, cancellationToken);
-//
-//         return NoContent();
-//     }
-// }
+﻿using App.Repository;
+using Microsoft.AspNetCore.Authorization;
+
+namespace App.Endpoints.Structures;
+
+[HttpDelete("/api/entries/{entryId:guid}/structures/{structureId:guid}"), AllowAnonymous]
+public class Delete : Endpoint<StructureGetRequest>
+{
+    private readonly StructureRepository _structureRepository;
+
+    public Delete(StructureRepository structureRepository)
+    {
+        _structureRepository = structureRepository;
+    }
+
+    public override async Task HandleAsync(StructureGetRequest req, CancellationToken ct)
+    {
+        var structure = await _structureRepository.FindByIdAsync(req.StructureId, ct);
+        if (structure == null || structure.EntryId != req.EntryId)
+        {
+            await SendNotFoundAsync(ct);
+            return;
+        }
+
+        await _structureRepository.DeleteAsync(structure, ct);
+        await SendNoContentAsync(ct);
+    }
+}

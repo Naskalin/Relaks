@@ -13,7 +13,7 @@
     <div v-if="itemsStore.items.length">
         <p style="font-size: .85rem" class="text-center">
             <q-icon name="las la-info-circle"/>
-            Клик на аватар откроет предпросмотр объединения.
+            Клик на аватар откроет предпросмотр.
         </p>
         <q-list bordered separator class="bg-my-grey">
             <structure-item-single

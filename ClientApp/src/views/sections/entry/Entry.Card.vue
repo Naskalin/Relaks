@@ -102,7 +102,6 @@ import {useEntryEditStore} from "../../../store/entry/entry.edit.store";
 import {apiMappers} from "../../../api/api_mappers";
 
 const editStore = useEntryEditStore();
-// const isShowEditModal = ref(false);
 const isShowAvatarSelect = ref(false);
 
 const props = withDefaults(defineProps<{

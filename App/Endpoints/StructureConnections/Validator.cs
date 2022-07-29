@@ -1,11 +1,11 @@
-﻿using App.Models;
-using FluentValidation;
+﻿namespace App.Endpoints.StructureConnections;
 
-namespace App.Endpoints.StructureConnections;
+public class StructureConnectionCreateValidator : StructureConnectionFormValidator<StructureConnectionCreateRequest> {}
+public class StructureConnectionUpdateValidator : StructureConnectionFormValidator<StructureConnectionPutRequest> {}
 
-public class DetailsValidator : AbstractValidator<StructureConnectionFormDetails>
+public class StructureConnectionFormValidator<T> : Validator<T> where T : StructureConnectionFormRequest
 {
-    public DetailsValidator()
+    public StructureConnectionFormValidator()
     {
         RuleFor(x => x.Description).NotNull().Length(0, 500);
         RuleFor(x => x.StructureFirstId).NotEmpty();

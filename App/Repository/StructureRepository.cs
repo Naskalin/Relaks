@@ -12,7 +12,7 @@ public class StructureRepository : BaseRepository<Structure>
     {
     }
 
-    public IQueryable<Structure> FindStructures(ListRequest req)
+    public IQueryable<Structure> FindStructures(StructureListRequest req)
     {
         var query = Entities
             .Where(x => x.EntryId.Equals(req.EntryId));

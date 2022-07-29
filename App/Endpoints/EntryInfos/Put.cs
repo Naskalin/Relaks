@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace App.Endpoints.EntryInfos;
 
-[HttpPut("/api/entries/{entryId}/entry-infos/{entryInfoId}"), AllowAnonymous]
+[HttpPut("/api/entries/{entryId:guid}/entry-infos/{entryInfoId:guid}"), AllowAnonymous]
 public class Put : Endpoint<EntryInfoPutRequest>
 {
     private readonly EntryInfoRepository _entryInfoRepository;
