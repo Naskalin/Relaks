@@ -14,8 +14,8 @@ public class StructureItemPutRequest : StructureItemFormRequest
 
 public class StructureItemFormRequest : ISoftDelete
 {
-    public Guid StructureId { get; set; }
-    public Guid EntryId { get; set; }
+    public Guid StructureId { get; set; } = default!;
+    public Guid EntryId { get; set; } = default!;
     public string Description { get; set; } = null!;
     public DateTime? StartAt { get; set; }
     

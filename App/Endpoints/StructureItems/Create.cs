@@ -24,11 +24,7 @@ public class Create : Endpoint<StructureItemCreateRequest>
     public override async Task HandleAsync(StructureItemCreateRequest req, CancellationToken ct)
     {
         var errors = await _structureItemDbValidate.ValidateAsync(req, ct);
-        if (errors.Any())
-        {
-            errors.ForEach(e => AddError(x => e.PropertyName, e.ErrorMessage));
-        };
-        
+        if (errors.Any()) errors.ForEach(e => AddError(x => e.PropertyName, e.ErrorMessage));
         ThrowIfAnyErrors();
 
         var structureItem = new StructureItem()

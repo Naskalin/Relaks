@@ -1,28 +1,60 @@
 ﻿<template>
-    <div class="row items-center q-col-gutter-lg">
-        <div class="col-auto">
-            <span class="text-grey-7">Объединение <sup>*</sup></span>
-        </div>
-        <div class="col">
-            <q-list v-if="entrySelected" bordered>
+    <q-field 
+        label="Объединение"
+        stack-label 
+        :rules="[val => !!val || 'Объединение, обязательно к заполнению']"
+        v-model="entrySelected"
+        class="items-center"
+    >
+        <template v-slot:after>
+            <q-btn
+                color="secondary"
+                outline
+                no-caps
+                :disable="isShow"
+                @click="isShow = true"
+            >
+                <div class="row column q-col-gutter-xs">
+                    <div class="col"><q-icon name="las la-hand-pointer"/></div>
+                    <div class="col">{{entrySelected ? 'Изменить' : 'Выбрать'}}</div>
+                </div>
+                <br>
+            </q-btn>
+        </template>
+        <template v-slot:control>
+            <q-list v-if="entrySelected" bordered class="q-mt-sm">
                 <entry-item
                     :entry="entrySelected"
                     @click="isShow = true"
                     clickable
                 />
             </q-list>
-            <q-btn
-                v-else
-                label="Выбрать"
-                color="secondary"
-                size="sm"
-                outline
-                icon="las la-hand-pointer"
-                :disable="isShow"
-                @click="isShow = true"
-            />
-        </div>
-    </div>
+        </template>
+    </q-field>
+<!--    <div class="row items-center q-col-gutter-lg">-->
+<!--        <div class="col-auto">-->
+<!--            <span class="text-grey-7">Объединение <sup>*</sup></span>-->
+<!--        </div>-->
+<!--        <div class="col">-->
+<!--            <q-list v-if="entrySelected" bordered>-->
+<!--                <entry-item-->
+<!--                    :entry="entrySelected"-->
+<!--                    @click="isShow = true"-->
+<!--                    clickable-->
+<!--                />-->
+<!--            </q-list>-->
+<!--            <q-btn-->
+<!--                v-else-->
+<!--                label="Выбрать"-->
+<!--                color="secondary"-->
+<!--                size="sm"-->
+<!--                outline-->
+<!--                icon="las la-hand-pointer"-->
+<!--                :disable="isShow"-->
+<!--                @click="isShow = true"-->
+<!--            />-->
+<!--        </div>-->
+<!--    </div>-->
     
     <q-dialog 
         v-model="isShow" 

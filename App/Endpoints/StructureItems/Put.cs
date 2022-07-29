@@ -28,11 +28,8 @@ public class Put : Endpoint<StructureItemPutRequest>
     public override async Task HandleAsync(StructureItemPutRequest req, CancellationToken ct)
     {
         var errors = await _structureItemDbValidate.ValidateAsync(req, ct);
-        if (errors.Any())
-        {
-            errors.ForEach(e => AddError(x => e.PropertyName, e.ErrorMessage));
-            ThrowIfAnyErrors();
-        };
+        if (errors.Any()) errors.ForEach(e => AddError(x => e.PropertyName, e.ErrorMessage));
+        ThrowIfAnyErrors();
 
         var structureItem = await _structureItemRepository.FindByIdAsync(req.StructureItemId, ct);
         if (structureItem == null)
