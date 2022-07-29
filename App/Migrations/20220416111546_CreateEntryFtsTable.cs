@@ -47,7 +47,7 @@ namespace App.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(
-                SqliteMigrationHelper.DeleteTriggers(nameof(FtsEntry))
+                SqliteMigrationHelper.DeleteTriggers("EntryFts")
             );
             
             migrationBuilder.DropTable(

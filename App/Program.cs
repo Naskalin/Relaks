@@ -6,10 +6,11 @@ using App.DbConfigurations;
 using App.DbEvents.Fts;
 using App.Endpoints.StructureItems;
 using App.Repository;
+using App.Seeders;
 using App.Utils.App;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
-using Microsoft.AspNetCore.Mvc;
+// using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,7 +37,7 @@ builder.Services.AddDbContext<AppDbContext>(
     options => options.UseSqlite(connectionString)
 );
 
-builder.Services.Configure<ApiBehaviorOptions>(o => { o.SuppressInferBindingSourcesForParameters = true; });
+// builder.Services.Configure<ApiBehaviorOptions>(o => { o.SuppressInferBindingSourcesForParameters = true; });
 builder.Services.AddTransient<EntryRepository>();
 builder.Services.AddTransient<EntryInfoRepository>();
 builder.Services.AddTransient<InfoTemplateRepository>();
@@ -80,8 +81,11 @@ if (!String.IsNullOrEmpty(connectionString))
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
+    
     EntryEvents.CheckAndRefresh(db);
     EntryInfoEvents.CheckAndRefresh(db);
+    
+    // if (app.Environment.IsDevelopment()) new DatabaseSeeder(db).SeedAll();
 }
 
 app.UseFileServer();

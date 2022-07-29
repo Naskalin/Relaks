@@ -3,6 +3,7 @@ using System;
 using App.DbConfigurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220729222348_AddTempCategory")]
+    partial class AddTempCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
@@ -109,45 +111,14 @@ namespace App.Migrations
                     b.ToTable("EntryInfos", (string)null);
                 });
 
-            modelBuilder.Entity("App.Models.FileCategory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
-
-                    b.ToTable("FileCategories", (string)null);
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("FileCategory");
-                });
-
             modelBuilder.Entity("App.Models.FileModel", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("CategoryId")
+                    b.Property<string>("Category")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ContentType")
@@ -180,12 +151,14 @@ namespace App.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("TempCategory")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("Files", (string)null);
 
@@ -415,18 +388,6 @@ namespace App.Migrations
                     b.HasDiscriminator().HasValue("EntryFile");
                 });
 
-            modelBuilder.Entity("App.Models.EntryFileCategory", b =>
-                {
-                    b.HasBaseType("App.Models.FileCategory");
-
-                    b.Property<Guid>("EntryId")
-                        .HasColumnType("TEXT");
-
-                    b.HasIndex("EntryId");
-
-                    b.HasDiscriminator().HasValue("EntryFileCategory");
-                });
-
             modelBuilder.Entity("App.Models.EntryInfoFile", b =>
                 {
                     b.HasBaseType("App.Models.FileModel");
@@ -446,25 +407,6 @@ namespace App.Migrations
                         .HasForeignKey("EntryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("App.Models.FileCategory", b =>
-                {
-                    b.HasOne("App.Models.FileCategory", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Parent");
-                });
-
-            modelBuilder.Entity("App.Models.FileModel", b =>
-                {
-                    b.HasOne("App.Models.FileCategory", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId");
-
-                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("App.Models.Structure", b =>
@@ -532,17 +474,6 @@ namespace App.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("App.Models.EntryFileCategory", b =>
-                {
-                    b.HasOne("App.Models.Entry", "Entry")
-                        .WithMany()
-                        .HasForeignKey("EntryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Entry");
-                });
-
             modelBuilder.Entity("App.Models.EntryInfoFile", b =>
                 {
                     b.HasOne("App.Models.EntryInfo", null)
@@ -564,11 +495,6 @@ namespace App.Migrations
             modelBuilder.Entity("App.Models.EntryInfo", b =>
                 {
                     b.Navigation("Files");
-                });
-
-            modelBuilder.Entity("App.Models.FileCategory", b =>
-                {
-                    b.Navigation("Children");
                 });
 
             modelBuilder.Entity("App.Models.Structure", b =>

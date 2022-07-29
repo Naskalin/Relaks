@@ -14,14 +14,19 @@ public class FileModel : BaseEntity, ITimestampResource, ISoftDelete
     public DateTime? DeletedAt { get; set; }
     public string DeletedReason { get; set; } = null!;
     public string Discriminator { get; set; } = null!;
-    public string Category { get; set; } = null!;
+    // public string Category { get; set; } = null!;
+    // public string TempCategory { get; set; } = null!;
+    
+    public FileCategory? Category { get; set; }
+    public Guid? CategoryId { get; set; }
+    
     public List<string> Tags { get; set; } = new();
 
     public bool IsImage()
     {
         var pattern = @"image\/";
-        var m = Regex.Match(ContentType, pattern, RegexOptions.IgnoreCase);
-        return m.Success;
+        var match = Regex.Match(ContentType, pattern, RegexOptions.IgnoreCase);
+        return match.Success;
     }
 }
 
@@ -31,7 +36,7 @@ public class EntryFile : FileModel
 
     public string GetFileRelativeDir()
     {
-        return System.IO.Path.Combine(nameof(Entry).ToLowerInvariant(), EntryId.ToString());
+        return System.IO.Path.Combine("entry", EntryId.ToString());
     }
 
     public string GetFileRelativePath()
@@ -46,7 +51,7 @@ public class EntryInfoFile : FileModel
     
     public string GetFileRelativeDir()
     {
-        return System.IO.Path.Combine(nameof(Entry).ToLowerInvariant(), EntryInfoId.ToString());
+        return System.IO.Path.Combine("entry_info", EntryInfoId.ToString());
     }
 
     public string GetFileRelativePath()

@@ -22,13 +22,13 @@ public class EntryFileRepository : BaseRepository<EntryFile>
         if (request.IsDeleted != null)
             query = query.Where(x => request.IsDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
 
-        if (request.Category != null)
-        {
-            if (request.Category == "")
-                query = query.Where(x => x.Category == "");
-            else
-                query = query.Where(x => x.Category == request.Category);   
-        }
+        // if (request.Category != null)
+        // {
+        //     if (request.Category == "")
+        //         query = query.Where(x => x.Category == "");
+        //     else
+        //         query = query.Where(x => x.Category == request.Category);   
+        // }
 
         if (request.Tags.Any())
         {
@@ -70,13 +70,13 @@ public class EntryFileRepository : BaseRepository<EntryFile>
             .Select(x => new {x.Tags, x.Category})
             .ToListAsync(cancellationToken);
 
-        var categories = allMeta
-                .Where(x => !String.IsNullOrEmpty(x.Category))
-                .Select(x => x.Category)
-                .ToHashSet()
-                .OrderBy(x => x)
-                .ToList()
-            ;
+        // var categories = allMeta
+        //         .Where(x => !String.IsNullOrEmpty(x.Category))
+        //         .Select(x => x.Category)
+        //         .ToHashSet()
+        //         .OrderBy(x => x)
+        //         .ToList()
+        //     ;
 
         var tags = new HashSet<string>();
         var tagLists = allMeta.Select(x => x.Tags).ToList();
@@ -90,7 +90,7 @@ public class EntryFileRepository : BaseRepository<EntryFile>
         
         var result = new GetMetaResult()
         {
-            Categories = categories,
+            // Categories = categories,
             Tags = tags.OrderBy(x => x).ToList()
         };
 

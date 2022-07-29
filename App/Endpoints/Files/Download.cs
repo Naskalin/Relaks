@@ -75,10 +75,6 @@ public class DownloadFiles : Endpoint<DownloadFilesRequest>
             contentType: fileModel.ContentType,
             cancellation: ct
         );
-        // return new FileStreamResult(fileStream, fileModel.ContentType)
-        // {
-        //     FileDownloadName = fileDownloadName
-        // };
     }
 
     private async Task<string?> TryApplyImageFilter(

@@ -19,20 +19,20 @@ public class Put : Endpoint<PutMetaRequest>
     {
         var query = _entryFileRepository.Entities.Where(x => x.EntryId == req.EntryId);
         List<EntryFile> entryFiles;
-        if (req.Field == FileMetaFieldsEnum.Category)
-        {
-            entryFiles = await query
-                .Where(x => x.Category == req.Value)
-                .ToListAsync(ct);
-        }
-        else
-        {
+        // if (req.Field == FileMetaFieldsEnum.Category)
+        // {
+            // entryFiles = await query
+            //     .Where(x => x.Category == req.Value)
+            //     .ToListAsync(ct);
+        // }
+        // else
+        // {
             entryFiles = query
                     .AsEnumerable()
                     .Where(x => x.Tags.Any(tag => tag == req.Value))
                     .ToList()
                 ;
-        }
+        // }
 
         if (!entryFiles.Any())
         {
@@ -40,15 +40,15 @@ public class Put : Endpoint<PutMetaRequest>
             return;
         }
 
-        if (req.Field == FileMetaFieldsEnum.Category)
-        {
-            foreach (var entryFile in entryFiles)
-            {
-                entryFile.Category = req.NewValue;
-            }
-        }
-        else
-        {
+        // if (req.Field == FileMetaFieldsEnum.Category)
+        // {
+        //     foreach (var entryFile in entryFiles)
+        //     {
+        //         entryFile.Category = req.NewValue;
+        //     }
+        // }
+        // else
+        // {
             foreach (var entryFile in entryFiles)
             {
                 var i = 0;
@@ -62,7 +62,7 @@ public class Put : Endpoint<PutMetaRequest>
                     i++;
                 }
             }
-        }
+        // }
 
         await _entryFileRepository.UpdateMultipleAsync(entryFiles, ct);
         await SendNoContentAsync(ct);

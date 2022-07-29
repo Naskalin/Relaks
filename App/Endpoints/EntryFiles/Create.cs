@@ -35,8 +35,8 @@ public class Create : Endpoint<EntryFileCreateRequest>
         }
 
         var size = Files.Sum(f => f.Length);
-        var category = "";
-        if (req.Category != null) category = req.Category.Trim();
+        // var category = "";
+        // if (req.Category != null) category = req.Category.Trim();
         
         foreach (var formFile in Files)
         {
@@ -45,7 +45,7 @@ public class Create : Endpoint<EntryFileCreateRequest>
             var entryFile = new EntryFile
             {
                 EntryId = entry.Id,
-                Category = category
+                // Category = category
             };
             formFile.MapToCreate(entryFile);
 

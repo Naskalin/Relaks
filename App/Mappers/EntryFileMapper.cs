@@ -10,7 +10,8 @@ public static class EntryFileMapper
         var guid = Guid.NewGuid();
         model.Id = guid;
         model.Path = guid + Path.GetExtension(formFile.FileName);
-        
+        // model.Category = "";
+        // model.TempCategory = "";
         model.ContentType = formFile.ContentType;
         model.Name = Path.GetFileNameWithoutExtension(formFile.FileName);
         model.CreatedAt = DateTime.UtcNow;
@@ -22,7 +23,9 @@ public static class EntryFileMapper
     {
         model.Name = req.Name.Trim();
         model.UpdatedAt = DateTime.UtcNow;
-        model.Category = req.Category.Trim();
+        // model.Category = "";
+        // model.Category = req.Category.Trim();
+        // model.TempCategory = "";
         model.Tags = req.Tags;
         req.SoftDeleteMapTo(model);
     }

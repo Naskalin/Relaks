@@ -9,10 +9,13 @@ public sealed class AppDbContext : DbContext
 {
     public DbSet<Entry> Entries { get; set; } = null!;
     public DbSet<EntryInfo> EntryInfos { get; set; } = null!;
+    public DbSet<InfoTemplate> InfoTemplates { get; set; } = null!;
+
     public DbSet<FileModel> FileModels { get; set; } = null!;
     public DbSet<EntryFile> EntryFiles { get; set; } = null!;
     public DbSet<EntryInfoFile> EntryInfoFiles { get; set; } = null!;
-    public DbSet<InfoTemplate> InfoTemplates { get; set; } = null!;
+    public DbSet<FileCategory> FileCategories { get; set; } = null!;
+    public DbSet<EntryFileCategory> EntryFileCategories { get; set; } = null!;
 
     public DbSet<Structure> Structures { get; set; } = null!;
     public DbSet<StructureItem> StructureItems { get; set; } = null!;
@@ -36,9 +39,10 @@ public sealed class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new FtsEntryInfoConfiguration());
         
         modelBuilder.ApplyConfiguration(new FileConfiguration());
+        modelBuilder.ApplyConfiguration(new FileCategoryConfiguration());
         modelBuilder.ApplyConfiguration(new StructureConfiguration());
         modelBuilder.ApplyConfiguration(new StructureConnectionConfiguration());
-        
+
         // DateTime Always UTC
         // https://stackoverflow.com/a/61243301/5638975
         // https://github.com/dotnet/efcore/issues/4711#issuecomment-589842988
