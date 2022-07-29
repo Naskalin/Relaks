@@ -15,7 +15,7 @@ namespace App.Migrations
                 nullable: false,
                 defaultValue: "");
             
-            migrationBuilder.Sql("UPDATE Files SET TempCategory = Category;");
+            migrationBuilder.Sql(@"UPDATE Files SET TempCategory = Category;");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

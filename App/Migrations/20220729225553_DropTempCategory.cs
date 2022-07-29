@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿
 
 #nullable disable
 
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 namespace App.Migrations
 {
     public partial class DropTempCategory : Migration
@@ -9,7 +11,12 @@ namespace App.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(@"INSERT INTO FileCategories (Id, Title, EntryId, Discriminator, CreatedAt, UpdatedAt)
-SELECT Id, TempCategory, EntryId, 'EntryFileCategory', datetime(), datetime()
+SELECT upper(hex(randomblob(4))) || '-' || upper(hex(randomblob(2))) || '-4' || substr(upper(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(upper(hex(randomblob(2))),2) || '-' || upper(hex(randomblob(6))),    
+       TempCategory,
+       EntryId,
+       'EntryFileCategory',
+       datetime(),
+       datetime()
 FROM Files
 WHERE TempCategory <> ''
 GROUP BY EntryId, TempCategory");
