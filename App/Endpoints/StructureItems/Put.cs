@@ -9,11 +9,20 @@ public class Put : Endpoint<StructureItemPutRequest>
 {
     private readonly StructureItemDbValidate _structureItemDbValidate;
     private readonly StructureItemRepository _structureItemRepository;
+    private readonly StructureRepository _structureRepository;
+    private readonly EntryRepository _entryRepository;
 
-    public Put(StructureItemDbValidate structureItemDbValidate, StructureItemRepository structureItemRepository)
+    public Put(
+        StructureItemDbValidate structureItemDbValidate,
+        StructureItemRepository structureItemRepository,
+        StructureRepository structureRepository,
+        EntryRepository entryRepository
+        )
     {
         _structureItemDbValidate = structureItemDbValidate;
         _structureItemRepository = structureItemRepository;
+        _structureRepository = structureRepository;
+        _entryRepository = entryRepository;
     }
 
     public override async Task HandleAsync(StructureItemPutRequest req, CancellationToken ct)
@@ -21,9 +30,8 @@ public class Put : Endpoint<StructureItemPutRequest>
         var errors = await _structureItemDbValidate.ValidateAsync(req, ct);
         if (errors.Any())
         {
-            errors.ForEach(e => AddError(e.PropertyName, e.ErrorMessage));
+            errors.ForEach(e => AddError(x => e.PropertyName, e.ErrorMessage));
             ThrowIfAnyErrors();
-            return;
         };
 
         var structureItem = await _structureItemRepository.FindByIdAsync(req.StructureItemId, ct);

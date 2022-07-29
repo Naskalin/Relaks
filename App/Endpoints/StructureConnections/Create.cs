@@ -19,6 +19,7 @@ public class Create : Endpoint<StructureConnectionCreateRequest>
     {
         var structureConnection = new StructureConnection() {CreatedAt = DateTime.UtcNow};
         req.MapTo(structureConnection);
+        
         await _structureConnectionRepository.CreateAsync(structureConnection, ct);
         await SendCreatedAtAsync<Get>(
             new {structureConnectionId = structureConnection.Id},

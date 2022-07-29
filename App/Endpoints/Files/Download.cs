@@ -40,8 +40,7 @@ public class DownloadFiles : Endpoint<DownloadFilesRequest>
                 fileRelativeDir = entryInfoFile.GetFileRelativeDir();
                 break;
             default:
-                AddError("file type not found");
-                ThrowIfAnyErrors();
+                ThrowError("file type not found");
                 return;
         }
 

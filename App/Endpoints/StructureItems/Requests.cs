@@ -6,7 +6,7 @@ public class StructureItemGetRequest
 {
     public Guid StructureItemId { get; set; }
 }
-public class StructureItemCreateRequest : StructureItemFormRequest { }
+public class StructureItemCreateRequest : StructureItemFormRequest {}
 public class StructureItemPutRequest : StructureItemFormRequest
 {
     public Guid StructureItemId { get; set; }

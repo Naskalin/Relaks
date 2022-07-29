@@ -26,10 +26,10 @@ public class Create : Endpoint<StructureItemCreateRequest>
         var errors = await _structureItemDbValidate.ValidateAsync(req, ct);
         if (errors.Any())
         {
-            errors.ForEach(e => AddError(e.PropertyName, e.ErrorMessage));
-            ThrowIfAnyErrors();
-            return;
+            errors.ForEach(e => AddError(x => e.PropertyName, e.ErrorMessage));
         };
+        
+        ThrowIfAnyErrors();
 
         var structureItem = new StructureItem()
         {

@@ -35,7 +35,7 @@ public class StructureItemDbValidate
         var errors = new List<ValidationFailure>();
         var entry = await _entryRepository.FindByIdAsync(request.EntryId, cancellationToken);
         if (entry == null) errors.Add(new ValidationFailure("EntryId", "EntryId not found"));
-        
+
         var structure = await _structureRepository.FindByIdAsync(request.StructureId, cancellationToken);
         if (structure == null) errors.Add(new ValidationFailure("StructureId", "StructureId not found"));
 
