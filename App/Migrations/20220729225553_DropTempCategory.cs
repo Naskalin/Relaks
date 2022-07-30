@@ -11,7 +11,7 @@ namespace App.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(@"INSERT INTO FileCategories (Id, Title, EntryId, Discriminator, CreatedAt, UpdatedAt)
-SELECT upper(hex(randomblob(4))) || '-' || upper(hex(randomblob(2))) || '-4' || substr(upper(hex(randomblob(2))),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(upper(hex(randomblob(2))),2) || '-' || upper(hex(randomblob(6))),    
+SELECT hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(randomblob(2)),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(hex(randomblob(2)),2) || '-' || hex(randomblob(6)),    
        TempCategory,
        EntryId,
        'EntryFileCategory',
@@ -28,6 +28,7 @@ GROUP BY EntryId, TempCategory");
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql(@"delete from FileCategories");
             migrationBuilder.AddColumn<string>(
                 name: "TempCategory",
                 table: "Files",

@@ -10,7 +10,7 @@ public class UpdateRequestValidator : FormRequestValidator<PutRequest>
 {
 }
 
-public class FormRequestValidator<T> : AbstractValidator<T> where T : InfoTemplateFormRequest
+public class FormRequestValidator<T> : Validator<T> where T : InfoTemplateFormRequest
 {
     public FormRequestValidator()
     {

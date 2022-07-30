@@ -15,7 +15,7 @@ public static class StructureMapper
         structure.ParentId = formReq.ParentId;
         structure.UpdatedAt = DateTime.UtcNow;
 
-        formReq.SoftDeleteMapTo(structure);
+        formReq.MapToSoftDelete(structure);
     }
 
     public static void MapTo(this StructureItemFormRequest formReq, StructureItem structureItem)
@@ -26,7 +26,7 @@ public static class StructureMapper
         structureItem.EntryId = formReq.EntryId;
         structureItem.StructureId = formReq.StructureId;
 
-        formReq.SoftDeleteMapTo(structureItem);
+        formReq.MapToSoftDelete(structureItem);
     }
 
     public static void MapTo(this StructureConnectionFormRequest formReq, StructureConnection structureConnection)
@@ -38,6 +38,6 @@ public static class StructureMapper
         structureConnection.StructureFirstId = formReq.StructureFirstId;
         structureConnection.StructureSecondId = formReq.StructureSecondId;
         
-        formReq.SoftDeleteMapTo(structureConnection);
+        formReq.MapToSoftDelete(structureConnection);
     }
 }

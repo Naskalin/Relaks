@@ -17,6 +17,6 @@ public static class EntryMapper
         entry.UpdatedAt = DateTime.UtcNow;
         entry.Avatar = req.Avatar;
 
-        req.SoftDeleteMapTo(entry);
+        req.MapToSoftDelete(entry);
     }
 }

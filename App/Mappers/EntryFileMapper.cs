@@ -27,6 +27,6 @@ public static class EntryFileMapper
         // model.Category = req.Category.Trim();
         // model.TempCategory = "";
         model.Tags = req.Tags;
-        req.SoftDeleteMapTo(model);
+        req.MapToSoftDelete(model);
     }
 }

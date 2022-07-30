@@ -9,7 +9,7 @@ public static class EntryInfoMapper
 {
     public static void MapTo(this EntryInfoFormRequest formRequest, EntryInfo eInfo)
     {
-        formRequest.SoftDeleteMapTo(eInfo);
+        formRequest.MapToSoftDelete(eInfo);
         eInfo.Title = formRequest.Title.Trim();
         eInfo.IsFavorite = formRequest.IsFavorite;
         eInfo.UpdatedAt = DateTime.UtcNow;

@@ -28,7 +28,7 @@ public class StructureListRequest
     public Guid EntryId { get; set; }
     public bool? IsDeleted { get; set; }
     public DateTime? Date { get; set; }
-    public Boolean? IsTree { get; set; }
+    public bool? IsTree { get; set; }
 }
 
 public class StructureGetRequest

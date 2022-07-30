@@ -45,6 +45,7 @@ builder.Services.AddTransient<EntryFileRepository>();
 builder.Services.AddTransient<StructureRepository>();
 builder.Services.AddTransient<StructureItemRepository>();
 builder.Services.AddTransient<StructureConnectionRepository>();
+builder.Services.AddTransient<FileCategoryRepository>();
 builder.Services.AddTransient<StructureItemDbValidate>();
 
 var app = builder.Build();
