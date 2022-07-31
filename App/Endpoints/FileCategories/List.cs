@@ -18,8 +18,11 @@ public class List : Endpoint<FileCategoryListRequest>
     
     public override async Task HandleAsync(FileCategoryListRequest req, CancellationToken ct)
     {
-        var query = (IQueryable<EntryFileCategory>) _fileCategoryRepository.FindForListRequest(req);
-        var items = await query.Where(x => x.EntryId.Equals(req.EntryId)).ToListAsync(ct);
+        var query = _fileCategoryRepository.FindForListRequest(req);
+
+        var items = await query
+            .Cast<EntryFileCategory>()
+            .Where(x => x.EntryId.Equals(req.EntryId)).ToListAsync(ct);
         
         if (req.IsTree is true)
         {

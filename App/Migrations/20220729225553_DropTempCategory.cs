@@ -10,6 +10,7 @@ namespace App.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // Создаём новые категории из TempCategory
             migrationBuilder.Sql(@"INSERT INTO FileCategories (Id, Title, EntryId, Discriminator, CreatedAt, UpdatedAt)
 SELECT hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(randomblob(2)),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(hex(randomblob(2)),2) || '-' || hex(randomblob(6)),    
        TempCategory,
@@ -20,6 +21,14 @@ SELECT hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(ran
 FROM Files
 WHERE TempCategory <> ''
 GROUP BY EntryId, TempCategory");
+
+            // Проставляем созданный Files.CategoryId
+            migrationBuilder.Sql(@"UPDATE Files
+SET CategoryId = (SELECT fc.Id
+                        FROM FileCategories fc
+                        WHERE Files.EntryId = fc.EntryId
+                          AND Files.TempCategory = fc.Title)
+WHERE Files.TempCategory != '';");
             
             migrationBuilder.DropColumn(
                 name: "TempCategory",

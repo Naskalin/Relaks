@@ -1,5 +1,5 @@
 ﻿import {appApi} from "../index";
-import {Entry, SoftDeletableType, TimestampTypes} from "../api_types";
+import {SoftDeletableType, TimestampTypes} from "../api_types";
 export declare type StructureTree = {
     id: string
     data: Structure,
@@ -8,6 +8,7 @@ export declare type StructureTree = {
     isLeaf: boolean,
     level: number
 }
+
 export declare type Structure = {
     id: string
     title: string,
@@ -16,6 +17,7 @@ export declare type Structure = {
     parentId: null | string,
     entryId: string,
 } & SoftDeletableType & TimestampTypes
+
 export declare type StructureListRequest = {
     isDeleted?: boolean | null
     date?: string | null

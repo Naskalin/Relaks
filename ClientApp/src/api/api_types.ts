@@ -1,4 +1,5 @@
 ﻿import {ApiListRequest} from "./index";
+import {Structure} from "./rerources/api_structure";
 
 export declare type EntryType = 'Person' | 'Company' | 'Meet';
 // 'PASSPORT' | 'COMPANY_DETAILS' |
