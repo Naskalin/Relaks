@@ -14,50 +14,52 @@ public class EntryFileRepository : BaseRepository<EntryFile>
     }
 
     public async Task<List<EntryFile>> PaginateListAsync(
-        EntryFileListRequest request,
+        EntryFileListRequest req,
         CancellationToken cancellationToken)
     {
-        var query = Entities.Where(x => x.EntryId == request.EntryId);
+        var query = Entities
+            .Include(x => x.Category)
+            .Where(x => x.EntryId == req.EntryId);
 
-        if (request.IsDeleted != null)
-            query = query.Where(x => request.IsDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
+        if (req.IsDeleted != null)
+            query = query.Where(x => req.IsDeleted == true ? x.DeletedAt != null : x.DeletedAt == null);
 
-        // if (request.Category != null)
-        // {
-        //     if (request.Category == "")
-        //         query = query.Where(x => x.Category == "");
-        //     else
-        //         query = query.Where(x => x.Category == request.Category);   
-        // }
+        if (req.CategoryId != null)
+        {
+            if (req.CategoryId == default)
+                query = query.Where(x => x.CategoryId == null);
+            else
+                query = query.Where(x => x.CategoryId == req.CategoryId);   
+        }
 
-        if (request.Tags.Any())
+        if (req.Tags.Any())
         {
             var fileIds = query
                     .AsEnumerable()
-                    .Where(x => x.Tags.Any(tag => request.Tags.Contains(tag)))
+                    .Where(x => x.Tags.Any(tag => req.Tags.Contains(tag)))
                     .Select(x => x.Id)
                     .ToList()
                 ;
             query = query.Where(x => fileIds.Contains(x.Id));
         }
 
-        if (!string.IsNullOrEmpty(request.Search))
-            query = query.Where(x => EF.Functions.Like(x.Name, "%" + request.Search + "%")
-                                     || EF.Functions.Like(x.DeletedReason, "%" + request.Search + "%")
+        if (!string.IsNullOrEmpty(req.Search))
+            query = query.Where(x => EF.Functions.Like(x.Name, "%" + req.Search + "%")
+                                     || EF.Functions.Like(x.DeletedReason, "%" + req.Search + "%")
             );
 
-        if (!string.IsNullOrEmpty(request.OrderBy))
+        if (!string.IsNullOrEmpty(req.OrderBy))
         {
-            query = query.OrderBy(request.OrderBy, request.OrderByDesc ?? false);
+            query = query.OrderBy(req.OrderBy, req.OrderByDesc ?? false);
         }
         else
         {
             query = query.OrderByDescending(x => x.UpdatedAt);
         }
 
-        if (request.Page != null && request.PerPage != null)
+        if (req.Page != null && req.PerPage != null)
         {
-            query = PaginateQuery(query, request);
+            query = PaginateQuery(query, req);
         }
 
         return await query.ToListAsync(cancellationToken);

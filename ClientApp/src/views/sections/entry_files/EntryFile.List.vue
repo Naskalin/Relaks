@@ -1,13 +1,5 @@
 ﻿<template>
     <h4 class="q-my-lg">Файлы</h4>
-    <div style="width: 500px">
-        <div class="q-mb-sm">
-            <entry-file-create @onUploaded="onUploaded" :entry-id="entryId"/>
-        </div>
-        <q-icon name="las la-info-circle la-fw" /> Файлы загрузятся в выбранную категорию.
-    </div>
-
-    <br>
     
     <entry-file-full-comp
         :entry-id="entryId"
@@ -17,7 +9,17 @@
         with-explorer
         @showEdit="onShowEdit"
         @clickAvatar="explorer"
-    />
+    >
+        <template v-slot:right-column>
+            <div style="width: 500px">
+                <div class="q-mb-sm">
+                    <div class="text-h6 q-mb-md">Загрузить файлы</div>
+                    <entry-file-create @onUploaded="onUploaded" :entry-id="entryId"/>
+                </div>
+                <q-icon name="las la-info-circle la-fw" /> Файлы загрузятся в выбранную категорию.
+            </div>
+        </template>
+    </entry-file-full-comp>
 
     <file-edit-modal
         v-if="editStore.file && fileMetaStore.meta"

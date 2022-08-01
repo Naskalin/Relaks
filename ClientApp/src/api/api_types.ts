@@ -1,5 +1,6 @@
 ﻿import {ApiListRequest} from "./index";
 import {Structure} from "./rerources/api_structure";
+import {FileCategory} from "./rerources/api_file_categories";
 
 export declare type EntryType = 'Person' | 'Company' | 'Meet';
 // 'PASSPORT' | 'COMPANY_DETAILS' |
@@ -97,7 +98,8 @@ export declare type FileModel = {
     name: string
     path: string
     contentType: string
-    category: string
+    categoryId: string | null
+    category: null | FileCategory
     tags: string[]
 } & TimestampTypes & SoftDeletableType
 export declare type FileModelUpdateRequest = {

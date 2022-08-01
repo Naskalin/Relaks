@@ -13,26 +13,10 @@
         @virtual-scroll="onVirtualScroll"
     >
         <template v-slot:top>
-            <div>
-                <h6 class="q-mb-md">
-                    <q-icon name="las la-folder-open la-lg la-fw"/>
-                    {{categoryName}}
-                </h6>
-
-                <div>
-                    <small class="text-uppercase q-mr-md">Актуальность</small>
-                    <q-btn-toggle
-                        class="bg-grey-2"
-                        v-model="listStore.listRequest.isDeleted"
-                        toggle-color="secondary"
-                        :options="[
-                {label: 'Все', value: null},
-                {label: 'Актуальные', value: false},
-                {label: 'Архивные', value: true},
-            ]"
-                    />
-                </div>
-            </div>
+            <h6 class="q-mb-md">
+                <q-icon name="las la-folder-open la-lg la-fw"/>
+                {{categoryName}}
+            </h6>
         </template>
         <template v-slot:header="p">
             <q-tr :props="p">
@@ -63,8 +47,19 @@
                     :key="col.name"
                     :props="p"
                 >
-                    <file-in-table-cell title="Открыть" @click="emit('clickAvatar', p.row)" v-if="col.name === 'path'"
-                                        :file="p.row"/>
+                    <file-in-table-cell
+                        v-if="col.name === 'path'"
+                        title="Открыть"
+                        @click="emit('clickAvatar', p.row)"
+                        :file="p.row"/>
+                    <template v-else-if="col.name === 'deletedAt' && p.row.deletedAt">
+                        <q-icon name="las la-info-circle" size="1.6rem" color="negative">
+                            <q-tooltip style="font-size: .8rem">
+                                <div>В архиве с {{dateHelper.utcFormat(p.row.deletedAt)}}</div>
+                                <div v-if="p.row.deletedReason" class="q-mt-sm">{{p.row.deletedReason}}</div>
+                            </q-tooltip>
+                        </q-icon>
+                    </template>
                     <template v-else>{{ col.value }}</template>
                 </q-td>
                 <q-td v-if="withDownload">
@@ -88,6 +83,7 @@ import {getFileExtension} from "../../../utils/file_helper";
 import {FileListTableStoreState} from "../../../store/entryFile/entryFile.list.table.store";
 import {apiFiles} from "../../../api/rerources/api_files";
 import {debounce} from "quasar";
+import {FileCategory} from "../../../api/rerources/api_file_categories";
 
 const props = defineProps<{
     listStore: FileListTableStoreState
@@ -112,7 +108,7 @@ let columns = [
         label: trans.name,
         format: (val: string, row: FileModel) => val + '.' + getFileExtension(row.path)
     },
-    {name: 'category', field: 'category', label: 'Категория'},
+    {name: 'category', field: 'category', label: 'Категория', format: (val: FileCategory | null) => val ? val.title : ''},
     {name: 'tags', field: 'tags', label: 'Метки', format: (val: string[]) => val.join(', ')},
     {name: 'contentType', field: 'contentType', label: trans.contentType, style: 'width: 180px'},
     {
@@ -132,11 +128,11 @@ let columns = [
     {
         name: 'deletedAt',
         field: 'deletedAt',
-        label: trans.deletedAt,
-        format: (val: string) => dateHelper.utcFormat(val),
-        style: 'width: 130px'
+        // label: trans.deletedAt,
+        // format: (val: string) => dateHelper.utcFormat(val),
+        style: 'width: 70px'
     },
-    {name: 'deletedReason', field: 'deletedReason', label: trans.deletedReason},
+    // {name: 'deletedReason', field: 'deletedReason', label: trans.deletedReason},
 ]
 columns = columns.map(row => ({...row, align: 'left'}));
 
@@ -187,7 +183,8 @@ const download = async (fileId: string) => {
 }
 
 const getFilesDebounce = debounce(() => {
-    // Тротлинг для GetFiles, при первом обращении при обновлении страницы происходит путаница.
+    // Тротлинг для GetFiles, при первом обращении.
+    // При обновлении страницы происходит путаница с двойными вызовами.
     emit('getFiles')
 }, 50);
 </script>

@@ -16,7 +16,8 @@ public class Get : Endpoint<EntryFileGetRequest, EntryFile>
 
     public override async Task HandleAsync(EntryFileGetRequest req, CancellationToken ct)
     {
-        var entryFile = await _entryFileRepository.FindByIdAsync(req.EntryFileId, ct);
+        var entryFile = await _entryFileRepository
+            .FindByIdAsync(req.EntryFileId, ct);
         if (entryFile == null || entryFile.EntryId != req.EntryId)
         {
             await SendNotFoundAsync(ct);

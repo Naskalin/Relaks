@@ -1,6 +1,5 @@
 ﻿<template>
-    
-    {{categoryStore.selectedCategory}}
+    <div class="text-h6 q-mb-md">Категории</div>
     
     <q-tree
         ref="treeEl"
@@ -17,6 +16,8 @@
             {{prop.node.data.title}}
         </template>
     </q-tree>
+
+    {{categoryStore.selectedCategory}}
 </template>
 
 <script setup lang="ts">

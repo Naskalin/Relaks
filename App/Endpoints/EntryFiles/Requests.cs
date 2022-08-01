@@ -31,9 +31,6 @@ public class EntryFileGetRequest
 public class EntryFileListRequest : BaseListRequest
 {
     public Guid EntryId { get; set; }
-
-    [DefaultValue("")]
-    public string? Category { get; set; } = "";
-
+    public Guid? CategoryId { get; set; }
     public List<string> Tags { get; set; } = new();
 }

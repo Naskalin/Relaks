@@ -1,4 +1,14 @@
 ﻿<template>
+    <file-actual class="q-mb-lg"/>
+    
+    <div class="row q-col-gutter-lg">
+        <div class="col">
+            <file-category-tree :entry-id="entryId"/>
+        </div>
+        <div v-if="withEdit" class="col-auto">
+            <slot name="right-column"/>
+        </div>
+    </div>
         <div class="flex column q-col-gutter-y-md q-mb-lg">
             <div>
 <!--                <div>-->
@@ -61,8 +71,6 @@
                 </template>
             </div>
         </div>
-
-    <file-category-tree :entry-id="entryId"/>
     
     <file-list-table
         @getFiles="listStore.getFiles(entryId)"
@@ -76,6 +84,7 @@
 <script setup lang="ts">
 import FileListTable from '../files/File.List.Table.vue';
 import FileCategoryTree from './entry_file_category/EntryFileCategory.Tree.vue';
+import FileActual from './EntryFile.Actual.vue';
 
 import {useEntryFileMetaListStore} from "../../../store/entryFile/entryFileMeta.list.store";
 import {onMounted, watch} from 'vue';
