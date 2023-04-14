@@ -4,13 +4,10 @@ using App.Models;
 
 namespace App.Seeders;
 
-public class StructureSeeder : DatabaseSeeder
+public partial class DatabaseSeeder
 {
-    public StructureSeeder(AppDbContext db) : base(db)
-    {
-    }
 
-    public void Seed()
+    public void SeedStructures()
     {
         var companyId = Guid.Parse("01B137DA-A3CF-4C08-AC3E-752B3F156ED4");
 

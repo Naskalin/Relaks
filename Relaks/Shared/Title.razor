@@ -1,0 +1,26 @@
+﻿<div class="row justify-content-between align-items-center">
+    <div class="col">
+        <h1 class="h2">@ChildContent</h1>
+        @if (Subtitle != null)
+        {
+            <h2 class="subtitle h4 text-muted">@Subtitle</h2>   
+        }
+    </div>
+    @if (EndTitle != null)
+    {
+        <div class="col-auto">@EndTitle</div>
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
+    [Parameter]
+    public RenderFragment? Subtitle { get; set; }
+
+    [Parameter]
+    public RenderFragment? EndTitle { get; set; }
+
+}

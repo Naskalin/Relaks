@@ -3,13 +3,9 @@ using App.Models;
 
 namespace App.Seeders;
 
-public class EntrySeeder : DatabaseSeeder
+public partial class DatabaseSeeder
 {
-    public EntrySeeder(AppDbContext db) : base(db)
-    {
-    }
-
-    public void Seed()
+    private void SeedEntries()
     {
         foreach (EntryTypeEnum entryType in (EntryTypeEnum[]) Enum.GetValues(typeof(EntryTypeEnum)))
         {

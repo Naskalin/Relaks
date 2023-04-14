@@ -16,7 +16,7 @@
                     <div class="text-h6 q-mb-md">Загрузить файлы</div>
                     <entry-file-create @onUploaded="onUploaded" :entry-id="entryId"/>
                 </div>
-                <q-icon name="las la-info-circle la-fw" /> Файлы загрузятся в выбранную категорию.
+<!--                <q-icon name="las la-info-circle la-fw" /> Файлы загрузятся в выбранную категорию.-->
             </div>
         </template>
     </entry-file-full-comp>

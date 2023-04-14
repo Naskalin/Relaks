@@ -35,7 +35,7 @@ public sealed class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new EntryConfiguration());
         modelBuilder.ApplyConfiguration(new FtsEntryConfiguration());
         
-        modelBuilder.ApplyConfiguration(new EntryInfoConfiguration());
+        c
         modelBuilder.ApplyConfiguration(new FtsEntryInfoConfiguration());
         
         modelBuilder.ApplyConfiguration(new FileConfiguration());

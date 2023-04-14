@@ -6,11 +6,9 @@ using App.DbConfigurations;
 using App.DbEvents.Fts;
 using App.Endpoints.StructureItems;
 using App.Repository;
-using App.Seeders;
 using App.Utils.App;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
-// using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,7 +27,7 @@ if (appDataDir != null)
     if (appPreset != null)
     {
         builder.Services.AddSingleton(appPreset);
-        connectionString = appPreset.SqliteConnection;   
+        connectionString = appPreset.SqliteConnection;
     }
 }
 
@@ -53,12 +51,15 @@ var app = builder.Build();
 app.UseAuthorization();
 app.UseFastEndpoints(c =>
 {
-    c.SerializerOptions = options =>
-    {
-        options.Converters.Add(new JsonStringEnumConverter());
-        options.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-        // options.WriteIndented = true;
-    };
+    // c.SerializerOptions = options =>
+    // {
+    //     options.Converters.Add(new JsonStringEnumConverter());
+    //     options.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    //     // options.WriteIndented = true;
+    // };
+    // c.Endpoints.RoutePrefix = "api";
+    c.Serializer.Options.Converters.Add(new JsonStringEnumConverter());
+    c.Serializer.Options.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
 // Electron Window

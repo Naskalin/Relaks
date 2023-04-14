@@ -1,5 +1,4 @@
 ﻿<template>
-    
     <q-btn-toggle v-if="isCreate"
                   class="bg-grey-2"
                   v-model="model.entryType"

@@ -1,0 +1,21 @@
+﻿<div class="position-sticky pt-3 sidebar-sticky">
+    <ul class="nav flex-column">
+        @foreach (var menuItem in _menuItems)
+        {
+            <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="@menuItem.Value">
+                    @menuItem.Key
+                </a>
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+
+    private Dictionary<string, string> _menuItems = new()
+    {
+        {"Объединения", "/entries"},
+    };
+
+}

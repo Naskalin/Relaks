@@ -66,7 +66,7 @@
                             :disable="layoutStore.isBlockLeaving"
                             :autofocus="isListRoute"
                             debounce="250"
-                            placeholder="Поиск объединения..."
+                            placeholder="Поиск..."
                             color="secondary"
                             label-color="grey-2"
                             class="text-white"

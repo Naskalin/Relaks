@@ -4,13 +4,9 @@ using Bogus;
 
 namespace App.Seeders;
 
-public class InfoTemplateSeeder : DatabaseSeeder
+public partial class DatabaseSeeder
 {
-    public InfoTemplateSeeder(AppDbContext db) : base(db)
-    {
-    }
-
-    public void Seed()
+    private void SeedInfoTemplate()
     {
         for (int i = 0; i < 10; i++)
         {
@@ -19,7 +15,7 @@ public class InfoTemplateSeeder : DatabaseSeeder
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
                 Title = Faker.Lorem.Paragraph(1),
-                Template = CreateCustomInfo(Faker)
+                Template = CreateCustomInfo()
             };
 
             Db.InfoTemplates.Add(infoTemplate);
@@ -28,7 +24,7 @@ public class InfoTemplateSeeder : DatabaseSeeder
         Db.SaveChanges();
     }
 
-    public static CustomInfo CreateCustomInfo(Faker faker)
+    private CustomInfo CreateCustomInfo()
     {
         List<CustomInfoGroup> groups = new();
         var random = new Random();
@@ -41,8 +37,8 @@ public class InfoTemplateSeeder : DatabaseSeeder
             {
                 var item = new CustomInfoItem
                 {
-                    Key = faker.Random.Words(),
-                    Value = faker.Lorem.Paragraph(1)
+                    Key = Faker.Random.Words(),
+                    Value = Faker.Lorem.Paragraph(1)
                 };
                 var itemRand = random.Next(1, 3);
                 if (itemRand == 1) item.Value = "";
@@ -52,7 +48,7 @@ public class InfoTemplateSeeder : DatabaseSeeder
 
             var group = new CustomInfoGroup()
             {
-                Title = faker.Random.ArrayElement(new[] {faker.Lorem.Paragraph(1), ""}),
+                Title = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), ""}),
                 Items = items
             };
 

@@ -51,7 +51,7 @@ public class Create : Endpoint<EntryFileCreateRequest>
 
             var folderFull = Path.Combine(appPreset!.FilesDir, entryFile.GetFileRelativeDir());
             if (!Directory.Exists(folderFull)) Directory.CreateDirectory(folderFull);
-            var filePath = Path.Combine(appPreset!.FilesDir, entryFile.GetFileRelativePath());
+            var filePath = Path.Combine(appPreset.FilesDir, entryFile.GetFileRelativePath());
 
             await using (var stream = File.Create(filePath))
             {

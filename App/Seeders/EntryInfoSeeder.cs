@@ -5,13 +5,9 @@ using App.Utils;
 
 namespace App.Seeders;
 
-public class EntryInfoSeeder : DatabaseSeeder
+public partial class DatabaseSeeder
 {
-    public EntryInfoSeeder(AppDbContext db) : base(db)
-    {
-    }
-
-    public void Seed()
+    private void SeedEntryInfos()
     {
         var entries = Db.Entries.Where(x => true).ToList();
 
@@ -171,7 +167,7 @@ public class EntryInfoSeeder : DatabaseSeeder
 
     private EntryInfo ToCustom(EntryInfo eInfo)
     {
-        var info = InfoTemplateSeeder.CreateCustomInfo(Faker);
+        var info = CreateCustomInfo();
 
         eInfo.Value = JsonSerializer.Serialize(info, InfoValue.WriteOptions);
         eInfo.Type = EntryInfo.Custom;

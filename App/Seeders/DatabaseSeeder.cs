@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace App.Seeders;
 
-public class DatabaseSeeder
+public partial class DatabaseSeeder
 {
     protected readonly AppDbContext Db;
     protected readonly Faker Faker;
@@ -26,9 +26,9 @@ public class DatabaseSeeder
         Db.Database.ExecuteSqlRaw("delete from Structures;");
         Db.Database.ExecuteSqlRaw("delete from InfoTemplates;");
 
-        new EntrySeeder(Db).Seed();
-        new EntryInfoSeeder(Db).Seed();
-        new StructureSeeder(Db).Seed();
-        new InfoTemplateSeeder(Db).Seed();
+        SeedEntries();
+        SeedEntryInfos();
+        SeedStructures();
+        SeedInfoTemplate();
     }
 }
