@@ -35,6 +35,11 @@ public static class RelaksConfigManager
         return Path.Combine(parentDir, StoreDirName);
     } 
 
+    /// <summary>
+    /// Создаём конфигурацию по умолчанию
+    /// </summary>
+    /// <param name="projectDir"></param>
+    /// <returns></returns>
     private static RelaksConfigModel CreateDefaultConfig(string projectDir)
     {
         var storeDir = DefaultStorePath(projectDir);
@@ -58,7 +63,12 @@ public static class RelaksConfigManager
         return model;
     }
     
-    public static RelaksConfigModel GetConfig(string projectDir)
+    /// <summary>
+    /// Получаем существующий или создаём новый конфиг
+    /// </summary>
+    /// <param name="projectDir"></param>
+    /// <returns></returns>
+    public static RelaksConfigModel GetOrCreateConfig(string projectDir)
     {
         var relaksConfigPath = RelaksConfigPath(projectDir);
         if (!File.Exists(relaksConfigPath))

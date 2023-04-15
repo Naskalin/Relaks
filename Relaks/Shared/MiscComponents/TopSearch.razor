@@ -1,0 +1,117 @@
+﻿@using Relaks.Database
+@using Relaks.Database.Repostitories
+@using Relaks.Models
+
+@inject AppDbContext Db;
+@inject NavigationManager NavigationManager;
+
+@* <div style="color: white">@IsShowResults</div> *@
+<div class="top-search position-relative w-100">
+    <TextEdit
+        @ref="InputEl"
+        Class="form-control-dark w-100 rounded-0 border-0"
+        Placeholder="Поиск..."
+        TextChanged="HandleInput"
+        FocusIn="() => IsFocus = true"
+        FocusOut="() => IsFocus = false"
+        KeyDown="OnKeyDown"/>
+    @if (IsFocus && Items.Any())
+    {
+        <div class="position-absolute">
+            <ListGroup Mode="ListGroupMode.Selectable" Class="rounded-0">
+                @foreach (var item in Items)
+                {
+                    <ListGroupItem Name="@item.Id.ToString()"
+                                   Color="@(item.Id.ToString().Equals(Selected) ? Color.Primary : Color.Default)">
+                        @item.Name
+                    </ListGroupItem>
+                }
+            </ListGroup>
+        </div>
+    }
+</div>
+
+@code {
+
+    private TextEdit InputEl { get; set; } = null!;
+    private List<Entry> Items { get; set; } = new();
+    private bool IsFocus { get; set; } = false;
+    private string Selected { get; set; } = "";
+    private string SearchText { get; set; } = "";
+
+    // private void OnFocusOut()
+    // {
+    //     IsShowResults = false;
+    //     // if (!Items.Any())
+    //     // {
+    //     //     Items = new List<Entry>();   
+    //     // }
+    // }
+
+    private void OnKeyDown(KeyboardEventArgs e)
+    {
+        if (!IsFocus) return;
+        
+        switch (e.Key)
+        {
+            case "ArrowUp":
+                if (string.IsNullOrEmpty(Selected))
+                {
+                    Selected = Items.Last().Id.ToString();
+                }
+                else
+                {
+                    var sGuid = Guid.Parse(Selected);
+                    var previous = Items.TakeWhile(x => !x.Id.Equals(sGuid)).LastOrDefault();
+                    if (previous != null)
+                    {
+                        Selected = previous.Id.ToString();
+                    }
+                }
+                break;
+            case "ArrowDown":
+                if (string.IsNullOrEmpty(Selected))
+                {
+                    Selected = Items.First().Id.ToString();
+                }
+                else
+                {
+                    var sGuid = Guid.Parse(Selected);
+                    var next = Items.SkipWhile(x => !x.Id.Equals(sGuid)).Skip(1).FirstOrDefault();
+                    if (next != null)
+                    {
+                        Selected = next.Id.ToString();
+                    }
+                }
+                break;
+            case "Enter":
+                NavigationManager.NavigateTo("/entries/" + Selected);
+                break;
+           case "Escape":
+               Items = new List<Entry>();
+               InputEl.Text = "";
+               
+               break;
+        }
+    }
+
+    private void HandleInput(string str)
+    {
+        if (string.IsNullOrEmpty(str))
+        {
+            Items = new List<Entry>();
+        }
+        else
+        {
+            var q = Db.Entries.Search(str.Trim());
+            Items = q.Take(15).ToList();
+        }
+        Selected = "";
+        SearchText = str;
+    // var entry = q.FirstOrDefault();
+    // var result = ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ";
+    // result += entry != null ? entry.Name : "not found";
+    // Console.WriteLine(result + " " + q.Count());
+    }
+
+}

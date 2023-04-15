@@ -1,0 +1,7 @@
+﻿@page "/entries/{entryId:guid}"
+<Title>Entry @EntryId</Title>
+
+@code {
+    [Parameter]
+    public Guid EntryId { get; set; }
+}
