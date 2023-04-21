@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "scripts": {
+    "dev": "node esbuild.js"
+  },
+  "dependencies": {
+    "bootstrap": "^5.2.3",
+    "bootstrap-icons": "^1.10.4",
+    "esbuild": "0.17.17"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.14",
+    "esbuild-sass-plugin": "^2.9.0",
+    "postcss": "^8.4.23"
+  }
+}

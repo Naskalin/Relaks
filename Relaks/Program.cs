@@ -8,7 +8,6 @@ using Photino.Blazor;
 using PhotinoNET;
 using Relaks;
 using Relaks.Database;
-using Relaks.Database.Seeders;
 using Relaks.Managers;
 
 if (OperatingSystem.IsWindows())
@@ -38,7 +37,8 @@ var app = builder.Build();
 using var scope = app.Services.CreateScope();
 var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 db.Database.Migrate();
-
+var env = app.Services.GetRequiredService<IHostEnvironment>();
+Console.WriteLine(env.EnvironmentName);
 var isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == Environments.Development;
 
 if (isDevelopment)

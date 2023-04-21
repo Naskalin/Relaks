@@ -1,11 +1,31 @@
-<Router AppAssembly="@typeof(Program).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-    </Found>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
+<ThemeProvider Theme="@_theme">
+    <Router AppAssembly="@typeof(Program).Assembly">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</ThemeProvider>
+
+@code{
+    private readonly Theme _theme = new()
+    {
+        ColorOptions = new ThemeColorOptions
+        {
+            Primary = "#4c9be8",
+            Secondary = "#4e5d6c",
+            Success = "#5cb85c",
+            Info = "#5bc0de",
+            Warning = "#ffc107",
+            Danger = "#d9534f",
+            Light = "#abb6c2",
+            Dark = "#20374c",
+            Link = "#4c9be8",
+        }
+    };
+}

@@ -5,24 +5,26 @@
 @inject AppDbContext Db;
 @inject NavigationManager NavigationManager;
 
-@* <div style="color: white">@IsShowResults</div> *@
-<div class="top-search position-relative w-100">
+<div class="header-search position-relative w-100"
+     @onfocusin="() => IsFocus = true"
+     @onfocusout="() => IsFocus = false">
     <TextEdit
-        @ref="InputEl"
-        Class="form-control-dark w-100 rounded-0 border-0"
+        @ref="InputRef"
+        Class="w-100 rounded-0 border-0 top-search__input"
         Placeholder="Поиск..."
         TextChanged="HandleInput"
-        FocusIn="() => IsFocus = true"
-        FocusOut="() => IsFocus = false"
         KeyDown="OnKeyDown"/>
-    @if (IsFocus && Items.Any())
+    @if (Items.Any())
     {
-        <div class="position-absolute">
-            <ListGroup Mode="ListGroupMode.Selectable" Class="rounded-0">
+        <div class="top-search__results position-absolute">
+            <ListGroup Class="rounded-0">
                 @foreach (var item in Items)
                 {
-                    <ListGroupItem Name="@item.Id.ToString()"
-                                   Color="@(item.Id.ToString().Equals(Selected) ? Color.Primary : Color.Default)">
+                    <ListGroupItem Color="@(item.Id.Equals(SelectedEntryId) ? Color.Primary : Color.Default)"
+                                   Class="cursor-pointer top-search__list-item"
+                                   @onclick="() => GoToEntry(item.Id)"
+                                   @onmouseover="() => SelectedEntryId = item.Id"
+                                   >
                         @item.Name
                     </ListGroupItem>
                 }
@@ -33,71 +35,75 @@
 
 @code {
 
-    private TextEdit InputEl { get; set; } = null!;
+    private TextEdit InputRef { get; set; } = null!;
     private List<Entry> Items { get; set; } = new();
     private bool IsFocus { get; set; } = false;
-    private string Selected { get; set; } = "";
-    private string SearchText { get; set; } = "";
-
-    // private void OnFocusOut()
-    // {
-    //     IsShowResults = false;
-    //     // if (!Items.Any())
-    //     // {
-    //     //     Items = new List<Entry>();   
-    //     // }
-    // }
+    private Guid? SelectedEntryId { get; set; } = null;
 
     private void OnKeyDown(KeyboardEventArgs e)
     {
         if (!IsFocus) return;
-        
+
         switch (e.Key)
         {
             case "ArrowUp":
-                if (string.IsNullOrEmpty(Selected))
+                if (!Items.Any()) return;
+                if (!SelectedEntryId.HasValue)
                 {
-                    Selected = Items.Last().Id.ToString();
+                    SelectedEntryId = Items.Last().Id;
                 }
                 else
                 {
-                    var sGuid = Guid.Parse(Selected);
-                    var previous = Items.TakeWhile(x => !x.Id.Equals(sGuid)).LastOrDefault();
+                    var previous = Items.TakeWhile(x => !x.Id.Equals(SelectedEntryId.Value)).LastOrDefault();
                     if (previous != null)
                     {
-                        Selected = previous.Id.ToString();
+                        SelectedEntryId = previous.Id;
                     }
                 }
                 break;
             case "ArrowDown":
-                if (string.IsNullOrEmpty(Selected))
+                if (!Items.Any()) return;
+                if (!SelectedEntryId.HasValue)
                 {
-                    Selected = Items.First().Id.ToString();
+                    SelectedEntryId = Items.First().Id;
                 }
                 else
                 {
-                    var sGuid = Guid.Parse(Selected);
-                    var next = Items.SkipWhile(x => !x.Id.Equals(sGuid)).Skip(1).FirstOrDefault();
+                    var next = Items.SkipWhile(x => !x.Id.Equals(SelectedEntryId.Value)).Skip(1).FirstOrDefault();
                     if (next != null)
                     {
-                        Selected = next.Id.ToString();
+                        SelectedEntryId = next.Id;
                     }
                 }
                 break;
             case "Enter":
-                NavigationManager.NavigateTo("/entries/" + Selected);
+                GoToEntry(SelectedEntryId);
                 break;
-           case "Escape":
-               Items = new List<Entry>();
-               InputEl.Text = "";
-               
-               break;
+            case "Escape":
+                Reset();
+                break;
         }
+    }
+
+    private void GoToEntry(Guid? entryId)
+    {
+        if (entryId.HasValue)
+        {
+            NavigationManager.NavigateTo("/entries/" + entryId.Value);
+        }
+        Reset();
+    }
+
+    private void Reset()
+    {
+        Items = new List<Entry>();
+        InputRef.Text = "";
+        SelectedEntryId = null;
     }
 
     private void HandleInput(string str)
     {
-        if (string.IsNullOrEmpty(str))
+        if (string.IsNullOrEmpty(str.Trim()))
         {
             Items = new List<Entry>();
         }
@@ -106,12 +112,7 @@
             var q = Db.Entries.Search(str.Trim());
             Items = q.Take(15).ToList();
         }
-        Selected = "";
-        SearchText = str;
-    // var entry = q.FirstOrDefault();
-    // var result = ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ";
-    // result += entry != null ? entry.Name : "not found";
-    // Console.WriteLine(result + " " + q.Count());
+        SelectedEntryId = null;
     }
 
 }

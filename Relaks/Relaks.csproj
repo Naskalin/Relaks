@@ -38,6 +38,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="Pages\Debug\Routes.razor" />
+      <Folder Include="wwwroot\assets\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.bak" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\_bootswatch (1).scss" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\_variables (1).scss" />
+      <_ContentIncludedByDefault Remove="wwwroot\css\_app.css" />
     </ItemGroup>
 </Project>
