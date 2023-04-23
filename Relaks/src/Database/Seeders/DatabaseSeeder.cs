@@ -20,7 +20,7 @@ public partial class DatabaseSeeder
         Db.Database.ExecuteSqlRaw("delete from EntryInfos;");
         // Db.Database.ExecuteSqlRaw("delete from FtsEntryInfos;");
         Db.Database.ExecuteSqlRaw("delete from Entries;");
-        // Db.Database.ExecuteSqlRaw("delete from FtsEntries;");
+        Db.Database.ExecuteSqlRaw("delete from FtsEntries;");
         // Db.Database.ExecuteSqlRaw("delete from StructureItems;");
         // Db.Database.ExecuteSqlRaw("delete from StructureConnections;");
         // Db.Database.ExecuteSqlRaw("delete from Structures;");

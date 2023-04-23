@@ -6,17 +6,16 @@ public partial class DatabaseSeeder
 {
     private void SeedEntries()
     {
-        foreach (EntryTypeEnum entryType in (EntryTypeEnum[]) Enum.GetValues(typeof(EntryTypeEnum)))
+        foreach (Entry.TypeEnum entryType in (Entry.TypeEnum[]) Enum.GetValues(typeof(Entry.TypeEnum)))
         {
             for (int i = 0; i < 50; i++)
             {
                 var entry = new Entry()
                 {
                     Reputation = Faker.Random.Number(0, 10),
-                    EntryType = entryType,
+                    Type = entryType,
                     CreatedAt = Faker.Date.Past(),
                     UpdatedAt = Faker.Date.Past(),
-                    DeletedReason = ""
                 };
         
                 var startAt = Faker.Date.Past(120, DateTime.UtcNow.AddYears(-10));
@@ -40,24 +39,29 @@ public partial class DatabaseSeeder
         
                 if (Faker.Random.Number(1, 10) > 8)
                 {
-                    entry.DeletedReason = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(), ""});
+                    entry.DeletedReason = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(), null});
                     entry.DeletedAt = Faker.Date.Past();
                 }
-        
+
                 switch (entryType)
                 {
-                    case EntryTypeEnum.Person:
+                    case Entry.TypeEnum.Person:
                         entry.Name = Faker.Name.FullName();
                         entry.Description = Faker.Random.ArrayElement(new[] {Faker.Name.JobDescriptor(), ""});
                         break;
-                    case EntryTypeEnum.Meet:
+                    case Entry.TypeEnum.Meet:
                         entry.Name = Faker.Commerce.Department();
                         entry.Description = Faker.Random.ArrayElement(new[] {Faker.Commerce.ProductDescription(), ""});
                         break;
-                    case EntryTypeEnum.Company:
+                    case Entry.TypeEnum.Company:
                         entry.Name = Faker.Company.CompanyName();
                         entry.Description = Faker.Random.ArrayElement(new[] {Faker.Company.CatchPhrase(), ""});
                         break;
+                }
+                
+                if (i == 1)
+                {
+                    entry.Name = "Hello world";
                 }
 
                 Db.Entries.Add(entry);
@@ -69,12 +73,12 @@ public partial class DatabaseSeeder
             Id = Guid.Parse("01FBDDDD-1D69-4757-A8D2-5050A1AED4D4"),
             Name = "Вася Пупкин",
             Description = "Книги, Дом & Электроника Boston's most advanced compression wear technology increases muscle oxygenation, stabilizes active muscles",
-            EntryType = EntryTypeEnum.Person,
+            Type = Entry.TypeEnum.Person,
             CreatedAt = Faker.Date.Past(),
             UpdatedAt = Faker.Date.Past(),
             StartAt = Faker.Date.Past(),
             EndAt = Faker.Date.Past(),
-            DeletedReason = "",
+            DeletedReason = null,
         };
 
         Db.Entries.Add(creator);
@@ -84,12 +88,12 @@ public partial class DatabaseSeeder
             Id = Guid.Parse("01B137DA-A3CF-4C08-AC3E-752B3F156ED4"),
             Name = "Вася COMPANY",
             Description = Faker.Lorem.Paragraph(1),
-            EntryType = EntryTypeEnum.Company,
+            Type = Entry.TypeEnum.Company,
             CreatedAt = Faker.Date.Past(),
             UpdatedAt = Faker.Date.Past(),
             StartAt = Faker.Date.Past(),
             EndAt = Faker.Date.Past(),
-            DeletedReason = "",
+            DeletedReason = null,
         };
         Db.Entries.Add(creatorCompany);
 

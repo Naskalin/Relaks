@@ -10,8 +10,8 @@ public class EntryConfiguration : IEntityTypeConfiguration<Entry>
     public void Configure(EntityTypeBuilder<Entry> builder)
     {
         builder
-            .Property(x => x.EntryType)
-            .HasConversion(new EnumToStringConverter<EntryTypeEnum>());
+            .Property(x => x.Type)
+            .HasConversion(new EnumToStringConverter<Entry.TypeEnum>());
     }
 }
 

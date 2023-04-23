@@ -9,6 +9,7 @@ using PhotinoNET;
 using Relaks;
 using Relaks.Database;
 using Relaks.Managers;
+using Relaks.Utils;
 
 if (OperatingSystem.IsWindows())
 {
@@ -34,16 +35,28 @@ builder.Services.AddBlazorise(o => { o.Immediate = true; })
 
 var app = builder.Build();
 
+var env = app.Services.GetRequiredService<IHostEnvironment>();
 using var scope = app.Services.CreateScope();
 var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-db.Database.Migrate();
-var env = app.Services.GetRequiredService<IHostEnvironment>();
 Console.WriteLine(env.EnvironmentName);
 var isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == Environments.Development;
 
 if (isDevelopment)
 {
-    // new DatabaseSeeder(db).SeedAll();
+    // var ftsEntries = FtsMigrationHelper.CreateFtsTable(new FtsMigrationHelper.TableData()
+    // {
+    //     Table = "FtsEntries",
+    //     Unindexed = new[] {"Id"},
+    //     Columns = new[] {"Id", "Body"},
+    // });
+    // Console.WriteLine(ftsEntries);
+    // db.Database.EnsureDeleted();
+    // db.Database.EnsureCreated();
+    new Relaks.Database.Seeders.DatabaseSeeder(db).SeedAll();
+}
+else
+{
+    db.Database.Migrate();
 }
 
 var rootComponents = app.Services.GetRequiredService<BlazorWindowRootComponents>();

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using Relaks.Interfaces;
 
@@ -6,10 +7,17 @@ namespace Relaks.Models;
 
 public class Entry : ITimestamped, ISoftDeleted
 {
+    public enum TypeEnum
+    {
+        Person,
+        Meet,
+        Company,
+    }
+    
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;
-    public EntryTypeEnum EntryType { get; set; }
-    public string Description { get; set; } = null!;
+    public TypeEnum Type { get; set; }
+    public string? Description { get; set; }
     public int Reputation { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
@@ -18,7 +26,7 @@ public class Entry : ITimestamped, ISoftDeleted
     public DateTime? EndAt { get; set; }
 
     public DateTime? DeletedAt { get; set; }
-    public string? DeletedReason { get; set; } = null!;
+    public string? DeletedReason { get; set; }
 
     // public Guid? Avatar { get; set; }
     //
@@ -36,20 +44,14 @@ public class Entry : ITimestamped, ISoftDeleted
     }
 }
 
-// public class FtsEntry : IFtsEntity
-// {
-//     public int RowId { get; set; }
-//     public string Match { get; set; } = null!;
-//     public double? Rank { get; set; }
-//     
-//     public Guid Id { get; set; }
-//     
-//     public string Data { get; set; } = null!;
-// }
-
-public enum EntryTypeEnum
+public class FtsEntry : IFtsEntity
 {
-    Person,
-    Meet,
-    Company,
+    [NotMapped]
+    public int RowId { get; set; }
+    [NotMapped]
+    public string Match { get; set; } = null!;
+    [NotMapped]
+    public double? Rank { get; set; }
+    public Guid Id { get; set; }
+    public string Body { get; set; } = null!;
 }
