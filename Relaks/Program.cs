@@ -8,6 +8,7 @@ using Photino.Blazor;
 using PhotinoNET;
 using Relaks;
 using Relaks.Database;
+using Relaks.Database.Events;
 using Relaks.Managers;
 using Relaks.Utils;
 
@@ -35,29 +36,19 @@ builder.Services.AddBlazorise(o => { o.Immediate = true; })
 
 var app = builder.Build();
 
-var env = app.Services.GetRequiredService<IHostEnvironment>();
+// var env = app.Services.GetRequiredService<IHostEnvironment>();
 using var scope = app.Services.CreateScope();
 var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-Console.WriteLine(env.EnvironmentName);
 var isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == Environments.Development;
 
+db.Database.Migrate();
 if (isDevelopment)
 {
-    // var ftsEntries = FtsMigrationHelper.CreateFtsTable(new FtsMigrationHelper.TableData()
-    // {
-    //     Table = "FtsEntries",
-    //     Unindexed = new[] {"Id"},
-    //     Columns = new[] {"Id", "Body"},
-    // });
-    // Console.WriteLine(ftsEntries);
-    // db.Database.EnsureDeleted();
-    // db.Database.EnsureCreated();
-    new Relaks.Database.Seeders.DatabaseSeeder(db).SeedAll();
+    // new Relaks.Database.Seeders.DatabaseSeeder(db).SeedAll();
 }
-else
-{
-    db.Database.Migrate();
-}
+
+// EntryEvents.CheckAndRefresh(db);
+// EntryInfoEvents.CheckAndRefresh(db);
 
 var rootComponents = app.Services.GetRequiredService<BlazorWindowRootComponents>();
 rootComponents.Add(typeof(App), "#app");

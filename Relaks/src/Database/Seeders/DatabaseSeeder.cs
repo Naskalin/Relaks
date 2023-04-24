@@ -17,10 +17,12 @@ public partial class DatabaseSeeder
 
     public void SeedAll()
     {
-        Db.Database.ExecuteSqlRaw("delete from EntryInfos;");
-        // Db.Database.ExecuteSqlRaw("delete from FtsEntryInfos;");
-        Db.Database.ExecuteSqlRaw("delete from Entries;");
-        Db.Database.ExecuteSqlRaw("delete from FtsEntries;");
+        // clear fts
+        Db.Database.ExecuteSqlRaw("DELETE FROM FtsEntryInfos;");
+        Db.Database.ExecuteSqlRaw("DELETE FROM Entries;");
+        
+        Db.Database.ExecuteSqlRaw("DELETE FROM EntryInfos;");
+        Db.Database.ExecuteSqlRaw("DELETE FROM Entries;");
         // Db.Database.ExecuteSqlRaw("delete from StructureItems;");
         // Db.Database.ExecuteSqlRaw("delete from StructureConnections;");
         // Db.Database.ExecuteSqlRaw("delete from Structures;");

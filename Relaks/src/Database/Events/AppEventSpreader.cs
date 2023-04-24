@@ -1,5 +1,4 @@
-﻿// using App.DbEvents.Fts;
-using Relaks.Models;
+﻿using Relaks.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Relaks.Database.Events;
@@ -15,7 +14,7 @@ public static class AppEventSpreader
         {
             switch (trackEntry.Entity)
             {
-                case Entry entry:
+                case BaseEntry entry:
                     switch (trackEntry.State)
                     {
                         case EntityState.Added:
@@ -29,20 +28,20 @@ public static class AppEventSpreader
                             break;
                     }
                     break;
-                // case EntryInfo eInfo:
-                //     switch (trackEntry.State)
-                //     {
-                //         case EntityState.Added:
-                //             EntryInfoEvents.Create(db, eInfo);
-                //             break;
-                //         case EntityState.Modified:
-                //             EntryInfoEvents.Update(db, eInfo);
-                //             break;
-                //         case EntityState.Deleted:
-                //             EntryInfoEvents.Delete(db, eInfo);
-                //             break;
-                //     }
-                //     break;
+                case BaseEntryInfo eInfo:
+                    switch (trackEntry.State)
+                    {
+                        case EntityState.Added:
+                            EntryInfoEvents.Create(db, eInfo);
+                            break;
+                        case EntityState.Modified:
+                            EntryInfoEvents.Update(db, eInfo);
+                            break;
+                        case EntityState.Deleted:
+                            EntryInfoEvents.Delete(db, eInfo);
+                            break;
+                    }
+                    break;
             }
         }
     }

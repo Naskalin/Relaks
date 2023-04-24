@@ -92,17 +92,17 @@
 //         }
 //     }
 //
-//     private void AddItems(Structure structure, List<Entry> entries)
+//     private void AddItems(Structure structure, List<BaseEntry> entries)
 //     {
 //         // if (10 >= Faker.Random.Int(1, 10)) return;
 //         var randomEntries = entries.OrderBy(x => Guid.NewGuid()).Take(Faker.Random.Int(1, entries.Count / 2)).ToList();
-//         foreach (var entry in randomEntries)
+//         foreach (var baseEntry in randomEntries)
 //         {
 //             var item = new StructureItem()
 //             {
 //                 Description = Faker.Random.ArrayElement(new []{Faker.Random.Words(Faker.Random.Int(2, 5)), ""}),
 //                 StartAt = Faker.Date.Past(),
-//                 EntryId = entry.Id,
+//                 EntryId = baseEntry.Id,
 //                 StructureId = structure.Id,
 //                 CreatedAt = DateTime.UtcNow,
 //                 UpdatedAt = DateTime.UtcNow,

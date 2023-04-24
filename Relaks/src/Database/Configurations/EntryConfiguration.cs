@@ -1,30 +1,31 @@
-﻿using Relaks.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-
-namespace Relaks.Database.Configurations;
-
-public class EntryConfiguration : IEntityTypeConfiguration<Entry>
-{
-    public void Configure(EntityTypeBuilder<Entry> builder)
-    {
-        builder
-            .Property(x => x.Type)
-            .HasConversion(new EnumToStringConverter<Entry.TypeEnum>());
-    }
-}
-
-// public class FtsEntryConfiguration : IEntityTypeConfiguration<FtsEntry>
-// {
-//     public void Configure(EntityTypeBuilder<FtsEntry> builder)
-//     {
-//         builder.HasKey(fts => fts.RowId);
+﻿// using Relaks.Models;
+// using Microsoft.EntityFrameworkCore;
+// using Microsoft.EntityFrameworkCore.Metadata.Builders;
+// using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 //
-//         builder.ToTable("FtsEntries", x => x.ExcludeFromMigrations());
-//         
+// namespace Relaks.Database.Configurations;
+//
+// public class EntryConfiguration : IEntityTypeConfiguration<BaseEntry>
+// {
+//     public void Configure(EntityTypeBuilder<BaseEntry> builder)
+//     {
 //         builder
-//             .Property(fts => fts.Match)
-//             .HasColumnName("FtsEntries");
+//             .ToTable("Entries");
+//             // .Property(x => x.Type)
+//             // .HasConversion(new EnumToStringConverter<BaseEntry.TypeEnum>());
 //     }
 // }
+//
+// // public class FtsEntryConfiguration : IEntityTypeConfiguration<FtsEntry>
+// // {
+// //     public void Configure(EntityTypeBuilder<FtsEntry> builder)
+// //     {
+// //         builder.HasKey(fts => fts.RowId);
+// //
+// //         builder.ToTable("Entries", x => x.ExcludeFromMigrations());
+// //         
+// //         builder
+// //             .Property(fts => fts.Match)
+// //             .HasColumnName("Entries");
+// //     }
+// // }

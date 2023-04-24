@@ -5,18 +5,20 @@ using Relaks.Interfaces;
 
 namespace Relaks.Models;
 
-public class Entry : ITimestamped, ISoftDeleted
+public abstract class BaseEntry : ITimestamped, ISoftDeleted
 {
-    public enum TypeEnum
-    {
-        Person,
-        Meet,
-        Company,
-    }
+    // public enum TypeEnum
+    // {
+    //     Person,
+    //     Meet,
+    //     Company,
+    // }
     
     public Guid Id { get; set; }
+    [StringLength(50)]
+    public string Discriminator { get; set; } = null!;
     public string Name { get; set; } = null!;
-    public TypeEnum Type { get; set; }
+    // public TypeEnum Type { get; set; }
     public string? Description { get; set; }
     public int Reputation { get; set; }
     public DateTime CreatedAt { get; set; }
@@ -30,13 +32,13 @@ public class Entry : ITimestamped, ISoftDeleted
 
     // public Guid? Avatar { get; set; }
     //
-    public List<EntryInfo> EntryInfos { get; set; } = new();
+    public List<BaseEntryInfo> EntryInfos { get; set; } = new();
     // [JsonIgnore]
     // public List<EntryFile> Files { get; set; } = new();
     // [JsonIgnore]
     // public List<Structure> Structures { get; set; } = new();
 
-    public Entry()
+    public BaseEntry()
     {
         Id = Guid.NewGuid();
         CreatedAt = DateTime.UtcNow;
@@ -44,14 +46,31 @@ public class Entry : ITimestamped, ISoftDeleted
     }
 }
 
+public class EPerson : BaseEntry
+{
+    
+}
+
+public class ECompany : BaseEntry
+{
+    
+}
+
+public class EMeet : BaseEntry
+{
+    
+}
+
 public class FtsEntry : IFtsEntity
 {
-    [NotMapped]
     public int RowId { get; set; }
     [NotMapped]
     public string Match { get; set; } = null!;
     [NotMapped]
+    public string Snippet { get; set; } = null!;
+    [NotMapped]
     public double? Rank { get; set; }
+    
     public Guid Id { get; set; }
     public string Body { get; set; } = null!;
 }

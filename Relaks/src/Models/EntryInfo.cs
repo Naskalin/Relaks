@@ -4,7 +4,7 @@ using Relaks.Interfaces;
 
 namespace Relaks.Models;
 
-public abstract class EntryInfo : ITimestamped, ISoftDeleted, ICloneable
+public abstract class BaseEntryInfo : ITimestamped, ISoftDeleted, ICloneable
 {
     // public const string Phone = "PHONE";
     // public const string Email = "EMAIL";
@@ -12,10 +12,10 @@ public abstract class EntryInfo : ITimestamped, ISoftDeleted, ICloneable
     // public const string Note = "NOTE";
     // public const string Date = "DATE";
     // public const string Custom = "CUSTOM";
-    
+
     public Guid Id { get; set; }
+    public BaseEntry Entry { get; set; } = null!;
     public Guid EntryId { get; set; }
-    public Entry Entry { get; set; } = null!;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public string? Title { get; set; }
@@ -30,7 +30,7 @@ public abstract class EntryInfo : ITimestamped, ISoftDeleted, ICloneable
         return MemberwiseClone();
     }
 
-    public EntryInfo()
+    public BaseEntryInfo()
     {
         Id = Guid.NewGuid();
         CreatedAt = DateTime.UtcNow;
@@ -39,31 +39,31 @@ public abstract class EntryInfo : ITimestamped, ISoftDeleted, ICloneable
     }
 }
 
-public class EiEmail : EntryInfo
+public class EiEmail : BaseEntryInfo
 {
     public string Email { get; set; } = null!;
 }
 
-public class EiPhone : EntryInfo, IPhone
+public class EiPhone : BaseEntryInfo, IPhone
 {
     public string Number { get; set; } = null!;
     public string Region { get; set; } = null!;
 }
 
-public class EiDate : EntryInfo
+public class EiDate : BaseEntryInfo
 {
     public DateTime Date { get; set; }
 }
 
-public class EiUrl : EntryInfo
+public class EiUrl : BaseEntryInfo
 {
     public string Url { get; set; } = null!;
 }
 
-public class EiCustom : EntryInfo
+public class EiCustom : BaseEntryInfo
 {
     public string CustomValue { get; set; } = null!;
-    
+
     [NotMapped]
     public CustomInfo Custom
     {
@@ -72,17 +72,24 @@ public class EiCustom : EntryInfo
     }
 }
 
-// public class FtsEntryInfo : IFtsEntity
-// {
-//     public int RowId { get; set; }
-//     public string Match { get; set; } = null!;
-//     public double? Rank { get; set; }
-//
-//     public Guid Id { get; set; }
-//     public Guid EntryId { get; set; }
-//
-//     public string Data { get; set; } = null!;
-// }
+public class FtsEntryInfo : IFtsEntity
+{
+    [NotMapped]
+    public int RowId { get; set; }
+
+    [NotMapped]
+    public string Match { get; set; } = null!;
+
+    [NotMapped]
+    public string Snippet { get; set; } = null!;
+
+    [NotMapped]
+    public double? Rank { get; set; }
+
+    public Guid Id { get; set; }
+    public string Body { get; set; } = null!;
+    public Guid EntryId { get; set; }
+}
 
 // public record NoteInfo
 // {

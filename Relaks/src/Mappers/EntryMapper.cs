@@ -4,13 +4,13 @@ namespace Relaks.Mappers;
 
 public static class EntryMapper
 {
-    public static string ToFtsBody(this Entry entry)
+    public static string ToFtsBody(this BaseEntry baseEntry)
     {
         var arr = new List<string?>
         {
-            entry.Name,
-            entry.Description,
-            entry.DeletedReason
+            baseEntry.Name,
+            baseEntry.Description,
+            baseEntry.DeletedReason
         };
 
         return string.Join(" ", arr.Where(x => !string.IsNullOrEmpty(x)));

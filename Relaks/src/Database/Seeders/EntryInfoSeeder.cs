@@ -10,6 +10,14 @@ public partial class DatabaseSeeder
     {
         var entries = Db.Entries.Where(x => true).ToList();
 
+        // var first = entries.First();
+        // var phone = new EiPhone();
+        // FakeEntryInfo(phone, first.Id);
+        // phone.Number = "+78120000000";
+        // phone.Region = "RU";
+        // Db.EiPhones.Add(phone);
+        // Db.SaveChanges();
+
         var random = new Random();
         foreach (var entry in entries)
         {
@@ -40,7 +48,7 @@ public partial class DatabaseSeeder
             //
             // for (int j = 0; j < random.Next(1, 3); j++)
             // {
-            //     var eInfo = CreateEntryInfo(entry.Id);
+            //     var eInfo = CreateEntryInfo(baseEntry.Id);
             //     ToNote(eInfo);
             //     Db.EntryInfos.Add(eInfo);
             // }
@@ -52,7 +60,7 @@ public partial class DatabaseSeeder
                 url.Url = Faker.Internet.Url();
                 Db.EiUrls.Add(url);
             }
-
+        
             // for (int j = 0; j < random.Next(1, 3); j++)
             // {
             //     var eInfo = new EiCustom();
@@ -61,17 +69,16 @@ public partial class DatabaseSeeder
             //     Db.EntryInfos.Add(eInfo);
             // }
         }
-
+        
         Db.SaveChanges();
     }
 
-    private void FakeEntryInfo(EntryInfo eInfo, Guid entryId)
+    private void FakeEntryInfo(BaseEntryInfo eInfo, Guid entryId)
     {
         eInfo.EntryId = entryId;
         eInfo.Title = Faker.Random.ArrayElement(new[] {Faker.Random.Words(), null});
         eInfo.CreatedAt = DateTime.UtcNow;
         eInfo.UpdatedAt = DateTime.UtcNow;
-        eInfo.DeletedReason = null;
 
         if (Faker.Random.Number(1, 10) > 8)
         {
@@ -85,7 +92,7 @@ public partial class DatabaseSeeder
     //     var info = CreateCustomInfo();
     //
     //     eInfo.Value = JsonSerializer.Serialize(info, InfoValueHelper.WriteOptions);
-    //     eInfo.Type = EntryInfo.Custom;
+    //     eInfo.Type = BaseEntryInfo.Custom;
     //     eInfo.IsFavorite = Faker.Random.Bool(0.3F);
     //
     //     return eInfo;
