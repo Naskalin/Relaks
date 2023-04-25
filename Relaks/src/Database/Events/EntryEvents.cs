@@ -1,6 +1,7 @@
 ﻿using Relaks.Models;
 using Microsoft.EntityFrameworkCore;
 using Relaks.Database;
+using Relaks.Database.Configurations;
 using Relaks.Mappers;
 
 namespace Relaks.Database.Events;
@@ -35,8 +36,9 @@ public static class EntryEvents
     {
         bool isValid = Guid.TryParse(baseEntry.Id.ToString(), out _);
         if (!isValid) return;
+        
         db.Database.ExecuteSqlInterpolated(
-            $"INSERT INTO Entries(Id, Body) VALUES ({baseEntry.Id}, {baseEntry.ToFtsBody()})"
+            $"INSERT INTO FtsEntries(Id, Body) VALUES ({baseEntry.Id.ToString()}, {baseEntry.ToFtsBody()})"
         );
     }
 
@@ -45,7 +47,7 @@ public static class EntryEvents
         bool isValid = Guid.TryParse(baseEntry.Id.ToString(), out _);
         if (!isValid) return;
         db.Database.ExecuteSqlInterpolated(
-            $"UPDATE Entries SET Body = {baseEntry.ToFtsBody()} WHERE Id = {baseEntry.Id}"
+            $"UPDATE FtsEntries SET Body = {baseEntry.ToFtsBody()} WHERE Id = {baseEntry.Id.ToString()}"
         );
     }
 
@@ -54,7 +56,7 @@ public static class EntryEvents
         bool isValid = Guid.TryParse(baseEntry.Id.ToString(), out _);
         if (!isValid) return;
         db.Database.ExecuteSqlInterpolated(
-            $"DELETE FROM Entries WHERE Id = {baseEntry.Id}"
+            $"DELETE FROM FtsEntries WHERE Id = {baseEntry.Id.ToString()}"
         );
     }
 }

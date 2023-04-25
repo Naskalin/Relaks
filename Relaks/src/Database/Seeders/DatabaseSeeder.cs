@@ -19,7 +19,7 @@ public partial class DatabaseSeeder
     {
         // clear fts
         Db.Database.ExecuteSqlRaw("DELETE FROM FtsEntryInfos;");
-        Db.Database.ExecuteSqlRaw("DELETE FROM Entries;");
+        Db.Database.ExecuteSqlRaw("DELETE FROM FtsEntries;");
         
         Db.Database.ExecuteSqlRaw("DELETE FROM EntryInfos;");
         Db.Database.ExecuteSqlRaw("DELETE FROM Entries;");

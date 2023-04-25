@@ -1,5 +1,5 @@
-﻿.header-search {
-  .form-control {
+﻿.navbar .top-search {
+  &__input {
     color: $body-color;
     background-color: lighten($dark, 4%);
     &:hover {
@@ -7,6 +7,12 @@
     }
     &:focus {
       background-color: lighten($dark, 7.5%);
+    }
+  }
+  &__result {
+    b {
+      font-weight: 500;
+      color: $orange
     }
   }
 }

@@ -107,6 +107,61 @@ namespace Relaks.Migrations
                     b.UseTphMappingStrategy();
                 });
 
+            modelBuilder.Entity("Relaks.Models.FtsEntry", b =>
+                {
+                    b.Property<int>("RowId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Match")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("FtsEntries");
+
+                    b.HasKey("RowId");
+
+                    b.ToTable("FtsEntries", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("Relaks.Models.FtsEntryInfo", b =>
+                {
+                    b.Property<int>("RowId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("EntryId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Match")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("FtsEntryInfos");
+
+                    b.HasKey("RowId");
+
+                    b.ToTable("FtsEntryInfos", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
             modelBuilder.Entity("Relaks.Models.ECompany", b =>
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");

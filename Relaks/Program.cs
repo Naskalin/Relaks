@@ -19,9 +19,9 @@ if (OperatingSystem.IsWindows())
 }
 
 var builder = Host.CreateApplicationBuilder(args);
-builder.Services.AddBlazorDesktop();
 
-var projectDir = Directory.GetCurrentDirectory();
+builder.Services.AddBlazorDesktop();
+var projectDir = AppDomain.CurrentDomain.BaseDirectory;
 var relaksConfig = RelaksConfigManager.GetOrCreateConfig(projectDir);
 builder.Services.AddSingleton(relaksConfig);
 

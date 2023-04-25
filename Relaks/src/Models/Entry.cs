@@ -64,11 +64,8 @@ public class EMeet : BaseEntry
 public class FtsEntry : IFtsEntity
 {
     public int RowId { get; set; }
-    [NotMapped]
     public string Match { get; set; } = null!;
-    [NotMapped]
     public string Snippet { get; set; } = null!;
-    [NotMapped]
     public double? Rank { get; set; }
     
     public Guid Id { get; set; }

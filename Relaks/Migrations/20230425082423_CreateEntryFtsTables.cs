@@ -6,7 +6,7 @@ using Relaks.Database.DbUtils;
 namespace Relaks.Migrations
 {
     /// <inheritdoc />
-    public partial class FtsEntries : Migration
+    public partial class CreateEntryFtsTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,7 +14,7 @@ namespace Relaks.Migrations
             migrationBuilder.Sql(
                 FtsMigrationHelper.CreateFtsTable(new FtsMigrationHelper.TableData() 
                 {
-                    Table = "Entries",
+                    Table = "FtsEntries",
                     Unindexed = new []{"Id"},
                     Columns = new[] {"Id", "Body"},
                 })
@@ -37,7 +37,7 @@ namespace Relaks.Migrations
                 name: "FtsEntryInfos");
             
             migrationBuilder.DropTable(
-                name: "Entries");
+                name: "FtsEntries");
         }
     }
 }

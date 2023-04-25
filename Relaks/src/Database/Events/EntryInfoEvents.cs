@@ -1,6 +1,7 @@
 ﻿using Relaks.Models;
 using Microsoft.EntityFrameworkCore;
 using Relaks.Database;
+using Relaks.Database.Configurations;
 using Relaks.Mappers;
 
 namespace Relaks.Database.Events;
@@ -62,7 +63,7 @@ public static class EntryInfoEvents
         if (!isValid) return;
 
         db.Database.ExecuteSqlInterpolated(
-            $"INSERT INTO FtsEntryInfos(Id, EntryId, Body) VALUES ({eInfo.Id}, {eInfo.EntryId}, {eInfo.ToFtsBody()})"
+            $"INSERT INTO FtsEntryInfos(Id, EntryId, Body) VALUES ({eInfo.Id.ToString()}, {eInfo.EntryId.ToString()}, {eInfo.ToFtsBody()})"
         );
     }
 
@@ -72,7 +73,7 @@ public static class EntryInfoEvents
         if (!isValid) return;
 
         db.Database.ExecuteSqlInterpolated(
-            $"UPDATE FtsEntryInfos SET Body = {eInfo.ToFtsBody()} WHERE Id = {eInfo.Id}"
+            $"UPDATE FtsEntryInfos SET Body = {eInfo.ToFtsBody()} WHERE Id = {eInfo.Id.ToString()}"
         );
     }
 
@@ -82,7 +83,7 @@ public static class EntryInfoEvents
         if (!isValid) return;
 
         db.Database.ExecuteSqlInterpolated(
-            $"DELETE FROM FtsEntryInfos WHERE Id = {eInfo.Id}"
+            $"DELETE FROM FtsEntryInfos WHERE Id = {eInfo.Id.ToString()}"
         );
     }
 }

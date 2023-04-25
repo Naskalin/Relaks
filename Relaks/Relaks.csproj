@@ -48,5 +48,20 @@
       <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\_bootswatch (1).scss" />
       <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\_variables (1).scss" />
       <_ContentIncludedByDefault Remove="wwwroot\css\_app.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\css\line-awesome.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\css\line-awesome.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\line-awesome.scss" />
+      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_bordered_pulled.scss" />
+      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_core.scss" />
+      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_fixed-width.scss" />
+      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_icons.scss" />
+      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_larger.scss" />
+      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_list.scss" />
+      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_mixins.scss" />
+      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_path.scss" />
+      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_rotated-flipped.scss" />
+      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_screen-reader.scss" />
+      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_stacked.scss" />
+      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_variables.scss" />
     </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Relaks.Database.Configurations;
 using Relaks.Database.Events;
 using Relaks.Models;
 
@@ -31,8 +32,8 @@ public sealed class AppDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // modelBuilder.ApplyConfiguration(new EntryConfiguration());
-        // modelBuilder.ApplyConfiguration(new EntryInfoConfiguration());
+        modelBuilder.ApplyConfiguration(new FtsEntryConfiguration());
+        modelBuilder.ApplyConfiguration(new FtsEntryInfoConfiguration());
 
         // DateTime Always UTC
         // https://stackoverflow.com/a/61243301/5638975
