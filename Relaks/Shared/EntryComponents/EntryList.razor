@@ -1,0 +1,26 @@
+﻿@using Relaks.Models
+@using Relaks.Database
+
+@SelectedEntry?.Id
+
+<DataGrid TItem="BaseEntry"
+          Data="@Entries"
+          @bind-SelectedRow="@SelectedEntry">
+    <DataGridCommandColumn />
+    <DataGridColumn Field="@nameof(BaseEntry.Name)" Caption="Name" />
+    <DataGridColumn Field="@nameof(BaseEntry.Reputation)" Caption="Reputation" />
+    <DataGridColumn Field="@nameof(BaseEntry.StartAt)" Caption="StartAt" />
+    <DataGridColumn Field="@nameof(BaseEntry.EndAt)" Caption="EndAt" />
+</DataGrid>
+@code {
+    [Inject]
+    public AppDbContext Db { get; set; } = null!;
+    private List<BaseEntry> Entries { get; set; } = new();
+    private BaseEntry? SelectedEntry { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Entries = Db.Entries.Take(5).ToList();
+    }
+
+}

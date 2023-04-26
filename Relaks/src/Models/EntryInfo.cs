@@ -53,6 +53,12 @@ public class EiPhone : BaseEntryInfo, IPhone
 public class EiDate : BaseEntryInfo
 {
     public DateTime Date { get; set; }
+    public bool IsOnlyDate { get; set; }
+
+    // public DateTime ToTz(string timeZoneId)
+    // {
+    //     return TimeZoneInfo.ConvertTimeToUtc(Date, TimeZoneInfo.FindSystemTimeZoneById(timeZoneId));
+    // }
 }
 
 public class EiUrl : BaseEntryInfo

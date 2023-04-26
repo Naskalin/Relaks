@@ -4,7 +4,7 @@ namespace Relaks.Shared;
 
 public static class EntityIcon
 {
-    public static Dictionary<string, string> ByName => new()
+    private static Dictionary<string, string> ByName => new()
     {
         {nameof(EPerson), "las la-user"},
         {nameof(EMeet), "las la-handshake"},
@@ -16,4 +16,9 @@ public static class EntityIcon
         {nameof(EiPhone), "las la-phone"},
         {nameof(EiCustom), "las la-align-left"},
     };
+
+    public static string ByClassName(string className)
+    {
+        return ByName.TryGetValue(className, out var value) ? value : "las la-question";
+    }
 }

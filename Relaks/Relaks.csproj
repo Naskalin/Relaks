@@ -10,6 +10,7 @@
 
     <ItemGroup>
       <PackageReference Include="Blazorise.Bootstrap5" Version="1.2.2" />
+      <PackageReference Include="Blazorise.DataGrid" Version="1.2.2" />
       <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.2" />
       <PackageReference Include="Bogus" Version="34.0.2" />
       <PackageReference Include="libphonenumber-csharp" Version="8.13.9" />
@@ -36,32 +37,5 @@
         </None>
         <None Remove="relaks.yaml" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Migrations\" />
-      <Folder Include="wwwroot\assets\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\bootstrap.min.css.bak" />
-      <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\_bootswatch (1).scss" />
-      <_ContentIncludedByDefault Remove="wwwroot\css\bootstrap\_variables (1).scss" />
-      <_ContentIncludedByDefault Remove="wwwroot\css\_app.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\css\line-awesome.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\css\line-awesome.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\line-awesome.scss" />
-      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_bordered_pulled.scss" />
-      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_core.scss" />
-      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_fixed-width.scss" />
-      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_icons.scss" />
-      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_larger.scss" />
-      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_list.scss" />
-      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_mixins.scss" />
-      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_path.scss" />
-      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_rotated-flipped.scss" />
-      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_screen-reader.scss" />
-      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_stacked.scss" />
-      <_ContentIncludedByDefault Remove="wwwroot\libs\line-awesome\scss\_variables.scss" />
-    </ItemGroup>
+  
 </Project>

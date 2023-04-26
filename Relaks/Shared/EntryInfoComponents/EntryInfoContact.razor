@@ -1,0 +1,61 @@
+﻿@using Relaks.Models
+
+<div id="entry-info-@EntryInfo.Id" class="row align-items-center">
+    <div class="col-auto" style="width: 2rem">
+        <i class="@EntityIcon.ByClassName(EntryInfo.Discriminator) la-lg"></i>
+    </div>
+    <div class="col">
+        @if (EiPhone != null)
+        {
+            <a href="tel:@EiPhone.Number" target="_blank">@EiPhone.Region @EiPhone.Number</a>
+        }
+        else if (EiEmail != null)
+        {
+            <a href="mailto:@EiEmail.Email" target="_blank">@EiEmail.Email</a>
+        }
+        else if (EiUrl != null)
+        {
+            <a href="@EiUrl.Url" target="_blank">@EiUrl.Url</a>
+        }
+        else if (EiDate != null)
+        {
+            @EiDate.Date.ToLocalTime()
+        }
+
+        @if (!string.IsNullOrEmpty(EntryInfo.Title))
+        {
+            <div><small class="mt-1 text-light">@EntryInfo.Title</small></div>
+        }
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public BaseEntryInfo EntryInfo { get; set; } = null!;
+
+    private EiDate? EiDate { get; set; }
+    private EiUrl? EiUrl { get; set; }
+    private EiEmail? EiEmail { get; set; }
+    private EiPhone? EiPhone { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        @switch (EntryInfo.Discriminator)
+        {
+            case nameof(EiPhone):
+                EiPhone = (EiPhone) EntryInfo;
+                break;
+            case nameof(EiEmail):
+                EiEmail = (EiEmail) EntryInfo;
+                break;
+            case nameof(EiUrl):
+                EiUrl = (EiUrl) EntryInfo;
+                break;
+            case nameof(EiDate):
+                EiDate = (EiDate) EntryInfo;
+                break;
+        }
+    }
+
+}

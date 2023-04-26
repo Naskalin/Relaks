@@ -2,7 +2,7 @@
 @import "bootstrap/scss/functions";
 
 $white:    #fff !default;
-$gray-100: #f8f9fa !default;
+$gray-100: #c3c9d0 !default;
 $gray-200: #e9ecef !default;
 $gray-300: #dee2e6 !default;
 $gray-400: #ced4da !default;
@@ -38,6 +38,8 @@ $body-bg: #0f2537 !default;
 $body-color: $gray-100 !default;
 $text-muted: rgba(255, 255, 255, .4) !default;
 
+$link-color: lighten($primary, 30%) !default;
+$link-hover-color: lighten($primary, 20%) !default;
 // Tables
 
 $table-accent-bg:             rgba($white, .05) !default;
@@ -100,9 +102,10 @@ $pagination-disabled-border-color:  $pagination-border-color !default;
 
 // Cards
 
-$card-cap-bg:                       $table-hover-bg !default;
-$card-bg:                           $secondary !default;
-$card-inner-border-radius:          0 !default;
+$card-bg:                           $table-hover-bg !default;
+//$card-cap-bg:                       lighten($card-bg, 5%) !default;
+$card-color: $body-color !default;
+//$card-inner-border-radius:          0 !default;
 
 // Popovers
 
@@ -125,8 +128,8 @@ $modal-header-border-color:         rgba(0, 0, 0, .2) !default;
 // List group
 
 $list-group-color:                  $white !default;
-$list-group-bg:                     $secondary !default;
-$list-group-border-color:           transparent !default;
+$list-group-bg:                     lighten($secondary, 5%) !default;
+$list-group-border-color:           $secondary !default;
 $list-group-hover-bg:               $nav-link-disabled-color !default;
 $list-group-disabled-color:         $nav-link-disabled-color !default;
 $list-group-action-color:           $white !default;

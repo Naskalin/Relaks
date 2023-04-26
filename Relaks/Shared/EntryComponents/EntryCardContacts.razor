@@ -1,0 +1,35 @@
+﻿@using Relaks.Models
+@using Relaks.Managers
+
+@inject RelaksConfigModel RelaksConfigModel;
+
+@if (EntryInfos.Any())
+{
+    <ul class="list-group list-group-flush bg-transparent entry-card__contacts">
+
+        @foreach (var eInfo in EntryInfosFiltered)
+        {
+            <li class="list-group-item bg-transparent gx-0">
+                <EntryInfoContact EntryInfo="@eInfo"></EntryInfoContact>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+
+    [Parameter]
+    public Guid? EntryInfoId { get; set; }
+
+    [Parameter]
+    public List<BaseEntryInfo> EntryInfos { get; set; } = new();
+
+    private List<BaseEntryInfo> EntryInfosFiltered { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        var contactTypes = new List<string>() {nameof(EiPhone), nameof(EiEmail), nameof(EiUrl), nameof(EiDate)};
+        EntryInfosFiltered = EntryInfos.Where(x => contactTypes.Contains(x.Discriminator)).ToList();
+    }
+
+}

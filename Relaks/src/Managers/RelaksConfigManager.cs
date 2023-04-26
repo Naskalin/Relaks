@@ -4,20 +4,20 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace Relaks.Managers;
 
+public class RelaksConfigModel : IRelaksConfig
+{
+    public string SqliteFilePath { get; set; } = null!;
+    public string FilesDirPath { get; set; } = null!;
+    public string Timezone { get; set; } = null!;
+    public string PhoneRegion { get; set; } = null!;
+
+    public string SqliteConnectionString() => "Data Source=" + SqliteFilePath;
+}
+
 public static class RelaksConfigManager
 {
     private const string RelaksConfigName = "relaks.yaml";
     private const string StoreDirName = "relaks_store";
-
-    public class RelaksConfigModel : IRelaksConfig
-    {
-        public string SqliteFilePath { get; set; } = null!;
-        public string FilesDirPath { get; set; } = null!;
-        public string Timezone { get; set; } = null!;
-        public string PhoneRegion { get; set; } = null!;
-
-        public string SqliteConnectionString() => "Data Source=" + SqliteFilePath;
-    }
 
     private static string RelaksConfigPath(string projectDir) => Path.Combine(projectDir, RelaksConfigName);
 

@@ -11,8 +11,8 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230425082423_CreateEntryFtsTables")]
-    partial class CreateEntryFtsTables
+    [Migration("20230426100208_AddFtsTables")]
+    partial class AddFtsTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -128,6 +128,13 @@ namespace Relaks.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("FtsEntries");
 
+                    b.Property<double?>("Rank")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("Snippet")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("RowId");
 
                     b.ToTable("FtsEntries", null, t =>
@@ -156,6 +163,13 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT")
                         .HasColumnName("FtsEntryInfos");
+
+                    b.Property<double?>("Rank")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("Snippet")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("RowId");
 
@@ -203,6 +217,9 @@ namespace Relaks.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsOnlyDate")
+                        .HasColumnType("INTEGER");
 
                     b.HasDiscriminator().HasValue("EiDate");
                 });

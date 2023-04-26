@@ -43,7 +43,7 @@ public static class FtsRepository
         var ftsUnion = ftsEntries
             .AsEnumerable()
             .Union(ftsEntryInfos)
-            .OrderBy(x => x.Rank)
+            .OrderByDescending(x => x.Rank)
             .Take(15)
             .ToList();
 

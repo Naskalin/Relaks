@@ -6,7 +6,7 @@ using Relaks.Database.DbUtils;
 namespace Relaks.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateEntryFtsTables : Migration
+    public partial class AddFtsTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

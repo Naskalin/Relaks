@@ -47,6 +47,7 @@ namespace Relaks.Migrations
                     DeletedReason = table.Column<string>(type: "TEXT", nullable: true),
                     CustomValue = table.Column<string>(type: "TEXT", nullable: true),
                     Date = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    IsOnlyDate = table.Column<bool>(type: "INTEGER", nullable: true),
                     Email = table.Column<string>(type: "TEXT", nullable: true),
                     Number = table.Column<string>(type: "TEXT", nullable: true),
                     Region = table.Column<string>(type: "TEXT", nullable: true),
