@@ -22,3 +22,18 @@ public static class EntityIcon
         return ByName.TryGetValue(className, out var value) ? value : "las la-question";
     }
 }
+
+// public static class DataHelper
+// {
+//     public static Dictionary<string, string> EntryDiscriminatorSelect()
+//     {
+//         var dict = new Dictionary<string, string>()
+//         {
+//             {nameof(EPerson), "las la-user"},
+//             {nameof(EMeet), "las la-handshake"},
+//             {nameof(ECompany), "las la-building"},
+//         };
+//
+//         return dict;
+//     }
+// }

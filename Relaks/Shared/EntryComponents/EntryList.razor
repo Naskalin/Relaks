@@ -1,26 +1,128 @@
 ﻿@using Relaks.Models
 @using Relaks.Database
+@using Relaks.Database.Repositories
+@using Relaks.Models.Misc
+@using Relaks.Models.Requests
+@using Relaks.Utils.Extensions
+@using System.Text.Json
 
-@SelectedEntry?.Id
+<ul>
+    <li>@Req.Discriminator</li>
+    <li>@Req.Page</li>
+    <li>@Req.PerPage</li>
+</ul>
+
+<div class="btn-group mb-3">
+    @foreach (var kv in EntryDiscriminators())
+        {
+            <button type="button"
+                    class="btn @(Req.Discriminator == kv.Value ? "btn-primary" : "btn-secondary")"
+                    @onclick="e => OnChangeDiscriminator(kv.Value)">@kv.Key</button>
+        }
+</div>
+
+@* <Select TValue="string" SelectedValueChanged="OnChangeDiscriminator"> *@
+@*     <SelectItem Value="@string.Empty">Все</SelectItem> *@
+@*     <SelectItem Value="@nameof(EPerson)">Люди</SelectItem> *@
+@*     <SelectItem Value="@nameof(ECompany)">Компании</SelectItem> *@
+@*     <SelectItem Value="@nameof(EMeet)">Встречи</SelectItem> *@
+@* </Select> *@
 
 <DataGrid TItem="BaseEntry"
-          Data="@Entries"
+          Data="@PaginatableResult.Items"
+          ReadData="OnReadData"
+          TotalItems="@PaginatableResult.Total"
+          PageSize="@PaginatableResult.PerPage"
+          PagerPosition="DataGridPagerPosition.TopAndBottom"
+          Sortable
+          ShowPager
+          Responsive
+          SortMode="DataGridSortMode.Single"
+          RowDoubleClicked="e => OnRowDoubleClicked.InvokeAsync(e.Item.Id)"
           @bind-SelectedRow="@SelectedEntry">
-    <DataGridCommandColumn />
-    <DataGridColumn Field="@nameof(BaseEntry.Name)" Caption="Name" />
-    <DataGridColumn Field="@nameof(BaseEntry.Reputation)" Caption="Reputation" />
-    <DataGridColumn Field="@nameof(BaseEntry.StartAt)" Caption="StartAt" />
-    <DataGridColumn Field="@nameof(BaseEntry.EndAt)" Caption="EndAt" />
+    <DataGridColumn Field="@nameof(BaseEntry.Id)" Caption="" Sortable="false" Width="100px">
+        <DisplayTemplate>
+            <i class="las la-question-circle" style="font-size: 3rem;"></i>
+        </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn Field="@nameof(BaseEntry.Discriminator)" Caption="" Sortable="false" CellStyle="@(item => "width: 70px")">
+        <DisplayTemplate>
+            @{ var entry = context! as BaseEntry; }
+            <i class="@EntityIcon.ByClassName(entry.Discriminator)" style="font-size: 1.6rem;"></i>
+        </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn Field="@nameof(BaseEntry.Name)" Caption="Имя">
+        <DisplayTemplate>
+            @{ var entry = context! as BaseEntry;}
+            @entry.Name
+            @if (!string.IsNullOrEmpty(entry.Description))
+            {
+                <div class="mt-1 text-muted">@entry.Description.Truncate(150)</div>
+            }
+        </DisplayTemplate>
+    </DataGridColumn>
+    <DataGridColumn Field="@nameof(BaseEntry.Reputation)" Caption="Репутация" Width="100px"/>
+    <DataGridColumn Field="@nameof(BaseEntry.StartAt)" Caption="StartAt" Width="160px"/>
+    <DataGridColumn Field="@nameof(BaseEntry.EndAt)" Caption="EndAt" Width="160px"/>
 </DataGrid>
+
 @code {
+
     [Inject]
     public AppDbContext Db { get; set; } = null!;
-    private List<BaseEntry> Entries { get; set; } = new();
+
     private BaseEntry? SelectedEntry { get; set; }
+    private PaginatableResult<BaseEntry> PaginatableResult { get; set; } = new();
+
+    private EntryFilterRequest Req { get; set; } = new();
+
+    private static Dictionary<string, string?> EntryDiscriminators() => new()
+    {
+        {"Все", null},
+        {"Люди", nameof(EPerson)},
+        {"Компании", nameof(ECompany)},
+        {"Встречи", nameof(EMeet)},
+    };
+
+    [Parameter]
+    public EventCallback<Guid> OnRowDoubleClicked { get; set; }
+
+    private void OnReadData(DataGridReadDataEventArgs<BaseEntry> e)
+    {
+        string? orderBy = null;
+        bool? isOrderByDesc = null;
+        foreach (var column in e.Columns)
+        {
+            if (column.SortDirection is not SortDirection.Default)
+            {
+                isOrderByDesc = column.SortDirection is SortDirection.Descending;
+                orderBy = column.Field;
+                break;
+            }
+        }
+
+        Req.Page = e.Page;
+        Req.PerPage = e.PageSize;
+        Req.OrderBy = orderBy;
+        Req.IsOrderByDesc = isOrderByDesc;
+
+        PaginatableResult = Db.BaseEntries.FilterByReq(Req);
+    }
+
+    private void ResetRequest()
+    {
+        Req = new EntryFilterRequest();
+    }
+
+    private void OnChangeDiscriminator(string? discriminator)
+    {
+        ResetRequest();
+        Req.Discriminator = discriminator;
+        PaginatableResult = Db.BaseEntries.FilterByReq(Req);
+    }
 
     protected override void OnInitialized()
     {
-        Entries = Db.Entries.Take(5).ToList();
+        PaginatableResult = Db.BaseEntries.FilterByReq(Req);
     }
-
 }

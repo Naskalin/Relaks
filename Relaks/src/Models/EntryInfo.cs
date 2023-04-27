@@ -4,6 +4,7 @@ using Relaks.Interfaces;
 
 namespace Relaks.Models;
 
+[Table("EntryInfos")]
 public abstract class BaseEntryInfo : ITimestamped, ISoftDeleted, ICloneable
 {
     // public const string Phone = "PHONE";

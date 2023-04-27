@@ -3,15 +3,22 @@
     outline: none !important;
     box-shadow: none !important;
   }
+  &:hover {
+    background-color: lighten($dark, 5%);
+  }
 }
-
-@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+.text-nowrap-hidden {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+//@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 /*@import url('theme/top_search.css');*/
 
-:root {
-  --r-dark: #383b3f;
-  --r-dark-light: #404348FF;
-}
+//:root {
+//  --r-dark: #383b3f;
+//  --r-dark-light: #404348FF;
+//}
 
 
 

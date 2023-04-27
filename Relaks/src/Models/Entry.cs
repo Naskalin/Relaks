@@ -5,6 +5,7 @@ using Relaks.Interfaces;
 
 namespace Relaks.Models;
 
+[Table("Entries")]
 public abstract class BaseEntry : ITimestamped, ISoftDeleted
 {
     // public enum TypeEnum

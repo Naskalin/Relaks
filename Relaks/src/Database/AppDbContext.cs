@@ -9,12 +9,12 @@ namespace Relaks.Database;
 public sealed class AppDbContext : DbContext
 {
     
-    public DbSet<BaseEntry> Entries { get; set; } = null!;
+    public DbSet<BaseEntry> BaseEntries { get; set; } = null!;
     public DbSet<ECompany> ECompanies { get; set; } = null!;
     public DbSet<EPerson> EPersons { get; set; } = null!;
     public DbSet<EMeet> EMeets { get; set; } = null!;
 
-    public DbSet<BaseEntryInfo> EntryInfos { get; set; } = null!;
+    public DbSet<BaseEntryInfo> BaseEntryInfos { get; set; } = null!;
     public DbSet<EiPhone> EiPhones { get; set; } = null!;
     public DbSet<EiEmail> EiEmails { get; set; } = null!;
     public DbSet<EiDate> EiDates { get; set; } = null!;

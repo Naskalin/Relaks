@@ -8,7 +8,7 @@ public partial class DatabaseSeeder
 {
     private void SeedEntryInfos()
     {
-        var entries = Db.Entries.Where(x => true).ToList();
+        var entries = Db.BaseEntries.Where(x => true).ToList();
 
         // var first = entries.First();
         // var phone = new EiPhone();

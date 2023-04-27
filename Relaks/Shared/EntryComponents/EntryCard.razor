@@ -59,7 +59,7 @@
 
     private void Init()
     {
-        Entry = Db.Entries
+        Entry = Db.BaseEntries
             .Include(x => x.EntryInfos)
             .First(x => x.Id.Equals(EntryId));
     }

@@ -1,10 +1,16 @@
 ﻿@page "/entries"
 <PageTemplate>
     <Title>Объединения</Title>
+    
+    <EntryList OnRowDoubleClicked="OnRowDoubleClicked"></EntryList>
 </PageTemplate>
 
-<EntryList></EntryList>
-
 @code {
-    
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = null!;
+
+    private void OnRowDoubleClicked(Guid entryId)
+    {
+        NavigationManager.NavigateTo("/entries/" + entryId);
+    }
 }

@@ -1,13 +1,13 @@
 ﻿.navbar .top-search {
   &__input {
-    color: $body-color;
-    background-color: lighten($dark, 4%);
-    &:hover {
-      background-color: lighten($dark, 5%);
-    }
-    &:focus {
-      background-color: lighten($dark, 7.5%);
-    }
+    //color: $body-color;
+    //background-color: lighten($dark, 4%);
+    //&:hover {
+    //  background-color: lighten($dark, 5%);
+    //}
+    //&:focus {
+    //  background-color: lighten($dark, 7.5%);
+    //}
   }
   &__result {
     b {
@@ -15,32 +15,4 @@
       color: $orange
     }
   }
-  //&__el {
-  //  &:hover {
-  //    background-color: lighten($dark, 5%);
-  //  }
-  //  &:focus {
-  //    background-color: lighten($dark, 7.5%);
-  //  }
-  //  //&.active {
-  //  //  color: red !important;
-  //  //}
-  //}
 }
-//.form-control-dark {
-//  color: #fff;
-//  background-color: var(--bs-dark);
-//  border-color: var(--bs-dark);
-//  box-shadow: none !important;
-//  outline: none !important;
-//}
-//
-//.form-control-dark::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-//  color: #999;
-//  opacity: 1; /* Firefox */
-//}
-//
-//.form-control-dark:focus {
-//  color: #fff;
-//  background-color: rgba(255, 255, 255, .2);
-//}

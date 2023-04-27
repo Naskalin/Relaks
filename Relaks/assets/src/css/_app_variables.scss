@@ -54,10 +54,11 @@ $table-bg-scale:              0% !default;
 
 // Forms
 
-$input-bg:                          $white !default;
+$input-bg:                          lighten($dark, 4%) !default;
+$input-focus-bg:                    lighten($dark, 7.5%);
 $input-disabled-bg:                 $gray-100 !default;
 
-$input-color:                       $gray-900 !default;
+//$input-color:                       $gray-900 !default;
 $input-border-color:                transparent !default;
 $input-border-width:                0 !default;
 

@@ -1,6 +1,6 @@
 ﻿using Relaks.Models;
 
-namespace Relaks.Database.Repostitories;
+namespace Relaks.Database.Repositories;
 
 public class FtsSearchResult
 {
@@ -52,14 +52,14 @@ public static class FtsRepository
             .Select(x => x.EntryId!.Value)
             .ToList()
             ;
-        var entries = db.Entries.Where(x => entryIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);
+        var entries = db.BaseEntries.Where(x => entryIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);
 
         List<Guid> entryInfoIds = ftsUnion
             .Where(x => x.EntryInfoId.HasValue)
             .Select(x => x.EntryInfoId!.Value)
             .ToList();
         
-        var entryInfos = db.EntryInfos.Where(x => entryInfoIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);
+        var entryInfos = db.BaseEntryInfos.Where(x => entryInfoIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);
         foreach (var item in ftsUnion)
         {
             // item.TempId = Guid.NewGuid();

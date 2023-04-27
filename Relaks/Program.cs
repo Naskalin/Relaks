@@ -1,6 +1,8 @@
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,11 +30,14 @@ builder.Services.AddDbContext<AppDbContext>(o =>
 );
 
 builder.Services.RegisterManagers();
+// builder.Services.RegisterCultures();
+
 builder.Services.AddBlazorise(o => { o.Immediate = true; })
     .AddBootstrap5Providers()
     .AddFontAwesomeIcons();
 
 var app = builder.Build();
+
 
 // var env = app.Services.GetRequiredService<IHostEnvironment>();
 using var scope = app.Services.CreateScope();
