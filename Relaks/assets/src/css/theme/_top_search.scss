@@ -1,18 +1,26 @@
-﻿.navbar .top-search {
-  &__input {
-    //color: $body-color;
-    //background-color: lighten($dark, 4%);
-    //&:hover {
-    //  background-color: lighten($dark, 5%);
-    //}
-    //&:focus {
-    //  background-color: lighten($dark, 7.5%);
-    //}
+﻿.top-search {
+  .nav-link {
+    color: $white;
   }
   &__result {
     b {
       font-weight: 500;
       color: $orange
     }
+  }
+}
+.input-dark {
+  color: #fff;
+  background-color: lighten($primary, 2.5%);
+  &:hover {
+    color: #fff;
+    background-color: lighten($primary, 5%);
+  }
+  &:focus {
+    color: #fff;
+    background-color: lighten($primary, 7.5%);
+  }
+  &::placeholder {
+    color: $light;
   }
 }

@@ -1,7 +1,5 @@
 ﻿.entry-card {
-  &__contacts {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
+  //&__contacts {
+  //  @include text-nowrap-hidden;
+  //}
 }

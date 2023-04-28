@@ -11,7 +11,7 @@
         }
         else if (EiEmail != null)
         {
-            <a href="mailto:@EiEmail.Email" target="_blank">@EiEmail.Email</a>
+            <a href="mailto:@EiEmail.Email" target="_blank" class="text-nowrap-hidden">@EiEmail.Email</a>
         }
         else if (EiUrl != null)
         {
@@ -24,7 +24,7 @@
 
         @if (!string.IsNullOrEmpty(EntryInfo.Title))
         {
-            <div><small class="mt-1 text-light">@EntryInfo.Title</small></div>
+            <div><small class="mt-1">@EntryInfo.Title</small></div>
         }
     </div>
 </div>

@@ -5,11 +5,11 @@
 
 @if (EntryInfos.Any())
 {
-    <ul class="list-group list-group-flush bg-transparent entry-card__contacts">
+    <ul class="list-group list-group-flush bg-transparent">
 
         @foreach (var eInfo in EntryInfosFiltered)
         {
-            <li class="list-group-item bg-transparent gx-0">
+            <li class="list-group-item bg-transparent gx-0 bg-blue-grey-11">
                 <EntryInfoContact EntryInfo="@eInfo"></EntryInfoContact>
             </li>
         }
