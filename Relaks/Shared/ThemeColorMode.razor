@@ -1,0 +1,52 @@
+﻿<Switch Value="IsDark" Label="Dark mode" ValueExpression="() => IsDark" Disabled="IsLoading" ValueChanged="SetDarkMode"/>
+
+@code {
+    [Inject] private IJSRuntime Js { get; set; } = null!;
+
+    [Inject]
+    private Blazored.LocalStorage.ILocalStorageService LocalStorage { get; set; } = null!;
+
+    private const string Dark = "dark";
+    private const string Light = "light";
+    private bool IsDark { get; set; }
+    private bool IsLoading { get; set; }
+
+    private async Task SetDarkMode(bool value)
+    {
+        if (IsLoading) return;
+        try
+        {
+            IsLoading = true;
+            IsDark = value;
+            var mode = value ? Dark : Light;
+            await Js.InvokeAsync<bool>("SetThemeColorMode", mode);
+            await SetToLs(mode);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private async Task<string> GetFromLs() => await LocalStorage.GetItemAsync<string>("r-theme-color-mode");
+    private async Task SetToLs(string mode) => await LocalStorage.SetItemAsync("r-theme-color-mode", mode);
+
+    protected override async Task OnInitializedAsync()
+    {
+        var mode = await GetFromLs();
+        if (!string.IsNullOrEmpty(mode))
+        {
+            
+            await SetDarkMode(mode.Equals(Dark));
+        }
+        else
+        {
+            await SetDarkMode(false);   
+        }
+    }
+
+}

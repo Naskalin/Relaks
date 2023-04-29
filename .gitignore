@@ -1,5 +1,4 @@
-App/dir_config.json
-App/*
+old/*
 /Data/*
 *.sqlite
 .idea

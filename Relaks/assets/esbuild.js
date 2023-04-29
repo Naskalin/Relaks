@@ -6,11 +6,11 @@ import autoprefixer from 'autoprefixer';
 // Generate CSS/JS Builds
 const context = await esbuild.context({
     entryPoints: [
-        "src/css/libs.scss",
-        "src/css/app.scss",
+        "src/js/libs.js",
+        "src/js/app.js",
     ],
     outdir: "../wwwroot/assets",
-    bundle: false,
+    bundle: true,
     metafile: false,
     sourcemap: false,
     minify: true,
