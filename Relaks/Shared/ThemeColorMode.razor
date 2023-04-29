@@ -1,13 +1,17 @@
-﻿<Switch Value="IsDark" Label="Dark mode" ValueExpression="() => IsDark" Disabled="IsLoading" ValueChanged="SetDarkMode"/>
+﻿<button class="btn btn-outline-light" @onclick="@(() => SetDarkMode(IsDark = !IsDark))" disabled="@IsLoading">
+    <i class="las la-adjust la-lg" style="@(IsDark ? "transform: rotate(180deg)" : "")"></i>
+</button>
 
 @code {
-    [Inject] private IJSRuntime Js { get; set; } = null!;
+
+    [Inject]
+    private IJSRuntime Js { get; set; } = null!;
 
     [Inject]
     private Blazored.LocalStorage.ILocalStorageService LocalStorage { get; set; } = null!;
 
-    private const string Dark = "dark";
-    private const string Light = "light";
+        private const string Dark = "dark";
+        private const string Light = "light";
     private bool IsDark { get; set; }
     private bool IsLoading { get; set; }
 
@@ -40,12 +44,11 @@
         var mode = await GetFromLs();
         if (!string.IsNullOrEmpty(mode))
         {
-            
             await SetDarkMode(mode.Equals(Dark));
         }
         else
         {
-            await SetDarkMode(false);   
+            await SetDarkMode(false);
         }
     }
 
