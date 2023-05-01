@@ -1,5 +1,5 @@
-﻿<button class="btn btn-outline-light" @onclick="@(() => SetDarkMode(IsDark = !IsDark))" disabled="@IsLoading">
-    <i class="las la-adjust la-lg" style="@(IsDark ? "transform: rotate(180deg)" : "")"></i>
+﻿<button class="btn btn-outline-secondary" @onclick="@(() => SetDarkMode(IsDark = !IsDark))" disabled="@IsLoading">
+    <i class="las la-adjust la-lg text-secondary" style="@(IsDark ? "transform: rotate(180deg)" : "")"></i>
 </button>
 
 @code {

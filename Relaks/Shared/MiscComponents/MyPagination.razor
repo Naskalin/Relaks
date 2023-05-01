@@ -1,0 +1,26 @@
+﻿<div class="d-flex gap-3 align-items-center">
+    <Pagination TotalPages="@TotalPages"
+                PageChanged="@OnPageChanged"
+                ActivePageNumber="@ActivePage"
+                FirstLinkIcon="IconName.ChevronDoubleLeft"
+                PreviousLinkIcon="IconName.ChevronLeft"
+                NextLinkIcon="IconName.ChevronRight"
+                LastLinkIcon="IconName.ChevronDoubleRight"/>
+    <div class="mb-3">Всего найдено: @TotalItems</div>
+</div>
+
+@code {
+
+    [Parameter]
+    public int ActivePage { get; set; }
+
+    [Parameter]
+    public int TotalPages { get; set; }
+
+    [Parameter]
+    public int TotalItems { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnPageChanged { get; set; }
+
+}

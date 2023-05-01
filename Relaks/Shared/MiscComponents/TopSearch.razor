@@ -7,21 +7,15 @@
 @inject NavigationManager NavigationManager;
 
 <div class="top-search position-relative w-100"
-     @onfocusin="() => IsFocus = true"
-     @onfocusout="FocusFalseAsync">
+     @onfocusin="OnFocusTrue"
+     @onfocusout="OnFocusFalseAsync">
     <input type="text" 
            placeholder="Поиск..."
-           class="form-control input-dark w-100 rounded-0 border-0 top-search__input"
+           class="form-control top-search__input"
            @bind="@InputText"
            @onkeydown="HandleKeyDown"
            @oninput="HandleInput"
            >
-    @* <TextEdit *@
-    @*     @ref="InputRef" *@
-    @*     Class="w-100 rounded-0 border-0 top-search__input" *@
-    @*     Placeholder="Поиск..." *@
-    @*     TextChanged="HandleInput" *@
-    @*     KeyDown="OnKeyDown"/> *@
     @if (Items.Any() && IsFocus)
     {
         <div class="position-absolute">
@@ -31,7 +25,7 @@
                 {
                     {
                         int loopIndex = index;
-                        <li class="list-group-item cursor-pointer cursor-list-group-item-action @(_selectedIndex.Equals(loopIndex) ? "bg-light" : "")"
+                        <li class="list-group-item cursor-pointer cursor-list-group-item-action @(_selectedIndex.Equals(loopIndex) ? "active" : "")"
                             @onmouseover="() => _selectedIndex = loopIndex"
                             @onclick="() => GoTo(loopIndex)">
 
@@ -58,10 +52,15 @@
     private bool IsFocus { get; set; } = false;
     private int _selectedIndex = -1;
 
-    private async Task FocusFalseAsync()
+    private void OnFocusTrue()
+    {
+        InputText = null;
+        IsFocus = true;
+    }
+    private async Task OnFocusFalseAsync()
     {
         if (!IsFocus) return;
-        await Task.Delay(TimeSpan.FromMilliseconds(100));
+        await Task.Delay(TimeSpan.FromMilliseconds(200));
         IsFocus = false;
     }
     
@@ -101,7 +100,6 @@
                 break;
             case "Enter":
                 GoTo(_selectedIndex);
-                Reset();
                 break;
             case "Escape":
                 Reset();
@@ -114,6 +112,8 @@
         var item = Items.ElementAtOrDefault(index);
         if (item == null) return;
 
+        Reset();
+        
         if (item.FtsEntityName.Equals(nameof(FtsEntry)))
         {
             NavigationManager.NavigateTo("/entries/" + item.EntryId);
@@ -121,8 +121,6 @@
         {
             NavigationManager.NavigateTo("/entries/" + item.EntryId + "?entryInfoId=" + item.EntryInfoId);
         }
-        
-        Reset();
     }
     
     private void Reset()

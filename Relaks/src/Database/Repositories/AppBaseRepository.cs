@@ -7,20 +7,18 @@ public static class AppBaseRepository
 {
     public static PaginatableResult<TEntity> Paginate<TEntity>(this IQueryable<TEntity> query, IPaginatable paginatable)
     {
-        var perPage = paginatable.PerPage ?? 25;
-        var page = paginatable.Page ?? 1;
+        var perPage = paginatable.PerPage;
+        var page = paginatable.Page;
 
-        if (perPage > 300) perPage = 300;
-
-        paginatable.Page = perPage;
-        paginatable.PerPage = page;
+        var total = query.Count();
 
         return new PaginatableResult<TEntity>()
         {
             Items = query.Skip(perPage * (page - 1)).Take(perPage).ToList(),
             Page = page,
             PerPage = perPage,
-            Total = query.Count()
-        };
+            Total = total,
+            PageCount = (total + perPage - 1) / perPage,
+        };      
     }
 }

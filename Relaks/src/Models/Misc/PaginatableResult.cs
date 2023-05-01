@@ -8,4 +8,5 @@ public class PaginatableResult<TEntity> : IPaginatableResult<TEntity>
     public int PerPage { get; set; }
     public List<TEntity> Items { get; set; } = new();
     public int Total { get; set; }
+    public int PageCount { get; set; }
 }

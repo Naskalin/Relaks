@@ -1,11 +1,5 @@
-// using Blazorise;
-// using Blazorise.Bootstrap5;
-// using Blazorise.Icons.FontAwesome;
-
 using BlazorBootstrap;
 using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,13 +27,8 @@ builder.Services.AddDbContext<AppDbContext>(o =>
 );
 
 builder.Services.RegisterManagers();
-// builder.Services.RegisterCultures();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddBlazorBootstrap();
-// builder.Services.AddBlazorise(o => { o.Immediate = true; })
-//     .AddBootstrap5Providers()
-//     .AddFontAwesomeIcons();
-
 var app = builder.Build();
 
 

@@ -1,11 +1,14 @@
-﻿.form-control {
+﻿body {
+  overflow-y: scroll !important;
+}
+.form-control {
   &, &:active, &:focus {
     outline: none !important;
     box-shadow: none !important;
   }
-  &:hover {
-    background-color: lighten($dark, 5%);
-  }
+  //&:hover {
+  //  background-color: lighten($dark, 5%);
+  //}
 }
 @mixin text-nowrap-hidden {
   white-space: nowrap;

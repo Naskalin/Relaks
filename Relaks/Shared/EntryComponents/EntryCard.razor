@@ -12,7 +12,11 @@
         
         <div class="row gx-3 align-items-center text-muted mb-3">
             <div class="col text-end">
-                <i class="@EntityIcon.ByClassName(Entry.Discriminator)" style="font-size: 1.8rem;"></i>
+                <Tooltip Title="@Entry.Discriminator">
+                    <span>
+                        <i class="@EntityIcon.ByClassName(Entry.Discriminator)" style="font-size: 1.8rem;"></i>
+                    </span>
+                </Tooltip>
             </div>
             <div class="col">
                 <div class="d-flex align-items-center gap-1">
@@ -30,8 +34,8 @@
         <EntryCardContacts EntryInfoId="@EntryInfoId" EntryInfos="@Entry.EntryInfos"></EntryCardContacts>
         
         <div class="row mt-2">
-            <div class="col"><small>@Entry.StartAt?.ToLocalTime()</small></div>    
-            <div class="col text-end"><small>@Entry.EndAt?.ToLocalTime()</small></div>
+            <div class="col"><small>@Entry.StartAt?.ToLocalTime().ToShortDateString()</small></div>    
+            <div class="col text-end"><small>@Entry.EndAt?.ToLocalTime().ToShortDateString()</small></div>
         </div>
     </div>
 </div>

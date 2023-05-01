@@ -1,0 +1,21 @@
+﻿@using Relaks.Interfaces
+@if (Prop.Equals(Orderable.OrderBy))
+{
+   @if (Orderable.IsOrderByDesc == true)
+   {
+      <i class="las la-sort-amount-down"></i>  
+   }
+   else
+   {
+      <i class="las la-sort-amount-up"></i>    
+   }
+}
+
+@code {
+
+   [Parameter]
+   public string Prop { get; set; } = null!;
+
+   [Parameter]
+   public IOrderable Orderable { get; set; } = null!;
+}

@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Blazor.Bootstrap" Version="1.7.2" />
+      <PackageReference Include="Blazor.Bootstrap" Version="1.7.3" />
       <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
       <PackageReference Include="Bogus" Version="34.0.2" />
       <PackageReference Include="libphonenumber-csharp" Version="8.13.9" />
@@ -35,9 +35,5 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Remove="relaks.yaml" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="wwwroot\assets\" />
     </ItemGroup>
 </Project>

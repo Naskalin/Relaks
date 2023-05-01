@@ -5,155 +5,153 @@
 @using Relaks.Models.Requests
 @using Relaks.Utils.Extensions
 @using System.Text.Json
+@using Microsoft.AspNetCore.Http.HttpResults
 
-@* <div class="btn-group mb-3"> *@
-@*     @foreach (var kv in EntryDiscriminators()) *@
-@*         { *@
-@*             <button type="button" *@
-@*                     class="btn @(Req.Discriminator == kv.Value ? "btn-secondary" : "btn-outline-secondary")" *@
-@*                     @onclick="e => OnChangeDiscriminator(kv.Value)">@kv.Key</button> *@
-@*         } *@
-@* </div> *@
+<div class="btn-group mb-3">
+    @foreach (var kv in EntryDiscriminators())
+    {
+        <button type="button"
+                class="btn @(Req.Discriminator == kv.Value ? "btn-primary" : "btn-outline-primary")"
+                @onclick="() => OnChangeDiscriminator(kv.Value)">
+            @kv.Key
+        </button>
+    }
+</div>
 
-<Grid TItem="BaseEntry"
-      class="table table-hover table-bordered table-striped align-middle"
-      AllowPaging="true"
-      AllowSorting="true"
-      PageSize="15"
-      AllowFiltering="true"
-      DataProvider="EntriesDataProvider">
-    <GridColumn TItem="BaseEntry" Filterable="false">
-        <i class="las la-question-circle" style="font-size: 3rem;"></i>
-    </GridColumn>
-    <GridColumn TItem="BaseEntry" Filterable="false">
-        <i class="@EntityIcon.ByClassName(context.Discriminator)" style="font-size: 1.6rem;"></i>
-    </GridColumn>
-    <GridColumn TItem="BaseEntry" HeaderText="Имя" PropertyName="@nameof(BaseEntry.Name)" SortString="@nameof(BaseEntry.Name)" SortKeySelector="item => item.Name">
-        @context.Name
-    </GridColumn>
-    <GridColumn TItem="BaseEntry" HeaderText="Репутация" PropertyName="@nameof(BaseEntry.Reputation)" SortString="@nameof(BaseEntry.Reputation)" SortKeySelector="item => item.Reputation">
-        @context.Reputation
-    </GridColumn>
-    <GridColumn TItem="BaseEntry" HeaderText="StartAt" PropertyName="@nameof(BaseEntry.StartAt)" SortString="@nameof(BaseEntry.StartAt)" SortKeySelector="item => item.StartAt ?? new DateTime()">
-        @context.StartAt
-    </GridColumn>
-    <GridColumn TItem="BaseEntry" HeaderText="EndAt" PropertyName="@nameof(BaseEntry.EndAt)" SortString="@nameof(BaseEntry.EndAt)" SortKeySelector="item => item.EndAt ?? new DateTime()">
-        @context.EndAt
-    </GridColumn>
-</Grid>
+<MyPagination ActivePage="@Req.Page"
+              OnPageChanged="@OnPageChanged"
+              TotalItems="@PaginatableResult.Total"
+              TotalPages="@PaginatableResult.PageCount"
+/>
 
-@* <DataGrid TItem="BaseEntry" *@
-@*           Data="@PaginatableResult.Items" *@
-@*           ReadData="OnReadData" *@
-@*           TotalItems="@PaginatableResult.Total" *@
-@*           PageSize="@PaginatableResult.PerPage" *@
-@*           PagerPosition="DataGridPagerPosition.TopAndBottom" *@
-@*           Sortable *@
-@*           ShowPager *@
-@*           Responsive *@
-@*           SortMode="DataGridSortMode.Single" *@
-@*           RowDoubleClicked="e => OnRowDoubleClicked.InvokeAsync(e.Item.Id)" *@
-@*           RowStyling="@OnRowStyling" *@
-@*           class="align-middle" *@
-@*           @bind-SelectedRow="@SelectedEntry"> *@
-@*     <DataGridColumn Field="@nameof(BaseEntry.Id)" Caption="" Sortable="false" Width="100px"> *@
-@*         <DisplayTemplate> *@
-@*             <i class="las la-question-circle" style="font-size: 3rem;"></i> *@
-@*         </DisplayTemplate> *@
-@*     </DataGridColumn> *@
-@*     <DataGridColumn Field="@nameof(BaseEntry.Discriminator)" Caption="" Sortable="false" CellStyle="@(item => "width: 70px")"> *@
-@*         <DisplayTemplate> *@
-@*             @{ var entry = context! as BaseEntry; } *@
-@*             <i class="@EntityIcon.ByClassName(entry.Discriminator)" style="font-size: 1.6rem;"></i> *@
-@*         </DisplayTemplate> *@
-@*     </DataGridColumn> *@
-@*     <DataGridColumn Field="@nameof(BaseEntry.Name)" Caption="Имя"> *@
-@*         <DisplayTemplate> *@
-@*             @{ var entry = context! as BaseEntry;} *@
-@*             @entry.Name *@
-@*             @if (!string.IsNullOrEmpty(entry.Description)) *@
-@*             { *@
-@*                 <div class="mt-1 text-muted">@entry.Description.Truncate(150)</div> *@
-@*             } *@
-@*         </DisplayTemplate> *@
-@*     </DataGridColumn> *@
-@*     <DataGridColumn Field="@nameof(BaseEntry.Reputation)" Caption="Репутация" Width="100px"/> *@
-@*     <DataGridColumn Field="@nameof(BaseEntry.StartAt)" Caption="StartAt" Width="160px"/> *@
-@*     <DataGridColumn Field="@nameof(BaseEntry.EndAt)" Caption="EndAt" Width="160px"/> *@
-@* </DataGrid> *@
+<table class="table table-bordered table-hover cursor-pointer align-middle">
+    <thead>
+    <tr>
+        <th style="width: 70px" @onclick="() => OnSortChange(nameof(BaseEntry.Discriminator))">Тип <OrderableIcon Orderable="@Req" Prop="@nameof(BaseEntry.Discriminator)"/></th>
+        <th style="width: 80px"></th>
+        <th @onclick="() => OnSortChange(nameof(BaseEntry.Name))">Имя <OrderableIcon Orderable="@Req" Prop="@nameof(BaseEntry.Name)"/></th>
+        <th style="width: 80px" @onclick="() => OnSortChange(nameof(BaseEntry.StartAt))">От <OrderableIcon Orderable="@Req" Prop="@nameof(BaseEntry.StartAt)"/></th>
+        <th style="width: 80px" @onclick="() => OnSortChange(nameof(BaseEntry.EndAt))">До <OrderableIcon Orderable="@Req" Prop="@nameof(BaseEntry.EndAt)"/></th>
+        <th style="width: 150px" @onclick="() => OnSortChange(nameof(BaseEntry.CreatedAt))">Создан <OrderableIcon Orderable="@Req" Prop="@nameof(BaseEntry.CreatedAt)"/></th>
+        <th style="width: 150px" @onclick="() => OnSortChange(nameof(BaseEntry.UpdatedAt))">Обновлён <OrderableIcon Orderable="@Req" Prop="@nameof(BaseEntry.UpdatedAt)"/></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var be in PaginatableResult.Items)
+    {
+        <tr @ondblclick="() => OnRowDoubleClicked.InvokeAsync(be.Id)">
+            <td>
+                <Tooltip Title="@be.Discriminator">
+                    <div style="width: 40px; height: 40px;" class="border rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="@EntityIcon.ByClassName(be.Discriminator)" style="font-size: 1.6rem;"></i>
+                    </div>
+                </Tooltip>
+            </td>
+            <td>
+                <i class="las la-question-circle" style="font-size: 3rem;"></i>
+            </td>
+            <td>
+                @be.Name
+                @if (!string.IsNullOrEmpty(be.Description))
+                {
+                    <div class="text-muted">
+                        <small>@be.Description.Truncate(150)</small>
+                    </div>
+                }
+            </td>
+            <td>@be.StartAt?.ToLocalTime().ToShortDateString()</td>
+            <td>@be.EndAt?.ToLocalTime().ToShortDateString()</td>
+            <td>@be.CreatedAt.ToLocalTime()</td>
+            <td>@be.UpdatedAt.ToLocalTime()</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<MyPagination ActivePage="@Req.Page"
+              OnPageChanged="@OnPageChanged"
+              TotalItems="@PaginatableResult.Total"
+              TotalPages="@PaginatableResult.PageCount"
+/>
 
 @code {
 
     [Inject]
     public AppDbContext Db { get; set; } = null!;
 
-    // private BaseEntry? SelectedEntry { get; set; }
-    // private PaginatableResult<BaseEntry> PaginatableResult { get; set; } = new();
-    //
-    private EntryFilterRequest Req { get; set; } = new();
+    private PaginatableResult<BaseEntry> PaginatableResult { get; set; } = new();
 
-    // private static Dictionary<string, string?> EntryDiscriminators() => new()
-    // {
-    //     {"Все", null},
-    //     {"Люди", nameof(EPerson)},
-    //     {"Компании", nameof(ECompany)},
-    //     {"Встречи", nameof(EMeet)},
-    // };
-
-    // [Parameter]
-    // public EventCallback<Guid> OnRowDoubleClicked { get; set; }
-    //
-    private async Task<GridDataProviderResult<BaseEntry>> EntriesDataProvider(GridDataProviderRequest<BaseEntry> request)
+    private EntryFilterRequest Req { get; set; } = new()
     {
-        Req.Page = request.PageNumber;
-        Req.PerPage = request.PageSize;
-        Req.OrderBy = null;
-        Req.IsOrderByDesc = null;
+        Page = 1,
+        PerPage = 10
+    };
 
-        if (request.Sorting.Any())
+    private static Dictionary<string, string?> EntryDiscriminators() => new()
+    {
+        {"Все", null},
+        {"Люди", nameof(EPerson)},
+        {"Компании", nameof(ECompany)},
+        {"Встречи", nameof(EMeet)},
+    };
+
+    [Parameter]
+    public EventCallback<Guid> OnRowDoubleClicked { get; set; }
+
+    private void OnSortChange(string field)
+    {
+        if (Req.IsOrderByDesc is null)
         {
-            Req.OrderBy = request.Sorting.FirstOrDefault()?.SortString;
-            var sortDirection = request.Sorting.FirstOrDefault()?.SortDirection;
-            Req.IsOrderByDesc = sortDirection.Equals(SortDirection.Descending);
+            Req.OrderBy = field;
+            Req.IsOrderByDesc = false;
+        }
+        else if (Req.IsOrderByDesc is false)
+        {
+            if (field.Equals(Req.OrderBy))
+            {
+                Req.IsOrderByDesc = true;
+            }
+            else
+            {
+                Req.OrderBy = field;
+                Req.IsOrderByDesc = false;
+            }
+        }
+        else
+        {
+            Req.OrderBy = null;
+            Req.IsOrderByDesc = null;   
         }
 
-        var result = Db.BaseEntries.FilterByReq(Req);
-        return await Task.FromResult(new GridDataProviderResult<BaseEntry>()
-        {
-            Data = result.Items,
-            TotalCount = result.Total,
-        });
+        GetData();
     }
 
-    //
-    // private void OnRowStyling(BaseEntry baseEntry, DataGridRowStyling styling)
-    // {
-    //     if (baseEntry.Id.Equals(SelectedEntry?.Id))
-    //     {
-    //         styling.Style = "background-color: #cfe2ff;";
-    //     }
-    // }
-
-    // private void ResetRequest()
-    // {
-    //     Req = new EntryFilterRequest();
-    // }
-    //
-    // private void OnChangeDiscriminator(string? discriminator)
-    // {
-    // //     ResetRequest();
-    // //     Req.Discriminator = discriminator;
-    // //     PaginatableResult = Db.BaseEntries.FilterByReq(Req);
-    // }
-
-    // protected override void OnInitialized()
-    // {
-    //     PaginatableResult = Db.BaseEntries.FilterByReq(Req);
-    // }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private void OnPageChanged(int page)
     {
-        await base.OnAfterRenderAsync(firstRender);
+        Req.Page = page;
+        GetData();
     }
+    
+    private void OnChangeDiscriminator(string? discriminator)
+    {
+        Req.Page = 1;
+        Req.Discriminator = discriminator;
+        GetData();
+    }
+
+    private void GetData()
+    {
+        PaginatableResult = Db.BaseEntries.FilterByReq(Req);
+    }
+
+    protected override void OnInitialized()
+    {
+        GetData();
+    }
+
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     await base.OnAfterRenderAsync(firstRender);
+    // }
 
 }

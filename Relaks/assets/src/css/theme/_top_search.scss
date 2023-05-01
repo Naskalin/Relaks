@@ -1,6 +1,9 @@
 ﻿.top-search {
-  .nav-link {
-    color: $white;
+  //.nav-link {
+  //  color: $white;
+  //}
+  &__input {
+    width: 450px;
   }
   &__result {
     b {
@@ -9,18 +12,18 @@
     }
   }
 }
-.input-dark {
-  color: #fff;
-  background-color: lighten($primary, 2.5%);
-  &:hover {
-    color: #fff;
-    background-color: lighten($primary, 5%);
-  }
-  &:focus {
-    color: #fff;
-    background-color: lighten($primary, 7.5%);
-  }
-  &::placeholder {
-    color: $light;
-  }
-}
+//.input-dark {
+//  color: #fff;
+//  background-color: lighten($primary, 2.5%);
+//  &:hover {
+//    color: #fff;
+//    background-color: lighten($primary, 5%);
+//  }
+//  &:focus {
+//    color: #fff;
+//    background-color: lighten($primary, 7.5%);
+//  }
+//  &::placeholder {
+//    color: $light;
+//  }
+//}

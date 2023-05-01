@@ -1,19 +1,41 @@
 ﻿@inherits LayoutComponentBase
 
-<header class="header navbar navbar-dark bg-primary sticky-top flex-md-nowrap p-0 border-bottom border-secondary">
-    <a class="navbar-brand col-sm-4 col-lg-3 col-xxl-2 me-0 px-3 fs-6" href="#">Relaks <span class="badge text-bg-secondary ms-2">beta</span></a>
-    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+@* <header class="header navbar sticky-top flex-md-nowrap p-0 border-bottom border-secondary"> *@
+@*     <a class="navbar-brand col-sm-4 col-lg-3 col-xxl-2 me-0 px-3 fs-6" href="#">Relaks <span class="badge text-bg-secondary ms-2">beta</span></a> *@
+@*     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation"> *@
+@*         <span class="navbar-toggler-icon"></span> *@
+@*     </button> *@
+@*     <div class="navbar-nav me-5"> *@
+@*         <div class="nav-item text-nowrap"> *@
+@*             <a class="nav-link px-3" href="/entries">Объединения</a> *@
+@*         </div> *@
+@*     </div> *@
+@*     <TopSearch></TopSearch> *@
+@*     <div class="mx-3"> *@
+@*         <ThemeColorMode></ThemeColorMode> *@
+@*     </div> *@
+@* </header> *@
+
+<nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+      Relaks <small><span class="badge text-bg-secondary ms-2">beta</span></small>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="navbar-nav me-5">
-        <div class="nav-item text-nowrap">
-            <a class="nav-link px-3" href="/entries">Объединения</a>
-        </div>
-    </div>
-    <TopSearch></TopSearch>
-    <div class="mx-3">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="/entries">Объединения</a>
+        </li>
+      </ul>
+      <div class="d-flex gap-2" role="search">
+        <TopSearch></TopSearch>
         <ThemeColorMode></ThemeColorMode>
+      </div>
     </div>
-</header>
+  </div>
+</nav>
 
 @Body

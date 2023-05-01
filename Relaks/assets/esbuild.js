@@ -13,7 +13,7 @@ const context = await esbuild.context({
     bundle: true,
     metafile: false,
     sourcemap: false,
-    minify: true,
+    minify: true, 
     loader: {
         ".png": "dataurl",
         ".woff": "dataurl",
