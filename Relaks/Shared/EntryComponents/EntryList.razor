@@ -7,6 +7,19 @@
 @using System.Text.Json
 @using Microsoft.AspNetCore.Http.HttpResults
 
+<div class="mb-3">
+    <div class="row">
+        <div class="col-3">
+            <div class="input-group">
+                <input type="text" class="form-control" @bind="@Search" @oninput="@OnInputSearch" placeholder="Поиск...">
+                <button class="btn btn-outline-secondary" type="button" @onclick="@(() => Search = null)">
+                    <i class="las la-times la-lg"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="btn-group mb-3">
     @foreach (var kv in EntryDiscriminators())
     {
@@ -18,15 +31,9 @@
     }
 </div>
 
-<MyPagination ActivePage="@Req.Page"
-              OnPageChanged="@OnPageChanged"
-              TotalItems="@PaginatableResult.Total"
-              TotalPages="@PaginatableResult.PageCount"
-/>
-
 <table class="table table-bordered table-hover cursor-pointer align-middle">
     <thead>
-    <tr>
+    <tr style="@(!string.IsNullOrEmpty(Search) ? "opacity: .3" : "")">
         <th style="width: 70px" @onclick="() => OnSortChange(nameof(BaseEntry.Discriminator))">Тип <OrderableIcon Orderable="@Req" Prop="@nameof(BaseEntry.Discriminator)"/></th>
         <th style="width: 80px"></th>
         <th @onclick="() => OnSortChange(nameof(BaseEntry.Name))">Имя <OrderableIcon Orderable="@Req" Prop="@nameof(BaseEntry.Name)"/></th>
@@ -37,42 +44,35 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var be in PaginatableResult.Items)
+    @if (string.IsNullOrEmpty(Search))
     {
-        <tr @ondblclick="() => OnRowDoubleClicked.InvokeAsync(be.Id)">
-            <td>
-                <Tooltip Title="@be.Discriminator">
-                    <div style="width: 40px; height: 40px;" class="border rounded-circle d-flex align-items-center justify-content-center">
-                        <i class="@EntityIcon.ByClassName(be.Discriminator)" style="font-size: 1.6rem;"></i>
-                    </div>
-                </Tooltip>
-            </td>
-            <td>
-                <i class="las la-question-circle" style="font-size: 3rem;"></i>
-            </td>
-            <td>
-                @be.Name
-                @if (!string.IsNullOrEmpty(be.Description))
-                {
-                    <div class="text-muted">
-                        <small>@be.Description.Truncate(150)</small>
-                    </div>
-                }
-            </td>
-            <td>@be.StartAt?.ToLocalTime().ToShortDateString()</td>
-            <td>@be.EndAt?.ToLocalTime().ToShortDateString()</td>
-            <td>@be.CreatedAt.ToLocalTime()</td>
-            <td>@be.UpdatedAt.ToLocalTime()</td>
-        </tr>
+        @foreach (var be in PaginatableResult.Items)
+        {
+            <EntryListItem BaseEntry="be" OnRowDoubleClicked="OnRowDoubleClicked" OnRowClicked="OnRowClicked"/>
+        }
+    }
+    else
+    {
+        @foreach (var ftsEntry in FtsEntries)
+        {
+            @if (ftsEntry.BaseEntry != null)
+            {
+                <EntryListItem BaseEntry="@(ftsEntry.BaseEntry)" FtsSnippet="@ftsEntry.Snippet" OnRowDoubleClicked="OnRowDoubleClicked" OnRowClicked="OnRowClicked"/>
+            }
+        }
     }
     </tbody>
 </table>
 
-<MyPagination ActivePage="@Req.Page"
-              OnPageChanged="@OnPageChanged"
-              TotalItems="@PaginatableResult.Total"
-              TotalPages="@PaginatableResult.PageCount"
-/>
+@if (string.IsNullOrEmpty(Search))
+{
+    <MyPagination ActivePage="@Req.Page"
+                  OnPageChanged="@OnPageChanged"
+                  TotalItems="@PaginatableResult.Total"
+                  TotalPages="@PaginatableResult.PageCount"
+              
+    />   
+}
 
 @code {
 
@@ -80,12 +80,15 @@
     public AppDbContext Db { get; set; } = null!;
 
     private PaginatableResult<BaseEntry> PaginatableResult { get; set; } = new();
+    private List<FtsEntry> FtsEntries { get; set; } = new();
 
     private EntryFilterRequest Req { get; set; } = new()
     {
         Page = 1,
         PerPage = 10
     };
+    
+    private string? Search { get; set; }
 
     private static Dictionary<string, string?> EntryDiscriminators() => new()
     {
@@ -94,12 +97,17 @@
         {"Компании", nameof(ECompany)},
         {"Встречи", nameof(EMeet)},
     };
+    
 
     [Parameter]
     public EventCallback<Guid> OnRowDoubleClicked { get; set; }
+    
+    [Parameter]
+    public EventCallback<Guid> OnRowClicked { get; set; }
 
     private void OnSortChange(string field)
     {
+        if (!string.IsNullOrEmpty(Search)) return;
         if (Req.IsOrderByDesc is null)
         {
             Req.OrderBy = field;
@@ -123,35 +131,46 @@
             Req.IsOrderByDesc = null;   
         }
 
-        GetData();
+        FindData();
     }
 
     private void OnPageChanged(int page)
     {
         Req.Page = page;
-        GetData();
+        Search = null;
+        FindData();
     }
     
     private void OnChangeDiscriminator(string? discriminator)
     {
         Req.Page = 1;
         Req.Discriminator = discriminator;
-        GetData();
+        FindData();
+    }
+    
+
+    private void OnInputSearch(ChangeEventArgs e)
+    {
+        Search = e.Value?.ToString();
+        FindData();
     }
 
-    private void GetData()
+    private void FindData()
     {
-        PaginatableResult = Db.BaseEntries.FilterByReq(Req);
+        if (string.IsNullOrEmpty(Search))
+        {
+            PaginatableResult = Db.BaseEntries.FindByReq(Req);
+            FtsEntries = new List<FtsEntry>();
+        }
+        else
+        {
+            PaginatableResult = new PaginatableResult<BaseEntry>();
+            FtsEntries = Db.FtsEntrySearch(Search ?? "", Req.Discriminator);
+        }
     }
 
     protected override void OnInitialized()
     {
-        GetData();
+        FindData();
     }
-
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     await base.OnAfterRenderAsync(firstRender);
-    // }
-
 }

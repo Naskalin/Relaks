@@ -21,6 +21,12 @@
 .cursor-pointer {
   cursor: pointer;
 }
+.fts-result {
+  b {
+    font-weight: 500;
+    color: $orange
+  }
+}
 //@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 /*@import url('theme/top_search.css');*/
 

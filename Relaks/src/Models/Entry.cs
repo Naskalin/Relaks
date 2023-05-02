@@ -71,4 +71,6 @@ public class FtsEntry : IFtsEntity
     
     public Guid Id { get; set; }
     public string Body { get; set; } = null!;
+    [NotMapped]
+    public BaseEntry? BaseEntry { get; set; }
 }

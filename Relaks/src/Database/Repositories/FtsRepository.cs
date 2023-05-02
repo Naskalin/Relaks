@@ -14,7 +14,7 @@ public class FtsSearchResult
 
 public static class FtsRepository
 {
-    public static List<FtsSearchResult> FtsSearch(this AppDbContext db, string search)
+    public static List<FtsSearchResult> FtsSearchAll(this AppDbContext db, string search)
     {
         var s = $"\"{search}\"*";
         var ftsEntries = db.Set<FtsEntry>()
@@ -62,7 +62,6 @@ public static class FtsRepository
         var entryInfos = db.BaseEntryInfos.Where(x => entryInfoIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);
         foreach (var item in ftsUnion)
         {
-            // item.TempId = Guid.NewGuid();
             var entityName = "???";
             switch (item.FtsEntityName)
             {

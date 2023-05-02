@@ -1,0 +1,48 @@
+﻿@using Relaks.Models
+@using Relaks.Interfaces
+@using Relaks.Utils.Extensions
+
+<tr @ondblclick="() => OnRowDoubleClicked.InvokeAsync(BaseEntry.Id)" @onclick="() => OnRowClicked.InvokeAsync(BaseEntry.Id)">
+    <td>
+        <Tooltip Title="@BaseEntry.Discriminator">
+            <div style="width: 40px; height: 40px;" class="border rounded-circle d-flex align-items-center justify-content-center">
+                <i class="@EntityIcon.ByClassName(BaseEntry.Discriminator)" style="font-size: 1.6rem;"></i>
+            </div>
+        </Tooltip>
+    </td>
+    <td>
+        <i class="las la-question-circle" style="font-size: 3rem;"></i>
+    </td>
+    <td>
+        <strong>@BaseEntry.Name</strong>
+        @if (!string.IsNullOrEmpty(BaseEntry.Description))
+        {
+            <div class="text-muted">
+                <small>@BaseEntry.Description.Truncate(150)</small>
+            </div>
+        }
+        @if (FtsSnippet != null)
+        {
+            <div class="fts-result"><i class="las la-search la-lg"></i> @((MarkupString) FtsSnippet)</div>   
+        }
+    </td>
+    <td>@BaseEntry.StartAt?.ToLocalTime().ToShortDateString()</td>
+    <td>@BaseEntry.EndAt?.ToLocalTime().ToShortDateString()</td>
+    <td>@BaseEntry.CreatedAt.ToLocalTime()</td>
+    <td>@BaseEntry.UpdatedAt.ToLocalTime()</td>
+</tr>
+
+@code {
+
+    [Parameter]
+    public BaseEntry BaseEntry { get; set; } = null!;
+
+    [Parameter]
+    public string? FtsSnippet { get; set; }
+    
+    [Parameter]
+    public EventCallback<Guid> OnRowDoubleClicked { get; set; }
+    
+    [Parameter]
+    public EventCallback<Guid> OnRowClicked { get; set; }
+}

@@ -11,7 +11,7 @@
      @onfocusout="OnFocusFalseAsync">
     <input type="text" 
            placeholder="Поиск..."
-           class="form-control top-search__input"
+           class="form-control form-control-lg top-search__input"
            @bind="@InputText"
            @onkeydown="HandleKeyDown"
            @oninput="HandleInput"
@@ -34,7 +34,7 @@
                                     <i class="@EntityIcon.ByClassName(item.EntityName) la-lg"></i>
                                 </div>
                                 <div class="col">
-                                    <div class="top-search__result">@((MarkupString) item.Snippet)</div>
+                                    <div class="fts-result">@((MarkupString) item.Snippet)</div>
                                 </div>
                             </div>
                         </li>
@@ -67,25 +67,32 @@
     private void HandleKeyDown(KeyboardEventArgs e)
     {
         if (!IsFocus) return;
-        var isSelectedIndex = _selectedIndex > -1;
+        var hasSelectedIndex = _selectedIndex > -1;
     
         switch (e.Key)
         {
             case "ArrowUp":
                 if (!Items.Any()) return;
-                if (!isSelectedIndex)
+                if (!hasSelectedIndex)
                 {
                     _selectedIndex = Items.Count - 1;
                 }
                 else
                 {
                     var previous = _selectedIndex - 1;
-                    if (previous > -1) _selectedIndex -= 1;
+                    if (previous > -1)
+                    {
+                        _selectedIndex -= 1;
+                    }
+                    else
+                    {
+                        _selectedIndex = Items.Count - 1;
+                    }
                 }
                 break;
             case "ArrowDown":
                 if (!Items.Any()) return;
-                if (!isSelectedIndex)
+                if (!hasSelectedIndex)
                 {
                     _selectedIndex = 0;
                 }
@@ -95,6 +102,10 @@
                     if (next < Items.Count)
                     {
                         _selectedIndex += 1;
+                    }
+                    else
+                    {
+                        _selectedIndex = 0;
                     }
                 }
                 break;
@@ -139,7 +150,7 @@
         }
         else
         {
-            var results = Db.FtsSearch(str);
+            var results = Db.FtsSearchAll(str);
             Items = results;
         }
         _selectedIndex = -1;
