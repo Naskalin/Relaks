@@ -1,6 +1,7 @@
 ﻿@using Relaks.Models
+@using SixLabors.ImageSharp.Memory
 
-<div id="entry-info-@EntryInfo.Id" class="row align-items-center">
+<div class="row align-items-center" id="entry-info-@EntryInfo.Id">
     <div class="col-auto" style="width: 2rem">
         <i class="@EntityIcon.ByClassName(EntryInfo.Discriminator) la-lg"></i>
     </div>
@@ -24,15 +25,20 @@
 
         @if (!string.IsNullOrEmpty(EntryInfo.Title))
         {
-            <div><small class="mt-1">@EntryInfo.Title</small></div>
+            <div>
+                <small class="mt-1">@EntryInfo.Title</small>
+            </div>
         }
     </div>
 </div>
 
-
+<SoftDeleteShow SoftDeletedReason="@EntryInfo" Classes="mt-2"/>
 @code {
     [Parameter]
     public BaseEntryInfo EntryInfo { get; set; } = null!;
+    
+    [Parameter]
+    public Guid? EntryInfoId { get; set; }
 
     private EiDate? EiDate { get; set; }
     private EiUrl? EiUrl { get; set; }
@@ -41,7 +47,7 @@
 
     protected override void OnParametersSet()
     {
-        @switch (EntryInfo.Discriminator)
+        switch (EntryInfo.Discriminator)
         {
             case nameof(EiPhone):
                 EiPhone = (EiPhone) EntryInfo;

@@ -15,4 +15,6 @@ public static class EntryMapper
 
         return string.Join(" ", arr.Where(x => !string.IsNullOrEmpty(x)));
     }
+
+    public static string ToFtsDeletedAt(this BaseEntry baseEntry) => baseEntry.DeletedAt != null ? "1" : "";
 }

@@ -1,0 +1,28 @@
+﻿@page "/entries/new"
+
+<PageTemplate>
+    <div class="row">
+        <div class="col-6 offset-3">
+            <MyTitle>
+                <BeforeTitle>
+                    <a href="/entries" class="btn btn-outline-secondary">
+                        <i class="las la-arrow-left la-lg me-1"></i> Вернуться
+                    </a>
+                </BeforeTitle>
+                <ChildContent>Новое объединение</ChildContent>
+            </MyTitle>
+            @* <EditorForm> *@
+                <FormFields/>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">
+                        Добавить
+                    </button>
+                </div>
+            @* </EditorForm> *@
+        </div>
+    </div>  
+</PageTemplate>
+
+@code {
+    
+}

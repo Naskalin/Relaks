@@ -11,8 +11,8 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230426100208_AddFtsTables")]
-    partial class AddFtsTables
+    [Migration("20230504100205_CreateFtsTables")]
+    partial class CreateFtsTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -120,6 +120,14 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("DeletedAt")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
 
@@ -153,6 +161,14 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("DeletedAt")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("EntryId")
                         .HasColumnType("TEXT");
 
@@ -183,6 +199,8 @@ namespace Relaks.Migrations
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
 
+                    b.ToTable("Entries");
+
                     b.HasDiscriminator().HasValue("ECompany");
                 });
 
@@ -190,12 +208,16 @@ namespace Relaks.Migrations
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
 
+                    b.ToTable("Entries");
+
                     b.HasDiscriminator().HasValue("EMeet");
                 });
 
             modelBuilder.Entity("Relaks.Models.EPerson", b =>
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
+
+                    b.ToTable("Entries");
 
                     b.HasDiscriminator().HasValue("EPerson");
                 });
@@ -207,6 +229,8 @@ namespace Relaks.Migrations
                     b.Property<string>("CustomValue")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.ToTable("EntryInfos");
 
                     b.HasDiscriminator().HasValue("EiCustom");
                 });
@@ -221,6 +245,8 @@ namespace Relaks.Migrations
                     b.Property<bool>("IsOnlyDate")
                         .HasColumnType("INTEGER");
 
+                    b.ToTable("EntryInfos");
+
                     b.HasDiscriminator().HasValue("EiDate");
                 });
 
@@ -231,6 +257,8 @@ namespace Relaks.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.ToTable("EntryInfos");
 
                     b.HasDiscriminator().HasValue("EiEmail");
                 });
@@ -247,6 +275,8 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.ToTable("EntryInfos");
+
                     b.HasDiscriminator().HasValue("EiPhone");
                 });
 
@@ -257,6 +287,8 @@ namespace Relaks.Migrations
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.ToTable("EntryInfos");
 
                     b.HasDiscriminator().HasValue("EiUrl");
                 });

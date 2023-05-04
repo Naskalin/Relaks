@@ -1,66 +1,25 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Mvc.Localization
 
 <PageTemplate>
   <MyTitle>Index</MyTitle>
   
   <p><a href="/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4">Вася Пупкин</a></p>
-  <p><a href="/asd">error</a></p>
-  <p>bootstrap icons <i class="bi bi-1-square text-red"></i></p>
-  <p>line-awesome icons <i class="las la-info text-red"></i></p>
   
-<div class="dropdown" data-bs-theme="light">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonLight" data-bs-toggle="dropdown" aria-expanded="false">
-    Default dropdown
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButtonLight">
-    <li><a class="dropdown-item active" href="#">Action</a></li>
-    <li><a class="dropdown-item" href="#">Action</a></li>
-    <li><a class="dropdown-item" href="#">Another action</a></li>
-    <li><a class="dropdown-item" href="#">Something else here</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="#">Separated link</a></li>
-  </ul>
-</div>
-
-<div class="dropdown" data-bs-theme="dark">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonDark" data-bs-toggle="dropdown" aria-expanded="false">
-    Dark dropdown
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButtonDark">
-    <li><a class="dropdown-item active" href="#">Action</a></li>
-    <li><a class="dropdown-item" href="#">Action</a></li>
-    <li><a class="dropdown-item" href="#">Another action</a></li>
-    <li><a class="dropdown-item" href="#">Something else here</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="#">Separated link</a></li>
-  </ul>
-</div>
+  <p><a href="/asd">error</a></p>
+  <p><a href="/test">test</a></p>
+  <p>bootstrap icons <i class="bi bi-1-square text-red"></i></p>
+  <p>line awesome icons <i class="las la-info text-red"></i></p>
+  <p>font awesome icons <i class="fa fa-solid fa-info"></i></p>
+  <p>font awesome icons 2
+<i class="fa-solid fa-arrow-down-up-lock" aria-hidden="true"></i></p>
+  
+  @* <p><b>trans</b> @Localizer["Welcome"]</p> *@
   
 </PageTemplate>
-
-@* <ul class="list-group"> *@
-@*   <li class="list-group-item">An item</li> *@
-@*   <li class="list-group-item">A second item</li> *@
-@*   <li class="list-group-item">A third item</li> *@
-@*   <li class="list-group-item">A fourth item</li> *@
-@*   <li class="list-group-item">And a fifth one</li> *@
-@* </ul> *@
-@* Welcome to your new app. *@
-@* *@
-@* <SurveyPrompt Title="How is Blazor working for you?" /> *@
-@* *@
-@* <Carousel @bind-SelectedSlide="@selectedSlide"> *@
-@*     <CarouselSlide Name="1"> *@
-@*         <Image Source="https://via.placeholder.com/200x200" Text="Lights image" Display="Display.Block" Width="Width.Is100"/> *@
-@*     </CarouselSlide> *@
-@*     <CarouselSlide Name="2"> *@
-@*         <Image Source="https://via.placeholder.com/200x200" Text="Keyboard image" Display="Display.Block" Width="Width.Is100" /> *@
-@*     </CarouselSlide> *@
-@*     <CarouselSlide Name="3"> *@
-@*         <Image Source="https://via.placeholder.com/200x200" Text="Road image" Display="Display.Block" Width="Width.Is100" /> *@
-@*     </CarouselSlide> *@
-@* </Carousel> *@
-@* *@
 @code{
-    
+
+  // [Inject]
+  // public IViewLocalizer Localizer { get; set; } = null!;
+
 }

@@ -5,7 +5,7 @@ using Relaks.Interfaces;
 namespace Relaks.Models;
 
 [Table("EntryInfos")]
-public abstract class BaseEntryInfo : ITimestamped, ISoftDeleted, ICloneable
+public abstract class BaseEntryInfo : ITimestamped, ISoftDeletedReason, ICloneable
 {
     // public const string Phone = "PHONE";
     // public const string Email = "EMAIL";
@@ -89,6 +89,8 @@ public class FtsEntryInfo : IFtsEntity
     public Guid Id { get; set; }
     public string Body { get; set; } = null!;
     public Guid EntryId { get; set; }
+    public string DeletedAt { get; set; } = null!;
+    public string Discriminator { get; set; } = null!;
 }
 
 // public record NoteInfo

@@ -1,35 +1,71 @@
 ﻿@using Relaks.Models
 @using Relaks.Managers
+@using Relaks.Database
 
-@inject RelaksConfigModel RelaksConfigModel;
+<ul class="nav nav-tabs justify-content-center">
+    @foreach (var tab in Enum.GetValues<Tabs>())
+    {
+        
+        <li class="nav-item" @onclick="@(() => SetTab(tab))">
+            <button type="button" class="nav-link @(tab.Equals(CurrentTab) ? "active" : "")">@tab</button>
+        </li>
+    }
+</ul>
 
-@if (EntryInfos.Any())
+@if (FilteredItems.Any())
 {
-    <ul class="list-group list-group-flush bg-transparent">
-
-        @foreach (var eInfo in EntryInfosFiltered)
+    <ul class="list-group list-group-flush mt-2">
+        @foreach (var eInfo in FilteredItems)
         {
-            <li class="list-group-item bg-transparent gx-0 bg-blue-grey-11">
-                <EntryInfoContact EntryInfo="@eInfo"></EntryInfoContact>
+            <li class="list-group-item gx-0 @(eInfo.Id.Equals(EntryInfoId) ? "bg-success bg-opacity-25" : "")"
+                @key="@eInfo.Id">
+                <EntryInfoContact EntryInfo="@eInfo" EntryInfoId="EntryInfoId"></EntryInfoContact>
             </li>
         }
-    </ul>
+    </ul>   
+}
+else
+{
+    <p class="text-muted">Ничего не найдено</p>
 }
 
 @code {
 
+    private enum Tabs
+    {
+        Active,
+        Archive,
+    }
+    
     [Parameter]
     public Guid? EntryInfoId { get; set; }
 
     [Parameter]
     public List<BaseEntryInfo> EntryInfos { get; set; } = new();
 
-    private List<BaseEntryInfo> EntryInfosFiltered { get; set; } = new();
+    private Tabs CurrentTab { get; set; }
+    private List<BaseEntryInfo> FilteredItems { get; set; } = new();
+    
+
+    private void SetTab(Tabs tab)
+    {
+        CurrentTab = tab;
+        var contactTypes = new List<string>() {nameof(EiPhone), nameof(EiEmail), nameof(EiUrl), nameof(EiDate)};
+        var q = EntryInfos.Where(x => contactTypes.Contains(x.Discriminator));
+        switch (tab)
+        {
+            case Tabs.Active:
+                FilteredItems = q.Where(x => x.DeletedAt is null).ToList();
+                break;
+            case Tabs.Archive:
+                FilteredItems = q.Where(x => x.DeletedAt is not null).ToList();
+                break;
+        }
+    }
 
     protected override void OnParametersSet()
     {
-        var contactTypes = new List<string>() {nameof(EiPhone), nameof(EiEmail), nameof(EiUrl), nameof(EiDate)};
-        EntryInfosFiltered = EntryInfos.Where(x => contactTypes.Contains(x.Discriminator)).ToList();
+        SetTab(Tabs.Active);
     }
 
 }

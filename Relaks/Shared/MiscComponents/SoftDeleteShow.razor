@@ -1,0 +1,22 @@
+﻿@using Relaks.Interfaces
+
+@if (SoftDeletedReason.DeletedAt != null)
+{
+    <div class="alert bg-danger bg-opacity-10 text-body @Classes">
+        <div class="text-danger"><i class="las la-trash la-lg"></i> <b>В архиве с @SoftDeletedReason.DeletedAt?.ToLocalTime()</b></div>
+        @if (!string.IsNullOrEmpty(SoftDeletedReason.DeletedReason))
+        {
+            <div class="mt-2">
+                @SoftDeletedReason.DeletedReason
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter]
+    public ISoftDeletedReason SoftDeletedReason { get; set; } = null!;
+
+    [Parameter]
+    public string? Classes { get; set; }
+}

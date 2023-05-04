@@ -1,0 +1,34 @@
+﻿<p>component @(Value.HasValue ? Value.Value.ToLocalTime() : "")</p>
+
+<div class="row">
+    <div class="col">
+        @* <input type="date" class="form-control" @bind-value="@Value" @onchange="OnChangeDate"> *@
+        @* <InputText type="date" @bind-Value="@Date" class="form-control"/> *@
+    </div>
+    <div class="col">
+        @* <input type="time" class="form-control" @bind-value="@DateModel" @bind:format="HH:mm"> *@
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public DateTime? Value { get; set; }
+    
+    [Parameter]
+    public EventCallback<DateTime?> ValueChanged { get; set; }
+
+    private async Task OnChangeDate(ChangeEventArgs e)
+    {
+        await ValueChanged.InvokeAsync((DateTime?) e.Value);
+    }
+    // private DateTime? DateModel { get; set; }
+    // private TimeSpan TimeModel { get; set; } = TimeSpan.FromHours(0);
+    //
+    // private string TimeProxy
+    // {
+    //     get => TimeModel.ToString();
+    //     set => TimeModel = string.IsNullOrEmpty(value) ? TimeSpan.Parse(value) : TimeSpan.FromHours(0);
+    // }
+}

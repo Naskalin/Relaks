@@ -11,7 +11,7 @@ public static class RegisterServices
     {
         // services.AddSingleton<RelaksConfigManager>();
     }
-    public static void RegisterCultures(this IServiceCollection services)
+    public static void RegisterLocalization(this IServiceCollection services)
     {
         var defaultCulture = "ru";
         var supportedCultures = new[]

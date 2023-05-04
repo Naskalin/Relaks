@@ -31,14 +31,14 @@ public static class EntryEvents
     //         Create(db, row);
     //     }
     // }
-    
+
     public static void Create(AppDbContext db, BaseEntry baseEntry)
     {
         bool isValid = Guid.TryParse(baseEntry.Id.ToString(), out _);
         if (!isValid) return;
-        
+
         db.Database.ExecuteSqlInterpolated(
-            $"INSERT INTO FtsEntries(Id, Body) VALUES ({baseEntry.Id.ToString()}, {baseEntry.ToFtsBody()})"
+            $"INSERT INTO FtsEntries(Id, Body, Discriminator, DeletedAt) VALUES ({baseEntry.Id.ToString()}, {baseEntry.ToFtsBody()}, {baseEntry.Discriminator}, {baseEntry.DeletedAt.ToString()})"
         );
     }
 
@@ -48,6 +48,9 @@ public static class EntryEvents
         if (!isValid) return;
         db.Database.ExecuteSqlInterpolated(
             $"UPDATE FtsEntries SET Body = {baseEntry.ToFtsBody()} WHERE Id = {baseEntry.Id.ToString()}"
+        );
+        db.Database.ExecuteSqlInterpolated(
+            $"UPDATE FtsEntries SET DeletedAt = {baseEntry.DeletedAt.ToString()} WHERE Id = {baseEntry.Id.ToString()}"
         );
     }
 

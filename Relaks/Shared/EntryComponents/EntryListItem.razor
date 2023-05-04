@@ -4,7 +4,7 @@
 
 <tr @ondblclick="() => OnRowDoubleClicked.InvokeAsync(BaseEntry.Id)" @onclick="() => OnRowClicked.InvokeAsync(BaseEntry.Id)">
     <td>
-        <Tooltip Title="@BaseEntry.Discriminator">
+        <Tooltip Title="@BaseEntry.Discriminator" Placement="Placement.Right">
             <div style="width: 40px; height: 40px;" class="border rounded-circle d-flex align-items-center justify-content-center">
                 <i class="@EntityIcon.ByClassName(BaseEntry.Discriminator)" style="font-size: 1.6rem;"></i>
             </div>
@@ -24,6 +24,10 @@
         @if (FtsSnippet != null)
         {
             <div class="fts-result"><i class="las la-search la-lg"></i> @((MarkupString) FtsSnippet)</div>   
+        }
+        @if (BaseEntry.DeletedAt != null)
+        {
+            <SoftDeleteShow SoftDeletedReason="@BaseEntry" Classes="mt-2"/>
         }
     </td>
     <td>@BaseEntry.StartAt?.ToLocalTime().ToShortDateString()</td>

@@ -20,16 +20,37 @@
     </div>
 </div>
 
+<div class="mb-3">
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="entry-search-archive-checkbox" @oninput="@OnChangeIsDeleted">
+        @* <Checkbox TValue="bool?" DisplayText="Архивные записи" ShowLabel="true" @oninput=""/> *@
+        @* <InputCheckbox id="entry-search-archive-checkbox" type="checkbox" class="form-check-input" @oninput="@OnChangeIsDeleted"/> *@
+      <label class="form-check-label" for="entry-search-archive-checkbox">
+        Архивные записи
+      </label>
+    </div>
+</div>
+
 <div class="btn-group mb-3">
     @foreach (var kv in EntryDiscriminators())
     {
         <button type="button"
-                class="btn @(Req.Discriminator == kv.Value ? "btn-primary" : "btn-outline-primary")"
+                class="btn @(Req.Discriminator == kv.Value ? "btn-secondary" : "btn-outline-secondary")"
                 @onclick="() => OnChangeDiscriminator(kv.Value)">
             @kv.Key
         </button>
     }
 </div>
+
+@if (string.IsNullOrEmpty(Search))
+{
+    <MyPagination ActivePage="@Req.Page"
+                  OnPageChanged="@OnPageChanged"
+                  TotalItems="@PaginatableResult.Total"
+                  TotalPages="@PaginatableResult.PageCount"
+              
+    />   
+}
 
 <table class="table table-bordered table-hover cursor-pointer align-middle">
     <thead>
@@ -46,9 +67,9 @@
     <tbody>
     @if (string.IsNullOrEmpty(Search))
     {
-        @foreach (var be in PaginatableResult.Items)
+        @foreach (var baseEntry in PaginatableResult.Items)
         {
-            <EntryListItem BaseEntry="be" OnRowDoubleClicked="OnRowDoubleClicked" OnRowClicked="OnRowClicked"/>
+            <EntryListItem BaseEntry="@baseEntry" OnRowDoubleClicked="OnRowDoubleClicked" OnRowClicked="OnRowClicked"/>
         }
     }
     else
@@ -57,7 +78,7 @@
         {
             @if (ftsEntry.BaseEntry != null)
             {
-                <EntryListItem BaseEntry="@(ftsEntry.BaseEntry)" FtsSnippet="@ftsEntry.Snippet" OnRowDoubleClicked="OnRowDoubleClicked" OnRowClicked="OnRowClicked"/>
+                <EntryListItem BaseEntry="@ftsEntry.BaseEntry" FtsSnippet="@ftsEntry.Snippet" OnRowDoubleClicked="OnRowDoubleClicked" OnRowClicked="OnRowClicked"/>
             }
         }
     }
@@ -127,10 +148,25 @@
         }
         else
         {
-            Req.OrderBy = null;
-            Req.IsOrderByDesc = null;   
+            if (field.Equals(Req.OrderBy))
+            {
+                Req.OrderBy = null;
+                Req.IsOrderByDesc = null;   
+            }
+            else
+            {
+                Req.OrderBy = field;
+                Req.IsOrderByDesc = false;
+            }
         }
 
+        FindData();
+    }
+
+    private void OnChangeIsDeleted(ChangeEventArgs e)
+    {
+        Req.IsDeleted = (bool?) e.Value;
+        Req.Page = 1;
         FindData();
     }
 
@@ -165,7 +201,7 @@
         else
         {
             PaginatableResult = new PaginatableResult<BaseEntry>();
-            FtsEntries = Db.FtsEntrySearch(Search ?? "", Req.Discriminator);
+            FtsEntries = Db.FtsEntrySearch(Search, Req);
         }
     }
 

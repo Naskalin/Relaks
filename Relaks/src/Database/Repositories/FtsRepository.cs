@@ -2,7 +2,13 @@
 
 namespace Relaks.Database.Repositories;
 
-public class FtsSearchResult
+public class FtsSearchAllRequest
+{
+    public string Search { get; set; } = null!;
+    public bool? IsDeleted { get; set; }
+}
+
+public class FtsSearchAllResult
 {
     public double Rank { get; set; }
     public string Snippet { get; set; } = null!;
@@ -14,12 +20,12 @@ public class FtsSearchResult
 
 public static class FtsRepository
 {
-    public static List<FtsSearchResult> FtsSearchAll(this AppDbContext db, string search)
+    public static List<FtsSearchAllResult> FtsSearchAll(this AppDbContext db, string search)
     {
         var s = $"\"{search}\"*";
         var ftsEntries = db.Set<FtsEntry>()
             .Where(x => x.Match == s)
-            .Select(x => new FtsSearchResult()
+            .Select(x => new FtsSearchAllResult()
             {
                 EntryId = x.Id,
                 Rank = x.Rank ?? 0,
@@ -30,7 +36,7 @@ public static class FtsRepository
 
         var ftsEntryInfos = db.Set<FtsEntryInfo>()
                 .Where(x => x.Match == s)
-                .Select(x => new FtsSearchResult()
+                .Select(x => new FtsSearchAllResult()
                 {
                     EntryInfoId = x.Id,
                     EntryId = x.EntryId,

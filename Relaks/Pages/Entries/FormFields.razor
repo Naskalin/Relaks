@@ -1,0 +1,52 @@
+﻿@using Relaks.Models
+
+<div class="mb-3">
+    <label for="" class="form-label">Тип</label>
+    <RadioList Items="@Discriminators" @bind-Value="@Discriminator" IsVertical="true"/>
+</div>
+
+<div class="mb-3">
+    <BootstrapInput TValue="string" ShowLabel="true" DisplayText="Название" @bind-Value="@Req.Name"/>
+</div>
+<div class="mb-3">
+    <Textarea ShowLabel="true" DisplayText="Описание" rows="3" @bind-Value="@Req.Description"></Textarea>
+</div>
+<div class="mb-3">
+    <p>form fields @(Req.StartAt.HasValue ? Req.StartAt.Value.ToLocalTime() : "")</p>
+    
+    <DateTimeField @bind-Value="@Req.StartAt"/>
+    @* <DateTimePicker TValue="DateTime"  *@
+    @*                 ShowLabel="true"  *@
+    @*                 DisplayText="Month" *@
+    @*                  *@
+    @*                 ViewMode="@(Discriminator.Value.Equals(nameof(EMeet)) ? DatePickerViewMode.DateTime : DatePickerViewMode.Date)"  *@
+    @*                 Format="@(Discriminator.Value.Equals(nameof(EMeet)) ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy")" *@
+    @* /> *@
+</div>
+
+@code {
+    
+    private BaseEntryRequest Req { get; set; } = new();
+    private static Dictionary<string, string> Ids { get; set; } = new();
+    private List<SelectedItem> Discriminators { get; set; } = new();
+    private SelectedItem Discriminator { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Discriminators = new()
+        {
+            new SelectedItem(nameof(EPerson), "label " + nameof(EPerson)) {Active = true},
+            new SelectedItem(nameof(ECompany), nameof(ECompany)),
+            new SelectedItem(nameof(EMeet), nameof(EMeet))
+        };
+
+        Ids = new()
+        {
+            {nameof(Req.Name), Guid.NewGuid().ToString()},
+            {nameof(Req.Description), Guid.NewGuid().ToString()},
+        };
+    }
+
+}

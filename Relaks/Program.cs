@@ -1,4 +1,3 @@
-using BlazorBootstrap;
 using Blazored.LocalStorage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +6,7 @@ using Photino.Blazor;
 using PhotinoNET;
 using Relaks;
 using Relaks.Database;
+using Relaks.Database.DbUtils;
 using Relaks.Managers;
 
 if (OperatingSystem.IsWindows())
@@ -27,10 +27,11 @@ builder.Services.AddDbContext<AppDbContext>(o =>
 );
 
 builder.Services.RegisterManagers();
+builder.Services.RegisterLocalization();
 builder.Services.AddBlazoredLocalStorage();
-builder.Services.AddBlazorBootstrap();
+// builder.Services.AddBlazorBootstrap();
+builder.Services.AddBootstrapBlazor();
 var app = builder.Build();
-
 
 // var env = app.Services.GetRequiredService<IHostEnvironment>();
 using var scope = app.Services.CreateScope();
@@ -65,6 +66,7 @@ AppDomain.CurrentDomain.UnhandledException += (sender, error) =>
 {
     mainWindow.OpenAlertWindow("Fatal exception", error.ExceptionObject.ToString());
 };
+
 
 await app.StartAsync();
 windowManager.Navigate("/");

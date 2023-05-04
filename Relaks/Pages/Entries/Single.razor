@@ -1,25 +1,8 @@
 ﻿@page "/entries/{entryId:guid}"
 
-@inject NavigationManager NavigationManager;
-
-<PageTemplate>
-    @* <MyTitle>BaseEntry @EntryId</Title> *@
-    @* <p>EntryInfoId @EntryInfoId</p> *@
-    @* <p>NavigationManager @NavigationManager.Uri</p> *@
-    <EntryCard EntryId="@EntryId" EntryInfoId="@EntryInfoId"></EntryCard>
-</PageTemplate>
+<EntryProfileLayout EntryId="@EntryId"/>
 
 @code {
     [Parameter]
     public Guid EntryId { get; set; }
-    
-    private Guid? EntryInfoId { get; set; }
-
-    protected override void OnParametersSet()
-    {
-        var query = new Uri(NavigationManager.Uri).Query;
-        var dict = System.Web.HttpUtility.ParseQueryString(query);
-        var entryInfoId = dict["entryInfoId"];
-        EntryInfoId = string.IsNullOrEmpty(entryInfoId) ? null : Guid.Parse(entryInfoId);
-    }
 }

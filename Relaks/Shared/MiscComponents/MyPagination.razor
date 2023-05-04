@@ -1,12 +1,10 @@
 ﻿<div class="d-flex gap-3 align-items-center">
-    <Pagination TotalPages="@TotalPages"
-                PageChanged="@OnPageChanged"
-                ActivePageNumber="@ActivePage"
-                FirstLinkIcon="IconName.ChevronDoubleLeft"
-                PreviousLinkIcon="IconName.ChevronLeft"
-                NextLinkIcon="IconName.ChevronRight"
-                LastLinkIcon="IconName.ChevronDoubleRight"
+    <Pagination PageCount="@TotalPages"
+                Alignment="Alignment.Left"
+                PageIndex="@ActivePage"
+                OnPageLinkClick="OnPageLinkClick"
     />
+
     <div class="mb-3">Всего найдено: @TotalItems</div>
 </div>
 
@@ -23,4 +21,6 @@
 
     [Parameter]
     public EventCallback<int> OnPageChanged { get; set; }
+
+    private async Task OnPageLinkClick(int pageNumber) => await OnPageChanged.InvokeAsync(pageNumber);
 }

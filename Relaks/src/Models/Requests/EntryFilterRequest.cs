@@ -9,4 +9,5 @@ public class EntryFilterRequest : IPaginatable, IOrderable
     public string? Discriminator { get; set; }
     public string? OrderBy { get; set; }
     public bool? IsOrderByDesc { get; set; }
+    public bool? IsDeleted { get; set; }
 }

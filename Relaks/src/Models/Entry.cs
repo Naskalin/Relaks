@@ -1,20 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 using Relaks.Interfaces;
 
 namespace Relaks.Models;
 
 [Table("Entries")]
-public abstract class BaseEntry : ITimestamped, ISoftDeleted
+public abstract class BaseEntry : ITimestamped, ISoftDeletedReason
 {
-    // public enum TypeEnum
-    // {
-    //     Person,
-    //     Meet,
-    //     Company,
-    // }
-    
     public Guid Id { get; set; }
     [StringLength(50)]
     public string Discriminator { get; set; } = null!;
@@ -71,6 +63,23 @@ public class FtsEntry : IFtsEntity
     
     public Guid Id { get; set; }
     public string Body { get; set; } = null!;
+    
+    
     [NotMapped]
     public BaseEntry? BaseEntry { get; set; }
+
+    public string DeletedAt { get; set; } = null!;
+    public string Discriminator { get; set; } = null!;
+}
+
+public class BaseEntryRequest
+{
+    public string Discriminator { get; set; } = null!;
+    public string Name { get; set; } = null!;
+    public string? Description { get; set; }
+    public int Reputation { get; set; }
+    public DateTime? StartAt { get; set; }
+    public DateTime? EndAt { get; set; }
+    public DateTime? DeletedAt { get; set; }
+    public string? DeletedReason { get; set; }
 }

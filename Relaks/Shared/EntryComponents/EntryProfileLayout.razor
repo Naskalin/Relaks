@@ -1,0 +1,48 @@
+﻿<PageTemplate>
+    <div class="row gap-4">
+        <div class="col-auto">
+            <EntryCard EntryId="@EntryId" EntryInfoId="@EntryInfoId"></EntryCard>    
+        </div>
+        <div class="col">
+            <ul class="nav nav-tabs">
+                @foreach (var link in Links)
+                {
+                    <li class="nav-item">
+                        <a href="@link.Url" class="nav-link"><b>@link.Title</b></a>
+                    </li>   
+                }
+            </ul>
+            
+            @ChildContent
+        </div>
+    </div>
+</PageTemplate>
+
+@code {
+    [Parameter]
+    public Guid EntryId { get; set; }
+    
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = null!;
+    
+    private Guid? EntryInfoId { get; set; }
+
+    private List<(string Url, string Title)> Links { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        var query = new Uri(NavigationManager.Uri).Query;
+        var dict = System.Web.HttpUtility.ParseQueryString(query);
+        var entryInfoId = dict["entryInfoId"];
+        EntryInfoId = string.IsNullOrEmpty(entryInfoId) ? null : Guid.Parse(entryInfoId);
+
+        Links = new()
+        {
+            ($"/entries/{EntryId}", "Инфо"),
+            ($"/entries/{EntryId}/files", "Файлы"),
+        };
+    }
+}

@@ -1,14 +1,7 @@
 ﻿@using Relaks.Interfaces
 @if (Prop.Equals(Orderable.OrderBy))
 {
-   @if (Orderable.IsOrderByDesc == true)
-   {
-      <i class="las la-sort-amount-down"></i>  
-   }
-   else
-   {
-      <i class="las la-sort-amount-up"></i>    
-   }
+   <span><i class="las  la-lg @(Orderable.IsOrderByDesc == true ? "la-sort-amount-down" : "la-sort-amount-up")"></i></span>  
 }
 
 @code {

@@ -63,7 +63,7 @@ public static class EntryInfoEvents
         if (!isValid) return;
 
         db.Database.ExecuteSqlInterpolated(
-            $"INSERT INTO FtsEntryInfos(Id, EntryId, Body) VALUES ({eInfo.Id.ToString()}, {eInfo.EntryId.ToString()}, {eInfo.ToFtsBody()})"
+            $"INSERT INTO FtsEntryInfos(Id, EntryId, Body, Discriminator, DeletedAt) VALUES ({eInfo.Id.ToString()}, {eInfo.EntryId.ToString()}, {eInfo.ToFtsBody()}, {eInfo.Discriminator}, {eInfo.DeletedAt.ToString()})"
         );
     }
 
@@ -74,6 +74,9 @@ public static class EntryInfoEvents
 
         db.Database.ExecuteSqlInterpolated(
             $"UPDATE FtsEntryInfos SET Body = {eInfo.ToFtsBody()} WHERE Id = {eInfo.Id.ToString()}"
+        );
+        db.Database.ExecuteSqlInterpolated(
+            $"UPDATE FtsEntryInfos SET DeletedAt = {eInfo.DeletedAt.ToString()} WHERE Id = {eInfo.Id.ToString()}"
         );
     }
 
