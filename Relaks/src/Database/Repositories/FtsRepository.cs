@@ -4,7 +4,7 @@ namespace Relaks.Database.Repositories;
 
 public class FtsSearchAllRequest
 {
-    public string Search { get; set; } = null!;
+    public string? Search { get; set; }
     public bool? IsDeleted { get; set; }
 }
 
@@ -16,33 +16,50 @@ public class FtsSearchAllResult
     public Guid? EntryInfoId { get; set; }
     public string EntityName { get; set; } = null!;
     public string FtsEntityName { get; set; } = null!;
+    public string DeletedAt { get; set; } = null!;
 }
 
 public static class FtsRepository
 {
-    public static List<FtsSearchAllResult> FtsSearchAll(this AppDbContext db, string search)
+    public static List<FtsSearchAllResult> FtsSearchAll(this AppDbContext db, FtsSearchAllRequest req)
     {
-        var s = $"\"{search}\"*";
-        var ftsEntries = db.Set<FtsEntry>()
-            .Where(x => x.Match == s)
+        var search = req.Search != null ? req.Search.Trim() : "";
+        if (string.IsNullOrEmpty(search)) return new List<FtsSearchAllResult>();
+        
+        search = $"\"{req.Search}\"*";
+        var queryEntries = db.Set<FtsEntry>().Where(x => x.Match == search);
+        queryEntries = req.IsDeleted == true
+            ? queryEntries.Where(x => !string.IsNullOrEmpty(x.DeletedAt))
+            : queryEntries.Where(x => string.IsNullOrEmpty(x.DeletedAt));
+        
+        var ftsEntries = queryEntries
             .Select(x => new FtsSearchAllResult()
             {
                 EntryId = x.Id,
                 Rank = x.Rank ?? 0,
                 Snippet = db.Snippet(x.Match, "-1", "<b>", "</b>", "...", 5),
-                FtsEntityName = nameof(FtsEntry)
+                FtsEntityName = nameof(FtsEntry),
+                EntityName = x.Discriminator,
+                DeletedAt = x.DeletedAt
             })
             ;
 
-        var ftsEntryInfos = db.Set<FtsEntryInfo>()
-                .Where(x => x.Match == s)
+        var queryEntryInfos = db.Set<FtsEntryInfo>().Where(x => x.Match == search);
+    
+        queryEntryInfos = req.IsDeleted == true
+            ? queryEntryInfos.Where(x => !string.IsNullOrEmpty(x.DeletedAt))
+            : queryEntryInfos.Where(x => string.IsNullOrEmpty(x.DeletedAt));
+        
+        var ftsEntryInfos = queryEntryInfos
                 .Select(x => new FtsSearchAllResult()
                 {
                     EntryInfoId = x.Id,
                     EntryId = x.EntryId,
                     Rank = x.Rank ?? 0,
                     Snippet = db.Snippet(x.Match, "-1", "<b>", "</b>", "...", 5),
-                    FtsEntityName = nameof(FtsEntryInfo)
+                    FtsEntityName = nameof(FtsEntryInfo),
+                    EntityName = x.Discriminator,
+                    DeletedAt = x.DeletedAt,
                 })
             ;
 
@@ -50,39 +67,8 @@ public static class FtsRepository
             .AsEnumerable()
             .Union(ftsEntryInfos)
             .OrderByDescending(x => x.Rank)
-            .Take(15)
+            .Take(12)
             .ToList();
-
-        List<Guid> entryIds = ftsUnion
-            .Where(x => x.EntryId.HasValue)
-            .Select(x => x.EntryId!.Value)
-            .ToList()
-            ;
-        var entries = db.BaseEntries.Where(x => entryIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);
-
-        List<Guid> entryInfoIds = ftsUnion
-            .Where(x => x.EntryInfoId.HasValue)
-            .Select(x => x.EntryInfoId!.Value)
-            .ToList();
-        
-        var entryInfos = db.BaseEntryInfos.Where(x => entryInfoIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);
-        foreach (var item in ftsUnion)
-        {
-            var entityName = "???";
-            switch (item.FtsEntityName)
-            {
-                case nameof(FtsEntry):
-                    ArgumentNullException.ThrowIfNull(item.EntryId);
-                    entityName = entries[item.EntryId.Value].Discriminator;
-                    break;
-                case nameof(FtsEntryInfo):
-                    ArgumentNullException.ThrowIfNull(item.EntryInfoId);
-                    entityName = entryInfos[item.EntryInfoId.Value].Discriminator;
-                    break;
-            }
-
-            item.EntityName = entityName;
-        }
 
         return ftsUnion;
     }

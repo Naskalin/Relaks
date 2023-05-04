@@ -1,7 +1,7 @@
 ﻿<PageTemplate>
     <div class="row gap-4">
         <div class="col-auto">
-            <EntryCard EntryId="@EntryId" EntryInfoId="@EntryInfoId"></EntryCard>    
+            <EntryCard EntryId="@EntryId" EntryInfoId="@EntryInfoId"></EntryCard>
         </div>
         <div class="col">
             <ul class="nav nav-tabs">
@@ -9,10 +9,10 @@
                 {
                     <li class="nav-item">
                         <a href="@link.Url" class="nav-link"><b>@link.Title</b></a>
-                    </li>   
+                    </li>
                 }
             </ul>
-            
+
             @ChildContent
         </div>
     </div>
