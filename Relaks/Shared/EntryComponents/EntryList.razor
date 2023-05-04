@@ -2,7 +2,6 @@
 @using Relaks.Database
 @using Relaks.Database.Repositories
 @using Relaks.Models.Misc
-@using Relaks.Models.Requests
 @using Relaks.Utils.Extensions
 @using System.Text.Json
 @using Microsoft.AspNetCore.Http.HttpResults
@@ -11,8 +10,8 @@
     <div class="row">
         <div class="col-3">
             <div class="input-group">
-                <input type="text" class="form-control" @bind="@Search" @oninput="@OnInputSearch" placeholder="Поиск...">
-                <button class="btn btn-outline-secondary" type="button" @onclick="@(() => Search = null)">
+                <input type="text" class="form-control" @bind="@Req.Search" @oninput="@OnInputSearch" placeholder="Поиск...">
+                <button class="btn btn-outline-secondary" type="button" @onclick="@(() => { Req.Search = null; FindData(); })">
                     <i class="las la-times la-lg"></i>
                 </button>
             </div>
@@ -42,19 +41,15 @@
     }
 </div>
 
-@if (string.IsNullOrEmpty(Search))
-{
-    <MyPagination ActivePage="@Req.Page"
-                  OnPageChanged="@OnPageChanged"
-                  TotalItems="@PaginatableResult.Total"
-                  TotalPages="@PaginatableResult.PageCount"
-              
-    />   
-}
+<MyPagination ActivePage="@Req.Page"
+              OnPageChanged="@OnPageChanged"
+              TotalItems="@Result.Total"
+              TotalPages="@Result.PageCount"
+/>   
 
 <table class="table table-bordered table-hover cursor-pointer align-middle">
     <thead>
-    <tr style="@(!string.IsNullOrEmpty(Search) ? "opacity: .3" : "")">
+    <tr style="@(!string.IsNullOrEmpty(Req.Search) ? "opacity: .3; cursor: not-allowed;" : "")">
         <th style="width: 70px" @onclick="() => OnSortChange(nameof(BaseEntry.Discriminator))">Тип <OrderableIcon Orderable="@Req" Prop="@nameof(BaseEntry.Discriminator)"/></th>
         <th style="width: 80px"></th>
         <th @onclick="() => OnSortChange(nameof(BaseEntry.Name))">Имя <OrderableIcon Orderable="@Req" Prop="@nameof(BaseEntry.Name)"/></th>
@@ -65,51 +60,50 @@
     </tr>
     </thead>
     <tbody>
-    @if (string.IsNullOrEmpty(Search))
+    @if (Result.Items.Any())
     {
-        @foreach (var baseEntry in PaginatableResult.Items)
+        @foreach (var item in Result.Items)
         {
-            <EntryListItem BaseEntry="@baseEntry" OnRowDoubleClicked="OnRowDoubleClicked" OnRowClicked="OnRowClicked"/>
+            <EntryListItem BaseEntry="@item.BaseEntry"
+                           OnRowDoubleClicked="OnRowDoubleClicked"
+                           OnRowClicked="OnRowClicked"
+                           FtsSnippet="@item.FtsEntry?.Snippet"
+                           />
         }
     }
     else
     {
-        @foreach (var ftsEntry in FtsEntries)
-        {
-            @if (ftsEntry.BaseEntry != null)
-            {
-                <EntryListItem BaseEntry="@ftsEntry.BaseEntry" FtsSnippet="@ftsEntry.Snippet" OnRowDoubleClicked="OnRowDoubleClicked" OnRowClicked="OnRowClicked"/>
-            }
-        }
+        <tr>
+            <td colspan="100%" class="text-center">Ничего не найдено</td>
+        </tr>    
     }
+    
     </tbody>
 </table>
 
-@if (string.IsNullOrEmpty(Search))
-{
-    <MyPagination ActivePage="@Req.Page"
-                  OnPageChanged="@OnPageChanged"
-                  TotalItems="@PaginatableResult.Total"
-                  TotalPages="@PaginatableResult.PageCount"
-              
-    />   
-}
+<MyPagination ActivePage="@Req.Page"
+              OnPageChanged="@OnPageChanged"
+              TotalItems="@Result.Total"
+              TotalPages="@Result.PageCount"
+/>
 
 @code {
 
     [Inject]
     public AppDbContext Db { get; set; } = null!;
 
-    private PaginatableResult<BaseEntry> PaginatableResult { get; set; } = new();
+    // private PaginatableResult<BaseEntry> PaginatableResult { get; set; } = new();
     private List<FtsEntry> FtsEntries { get; set; } = new();
 
-    private EntryFilterRequest Req { get; set; } = new()
+    private EntryFindRequest Req { get; set; } = new()
     {
         Page = 1,
-        PerPage = 10
+        PerPage = 10,
     };
     
-    private string? Search { get; set; }
+    private PaginatableResult<EntryFindResult> Result { get; set; } = new();
+    
+    // private string? Search { get; set; }
 
     private static Dictionary<string, string?> EntryDiscriminators() => new()
     {
@@ -128,7 +122,7 @@
 
     private void OnSortChange(string field)
     {
-        if (!string.IsNullOrEmpty(Search)) return;
+        if (!string.IsNullOrEmpty(Req.Search)) return;
         if (Req.IsOrderByDesc is null)
         {
             Req.OrderBy = field;
@@ -173,7 +167,7 @@
     private void OnPageChanged(int page)
     {
         Req.Page = page;
-        Search = null;
+        // Search = null;
         FindData();
     }
     
@@ -187,22 +181,24 @@
 
     private void OnInputSearch(ChangeEventArgs e)
     {
-        Search = e.Value?.ToString();
+        Req.Search = e.Value?.ToString();
+        Req.Page = 1;
         FindData();
     }
 
     private void FindData()
     {
-        if (string.IsNullOrEmpty(Search))
-        {
-            PaginatableResult = Db.BaseEntries.FindByReq(Req);
-            FtsEntries = new List<FtsEntry>();
-        }
-        else
-        {
-            PaginatableResult = new PaginatableResult<BaseEntry>();
-            FtsEntries = Db.FtsEntrySearch(Search, Req);
-        }
+        Result = Db.FindEntries(Req);
+        // if (string.IsNullOrEmpty(Search))
+        // {
+        //     PaginatableResult = Db.BaseEntries.FindByReq(Req);
+        //     FtsEntries = new List<FtsEntry>();
+        // }
+        // else
+        // {
+        //     PaginatableResult = new PaginatableResult<BaseEntry>();
+        //     FtsEntries = Db.FtsEntrySearch(Search, Req);
+        // }
     }
 
     protected override void OnInitialized()
