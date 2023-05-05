@@ -1,28 +1,33 @@
-﻿<p>component @(Value.HasValue ? Value.Value.ToLocalTime() : "")</p>
+﻿@inherits InputDate<DateTime?>
 
-<div class="row">
-    <div class="col">
-        @* <input type="date" class="form-control" @bind-value="@Value" @onchange="OnChangeDate"> *@
-        @* <InputText type="date" @bind-Value="@Date" class="form-control"/> *@
-    </div>
-    <div class="col">
-        @* <input type="time" class="form-control" @bind-value="@DateModel" @bind:format="HH:mm"> *@
-    </div>
-</div>
+<input type="date" @bind-value="@Value">
+<p>component @(Value.HasValue ? Value.Value.ToLocalTime() : "")</p>
+@* *@
+@* <div class="row"> *@
+@*     <div class="col"> *@
+@*         <InputDate @bind-Value="@Value" class="form-control"/> *@
+         @* <InputDate <DateTI>></InputDate> *@
+@*         $1$ <input type="date" class="form-control" @bind-value="@Value" @onchange="OnChangeDate"> #1# *@
+@*         $1$ <InputText type="date" @bind-Value="@Date" class="form-control"/> #1# *@
+@*     </div> *@
+@*     <div class="col"> *@
+@*         $1$ <input type="time" class="form-control" @bind-value="@DateModel" @bind:format="HH:mm"> #1# *@
+@*     </div> *@
+@* </div> *@
 
 
 
 @code {
+    // [Parameter]
+    // public DateTime? Value { get; set; }
+    //
     [Parameter]
-    public DateTime? Value { get; set; }
-    
-    [Parameter]
-    public EventCallback<DateTime?> ValueChanged { get; set; }
-
-    private async Task OnChangeDate(ChangeEventArgs e)
-    {
-        await ValueChanged.InvokeAsync((DateTime?) e.Value);
-    }
+    public new EventCallback<DateTime?> ValueChanged { get; set; }
+    //
+    // private async Task OnChangeDate(ChangeEventArgs e)
+    // {
+    //     await ValueChanged.InvokeAsync((DateTime?) e.Value);
+    // }
     // private DateTime? DateModel { get; set; }
     // private TimeSpan TimeModel { get; set; } = TimeSpan.FromHours(0);
     //
@@ -31,4 +36,10 @@
     //     get => TimeModel.ToString();
     //     set => TimeModel = string.IsNullOrEmpty(value) ? TimeSpan.Parse(value) : TimeSpan.FromHours(0);
     // }
+
+    // protected override bool TryParseValueFromString(string? value, out DateTime? result, out string? validationErrorMessage)
+    // {
+    //     return base.TryParseValueFromString(value, out result, out validationErrorMessage);
+    // }
+
 }

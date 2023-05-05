@@ -1,0 +1,22 @@
+﻿@if (!string.IsNullOrEmpty(Label))
+{
+    <label for="@Id">@Label</label>
+}
+<textarea class="form-control" @bind="@Value" @bind:event="oninput" @bind:after="@OnChanged"></textarea>
+
+
+@code {
+    [Parameter]
+    public string? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<string?> ValueChanged { get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    private Guid Id { get; set; } = Guid.NewGuid();
+
+    private async Task OnChanged() => await ValueChanged.InvokeAsync(Value);
+
+}

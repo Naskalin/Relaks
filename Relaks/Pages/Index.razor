@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Localization
 
 <PageTemplate>
   <MyTitle>Index</MyTitle>
@@ -8,6 +9,7 @@
   
   <p><a href="/asd">error</a></p>
   <p><a href="/test">test</a></p>
+  <p><NavLink href="/entries/new">new entry</NavLink></p>
   <p>bootstrap icons <i class="bi bi-1-square text-red"></i></p>
   <p>line awesome icons <i class="las la-info text-red"></i></p>
   <p>font awesome icons <i class="fa fa-solid fa-info"></i></p>
@@ -15,11 +17,12 @@
 <i class="fa-solid fa-arrow-down-up-lock" aria-hidden="true"></i></p>
   
   @* <p><b>trans</b> @Localizer["Welcome"]</p> *@
+  <p>trans: @__["welcome"]</p>
   
 </PageTemplate>
 @code{
 
-  // [Inject]
-  // public IViewLocalizer Localizer { get; set; } = null!;
+  [Inject]
+  public IStringLocalizer<App> __ { get; set; } = null!;
 
 }

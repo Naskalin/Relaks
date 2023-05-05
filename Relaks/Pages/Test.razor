@@ -1,34 +1,36 @@
 ﻿@page "/test"
 @using System.Diagnostics.CodeAnalysis
 @using Relaks.Models
+@using Relaks.Models.Requests.EntryRequests
 
+test
 <div class="row g-3">
-    <div class="col-12">
-        <RadioList Items="@Items" @bind-Value="@Discriminator"/>
-    </div>
-    <div class="col-12">
-        Text: @Discriminator.Text Value: @Discriminator.Value
-    </div>
+    @* <div class="col-12"> *@
+    @*     <RadioList Items="@Items" @bind-Value="@Discriminator"/> *@
+    @* </div> *@
+    @* <div class="col-12"> *@
+    @*     Text: @Discriminator.Text Value: @Discriminator.Value *@
+    @* </div> *@
 </div>
 
 @code {
-    private List<SelectedItem> Items { get; set; } = new();
-
-    private SelectedItem Discriminator { get; set; } = new();
-
-    /// <summary>
-    /// OnInitialized 方法
-    /// </summary>
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-
-        Items = new()
-        {
-            new SelectedItem(nameof(EPerson), nameof(EPerson)) {Active = true},
-            new SelectedItem(nameof(ECompany), nameof(ECompany)),
-            new SelectedItem(nameof(EMeet), nameof(EMeet))
-        };
-    }
+    // private List<SelectedItem> Items { get; set; } = new();
+    //
+    // private SelectedItem Discriminator { get; set; } = new();
+    //
+    // /// <summary>
+    // /// OnInitialized 方法
+    // /// </summary>
+    // protected override void OnInitialized()
+    // {
+    //     base.OnInitialized();
+    //
+    //     Items = new()
+    //     {
+    //         new SelectedItem(nameof(EPerson), nameof(EPerson)) {Active = true},
+    //         new SelectedItem(nameof(ECompany), nameof(ECompany)),
+    //         new SelectedItem(nameof(EMeet), nameof(EMeet))
+    //     };
+    // }
 
 }

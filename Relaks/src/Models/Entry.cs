@@ -68,14 +68,14 @@ public class FtsEntry : IFtsEntity
     public string Discriminator { get; set; } = null!;
 }
 
-public class BaseEntryRequest
-{
-    public string Discriminator { get; set; } = null!;
-    public string Name { get; set; } = null!;
-    public string? Description { get; set; }
-    public int Reputation { get; set; }
-    public DateTime? StartAt { get; set; }
-    public DateTime? EndAt { get; set; }
-    public DateTime? DeletedAt { get; set; }
-    public string? DeletedReason { get; set; }
-}
+// public class BaseEntryRequest
+// {
+//     public string Discriminator { get; set; } = null!;
+//     public string Name { get; set; } = null!;
+//     public string? Description { get; set; }
+//     public int Reputation { get; set; }
+//     public DateTime? StartAt { get; set; }
+//     public DateTime? EndAt { get; set; }
+//     public DateTime? DeletedAt { get; set; }
+//     public string? DeletedReason { get; set; }
+// }

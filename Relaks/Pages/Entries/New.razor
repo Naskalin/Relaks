@@ -1,4 +1,8 @@
 ﻿@page "/entries/new"
+@using Relaks.Models.Requests.EntryRequests
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using Relaks.Models
+@using System.Text.Json
 
 <PageTemplate>
     <div class="row">
@@ -11,18 +15,21 @@
                 </BeforeTitle>
                 <ChildContent>Новое объединение</ChildContent>
             </MyTitle>
-            @* <EditorForm> *@
-                <FormFields/>
+            
+            
+            @JsonSerializer.Serialize(Req);
+            <EditForm Model="@Req">
+                <FormFields @bind-Req="@Req"/>
                 <div class="mb-3">
                     <button type="submit" class="btn btn-primary">
                         Добавить
                     </button>
                 </div>
-            @* </EditorForm> *@
+            </EditForm>
         </div>
     </div>  
 </PageTemplate>
 
 @code {
-    
+    private EntryFormRequest Req { get; set; } = new();
 }
