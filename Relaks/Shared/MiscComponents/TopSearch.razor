@@ -12,13 +12,11 @@
      @onfocusin="@(() => IsFocus = true)"
      @onfocusout="OnFocusFalseAsync">
     <div class="input-group">
-        <div class="input-group-text">
-            <div class="form-check">
-                <label class="form-check-label" for="top-search-archive-checkbox">
-                    поиск по архиву
-                </label>
-                <input id="top-search-archive-checkbox" class="form-check-input" @oninput="@OnChangeIsDeleted" type="checkbox">
-            </div>
+        <div class="input-group-text top-search__check">
+            <label for="top-search-archive-checkbox">
+                <input id="top-search-archive-checkbox" class="form-check-input" @bind="@Req.IsDeleted" @oninput="@OnChangeIsDeleted" type="checkbox">
+                по архиву
+            </label>
         </div>
         <input type="text"
                placeholder="Что ищем?..."
