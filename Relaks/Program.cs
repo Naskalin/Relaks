@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,6 +19,7 @@ if (OperatingSystem.IsWindows())
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services.AddBlazorDesktop();
+// builder.Services.AddServerSideBlazor();
 var projectDir = AppDomain.CurrentDomain.BaseDirectory;
 var relaksConfig = RelaksConfigManager.GetOrCreateConfig(projectDir);
 builder.Services.AddSingleton(relaksConfig);
@@ -26,6 +28,7 @@ builder.Services.AddDbContext<AppDbContext>(o =>
     o.UseSqlite(relaksConfig.SqliteConnectionString())
 );
 
+builder.Services.RegisterValidators();
 builder.Services.RegisterManagers();
 builder.Services.RegisterLocalization();
 builder.Services.AddBlazoredLocalStorage();

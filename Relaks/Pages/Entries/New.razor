@@ -3,6 +3,7 @@
 @using Microsoft.EntityFrameworkCore.Metadata.Internal
 @using Relaks.Models
 @using System.Text.Json
+@using Relaks.Validators.EntryValidators
 
 <PageTemplate>
     <div class="row">
@@ -18,8 +19,16 @@
             
             
             @JsonSerializer.Serialize(Req);
-            <EditForm Model="@Req">
-                <FormFields @bind-Req="@Req"/>
+            <EditForm Model="@Req" OnSubmit="@OnSubmit">
+                @* <Morris.Blazor.Validation.Validate ValidationProperties=@(ValidationProperties.Set.FluentValidator<EntryFormValidator>())/> *@
+                <FluentValidationValidator @ref="FluentValidationValidator" DisableAssemblyScanning="@true"/>
+                <ValidationSummary/>
+                @* <FormFields @bind-Req="@Req"/> *@
+                <div class="mb-3 input-lg">
+                    <label for="" class="form-label form-label-lg">Имя</label>
+                    <input type="text" class="form-control form-control-lg" @bind="@Req.Name" @bind:event="oninput"/>
+                    <ValidationMessage For="@(() => Req.Name)"></ValidationMessage>
+                </div>
                 <div class="mb-3">
                     <button type="submit" class="btn btn-primary">
                         Добавить
@@ -32,4 +41,19 @@
 
 @code {
     private EntryFormRequest Req { get; set; } = new();
+    private FluentValidationValidator FluentValidationValidator { get; set; } = null!;
+
+    // [Inject]
+    // public EntryFormValidator Validator { get; set; } = null!;
+
+    private void OnSubmit()
+    {
+
+        if (FluentValidationValidator.Validate())
+        {
+            System.Console.WriteLine("-----------------------------------");
+            System.Console.WriteLine(JsonSerializer.Serialize(Req));
+            System.Console.WriteLine("-----------------------------------");
+        }
+    }
 }
