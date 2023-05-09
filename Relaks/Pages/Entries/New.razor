@@ -55,7 +55,7 @@
         Req.MapTo(entry);
         Db.BaseEntries.Add(entry);
         Db.SaveChanges();
-        NavigationManager.NavigateTo("/entries/" + entry.Id);
+        NavigationManager.NavigateTo($"/entries/{entry.Id}/info");
     }
 
 }

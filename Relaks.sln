@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Relaks", "Relaks\Relaks.csproj", "{90667ADD-B6D9-4282-A2AF-03278FE1914A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Relaks.Photino", "Relaks.Photino\Relaks.Photino.csproj", "{CEE523E0-F450-4E74-B3AE-BD44469FFDB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Relaks.Web", "Relaks.Web\Relaks.Web.csproj", "{134D19EC-F939-44D7-A77F-4858033DF6B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{90667ADD-B6D9-4282-A2AF-03278FE1914A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90667ADD-B6D9-4282-A2AF-03278FE1914A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90667ADD-B6D9-4282-A2AF-03278FE1914A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEE523E0-F450-4E74-B3AE-BD44469FFDB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEE523E0-F450-4E74-B3AE-BD44469FFDB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEE523E0-F450-4E74-B3AE-BD44469FFDB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEE523E0-F450-4E74-B3AE-BD44469FFDB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{134D19EC-F939-44D7-A77F-4858033DF6B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{134D19EC-F939-44D7-A77F-4858033DF6B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{134D19EC-F939-44D7-A77F-4858033DF6B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{134D19EC-F939-44D7-A77F-4858033DF6B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
