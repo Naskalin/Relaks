@@ -1,13 +1,1 @@
-﻿.pagination {
-  .page-link {
-    cursor: pointer;
-  }
-  .active.disabled>.page-link {
-    color: $body-color;
-    background-color: $pagination-active-bg;
-    border-color: $pagination-active-border-color;
-  }
-}
-.table>:not(caption)>*>* {
-  background-color: var(--bs-table-bg);
-}
+﻿

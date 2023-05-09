@@ -47,9 +47,6 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Reputation")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateTime?>("StartAt")
                         .HasColumnType("TEXT");
 
@@ -239,7 +236,7 @@ namespace Relaks.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsOnlyDate")
+                    b.Property<bool>("WithTime")
                         .HasColumnType("INTEGER");
 
                     b.ToTable("EntryInfos");

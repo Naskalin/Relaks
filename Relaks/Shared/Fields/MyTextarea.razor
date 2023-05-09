@@ -1,9 +1,9 @@
-﻿@if (!string.IsNullOrEmpty(Label))
+﻿@using YamlDotNet.Core.Tokens
+@if (!string.IsNullOrEmpty(Label))
 {
-    <label for="@Id">@Label</label>
+    <label for="@Id" class="form-label">@Label</label>
 }
 <textarea class="form-control" @bind="@Value" @bind:event="oninput" @bind:after="@OnChanged"></textarea>
-
 
 @code {
     [Parameter]
@@ -17,6 +17,10 @@
 
     private Guid Id { get; set; } = Guid.NewGuid();
 
-    private async Task OnChanged() => await ValueChanged.InvokeAsync(Value);
+    private async Task OnChanged()
+    {
+        if (string.IsNullOrEmpty(Value)) Value = null;
+        await ValueChanged.InvokeAsync(Value);
+    }
 
 }

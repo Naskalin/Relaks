@@ -1,0 +1,10 @@
+﻿@page "/entries/{entryId:guid}/info"
+
+<EntryProfileLayout EntryId="@EntryId">
+    <EntryProfileTabs EntryId="@EntryId"/>
+</EntryProfileLayout>
+
+@code {
+    [Parameter]
+    public Guid EntryId { get; set; }
+}

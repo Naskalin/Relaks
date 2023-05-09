@@ -11,8 +11,8 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230426100108_Init")]
-    partial class Init
+    [Migration("20230508100037_CreateFtsTables")]
+    partial class CreateFtsTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,9 +49,6 @@ namespace Relaks.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("Reputation")
-                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("StartAt")
                         .HasColumnType("TEXT");
@@ -120,6 +117,14 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("DeletedAt")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("Id")
                         .HasColumnType("TEXT");
 
@@ -153,6 +158,14 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("DeletedAt")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("EntryId")
                         .HasColumnType("TEXT");
 
@@ -183,6 +196,8 @@ namespace Relaks.Migrations
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
 
+                    b.ToTable("Entries");
+
                     b.HasDiscriminator().HasValue("ECompany");
                 });
 
@@ -190,12 +205,16 @@ namespace Relaks.Migrations
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
 
+                    b.ToTable("Entries");
+
                     b.HasDiscriminator().HasValue("EMeet");
                 });
 
             modelBuilder.Entity("Relaks.Models.EPerson", b =>
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
+
+                    b.ToTable("Entries");
 
                     b.HasDiscriminator().HasValue("EPerson");
                 });
@@ -208,6 +227,8 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.ToTable("EntryInfos");
+
                     b.HasDiscriminator().HasValue("EiCustom");
                 });
 
@@ -218,8 +239,10 @@ namespace Relaks.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsOnlyDate")
+                    b.Property<bool>("WithTime")
                         .HasColumnType("INTEGER");
+
+                    b.ToTable("EntryInfos");
 
                     b.HasDiscriminator().HasValue("EiDate");
                 });
@@ -231,6 +254,8 @@ namespace Relaks.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.ToTable("EntryInfos");
 
                     b.HasDiscriminator().HasValue("EiEmail");
                 });
@@ -247,6 +272,8 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.ToTable("EntryInfos");
+
                     b.HasDiscriminator().HasValue("EiPhone");
                 });
 
@@ -257,6 +284,8 @@ namespace Relaks.Migrations
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.ToTable("EntryInfos");
 
                     b.HasDiscriminator().HasValue("EiUrl");
                 });

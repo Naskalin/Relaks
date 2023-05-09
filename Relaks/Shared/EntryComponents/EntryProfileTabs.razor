@@ -1,0 +1,19 @@
+﻿<ul class="nav nav-tabs mb-3">
+    @foreach (var tab in _tabs)
+    {
+        <li class="nav-item">
+            <NavLink href="@($"/entries/{EntryId}{tab.UrlPart}")" class="nav-link"><b>@tab.Title</b></NavLink>
+        </li>
+    }
+</ul>
+
+@code {
+    [Parameter]
+    public Guid EntryId { get; set; }
+
+    private readonly List<(string UrlPart, string Title)> _tabs = new()
+    {
+        (UrlPart: "/info", Title: "Инфо"),
+        (UrlPart: "/files", Title: "Файлы"),
+    };
+}

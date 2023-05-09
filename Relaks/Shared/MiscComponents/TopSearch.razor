@@ -40,7 +40,7 @@
 
                             <div class="row">
                                 <div class="col-auto" style="width: 40px">
-                                    <i class="@EntityIcon.ByClassName(item.EntityName) la-lg"></i>
+                                    <i class="@DataHelper.EntityIcon(item.EntityName) la-lg"></i>
                                 </div>
                                 <div class="col">
                                     @if (!string.IsNullOrEmpty(item.DeletedAt))
@@ -164,11 +164,11 @@
 
         if (item.FtsEntityName.Equals(nameof(FtsEntry)))
         {
-            NavigationManager.NavigateTo("/entries/" + item.EntryId);
+            NavigationManager.NavigateTo($"/entries/{item.EntryId}/info");
         }
         else if (item.FtsEntityName.Equals(nameof(FtsEntryInfo)))
         {
-            NavigationManager.NavigateTo("/entries/" + item.EntryId + "?entryInfoId=" + item.EntryInfoId);
+            NavigationManager.NavigateTo($"/entries/{item.EntryId}/info?entryInfoId={item.EntryInfoId}");
         }
     }
 

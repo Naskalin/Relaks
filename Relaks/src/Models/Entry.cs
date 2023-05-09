@@ -5,7 +5,7 @@ using Relaks.Interfaces;
 namespace Relaks.Models;
 
 [Table("Entries")]
-public abstract class BaseEntry : ITimestamped, ISoftDeletedReason
+public abstract class BaseEntry : IEntry, ITimestamped, ISoftDeletedReason
 {
     public Guid Id { get; set; }
     [StringLength(50)]
@@ -13,7 +13,7 @@ public abstract class BaseEntry : ITimestamped, ISoftDeletedReason
     public string Name { get; set; } = null!;
     // public TypeEnum Type { get; set; }
     public string? Description { get; set; }
-    public int Reputation { get; set; }
+    // public int Reputation { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 

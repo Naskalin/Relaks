@@ -1,14 +1,11 @@
 ﻿@using Relaks.Models
 @using Relaks.Models.Requests.EntryRequests
-@using System.Text.Json
-
-@* @JsonSerializer.Serialize(Req); *@
 
 <div class="mb-3">
     <label for="" class="form-label">Тип</label>
 
-    <InputRadioGroup @bind-Value="@Req.Discriminator" @bind-Value:after="@OnChanged">
-        @foreach (var d in _discriminators)
+    <InputRadioGroup @bind-Value="@Req.Discriminator">
+        @foreach (var d in DataHelper.EntryDiscriminators)
         {
             <div class="form-check">
                 <InputRadio Value="@d" id="@($"entry-{d}")" class="form-check-input"/>
@@ -16,37 +13,38 @@
             </div>
         }
     </InputRadioGroup>
+    
+    <ValidationMessage For="@(() => Req.Discriminator)"/>
 </div>
 
 <div class="mb-3 input-lg">
     <label for="" class="form-label form-label-lg">Имя</label>
-    <input type="text" class="form-control form-control-lg" @bind="@Req.Name" @bind:event="oninput" @bind:after="@OnChanged"/>
+    <input type="text" class="form-control form-control-lg" @bind="@Req.Name"/>
+    <ValidationMessage For="@(() => Req.Name)"/>
 </div>
 
 <div class="mb-3">
-    <label for="" class="form-label">Краткое описание</label>
-    <textarea class="form-control" @bind="@Req.Description" @bind:event="oninput" @bind:after="@OnChanged"></textarea>
-    
     <MyTextarea Label="Краткое описание" @bind-Value="@Req.Description"/>
+    <ValidationMessage For="@(() => Req.Description)"/>
 </div>
 
 <div class="row">
     <div class="col">
         <div class="mb-3">
             <label for="" class="form-label">@nameof(BaseEntry.StartAt)</label>
-            <InputDate Type="@(IsMeet() ? InputDateType.DateTimeLocal : InputDateType.Date)" 
-                       @bind-Value="@Req.StartAt" 
-                       @bind-Value:after="@OnChanged" 
+            <InputDate Type="@(IsMeet() ? InputDateType.DateTimeLocal : InputDateType.Date)"
+                       @bind-Value="@Req.StartAt"
                        class="form-control"/>
+            <ValidationMessage For="@(() => Req.StartAt)"/>
         </div>
     </div>
     <div class="col">
        <div class="mb-3">
            <label for="" class="form-label">@nameof(BaseEntry.EndAt)</label>
-           <InputDate Type="@(IsMeet() ? InputDateType.DateTimeLocal : InputDateType.Date)" 
-                      @bind-Value="@Req.EndAt" 
-                      @bind-Value:after="@OnChanged"
+           <InputDate Type="@(IsMeet() ? InputDateType.DateTimeLocal : InputDateType.Date)"
+                      @bind-Value="@Req.EndAt"
                       class="form-control"/>
+           <ValidationMessage For="@(() => Req.EndAt)"/>
        </div>
     </div>
 </div>
@@ -60,7 +58,4 @@
     public EventCallback<EntryFormRequest> ReqChanged { get; set; }
 
     private bool IsMeet() => nameof(EMeet).Equals(Req.Discriminator);
-
-    private async Task OnChanged() => await ReqChanged.InvokeAsync(Req);
-    private readonly List<string> _discriminators = new() {nameof(EPerson), nameof(ECompany), nameof(EMeet)};
 }

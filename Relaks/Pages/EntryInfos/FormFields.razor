@@ -1,0 +1,63 @@
+﻿@using Relaks.Models
+@using Relaks.Models.Requests.EntryInfoRequests
+@using Relaks.Models.Requests.EntryRequests
+
+@switch (Req.Discriminator)
+{
+    case nameof(EiEmail):
+        <div class="mb-3">
+            <label for="" class="form-label">E-mail</label>
+            <input type="text" @bind-value="@Req.Email" class="form-control">
+            <ValidationMessage For="@(() => Req.Email)"/>
+        </div>
+        break;
+    case nameof(EiUrl):
+        <div class="mb-3">
+            <label for="" class="form-label">Ссылка</label>
+            <input type="url" @bind-value="@Req.Url" class="form-control">
+            <ValidationMessage For="@(() => Req.Url)"/>
+        </div>    
+        break;
+    case nameof(EiDate):
+        <div class="mb-3">
+            <label for="" class="form-label">Дата</label>
+            <InputDate Type="@(Req.WithTime == true ? InputDateType.DateTimeLocal : InputDateType.Date)" 
+                       @bind-Value="@Req.Date" class="form-control"/>
+            <ValidationMessage For="@(() => Req.Date)"/>
+        </div>
+        <div class="mb-3">
+           <div class="form-check form-switch">
+             <input class="form-check-input" type="checkbox" @bind-value="@Req.WithTime" role="switch" id="entry-info-date-switch">
+             <label class="form-check-label" for="entry-info-date-switch">Со временем</label>
+             <ValidationMessage For="@(() => Req.WithTime)"/>
+           </div>
+        </div>
+        break;
+    case nameof(EiPhone):
+        <div>
+            phone
+        </div>
+        break;
+}
+
+<div class="mb-3">
+    <label for="" class="form-label">Название</label>
+    <input type="text" @bind-value="@Req.Title" class="form-control">
+    <ValidationMessage For="@(() => Req.Title)"/>
+</div>
+
+<div class="mb-3">
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" @bind-value="@Req.IsFavorite" role="switch" id="entry-info-favorite-switch">
+        <label class="form-check-label" for="entry-info-favorite-switch">Избранное</label>
+        <ValidationMessage For="@(() => Req.IsFavorite)"/>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EntryInfoCreateRequest Req { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback<EntryInfoCreateRequest> ReqChanged { get; set; }
+}

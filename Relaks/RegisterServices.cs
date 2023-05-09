@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
+using Relaks.Models.Requests.EntryInfoRequests;
 using Relaks.Models.Requests.EntryRequests;
+using Relaks.Validators.EntryInfoValidators;
 using Relaks.Validators.EntryValidators;
 
 namespace Relaks;
@@ -18,11 +20,15 @@ public static class RegisterServices
 
     public static void RegisterValidators(this IServiceCollection services)
     {
-        ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
+        // ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
         ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
+        // ValidatorOptions.Global.ErrorCodeResolver;
 
         // services.AddFormValidation(c => c.AddFluentValidation(typeof(EntryFormRequest).Assembly));
-        services.AddScoped<IValidator<EntryFormRequest>, EntryFormValidator>();
+        services.AddScoped<IValidator<EntryFormRequest>, EntryFormRequestValidator>();
+        
+        // services.AddScoped<IValidator<EntryInfoFormRequest>, EntryInfoFormRequestValidator>();
+        services.AddScoped<IValidator<EntryInfoCreateRequest>, EntryInfoCreateRequestValidator>();
         // services.AddValidatorsFromAssemblyContaining<Program>();
 
     }

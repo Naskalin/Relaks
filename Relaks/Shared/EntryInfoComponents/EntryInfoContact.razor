@@ -3,7 +3,7 @@
 
 <div class="row align-items-center" id="entry-info-@EntryInfo.Id">
     <div class="col-auto" style="width: 2rem">
-        <i class="@EntityIcon.ByClassName(EntryInfo.Discriminator) la-lg"></i>
+        <i class="@DataHelper.EntityIcon(EntryInfo.Discriminator) la-lg @(EntryInfo.IsFavorite ? "text-warning" : "")"></i>
     </div>
     <div class="col">
         @if (EiPhone != null)
@@ -20,7 +20,7 @@
         }
         else if (EiDate != null)
         {
-            @EiDate.Date.ToLocalTime()
+            @(EiDate.Date.ToLocalTime().ToString(EiDate.WithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy"))
         }
 
         @if (!string.IsNullOrEmpty(EntryInfo.Title))

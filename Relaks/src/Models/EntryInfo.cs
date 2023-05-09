@@ -5,7 +5,7 @@ using Relaks.Interfaces;
 namespace Relaks.Models;
 
 [Table("EntryInfos")]
-public abstract class BaseEntryInfo : ITimestamped, ISoftDeletedReason, ICloneable
+public abstract class BaseEntryInfo : IEntryInfo, ITimestamped, ISoftDeletedReason, ICloneable
 {
     // public const string Phone = "PHONE";
     // public const string Email = "EMAIL";
@@ -54,12 +54,7 @@ public class EiPhone : BaseEntryInfo, IPhone
 public class EiDate : BaseEntryInfo
 {
     public DateTime Date { get; set; }
-    public bool IsOnlyDate { get; set; }
-
-    // public DateTime ToTz(string timeZoneId)
-    // {
-    //     return TimeZoneInfo.ConvertTimeToUtc(Date, TimeZoneInfo.FindSystemTimeZoneById(timeZoneId));
-    // }
+    public bool WithTime { get; set; }
 }
 
 public class EiUrl : BaseEntryInfo
@@ -92,37 +87,6 @@ public class FtsEntryInfo : IFtsEntity
     public string DeletedAt { get; set; } = null!;
     public string Discriminator { get; set; } = null!;
 }
-
-// public record NoteInfo
-// {
-//     public string Note { get; set; } = null!;
-// }
-
-// public record PhoneInfo
-// {
-//     public string Number { get; set; } = null!;
-//     public string Region { get; set; } = null!;
-//
-//     public override string ToString()
-//     {
-//         return Region + "|" + Number;
-//     }
-// }
-
-// public record EmailInfo
-// {
-//     public string Email { get; set; } = null!;
-// }
-
-// public record UrlInfo
-// {
-//     public string Url { get; set; } = null!;
-// }
-
-// public record DateInfo
-// {
-//     public DateTime Date { get; set; }
-// }
 
 public record CustomInfoItem
 {

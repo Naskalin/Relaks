@@ -14,15 +14,17 @@
         <div class="row gx-3 align-items-center text-muted mb-3 justify-content-center">
             <div class="col-auto">
                 <Tooltip Title="@Entry.Discriminator">
-                    <div style="width: 30px; height: 28px;"><i class="@EntityIcon.ByClassName(Entry.Discriminator)" style="font-size: 1.8rem;"></i></div>
+                    <div style="width: 30px; height: 28px;">
+                        <i class="@DataHelper.EntityIcon(Entry.Discriminator)" style="font-size: 1.8rem;"></i>
+                    </div>
                 </Tooltip>
             </div>
-            <div class="col-auto">
-                <div class="d-flex align-items-center gap-1">
-                    <i class="las la-star-half-alt" style="font-size: 1.7rem;"></i>
-                    <span style="font-size: 1.2rem;">@Entry.Reputation</span>
-                </div>
-            </div>
+            @* <div class="col-auto"> *@
+            @*     <div class="d-flex align-items-center gap-1"> *@
+            @*         <i class="las la-star-half-alt" style="font-size: 1.7rem;"></i> *@
+            @*         <span style="font-size: 1.2rem;">@Entry.Reputation</span> *@
+            @*     </div> *@
+            @* </div> *@
         </div>
 
         @if (!string.IsNullOrEmpty(Entry.Description))
@@ -30,11 +32,20 @@
             <p class="card-text text-center">@Entry.Description</p>
         }
 
+        @if (WithEdit == true)
+        {
+            <EntryCardContactsButtons EntryId="@EntryId" />
+        }
+
         <EntryCardContacts EntryInfoId="@EntryInfoId" EntryInfos="@Entry.EntryInfos"/>
 
         <div class="row mt-2">
-            <div class="col"><small>@Entry.StartAt?.ToLocalTime().ToShortDateString()</small></div>
-            <div class="col text-end"><small>@Entry.EndAt?.ToLocalTime().ToShortDateString()</small></div>
+            <div class="col">
+                <small>@Entry.StartAt?.ToLocalTime().ToShortDateString()</small>
+            </div>
+            <div class="col text-end">
+                <small>@Entry.EndAt?.ToLocalTime().ToShortDateString()</small>
+            </div>
         </div>
     </div>
 </div>
@@ -47,12 +58,17 @@
     [Parameter]
     public Guid? EntryInfoId { get; set; }
 
+    [Parameter]
+    public bool? WithEdit { get; set; }
+
     private BaseEntry Entry { get; set; } = null!;
 
     protected override void OnParametersSet()
     {
         Entry = Db.BaseEntries
             .Include(x => x.EntryInfos)
-            .First(x => x.Id.Equals(EntryId));
+            .First(x => x.Id.Equals(EntryId))
+        ;
     }
+
 }

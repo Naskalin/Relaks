@@ -71,7 +71,7 @@ public partial class DatabaseSeeder
 
     private void FakeEntry(BaseEntry entry)
     {
-        entry.Reputation = Faker.Random.Number(0, 10);
+        // entry.Reputation = Faker.Random.Number(0, 10);
         entry.CreatedAt = Faker.Date.Past();
         entry.UpdatedAt = Faker.Date.Past();
 

@@ -1,59 +1,61 @@
 ﻿@page "/entries/new"
+
 @using Relaks.Models.Requests.EntryRequests
-@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using Relaks.Database
+@using Relaks.Mappers
 @using Relaks.Models
-@using System.Text.Json
-@using Relaks.Validators.EntryValidators
 
 <PageTemplate>
-    <div class="row">
-        <div class="col-6 offset-3">
-            <MyTitle>
-                <BeforeTitle>
-                    <a href="/entries" class="btn btn-outline-secondary">
-                        <i class="las la-arrow-left la-lg me-1"></i> Вернуться
-                    </a>
-                </BeforeTitle>
-                <ChildContent>Новое объединение</ChildContent>
-            </MyTitle>
-            
-            
-            @JsonSerializer.Serialize(Req);
-            <EditForm Model="@Req" OnSubmit="@OnSubmit">
-                @* <Morris.Blazor.Validation.Validate ValidationProperties=@(ValidationProperties.Set.FluentValidator<EntryFormValidator>())/> *@
-                <FluentValidationValidator @ref="FluentValidationValidator" DisableAssemblyScanning="@true"/>
-                <ValidationSummary/>
-                @* <FormFields @bind-Req="@Req"/> *@
-                <div class="mb-3 input-lg">
-                    <label for="" class="form-label form-label-lg">Имя</label>
-                    <input type="text" class="form-control form-control-lg" @bind="@Req.Name" @bind:event="oninput"/>
-                    <ValidationMessage For="@(() => Req.Name)"></ValidationMessage>
-                </div>
-                <div class="mb-3">
-                    <button type="submit" class="btn btn-primary">
-                        Добавить
-                    </button>
-                </div>
-            </EditForm>
-        </div>
-    </div>  
+    <HalfPage IsCentered="@true">
+        <MyTitle>
+            <BeforeTitle>
+                <a href="/entries" class="btn btn-outline-secondary">
+                    <i class="las la-arrow-left la-lg me-1"></i> Вернуться
+                </a>
+            </BeforeTitle>
+            <ChildContent>Новое объединение</ChildContent>
+        </MyTitle>
+
+        <EditForm Model="@Req" OnSubmit="@OnSubmit">
+            <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
+            <ValidationSummary/>
+            <FormFields @bind-Req="@Req"/>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">
+                    Добавить
+                </button>
+            </div>
+        </EditForm>
+    </HalfPage>
 </PageTemplate>
 
 @code {
-    private EntryFormRequest Req { get; set; } = new();
-    private FluentValidationValidator FluentValidationValidator { get; set; } = null!;
 
-    // [Inject]
-    // public EntryFormValidator Validator { get; set; } = null!;
+    [Inject]
+    public AppDbContext Db { get; set; } = null!;
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = null!;
+
+    private EntryFormRequest Req { get; set; } = new();
+    private FluentValidationValidator Validator { get; set; } = null!;
 
     private void OnSubmit()
     {
+        if (!Validator.Validate()) return;
 
-        if (FluentValidationValidator.Validate())
+        BaseEntry entry = Req.Discriminator switch
         {
-            System.Console.WriteLine("-----------------------------------");
-            System.Console.WriteLine(JsonSerializer.Serialize(Req));
-            System.Console.WriteLine("-----------------------------------");
-        }
+            nameof(EPerson) => new EPerson(),
+            nameof(ECompany) => new ECompany(),
+            nameof(EMeet) => new EMeet(),
+            _ => throw new ArgumentException($"Error: discriminator {Req.Discriminator} is not supported")
+            };
+
+        Req.MapTo(entry);
+        Db.BaseEntries.Add(entry);
+        Db.SaveChanges();
+        NavigationManager.NavigateTo("/entries/" + entry.Id);
     }
+
 }

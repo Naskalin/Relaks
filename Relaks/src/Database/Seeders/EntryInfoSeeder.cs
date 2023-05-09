@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-using Relaks.Models;
-using Relaks.Utils;
+﻿using Relaks.Models;
 
 namespace Relaks.Database.Seeders;
 
@@ -9,14 +7,6 @@ public partial class DatabaseSeeder
     private void SeedEntryInfos()
     {
         var entries = Db.BaseEntries.Where(x => true).ToList();
-
-        // var first = entries.First();
-        // var phone = new EiPhone();
-        // FakeEntryInfo(phone, first.Id);
-        // phone.Number = "+78120000000";
-        // phone.Region = "RU";
-        // Db.EiPhones.Add(phone);
-        // Db.SaveChanges();
 
         var random = new Random();
         foreach (var entry in entries)
@@ -79,8 +69,9 @@ public partial class DatabaseSeeder
         eInfo.Title = Faker.Random.ArrayElement(new[] {Faker.Random.Words(), null});
         eInfo.CreatedAt = DateTime.UtcNow;
         eInfo.UpdatedAt = DateTime.UtcNow;
+        eInfo.IsFavorite = Faker.Random.Number(1, 2) > 1;
 
-        if (Faker.Random.Number(1, 10) > 8)
+        if (Faker.Random.Number(1, 2) > 8)
         {
             eInfo.DeletedReason = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null});
             eInfo.DeletedAt = Faker.Date.Past();
