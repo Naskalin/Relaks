@@ -11,7 +11,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\" />
+        <Content Include="..\Relaks\Shared\_Layout.cshtml">
+            <Link>Shared/_Layout.cshtml</Link>
+        </Content>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <Folder Include="wwwroot\" />
     </ItemGroup>
 
 </Project>
