@@ -12,11 +12,11 @@
         }
         else if (EiEmail != null)
         {
-            <a href="mailto:@EiEmail.Email" target="_blank" class="text-nowrap-hidden">@EiEmail.Email</a>
+            <a href="mailto:@EiEmail.Email" target="_blank" class="text-break">@EiEmail.Email</a>
         }
         else if (EiUrl != null)
         {
-            <a href="@EiUrl.Url" target="_blank">@EiUrl.Url</a>
+            <a href="@EiUrl.Url" target="_blank" class="text-break">@EiUrl.Url</a>
         }
         else if (EiDate != null)
         {
@@ -61,6 +61,8 @@
             case nameof(EiDate):
                 EiDate = (EiDate) EntryInfo;
                 break;
+            default:
+                throw new ArgumentException($"Error: Discriminator {EntryInfo.Discriminator} not supported.");
         }
     }
 

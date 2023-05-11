@@ -20,17 +20,9 @@ public static class RegisterServices
 
     public static void RegisterValidators(this IServiceCollection services)
     {
-        // ValidatorOptions.Global.DefaultClassLevelCascadeMode = CascadeMode.Stop;
         ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
-        // ValidatorOptions.Global.ErrorCodeResolver;
-
-        // services.AddFormValidation(c => c.AddFluentValidation(typeof(EntryFormRequest).Assembly));
         services.AddScoped<IValidator<EntryFormRequest>, EntryFormRequestValidator>();
-        
-        // services.AddScoped<IValidator<EntryInfoFormRequest>, EntryInfoFormRequestValidator>();
         services.AddScoped<IValidator<EntryInfoCreateRequest>, EntryInfoCreateRequestValidator>();
-        // services.AddValidatorsFromAssemblyContaining<Program>();
-
     }
     
     public static void RegisterLocalization(this IServiceCollection services)

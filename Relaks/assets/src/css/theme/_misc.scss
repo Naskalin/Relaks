@@ -8,14 +8,14 @@
     box-shadow: none !important;
   }
 }
-@mixin text-nowrap-hidden {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.text-nowrap-hidden {
-  @include text-nowrap-hidden;
-}
+//@mixin text-nowrap-hidden {
+//  white-space: nowrap;
+//  overflow: hidden;
+//  text-overflow: ellipsis;
+//}
+//.text-nowrap-hidden {
+//  @include text-nowrap-hidden;
+//}
 .cursor-pointer {
   cursor: pointer;
 }

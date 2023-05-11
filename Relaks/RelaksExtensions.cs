@@ -11,7 +11,6 @@ public static class RelaksExtensions
 {
     public static void AddRelaks(this IServiceCollection services)
     {
-        // services.AddServerSideBlazor();
         var projectDir = AppDomain.CurrentDomain.BaseDirectory;
         var relaksConfig = RelaksConfigManager.GetOrCreateConfig(projectDir);
         services.AddSingleton(relaksConfig);

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Photino.Blazor;
 using PhotinoNET;
@@ -36,7 +35,10 @@ mainWindow.Centered = true;
 var windowManager = app.Services.GetRequiredService<PhotinoWebViewManager>();
 mainWindow.RegisterCustomSchemeHandler(PhotinoWebViewManager.BlazorAppScheme, windowManager.HandleWebRequest);
 
-AppDomain.CurrentDomain.UnhandledException += (sender, error) => { mainWindow.OpenAlertWindow("Fatal exception", error.ExceptionObject.ToString()); };
+AppDomain.CurrentDomain.UnhandledException += (sender, error) =>
+{
+    mainWindow.ShowMessage("Fatal exception", error.ExceptionObject.ToString());
+};
 
 await app.StartAsync();
 windowManager.Navigate("/");
