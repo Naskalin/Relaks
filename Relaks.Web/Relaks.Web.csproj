@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
@@ -9,15 +8,4 @@
     <ItemGroup>
       <ProjectReference Include="..\Relaks\Relaks.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-        <Content Include="..\Relaks\Shared\_Layout.cshtml">
-            <Link>Shared/_Layout.cshtml</Link>
-        </Content>
-    </ItemGroup>
-    
-    <ItemGroup>
-        <Folder Include="wwwroot\" />
-    </ItemGroup>
-
 </Project>
