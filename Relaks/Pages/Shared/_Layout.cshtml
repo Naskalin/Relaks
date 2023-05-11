@@ -1,25 +1,21 @@
-﻿@using Relaks
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru" data-bs-theme="light">
 <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <base href="/"/>
     <link href="_content/BootstrapBlazor.FontAwesome/css/font-awesome.min.css" rel="stylesheet">
     <!--    <link href="_content/BootstrapBlazor/css/bootstrap.blazor.bundle.min.css" rel="stylesheet">-->
     <link href="_content/Relaks/assets/libs.css" rel="stylesheet"/>
     <link href="_content/Relaks/assets/app.css" rel="stylesheet"/>
     <link href="_content/Relaks/Relaks.styles.css" rel="stylesheet"/>
-    <title>relaks</title>
+    @(await RenderSectionAsync("Head"))
 </head>
 <body>
-@(await Html.RenderComponentAsync<App>(RenderMode.Server))
-
+@RenderBody()
 <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
+    <a class="dismiss">&times;</a>
 </div>
 
 @(await RenderSectionAsync("Scripts"))
