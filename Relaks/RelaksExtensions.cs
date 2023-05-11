@@ -35,7 +35,7 @@ public static class RelaksExtensions
         db.Database.Migrate();
         if (env.IsDevelopment())
         {   
-            // new Relaks.Database.Seeders.DatabaseSeeder(db).SeedAll();
+            new Database.Seeders.DatabaseSeeder(db).SeedAll();
         }
     }
 }

@@ -71,6 +71,7 @@
                 break;
             case nameof(EiDate):
                 eInfo = new EiDate();
+                Req.WithTime ??= false;
                 Req.MapTo((EiDate) eInfo);
                 break;
             case nameof(EiUrl):
