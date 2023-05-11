@@ -35,7 +35,7 @@ mainWindow.RegisterCustomSchemeHandler(PhotinoWebViewManager.BlazorAppScheme, wi
 
 AppDomain.CurrentDomain.UnhandledException += (sender, error) =>
 {
-    mainWindow.OpenAlertWindow("Fatal exception", error.ExceptionObject.ToString());
+    mainWindow.ShowMessage("Fatal exception", error.ExceptionObject.ToString());
 };
 
 await app.StartAsync();
