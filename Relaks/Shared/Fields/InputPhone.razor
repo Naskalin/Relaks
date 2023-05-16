@@ -1,0 +1,98 @@
+﻿@using Relaks.Interfaces
+@using Relaks.Database
+@using Relaks.Models
+
+<div class="mb-3 position-relative">
+    <label for="" class="form-label">@Label</label>
+    <div class="input-group mb-3">
+        <button class="btn btn-outline-secondary" type="button" @onclick="ShowModal">
+            <i class="fi fi-@(Region.ToLower())" style="font-size: 1rem"></i>
+        </button>
+        <InputText type="text" @bind-Value="Number" class="form-control"/>
+    </div>
+</div>
+
+<Modal @ref="Modal" IsKeyboard="true">
+    <ModalDialog Title="Страна" IsScrolling="true" ShowCloseButton="false">
+        <BodyTemplate>
+            <div class="mb-3">
+                <input @bind-value="Search"
+                       @oninput="SearchCountries"
+                       class="form-control" placeholder="Поиск..."/>
+            </div>
+            <div class="list-group">
+                @foreach (var country in FilteredCountries)
+                {
+                    <button type="button"
+                            class="list-group-item list-group-item-action @(country.Alpha2.Equals(Region) ? "active" : "")"
+                            @onclick="@(() => SetRegion(country.Alpha2))">
+                        <i class="fi fi-@(country.Alpha2.ToLower())" style="font-size: 1rem"></i>
+                        <span class="ms-2">@country.TitleRu (@country.Native)</span>
+                    </button>
+                }
+            </div>
+        </BodyTemplate>
+    </ModalDialog>
+</Modal>
+
+@code {
+
+    [Inject]
+    public AppDbContext Db { get; set; } = null!;
+
+    [Parameter]
+    public string Number { get; set; } = null!;
+
+    [Parameter]
+    public string Region { get; set; } = null!;
+
+    [Parameter]
+    public string? Label { get; set; }
+    
+    [Parameter]
+    public EventCallback<string> NumberChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<string> RegionChanged { get; set; }
+    
+    private string? Search { get; set; }
+    
+    private Modal Modal { get; set; } = new();
+
+    private void ShowModal()
+    {
+        if (!Countries.Any())
+        {
+            Countries = Db.Countries.OrderBy(x => x.TitleRu).ToList();
+            FilteredCountries = Countries.OrderBy(_ => Guid.NewGuid()).Take(12).ToList();
+        }
+        Modal.Toggle();
+    }
+
+    private void SetRegion(string region)
+    {
+        Region = region.ToUpper();
+        Modal.Toggle();
+    }
+
+    private void SearchCountries(ChangeEventArgs e)
+    {
+        Search = (string) (e.Value ?? "");
+        FilteredCountries = string.IsNullOrEmpty(Search)
+            ? Countries.OrderBy(_ => Guid.NewGuid()).Take(12).ToList()
+            : Countries.Where(x => x.TitleEn.ToLower().Contains(Search.ToLower()) 
+                                   || x.TitleRu.ToLower().Contains(Search.ToLower()) 
+                                   || x.Alpha2.ToLower().Contains(Search.ToLower()) 
+                                   || x.Native.ToLower().Contains(Search.ToLower())).Take(12).ToList();
+    }
+
+    private List<Country> Countries { get; set; } = new();
+    private List<Country> FilteredCountries { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        if (string.IsNullOrEmpty(Label)) Label = "Телефон";
+        if (string.IsNullOrEmpty(Region)) Region = "RU";
+    }
+
+}

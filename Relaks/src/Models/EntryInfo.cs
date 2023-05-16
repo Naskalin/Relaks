@@ -45,7 +45,7 @@ public class EiEmail : BaseEntryInfo
     public string Email { get; set; } = null!;
 }
 
-public class EiPhone : BaseEntryInfo, IPhone
+public class EiPhone : BaseEntryInfo, IPhoneWithRegion
 {
     public string Number { get; set; } = null!;
     public string Region { get; set; } = null!;

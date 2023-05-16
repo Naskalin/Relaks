@@ -10,7 +10,7 @@ public static class EntryInfoMapper
         ArgumentException.ThrowIfNullOrEmpty(req.Number);
         ArgumentException.ThrowIfNullOrEmpty(req.Region);
         
-        eiPhone.Region = req.Region;
+        eiPhone.Region = req.Region.ToUpper();
         eiPhone.Number = req.Number;
     }
     

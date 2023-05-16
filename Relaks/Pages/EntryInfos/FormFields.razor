@@ -1,4 +1,5 @@
 ﻿@using Relaks.Models
+@using Relaks.Models.Misc
 @using Relaks.Models.Requests.EntryInfoRequests
 @using Relaks.Models.Requests.EntryRequests
 
@@ -34,9 +35,7 @@
         </div>
         break;
     case nameof(EiPhone):
-        <div>
-            phone
-        </div>
+        <InputPhone @bind-Region="Req.Region" @bind-Number="Req.Number" />
         break;
 }
 

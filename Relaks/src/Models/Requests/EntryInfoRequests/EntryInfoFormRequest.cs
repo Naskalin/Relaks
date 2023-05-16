@@ -14,7 +14,7 @@ public class EntryInfoFormRequest : IEntryInfo
     //EiPhone
     public string? Number { get; set; }
     public string? Region { get; set; }
-    
+
     //EiDate
     public DateTime? Date { get; set; }
     public bool? WithTime { get; set; }
