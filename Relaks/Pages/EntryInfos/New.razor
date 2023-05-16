@@ -3,6 +3,7 @@
 @using Relaks.Models
 @using Relaks.Mappers
 @using Relaks.Database
+@using System.Text.Json
 
 <EntryProfileLayout EntryId="@EntryId">
     <HalfPage>
@@ -14,6 +15,8 @@
             </BeforeTitle>
             <ChildContent>Добавить @Discriminator</ChildContent>
         </MyTitle>
+        
+@JsonSerializer.Serialize(Req);
         
         <EditForm Model="@Req" OnSubmit="OnSubmit">
             <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
@@ -55,6 +58,7 @@
     private FluentValidationValidator Validator { get; set; } = null!;
     public void OnSubmit()
     {
+        System.Console.WriteLine(JsonSerializer.Serialize(Req));
         if (!Validator.Validate()) return;
 
         BaseEntryInfo eInfo;

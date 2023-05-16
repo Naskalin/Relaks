@@ -2,6 +2,7 @@
 @using Relaks.Models.Misc
 @using Relaks.Models.Requests.EntryInfoRequests
 @using Relaks.Models.Requests.EntryRequests
+@using System.Text.Json
 
 @switch (Req.Discriminator)
 {
@@ -17,25 +18,31 @@
             <label for="" class="form-label">Ссылка</label>
             <input type="url" @bind-value="@Req.Url" class="form-control">
             <ValidationMessage For="@(() => Req.Url)"/>
-        </div>    
+        </div>
         break;
     case nameof(EiDate):
         <div class="mb-3">
             <label for="" class="form-label">Дата</label>
-            <InputDate Type="@(Req.WithTime == true ? InputDateType.DateTimeLocal : InputDateType.Date)" 
+            <InputDate Type="@(Req.WithTime == true ? InputDateType.DateTimeLocal : InputDateType.Date)"
                        @bind-Value="@Req.Date" class="form-control"/>
             <ValidationMessage For="@(() => Req.Date)"/>
         </div>
         <div class="mb-3">
-           <div class="form-check form-switch">
-             <input class="form-check-input" type="checkbox" @bind-value="@Req.WithTime" role="switch" id="entry-info-date-switch">
-             <label class="form-check-label" for="entry-info-date-switch">Со временем</label>
-             <ValidationMessage For="@(() => Req.WithTime)"/>
-           </div>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" @bind-value="@Req.WithTime" role="switch" id="entry-info-date-switch">
+                <label class="form-check-label" for="entry-info-date-switch">Со временем</label>
+                <ValidationMessage For="@(() => Req.WithTime)"/>
+            </div>
         </div>
         break;
     case nameof(EiPhone):
-        <InputPhone @bind-Region="Req.Region" @bind-Number="Req.Number" />
+        <div class="mb-3">
+            @JsonSerializer.Serialize(Req)
+            <label for="" class="form-label">Телефон</label>
+            <InputPhone @bind-Region="@Req.Region" @bind-Number="@Req.Number"/>
+            <ValidationMessage For="@(() => Req.Number)"/>
+            <ValidationMessage For="@(() => Req.Region)"/>
+        </div>
         break;
 }
 
@@ -54,9 +61,11 @@
 </div>
 
 @code {
+
     [Parameter]
     public EntryInfoCreateRequest Req { get; set; } = null!;
-    
+
     [Parameter]
     public EventCallback<EntryInfoCreateRequest> ReqChanged { get; set; }
+
 }
