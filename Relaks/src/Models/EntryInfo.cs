@@ -7,13 +7,6 @@ namespace Relaks.Models;
 [Table("EntryInfos")]
 public abstract class BaseEntryInfo : IEntryInfo, ITimestamped, ISoftDeletedReason, ICloneable
 {
-    // public const string Phone = "PHONE";
-    // public const string Email = "EMAIL";
-    // public const string Url = "URL";
-    // public const string Note = "NOTE";
-    // public const string Date = "DATE";
-    // public const string Custom = "CUSTOM";
-
     public Guid Id { get; set; }
     public BaseEntry Entry { get; set; } = null!;
     public Guid EntryId { get; set; }
@@ -31,7 +24,7 @@ public abstract class BaseEntryInfo : IEntryInfo, ITimestamped, ISoftDeletedReas
         return MemberwiseClone();
     }
 
-    public BaseEntryInfo()
+    protected BaseEntryInfo()
     {
         Id = Guid.NewGuid();
         CreatedAt = DateTime.UtcNow;
@@ -40,24 +33,24 @@ public abstract class BaseEntryInfo : IEntryInfo, ITimestamped, ISoftDeletedReas
     }
 }
 
-public class EiEmail : BaseEntryInfo
+public class EiEmail : BaseEntryInfo, IEmail
 {
     public string Email { get; set; } = null!;
 }
 
-public class EiPhone : BaseEntryInfo, IPhoneWithRegion
+public class EiPhone : BaseEntryInfo, IPhone
 {
     public string Number { get; set; } = null!;
     public string Region { get; set; } = null!;
 }
 
-public class EiDate : BaseEntryInfo
+public class EiDate : BaseEntryInfo, IDate
 {
     public DateTime Date { get; set; }
     public bool WithTime { get; set; }
 }
 
-public class EiUrl : BaseEntryInfo
+public class EiUrl : BaseEntryInfo, IUrl
 {
     public string Url { get; set; } = null!;
 }

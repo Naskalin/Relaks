@@ -1,44 +1,15 @@
-﻿using Relaks.Models;
+﻿using Relaks.Interfaces;
+using Relaks.Models;
 using Relaks.Models.Requests.EntryInfoRequests;
 
 namespace Relaks.Mappers;
 
 public static class EntryInfoMapper
 {
-    public static void MapTo(this EntryInfoFormRequest req, EiPhone eiPhone)
+    public static void MapEntryInfo(this IEntryInfo from, IEntryInfo to)
     {
-        ArgumentException.ThrowIfNullOrEmpty(req.Number);
-        ArgumentException.ThrowIfNullOrEmpty(req.Region);
-        
-        eiPhone.Region = req.Region.ToUpper();
-        eiPhone.Number = req.Number;
-    }
-    
-    public static void MapTo(this EntryInfoFormRequest req, EiEmail eiEmail)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(req.Email);
-        eiEmail.Email = req.Email;
-    }
-    
-    public static void MapTo(this EntryInfoFormRequest req, EiUrl eiUrl)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(req.Url);
-        eiUrl.Url = req.Url;
-    }
-    
-    public static void MapTo(this EntryInfoFormRequest req, EiDate eiDate)
-    {
-        ArgumentNullException.ThrowIfNull(req.Date);
-        ArgumentNullException.ThrowIfNull(req.WithTime);
-        
-        eiDate.Date = req.Date.Value;
-        eiDate.WithTime = req.WithTime.Value;
-    }
-
-    public static void MapTo(this EntryInfoFormRequest req, BaseEntryInfo eInfo)
-    {
-        eInfo.Title = req.Title;
-        eInfo.IsFavorite = req.IsFavorite;
+        to.Title = from.Title;
+        to.IsFavorite = from.IsFavorite;
     }
     
     public static string ToFtsBody(this BaseEntryInfo eInfo)
@@ -71,6 +42,6 @@ public static class EntryInfoMapper
         
         arr.Add(eInfo.DeletedReason);
 
-        return String.Join(" ", arr.Where(x => !string.IsNullOrEmpty(x)));
+        return string.Join(" ", arr.Where(x => !string.IsNullOrEmpty(x)));
     }
 }

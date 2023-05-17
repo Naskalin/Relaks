@@ -1,0 +1,93 @@
+﻿@page "/entries/{entryId:guid}/eidate/new"
+@page "/entries/{entryId:guid}/eidate/{entryInfoId:guid}/edit"
+
+@using Relaks.Models
+@using Relaks.Database
+
+@inject IJSRuntime JsRuntime;
+@inject NavigationManager NavigationManager;
+@inject AppDbContext Db;
+
+<EntryProfileLayout EntryId="@EntryId">
+    <HalfPage>
+        <MyTitle>
+            <BeforeTitle>
+                <a href="/entries/@EntryId/info" class="btn btn-outline-secondary">
+                    <i class="las la-arrow-left la-lg me-1"></i> Вернуться
+                </a>
+            </BeforeTitle>
+            <ChildContent>@(EntryInfoId.HasValue ? "Изменить" : "Добавить") @nameof(Model)</ChildContent>
+        </MyTitle>
+        
+        <EditForm Model="@Model" OnSubmit="OnSubmit">
+            <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
+            <ValidationSummary/>
+
+            <div class="mb-3">
+                <label for="" class="form-label">Дата</label>
+                <InputDate Type="@(Model.WithTime ? InputDateType.DateTimeLocal : InputDateType.Date)" @bind-Value="@Model.Date" class="form-control"/>
+                <ValidationMessage For="@(() => Model.Date)"/>
+            </div>
+            <div class="mb-3">
+                <div class="form-check form-switch">
+                    <InputCheckbox class="form-check-input" type="checkbox" @bind-Value="@Model.WithTime" role="switch" id="entry-info-date-switch"/>
+                    <label class="form-check-label" for="entry-info-date-switch">Со временем</label>
+                </div>
+            </div>
+
+            <EntryInfoFormFields EntryInfo="@Model"/>
+
+            <div class="mb-3">
+                <button class="btn btn-primary">@(EntryInfoId.HasValue ? "Сохранить" : "Добавить")</button>
+            </div>
+        </EditForm>
+        
+        
+        <div class="text-end"><button type="button" class="btn btn-link" @onclick="OnDelete">Удалить</button></div>
+    </HalfPage>
+</EntryProfileLayout>
+
+@code {
+
+    [Parameter]
+    public Guid EntryId { get; set; }
+
+    [Parameter]
+    public Guid? EntryInfoId { get; set; }
+
+    private EiDate Model { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        Model = EntryInfoId.HasValue ? Db.EiDates.First(x => x.Id.Equals(EntryInfoId.Value)) : new EiDate()
+        {
+            Date = DateTime.Now,
+        };
+    }
+
+    private FluentValidationValidator Validator { get; set; } = null!;
+
+    private async Task OnDelete()
+    {
+        if (!EntryInfoId.HasValue) return;
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", "Удаляем, всё верно?");
+        if (!isConfirmed) return;
+        Db.Remove(Model);
+        await Db.SaveChangesAsync();
+        NavigationManager.NavigateTo($"/entries/{EntryId}/info");
+    }
+
+    private void OnSubmit()
+    {
+        if (!Validator.Validate()) return;
+
+        if (!EntryInfoId.HasValue)
+        {
+            Model.EntryId = EntryId;
+            Db.EiDates.Add(Model);   
+        }
+
+        Db.SaveChanges();
+        NavigationManager.NavigateTo($"/entries/{EntryId}/info");
+    }
+}

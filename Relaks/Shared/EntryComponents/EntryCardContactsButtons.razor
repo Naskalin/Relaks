@@ -4,7 +4,7 @@
     @foreach (var d in DataHelper.EntryInfoContactDiscriminators)
     {
         <Tooltip Title="@($"Добавить {d}")" Trigger="hover">
-            <NavLink href="@($"/entries/{EntryId}/einfo/new/{d}")" class="btn btn-outline-secondary btn-circle">
+            <NavLink href="@($"/entries/{EntryId}/{d}/new")" class="btn btn-outline-secondary btn-circle">
                 <i class="@DataHelper.EntityIcon(d) la-lg"></i>
             </NavLink>
         </Tooltip>

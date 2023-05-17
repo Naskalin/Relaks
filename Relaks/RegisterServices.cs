@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
+using Relaks.Interfaces;
+using Relaks.Models;
 using Relaks.Models.Requests.EntryInfoRequests;
 using Relaks.Models.Requests.EntryRequests;
 using Relaks.Validators.EntryInfoValidators;
@@ -22,7 +24,10 @@ public static class RegisterServices
     {
         ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
         services.AddScoped<IValidator<EntryFormRequest>, EntryFormRequestValidator>();
-        services.AddScoped<IValidator<EntryInfoCreateRequest>, EntryInfoCreateRequestValidator>();
+        
+        services.AddScoped<IValidator<EiDate>, EiDateValidator>();
+
+        // services.AddScoped<IValidator<EntryInfoCreateRequest>, EntryInfoCreateRequestValidator>();
     }
     
     public static void RegisterLocalization(this IServiceCollection services)

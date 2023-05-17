@@ -1,0 +1,16 @@
+﻿@using System.Text.Json
+@using System.Text.Json.Serialization
+
+<div>
+    <code style="background: #f9f9f9; color: #2c3034;">
+        @JsonSerializer.Serialize(Data, new JsonSerializerOptions()
+        {
+            ReferenceHandler = ReferenceHandler.IgnoreCycles,
+        })
+    </code>
+</div>
+
+@code {
+    [Parameter]
+    public object? Data { get; set; } 
+}

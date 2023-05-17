@@ -17,9 +17,12 @@
     <ul class="list-group list-group-flush mt-2">
         @foreach (var eInfo in FilteredItems)
         {
-            <li class="list-group-item gx-0 px-0 @(eInfo.Id.Equals(EntryInfoId) ? "border border-3 border-warning" : "")"
+            <li class="list-group-item gx-0 px-0 @(eInfo.Id.Equals(EntryInfoId) ? "border border-3 border-warning" : "") d-flex align-items-center justify-content-between"
                 @key="@eInfo.Id">
-                <EntryInfoContact EntryInfo="@eInfo" EntryInfoId="EntryInfoId"></EntryInfoContact>
+                <EntryInfoContact EntryInfo="@eInfo" EntryInfoId="EntryInfoId"/>
+                <a href="/entries/@eInfo.EntryId/@eInfo.Discriminator/@eInfo.Id/edit" class="btn btn-ouline-light btn-sm">
+                    <i class="las la-lg la-edit"></i>
+                </a>
             </li>
         }
     </ul>   
