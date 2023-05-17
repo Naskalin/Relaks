@@ -5,46 +5,48 @@
 @inject AppDbContext Db;
 @inject NavigationManager NavigationManager;
 
-<SoftDeleteShow SoftDeletedReason="@Entry"/>
-
-<div class="card entry-card" style="width: 20rem;">
-    <img src="https://via.placeholder.com/300x300" class="card-img-top" alt="...">
-    <div class="card-body">
-        <h5 class="card-title text-center">@Entry.Name</h5>
-        <div class="row gx-3 align-items-center text-muted mb-3 justify-content-center">
-            <div class="col-auto">
-                <Tooltip Title="@Entry.Discriminator">
-                    <div style="width: 30px; height: 28px;">
-                        <i class="@DataHelper.EntityIcon(Entry.Discriminator)" style="font-size: 1.8rem;"></i>
-                    </div>
-                </Tooltip>
+<div style="width: 20rem;">
+    <SoftDeleteShow SoftDeletedReason="@Entry"/>
+    
+    <div class="card entry-card @(Entry.DeletedAt != null ? "border-danger" : "")">
+        <img src="https://via.placeholder.com/300x300" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title text-center">@Entry.Name</h5>
+            <div class="row gx-3 align-items-center text-muted mb-3 justify-content-center">
+                <div class="col-auto">
+                    <Tooltip Title="@Entry.Discriminator">
+                        <div style="width: 30px; height: 28px;">
+                            <i class="@DataHelper.EntityIcon(Entry.Discriminator)" style="font-size: 1.8rem;"></i>
+                        </div>
+                    </Tooltip>
+                </div>
+                @* <div class="col-auto"> *@
+                @*     <div class="d-flex align-items-center gap-1"> *@
+                @*         <i class="las la-star-half-alt" style="font-size: 1.7rem;"></i> *@
+                @*         <span style="font-size: 1.2rem;">@Entry.Reputation</span> *@
+                @*     </div> *@
+                @* </div> *@
             </div>
-            @* <div class="col-auto"> *@
-            @*     <div class="d-flex align-items-center gap-1"> *@
-            @*         <i class="las la-star-half-alt" style="font-size: 1.7rem;"></i> *@
-            @*         <span style="font-size: 1.2rem;">@Entry.Reputation</span> *@
-            @*     </div> *@
-            @* </div> *@
-        </div>
-
-        @if (!string.IsNullOrEmpty(Entry.Description))
-        {
-            <p class="card-text text-center">@Entry.Description</p>
-        }
-
-        @if (WithEdit == true)
-        {
-            <EntryCardContactsButtons EntryId="@EntryId" />
-        }
-
-        <EntryCardContacts EntryInfoId="@EntryInfoId" EntryInfos="@Entry.EntryInfos"/>
-
-        <div class="row mt-2">
-            <div class="col">
-                <small>@Entry.StartAt?.ToLocalTime().ToShortDateString()</small>
-            </div>
-            <div class="col text-end">
-                <small>@Entry.EndAt?.ToLocalTime().ToShortDateString()</small>
+    
+            @if (!string.IsNullOrEmpty(Entry.Description))
+            {
+                <p class="card-text text-center">@Entry.Description</p>
+            }
+    
+            @if (WithEdit == true)
+            {
+                <EntryCardContactsButtons EntryId="@EntryId"/>
+            }
+    
+            <EntryCardContacts EntryInfoId="@EntryInfoId" EntryInfos="@Entry.EntryInfos"/>
+    
+            <div class="row mt-2">
+                <div class="col">
+                    <small>@Entry.StartAt?.ToLocalTime().ToShortDateString()</small>
+                </div>
+                <div class="col text-end">
+                    <small>@Entry.EndAt?.ToLocalTime().ToShortDateString()</small>
+                </div>
             </div>
         </div>
     </div>

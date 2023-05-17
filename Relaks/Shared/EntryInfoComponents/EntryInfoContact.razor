@@ -20,7 +20,7 @@
         }
         else if (EiDate != null)
         {
-            @(EiDate.Date.ToLocalTime().ToString(EiDate.WithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy"))
+            @(EiDate.Date.ToString(EiDate.WithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy"))
         }
 
         @if (!string.IsNullOrEmpty(EntryInfo.Title))

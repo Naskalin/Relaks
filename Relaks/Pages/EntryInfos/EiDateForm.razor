@@ -16,10 +16,10 @@
                     <i class="las la-arrow-left la-lg me-1"></i> Вернуться
                 </a>
             </BeforeTitle>
-            <ChildContent>@(EntryInfoId.HasValue ? "Изменить" : "Добавить") @nameof(Model)</ChildContent>
+            <ChildContent>@(EntryInfoId.HasValue ? "Изменить" : "Добавить") @nameof(EiDate)</ChildContent>
         </MyTitle>
         
-        <Dump Data="@Model.Date"/>
+        @* <Dump Data="@Model.Date"/> *@
         <EditForm Model="@Model" OnSubmit="OnSubmit">
             <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
             <ValidationSummary/>
