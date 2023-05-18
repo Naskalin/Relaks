@@ -41,12 +41,7 @@
 
         @if (EntryInfoId.HasValue)
         {
-            <div class="text-end">
-                <button type="button" class="btn btn-link text-danger" @onclick="OnDelete">
-                    <i class="las la-trash la-lg"></i>
-                    @Resources.Action.SoftDelete
-                </button>
-            </div>
+            <SoftDeletedReasonField SoftDeletedReason="@Model" Ok="OnSoftDelete"/>
         }
     </HalfPage>
 </EntryProfileLayout>
@@ -72,6 +67,13 @@
 
     private FluentValidationValidator Validator { get; set; } = null!;
 
+    private void OnSoftDelete()
+    {
+        if (!EntryInfoId.HasValue) return;
+        Db.SaveChanges();
+        NavigationManager.NavigateTo($"/entries/{EntryId}/info");
+    }
+    
     private async Task OnDelete()
     {
         if (!EntryInfoId.HasValue) return;

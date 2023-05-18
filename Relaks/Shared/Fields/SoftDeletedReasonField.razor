@@ -1,0 +1,59 @@
+﻿@using Relaks.Interfaces
+@if (SoftDeletedReason.DeletedAt == null)
+{
+    <div class="text-end mb-3">
+        <button type="button" class="btn btn-link text-danger" @onclick="HandleClick">
+            <i class="las la-angle-down la-lg"></i>
+            @Resources.Action.SoftDelete
+        </button>
+    </div>   
+}
+
+@if (IsShow)
+{
+    <div>
+        <div class="mb-3">
+            <label for="" class="form-label">Причина архивации (не обязательно)</label>
+            <InputTextArea @bind-Value="SoftDeletedReason.DeletedReason" class="form-control" rows="2"></InputTextArea>
+        </div>
+        <div class="mb-3">
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-danger" type="button" @onclick="HandleSoftDelete">
+                    <i class="las la-trash la-lg me-1"></i>
+                    В архив
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public ISoftDeletedReason SoftDeletedReason { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback Ok { get; set; }
+    
+
+    private bool IsShow { get; set; }
+
+    private void HandleClick()
+    {
+        IsShow = !IsShow;
+    }
+
+    private void HandleSoftDelete()
+    {
+        SoftDeletedReason.DeletedAt = DateTime.Now;
+        Ok.InvokeAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        IsShow = SoftDeletedReason.DeletedAt != null;
+    }
+
+}
