@@ -11,8 +11,8 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230511145931_CreateCountriesTable")]
-    partial class CreateCountriesTable
+    [Migration("20230518133606_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,12 +46,18 @@ namespace Relaks.Migrations
                     b.Property<DateTime?>("EndAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("EndAtWithTime")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("StartAt")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("StartAtWithTime")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");

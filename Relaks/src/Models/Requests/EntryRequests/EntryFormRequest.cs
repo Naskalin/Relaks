@@ -9,6 +9,8 @@ public class EntryFormRequest : IEntry
     public string Discriminator { get; set; } = null!;
     public DateTime? StartAt { get; set; }
     public DateTime? EndAt { get; set; }
+    public bool StartAtWithTime { get; set; }
+    public bool EndAtWithTime { get; set; }
 }
 
 public class EntryCreateRequest : EntryFormRequest {}

@@ -14,7 +14,7 @@
             <h5 class="card-title text-center">@Entry.Name</h5>
             <div class="row gx-3 align-items-center text-muted mb-3 justify-content-center">
                 <div class="col-auto">
-                    <Tooltip Title="@Entry.Discriminator">
+                    <Tooltip Title="@Resources.Entity.ResourceManager.GetString(Entry.Discriminator)">
                         <div style="width: 30px; height: 28px;">
                             <i class="@DataHelper.EntityIcon(Entry.Discriminator)" style="font-size: 1.8rem;"></i>
                         </div>
@@ -40,14 +40,23 @@
     
             <EntryCardContacts EntryInfoId="@EntryInfoId" EntryInfos="@Entry.EntryInfos"/>
     
-            <div class="row mt-2">
-                <div class="col">
-                    <small>@Entry.StartAt?.ToLocalTime().ToShortDateString()</small>
-                </div>
-                <div class="col text-end">
-                    <small>@Entry.EndAt?.ToLocalTime().ToShortDateString()</small>
-                </div>
-            </div>
+            @if (Entry.StartAt != null || Entry.EndAt != null)
+            {
+                <div class="row mt-2">
+                    <div class="col">
+                        @if (Entry.StartAt != null)
+                        {
+                            <small>@Entry.StartAt?.ToString(Entry.StartAtWithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy")</small>   
+                        }
+                    </div>
+                    <div class="col text-end">
+                         @if (Entry.EndAt != null)
+                        {
+                            <small>@Entry.EndAt?.ToString(Entry.EndAtWithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy")</small>   
+                        }
+                    </div>
+                </div>   
+            }
         </div>
     </div>
 </div>

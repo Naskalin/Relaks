@@ -24,12 +24,15 @@ public static class RegisterServices
     {
         ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
         services.AddScoped<IValidator<EntryFormRequest>, EntryFormRequestValidator>();
-        
+
         services.AddScoped<IValidator<EiDate>, EiDateValidator>();
+        services.AddScoped<IValidator<EiPhone>, EiPhoneValidator>();
+        services.AddScoped<IValidator<EiUrl>, EiUrlValidator>();
+        services.AddScoped<IValidator<EiEmail>, EiEmailValidator>();
 
         // services.AddScoped<IValidator<EntryInfoCreateRequest>, EntryInfoCreateRequestValidator>();
     }
-    
+
     public static void RegisterLocalization(this IServiceCollection services)
     {
         // var defaultCulture = "ru";
@@ -38,12 +41,16 @@ public static class RegisterServices
         //     new CultureInfo(defaultCulture),
         //     new CultureInfo("en")
         // };
+
+        var supportedCultures = new[] {"ru", "en"};
         services.AddLocalization(options => options.ResourcesPath = Path.Combine("src", "Resources"));
         // services.AddScoped<IStringLocalizer<App>, StringLocalizer<App>>();
-        // services.Configure<RequestLocalizationOptions>(options => {
-        //     options.DefaultRequestCulture = new RequestCulture(defaultCulture);
-        //     options.SupportedCultures = supportedCultures;
-        //     options.SupportedUICultures = supportedCultures;
-        // });
+        services.Configure<RequestLocalizationOptions>(options =>
+        {
+            options
+                .SetDefaultCulture(supportedCultures[0])
+                .AddSupportedCultures(supportedCultures)
+                .AddSupportedUICultures(supportedCultures);
+        });
     }
 }

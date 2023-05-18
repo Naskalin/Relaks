@@ -31,8 +31,8 @@ public static class RelaksExtensions
         var env = host.Services.GetRequiredService<IHostEnvironment>();
         using var scope = host.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
         db.Database.Migrate();
+        
         if (env.IsDevelopment())
         {   
             // new Database.Seeders.DatabaseSeeder(db).SeedAll();

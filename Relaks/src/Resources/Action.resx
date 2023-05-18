@@ -51,4 +51,16 @@
     <data name="Date" xml:space="preserve">
         <value>Дата</value>
     </data>
+    <data name="Type" xml:space="preserve">
+        <value>Тип</value>
+    </data>
+    <data name="All" xml:space="preserve">
+        <value>Все</value>
+    </data>
+    <data name="NotFoundResults" xml:space="preserve">
+        <value>Ничего не найдено</value>
+    </data>
+    <data name="Email" xml:space="preserve">
+        <value>E-mail</value>
+    </data>
 </root>

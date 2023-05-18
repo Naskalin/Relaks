@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Mvc.Localization
 @using Microsoft.Extensions.Localization
+@using System.Globalization
 
 <PageTemplate>
   <MyTitle>Index</MyTitle>
@@ -14,9 +15,11 @@
   <p>line awesome icons <i class="las la-info text-red"></i></p>
   <p>font awesome icons <i class="fa fa-solid fa-info"></i></p>
   <p>font awesome icons 2
-<i class="fa-solid fa-arrow-down-up-lock" aria-hidden="true"></i></p>
+    <i class="fa-solid fa-arrow-down-up-lock" aria-hidden="true"></i></p>
+  <p>@Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName</p>
   
-  @* <p><b>trans</b> @Localizer["Welcome"]</p> *@
+  <button class="btn btn-dark" @onclick="SwitchCulture">switchCulture</button>
+  <p>trans: @Resources.Action.Add</p>
   @* <p>trans: @__["welcome"]</p> *@
   
 </PageTemplate>
@@ -25,4 +28,11 @@
   // [Inject]
   // public IStringLocalizer<App> __ { get; set; } = null!;
 
+  private void SwitchCulture()
+  {
+    var current = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+
+    Thread.CurrentThread.CurrentCulture = new CultureInfo("en");
+    Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
+  }
 }

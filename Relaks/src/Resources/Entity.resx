@@ -24,4 +24,52 @@
     <data name="EiPhone" xml:space="preserve">
         <value>Телефон</value>
     </data>
+    <data name="EiUrl" xml:space="preserve">
+        <value>Ссылка</value>
+    </data>
+    <data name="EiEmail" xml:space="preserve">
+        <value>E-mail</value>
+    </data>
+    <data name="EPerson" xml:space="preserve">
+        <value>Человек</value>
+    </data>
+    <data name="ECompany" xml:space="preserve">
+        <value>Компания</value>
+    </data>
+    <data name="EMeet" xml:space="preserve">
+        <value>Встреча</value>
+    </data>
+    <data name="BaseEntry" xml:space="preserve">
+        <value>Объединение</value>
+    </data>
+    <data name="EPerson_StartAt" xml:space="preserve">
+        <value>Дата рождения</value>
+    </data>
+    <data name="EPerson_EndAt" xml:space="preserve">
+        <value>Дата смерти</value>
+    </data>
+    <data name="EMeet_StartAt" xml:space="preserve">
+        <value>Начало встречи</value>
+    </data>
+    <data name="ECompany_StartAt" xml:space="preserve">
+        <value>Регистрация</value>
+    </data>
+    <data name="EMeet_EndAt" xml:space="preserve">
+        <value>Окончание встречи</value>
+    </data>
+    <data name="ECompany_EndAt" xml:space="preserve">
+        <value>Ликвидация</value>
+    </data>
+    <data name="EPerson_Name" xml:space="preserve">
+        <value>ФИО</value>
+    </data>
+    <data name="EMeet_Name" xml:space="preserve">
+        <value>Название встречи</value>
+    </data>
+    <data name="ECompany_Name" xml:space="preserve">
+        <value>Название компании</value>
+    </data>
+    <data name="BaseEntries" xml:space="preserve">
+        <value>Объединения</value>
+    </data>
 </root>

@@ -60,6 +60,60 @@ namespace Relaks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Объединения.
+        /// </summary>
+        internal static string BaseEntries {
+            get {
+                return ResourceManager.GetString("BaseEntries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Объединение.
+        /// </summary>
+        internal static string BaseEntry {
+            get {
+                return ResourceManager.GetString("BaseEntry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Компания.
+        /// </summary>
+        internal static string ECompany {
+            get {
+                return ResourceManager.GetString("ECompany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ликвидация.
+        /// </summary>
+        internal static string ECompany_EndAt {
+            get {
+                return ResourceManager.GetString("ECompany_EndAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Название компании.
+        /// </summary>
+        internal static string ECompany_Name {
+            get {
+                return ResourceManager.GetString("ECompany_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Регистрация.
+        /// </summary>
+        internal static string ECompany_StartAt {
+            get {
+                return ResourceManager.GetString("ECompany_StartAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Дата.
         /// </summary>
         internal static string EiDate {
@@ -69,11 +123,101 @@ namespace Relaks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to E-mail.
+        /// </summary>
+        internal static string EiEmail {
+            get {
+                return ResourceManager.GetString("EiEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Телефон.
         /// </summary>
         internal static string EiPhone {
             get {
                 return ResourceManager.GetString("EiPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ссылка.
+        /// </summary>
+        internal static string EiUrl {
+            get {
+                return ResourceManager.GetString("EiUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Встреча.
+        /// </summary>
+        internal static string EMeet {
+            get {
+                return ResourceManager.GetString("EMeet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Окончание встречи.
+        /// </summary>
+        internal static string EMeet_EndAt {
+            get {
+                return ResourceManager.GetString("EMeet_EndAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Название встречи.
+        /// </summary>
+        internal static string EMeet_Name {
+            get {
+                return ResourceManager.GetString("EMeet_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Начало встречи.
+        /// </summary>
+        internal static string EMeet_StartAt {
+            get {
+                return ResourceManager.GetString("EMeet_StartAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Человек.
+        /// </summary>
+        internal static string EPerson {
+            get {
+                return ResourceManager.GetString("EPerson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Дата смерти.
+        /// </summary>
+        internal static string EPerson_EndAt {
+            get {
+                return ResourceManager.GetString("EPerson_EndAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ФИО.
+        /// </summary>
+        internal static string EPerson_Name {
+            get {
+                return ResourceManager.GetString("EPerson_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Дата рождения.
+        /// </summary>
+        internal static string EPerson_StartAt {
+            get {
+                return ResourceManager.GetString("EPerson_StartAt", resourceCulture);
             }
         }
     }

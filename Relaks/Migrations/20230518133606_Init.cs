@@ -12,6 +12,25 @@ namespace Relaks.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Countries",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Alpha2 = table.Column<string>(type: "TEXT", maxLength: 2, nullable: false),
+                    TitleRu = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    TitleEn = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    Native = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    Phone = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Continent = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    Capital = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    Currency = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Countries", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Entries",
                 columns: table => new
                 {
@@ -23,6 +42,8 @@ namespace Relaks.Migrations
                     UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     StartAt = table.Column<DateTime>(type: "TEXT", nullable: true),
                     EndAt = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    StartAtWithTime = table.Column<bool>(type: "INTEGER", nullable: false),
+                    EndAtWithTime = table.Column<bool>(type: "INTEGER", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
                     DeletedReason = table.Column<string>(type: "TEXT", nullable: true)
                 },
@@ -72,6 +93,9 @@ namespace Relaks.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Countries");
+
             migrationBuilder.DropTable(
                 name: "EntryInfos");
 

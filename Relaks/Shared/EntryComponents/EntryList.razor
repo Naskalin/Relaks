@@ -47,7 +47,7 @@
 <table class="table table-bordered table-hover cursor-pointer align-middle">
     <thead>
     <tr style="@(!string.IsNullOrEmpty(Req.Search) ? "opacity: .3; cursor: not-allowed;" : "")">
-        <th style="width: 70px" @onclick="() => OnSortChange(nameof(BaseEntry.Discriminator))">Тип <OrderableIcon Orderable="@Req" Prop="@nameof(BaseEntry.Discriminator)"/></th>
+        <th style="width: 70px" @onclick="() => OnSortChange(nameof(BaseEntry.Discriminator))">@Resources.Action.Type <OrderableIcon Orderable="@Req" Prop="@nameof(BaseEntry.Discriminator)"/></th>
         <th style="width: 80px"></th>
         <th @onclick="() => OnSortChange(nameof(BaseEntry.Name))">Имя <OrderableIcon Orderable="@Req" Prop="@nameof(BaseEntry.Name)"/></th>
         <th style="width: 80px" @onclick="() => OnSortChange(nameof(BaseEntry.StartAt))">От <OrderableIcon Orderable="@Req" Prop="@nameof(BaseEntry.StartAt)"/></th>
@@ -71,7 +71,7 @@
     else
     {
         <tr>
-            <td colspan="100%" class="text-muted"><i class="las la-frown la-lg"></i> Ничего не найдено</td>
+            <td colspan="100%" class="text-muted"><i class="las la-frown la-lg"></i> @Resources.Action.NotFoundResults</td>
         </tr>    
     }
     
@@ -104,10 +104,10 @@
 
     private static Dictionary<string, string?> EntryDiscriminators() => new()
     {
-        {"Все", null},
-        {"Люди", nameof(EPerson)},
-        {"Компании", nameof(ECompany)},
-        {"Встречи", nameof(EMeet)},
+        {Resources.Action.All, null},
+        {Resources.Entity.EPerson, nameof(EPerson)},
+        {Resources.Entity.ECompany, nameof(ECompany)},
+        {Resources.Entity.EMeet, nameof(EMeet)},
     };
     
 

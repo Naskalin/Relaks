@@ -4,7 +4,7 @@
 
 <tr @ondblclick="() => OnRowDoubleClicked.InvokeAsync(BaseEntry.Id)" @onclick="() => OnRowClicked.InvokeAsync(BaseEntry.Id)">
     <td>
-        <Tooltip Title="@BaseEntry.Discriminator" Placement="Placement.Right">
+        <Tooltip Title="@Resources.Entity.ResourceManager.GetString(BaseEntry.Discriminator)" Placement="Placement.Right">
             <div style="width: 40px; height: 40px;" class="border rounded-circle d-flex align-items-center justify-content-center">
                 <i class="@DataHelper.EntityIcon(BaseEntry.Discriminator)" style="font-size: 1.6rem;"></i>
             </div>

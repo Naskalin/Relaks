@@ -19,6 +19,8 @@ public abstract class BaseEntry : IEntry, ITimestamped, ISoftDeletedReason
 
     public DateTime? StartAt { get; set; }
     public DateTime? EndAt { get; set; }
+    public bool StartAtWithTime { get; set; }
+    public bool EndAtWithTime { get; set; }
 
     public DateTime? DeletedAt { get; set; }
     public string? DeletedReason { get; set; }

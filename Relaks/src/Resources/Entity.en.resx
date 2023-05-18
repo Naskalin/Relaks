@@ -17,4 +17,49 @@
     <data name="EiPhone" xml:space="preserve">
         <value>Phone</value>
     </data>
+    <data name="EiUrl" xml:space="preserve">
+        <value>Url</value>
+    </data>
+    <data name="EMeet" xml:space="preserve">
+        <value>Meet</value>
+    </data>
+    <data name="EPerson" xml:space="preserve">
+        <value>Human</value>
+    </data>
+    <data name="ECompany" xml:space="preserve">
+        <value>Company</value>
+    </data>
+    <data name="BaseEntry" xml:space="preserve">
+        <value>Union Entry</value>
+    </data>
+    <data name="EPerson_StartAt" xml:space="preserve">
+        <value>Date of Birth</value>
+    </data>
+    <data name="EPerson_EndAt" xml:space="preserve">
+        <value>Date of death</value>
+    </data>
+    <data name="ECompany_EndAt" xml:space="preserve">
+        <value>Liquidation</value>
+    </data>
+    <data name="ECompany_StartAt" xml:space="preserve">
+        <value>Registration</value>
+    </data>
+    <data name="EMeet_EndAt" xml:space="preserve">
+        <value>End of the meeting</value>
+    </data>
+    <data name="EMeet_StartAt" xml:space="preserve">
+        <value>Meeting start</value>
+    </data>
+    <data name="EPerson_Name" xml:space="preserve">
+        <value>Full name</value>
+    </data>
+    <data name="ECompany_Name" xml:space="preserve">
+        <value>Company name</value>
+    </data>
+    <data name="EMeet_Name" xml:space="preserve">
+        <value>Meet name</value>
+    </data>
+    <data name="BaseEntries" xml:space="preserve">
+        <value>Union Entries</value>
+    </data>
 </root>

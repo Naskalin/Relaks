@@ -10,19 +10,20 @@
         <MyTitle>
             <BeforeTitle>
                 <a href="/entries" class="btn btn-outline-secondary">
-                    <i class="las la-arrow-left la-lg me-1"></i> Вернуться
+                    <i class="las la-arrow-left la-lg me-1"></i> @Resources.Action.Return
                 </a>
             </BeforeTitle>
-            <ChildContent>Новое объединение</ChildContent>
+            <ChildContent>@Resources.Action.Add @Resources.Entity.BaseEntry</ChildContent>
         </MyTitle>
 
         <EditForm Model="@Req" OnSubmit="@OnSubmit">
             <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
             <ValidationSummary/>
-            <FormFields @bind-Req="@Req"/>
+            <FormFields Req="@Req"/>
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">
-                    Добавить
+                    <i class="las la-plus-circle la-lg me-1"></i>
+                    @Resources.Action.Add
                 </button>
             </div>
         </EditForm>
@@ -37,8 +38,17 @@
     [Inject]
     public NavigationManager NavigationManager { get; set; } = null!;
 
-    private EntryFormRequest Req { get; set; } = new();
+    private EntryFormRequest Req { get; set; } = null!;
     private FluentValidationValidator Validator { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        Req = new()
+        {
+            Discriminator = nameof(EPerson),
+        };
+    }
 
     private void OnSubmit()
     {
@@ -51,7 +61,7 @@
             nameof(EMeet) => new EMeet(),
             _ => throw new ArgumentException($"Error: discriminator {Req.Discriminator} is not supported")
             };
-
+        
         Req.MapTo(entry);
         Db.BaseEntries.Add(entry);
         Db.SaveChanges();

@@ -2,14 +2,14 @@
 @using Relaks.Models.Requests.EntryRequests
 
 <div class="mb-3">
-    <label for="" class="form-label">Тип</label>
+    <label for="" class="form-label">@Resources.Action.Type</label>
 
     <InputRadioGroup @bind-Value="@Req.Discriminator">
         @foreach (var d in DataHelper.EntryDiscriminators)
         {
             <div class="form-check">
                 <InputRadio Value="@d" id="@($"entry-{d}")" class="form-check-input"/>
-                <label for="@($"entry-{d}")" class="form-check-label">@d</label>
+                <label for="@($"entry-{d}")" class="form-check-label">@Resources.Entity.ResourceManager.GetString(d)</label>
             </div>
         }
     </InputRadioGroup>
@@ -18,7 +18,7 @@
 </div>
 
 <div class="mb-3 input-lg">
-    <label for="" class="form-label form-label-lg">Имя</label>
+    <label for="" class="form-label form-label-lg">@Resources.Entity.ResourceManager.GetString(string.Format(Req.Discriminator+"_Name"))</label>
     <input type="text" class="form-control form-control-lg" @bind="@Req.Name"/>
     <ValidationMessage For="@(() => Req.Name)"/>
 </div>
@@ -31,21 +31,33 @@
 <div class="row">
     <div class="col">
         <div class="mb-3">
-            <label for="" class="form-label">@nameof(BaseEntry.StartAt)</label>
-            <InputDate Type="@(IsMeet() ? InputDateType.DateTimeLocal : InputDateType.Date)"
+            <label for="" class="form-label">@Resources.Entity.ResourceManager.GetString(string.Format(Req.Discriminator+"_StartAt"))</label>
+            <InputDate Type="@(Req.StartAtWithTime ? InputDateType.DateTimeLocal : InputDateType.Date)"
                        @bind-Value="@Req.StartAt"
                        class="form-control"/>
             <ValidationMessage For="@(() => Req.StartAt)"/>
         </div>
+        <div class="mb-3">
+            <div class="form-check form-switch">
+                <InputCheckbox class="form-check-input" type="checkbox" @bind-Value="@Req.StartAtWithTime" role="switch" id="@($"entry-{nameof(Req.StartAtWithTime)}")"/>
+                <label class="form-check-label" for="@($"entry-{nameof(Req.StartAtWithTime)}")">@Resources.Action.Date_WithTime</label>
+            </div>
+        </div>
     </div>
     <div class="col">
-       <div class="mb-3">
-           <label for="" class="form-label">@nameof(BaseEntry.EndAt)</label>
-           <InputDate Type="@(IsMeet() ? InputDateType.DateTimeLocal : InputDateType.Date)"
-                      @bind-Value="@Req.EndAt"
-                      class="form-control"/>
-           <ValidationMessage For="@(() => Req.EndAt)"/>
-       </div>
+        <div class="mb-3">
+            <label for="" class="form-label">@Resources.Entity.ResourceManager.GetString(string.Format(Req.Discriminator+"_EndAt"))</label>
+            <InputDate Type="@(Req.EndAtWithTime ? InputDateType.DateTimeLocal : InputDateType.Date)"
+                       @bind-Value="@Req.EndAt"
+                       class="form-control"/>
+            <ValidationMessage For="@(() => Req.EndAt)"/>
+        </div>
+        <div class="mb-3">
+            <div class="form-check form-switch">
+                <InputCheckbox class="form-check-input" type="checkbox" @bind-Value="@Req.EndAtWithTime" role="switch" id="@($"entry-{nameof(Req.EndAtWithTime)}")"/>
+                <label class="form-check-label" for="@($"entry-{nameof(Req.EndAtWithTime)}")">@Resources.Action.Date_WithTime</label>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -54,8 +66,8 @@
     [Parameter]
     public EntryFormRequest Req { get; set; } = null!;
 
-    [Parameter]
-    public EventCallback<EntryFormRequest> ReqChanged { get; set; }
+    // [Parameter]
+    // public EventCallback<EntryFormRequest> ReqChanged { get; set; }
 
     private bool IsMeet() => nameof(EMeet).Equals(Req.Discriminator);
 }

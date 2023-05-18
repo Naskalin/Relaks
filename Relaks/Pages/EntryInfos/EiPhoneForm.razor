@@ -1,5 +1,5 @@
-﻿@page "/entries/{entryId:guid}/eidate/new"
-@page "/entries/{entryId:guid}/eidate/{entryInfoId:guid}/edit"
+﻿@page "/entries/{entryId:guid}/eiphone/new"
+@page "/entries/{entryId:guid}/eiphone/{entryInfoId:guid}/edit"
 
 @using Relaks.Models
 @using Relaks.Database
@@ -16,29 +16,17 @@
                     <i class="las la-arrow-left la-lg me-1"></i> @Resources.Action.Return
                 </a>
             </BeforeTitle>
-            <ChildContent>@(EntryInfoId.HasValue ? Resources.Action.Edit : Resources.Action.Add): @Resources.Entity.ResourceManager.GetString(nameof(EiDate))</ChildContent>
+            <ChildContent>@(EntryInfoId.HasValue ? Resources.Action.Edit : Resources.Action.Add): @Resources.Entity.ResourceManager.GetString(nameof(EiPhone))</ChildContent>
         </MyTitle>
-        
-        @* <Dump Data="@Model.Date"/> *@
+
         <EditForm Model="@Model" OnSubmit="OnSubmit">
             <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
             <ValidationSummary/>
 
             <div class="mb-3">
-                <label for="" class="form-label">@Resources.Action.Date *</label>
-                <InputDate Type="@(Model.WithTime ? InputDateType.DateTimeLocal : InputDateType.Date)"
-                           @bind-Value="@Model.Date"
-                           class="form-control"
-                           @bind-Value:format="YYYY"
-                           autofocus="autofocus"
-                           />
-                <ValidationMessage For="@(() => Model.Date)"/>
-            </div>
-            <div class="mb-3">
-                <div class="form-check form-switch">
-                    <InputCheckbox class="form-check-input" type="checkbox" @bind-Value="@Model.WithTime" role="switch" id="entry-info-date-switch"/>
-                    <label class="form-check-label" for="entry-info-date-switch">@Resources.Action.Date_WithTime</label>
-                </div>
+                <InputPhone Phone="@Model"/>
+                <ValidationMessage For="@(() => Model.Number)"/>
+                <ValidationMessage For="@(() => Model.Region)"/>
             </div>
 
             <EntryInfoFormFields EntryInfo="@Model"/>
@@ -50,16 +38,15 @@
                 </button>
             </div>
         </EditForm>
-        
+
         @if (EntryInfoId.HasValue)
         {
             <div class="text-end">
-                
                 <button type="button" class="btn btn-link text-danger" @onclick="OnDelete">
                     <i class="las la-trash la-lg"></i>
                     @Resources.Action.SoftDelete
                 </button>
-            </div>   
+            </div>
         }
     </HalfPage>
 </EntryProfileLayout>
@@ -72,13 +59,14 @@
     [Parameter]
     public Guid? EntryInfoId { get; set; }
 
-    private EiDate Model { get; set; } = null!;
+    private EiPhone Model { get; set; } = null!;
 
     protected override void OnParametersSet()
     {
-        Model = EntryInfoId.HasValue ? Db.EiDates.First(x => x.Id.Equals(EntryInfoId.Value)) : new EiDate()
+        Model = EntryInfoId.HasValue ? Db.EiPhones.First(x => x.Id.Equals(EntryInfoId.Value)) : new EiPhone()
         {
-            Date = DateTime.Now,
+            Number = "",
+            Region = "RU"
         };
     }
 
@@ -101,10 +89,11 @@
         if (!EntryInfoId.HasValue)
         {
             Model.EntryId = EntryId;
-            Db.EiDates.Add(Model);   
+            Db.EiPhones.Add(Model);   
         }
-
+        
         Db.SaveChanges();
         NavigationManager.NavigateTo($"/entries/{EntryId}/info");
     }
+
 }

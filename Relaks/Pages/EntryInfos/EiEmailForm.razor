@@ -1,5 +1,5 @@
-﻿@page "/entries/{entryId:guid}/eidate/new"
-@page "/entries/{entryId:guid}/eidate/{entryInfoId:guid}/edit"
+﻿@page "/entries/{entryId:guid}/eiemail/new"
+@page "/entries/{entryId:guid}/eiemail/{entryInfoId:guid}/edit"
 
 @using Relaks.Models
 @using Relaks.Database
@@ -16,7 +16,7 @@
                     <i class="las la-arrow-left la-lg me-1"></i> @Resources.Action.Return
                 </a>
             </BeforeTitle>
-            <ChildContent>@(EntryInfoId.HasValue ? Resources.Action.Edit : Resources.Action.Add): @Resources.Entity.ResourceManager.GetString(nameof(EiDate))</ChildContent>
+            <ChildContent>@(EntryInfoId.HasValue ? Resources.Action.Edit : Resources.Action.Add): @Resources.Entity.ResourceManager.GetString(nameof(EiEmail))</ChildContent>
         </MyTitle>
         
         @* <Dump Data="@Model.Date"/> *@
@@ -25,22 +25,11 @@
             <ValidationSummary/>
 
             <div class="mb-3">
-                <label for="" class="form-label">@Resources.Action.Date *</label>
-                <InputDate Type="@(Model.WithTime ? InputDateType.DateTimeLocal : InputDateType.Date)"
-                           @bind-Value="@Model.Date"
-                           class="form-control"
-                           @bind-Value:format="YYYY"
-                           autofocus="autofocus"
-                           />
-                <ValidationMessage For="@(() => Model.Date)"/>
+                <label for="" class="form-label">@Resources.Action.Email *</label>
+                <input type="text" @bind-value="@Model.Email" class="form-control" autofocus="autofocus">
+                <ValidationMessage For="@(() => Model.Email)"/>
             </div>
-            <div class="mb-3">
-                <div class="form-check form-switch">
-                    <InputCheckbox class="form-check-input" type="checkbox" @bind-Value="@Model.WithTime" role="switch" id="entry-info-date-switch"/>
-                    <label class="form-check-label" for="entry-info-date-switch">@Resources.Action.Date_WithTime</label>
-                </div>
-            </div>
-
+            
             <EntryInfoFormFields EntryInfo="@Model"/>
 
             <div class="mb-3">
@@ -72,13 +61,13 @@
     [Parameter]
     public Guid? EntryInfoId { get; set; }
 
-    private EiDate Model { get; set; } = null!;
+    private EiEmail Model { get; set; } = null!;
 
     protected override void OnParametersSet()
     {
-        Model = EntryInfoId.HasValue ? Db.EiDates.First(x => x.Id.Equals(EntryInfoId.Value)) : new EiDate()
+        Model = EntryInfoId.HasValue ? Db.EiEmails.First(x => x.Id.Equals(EntryInfoId.Value)) : new EiEmail()
         {
-            Date = DateTime.Now,
+            Email = "",
         };
     }
 
@@ -101,7 +90,7 @@
         if (!EntryInfoId.HasValue)
         {
             Model.EntryId = EntryId;
-            Db.EiDates.Add(Model);   
+            Db.EiEmails.Add(Model);   
         }
 
         Db.SaveChanges();

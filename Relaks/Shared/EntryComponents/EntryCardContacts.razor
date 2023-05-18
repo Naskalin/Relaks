@@ -7,7 +7,7 @@
     {
         
         <li class="nav-item" @onclick="@(() => SetTab(tab))">
-            <button type="button" class="nav-link @(tab.Equals(CurrentTab) ? "active" : "")">@tab</button>
+            <button type="button" class="nav-link @(tab.Equals(CurrentTab) ? "active" : "")">@Resources.SoftDelete.ResourceManager.GetString(tab.ToString())</button>
         </li>
     }
 </ul>
@@ -31,7 +31,7 @@
 }
 else
 {
-    <p class="text-muted mt-2">Ничего не найдено</p>
+    <p class="text-muted mt-2">@Resources.Action.NotFoundResults</p>
 }
 
 @code {
@@ -39,7 +39,7 @@ else
     private enum Tabs
     {
         Active,
-        Archive,
+        Archival,
     }
     
     [Parameter]
@@ -64,7 +64,7 @@ else
             case Tabs.Active:
                 FilteredItems = q.Where(x => x.DeletedAt is null).ToList();
                 break;
-            case Tabs.Archive:
+            case Tabs.Archival:
                 FilteredItems = q.Where(x => x.DeletedAt is not null).ToList();
                 break;
         }

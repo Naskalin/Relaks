@@ -44,4 +44,13 @@
     <data name="Date" xml:space="preserve">
         <value>Date</value>
     </data>
+    <data name="Type" xml:space="preserve">
+        <value>Type</value>
+    </data>
+    <data name="All" xml:space="preserve">
+        <value>All</value>
+    </data>
+    <data name="NotFoundResults" xml:space="preserve">
+        <value>Not Found</value>
+    </data>
 </root>

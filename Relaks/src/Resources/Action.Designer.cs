@@ -69,6 +69,15 @@ namespace Relaks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Все.
+        /// </summary>
+        internal static string All {
+            get {
+                return ResourceManager.GetString("All", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Дата.
         /// </summary>
         internal static string Date {
@@ -105,11 +114,29 @@ namespace Relaks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to E-mail.
+        /// </summary>
+        internal static string Email {
+            get {
+                return ResourceManager.GetString("Email", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Избранное.
         /// </summary>
         internal static string Favorite {
             get {
                 return ResourceManager.GetString("Favorite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ничего не найдено.
+        /// </summary>
+        internal static string NotFoundResults {
+            get {
+                return ResourceManager.GetString("NotFoundResults", resourceCulture);
             }
         }
         
@@ -155,6 +182,15 @@ namespace Relaks.Resources {
         internal static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Тип.
+        /// </summary>
+        internal static string Type {
+            get {
+                return ResourceManager.GetString("Type", resourceCulture);
             }
         }
     }

@@ -1,4 +1,21 @@
-﻿insert into Countries (Id, Alpha2, TitleRu, TitleEn, Native, Phone, Continent, Capital, Currency)
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace Relaks.Migrations
+{
+    /// <inheritdoc />
+    public partial class AddCountriesData : Migration
+    {
+  /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            // Add Countries
+            migrationBuilder.Sql(CountriesSql);
+        }
+
+        private readonly string CountriesSql
+            = @"insert into Countries (Id, Alpha2, TitleRu, TitleEn, Native, Phone, Continent, Capital, Currency)
 values  ('00E9C138-9CF9-4D77-A0E3-F8591C8C8889', 'ME', 'Черногория', 'Montenegro', 'Црна Гора', '382', 'EU', 'Podgorica', 'EUR'),
         ('01C2EEA5-274D-46F0-90A9-80208DC0B201', 'NP', 'Непал', 'Nepal', 'नपल', '977', 'AS', 'Kathmandu', 'NPR'),
         ('0315ED9C-79ED-4AA0-8B99-DC1DCD33597B', 'JM', 'Ямайка', 'Jamaica', 'Jamaica', '1876', 'NA', 'Kingston', 'JMD'),
@@ -248,4 +265,11 @@ values  ('00E9C138-9CF9-4D77-A0E3-F8591C8C8889', 'ME', 'Черногория', '
         ('FAD500E0-4700-4B6B-823F-A348D5D80529', 'IN', 'Индия', 'India', 'भारत', '91', 'AS', 'New Delhi', 'INR'),
         ('FB8C594E-AFD4-4A8A-98E8-EFB79B09AE01', 'PA', 'Панама', 'Panama', 'Panamá', '507', 'NA', 'Panama City', 'PAB,USD'),
         ('FE82FFB9-635E-43E3-9461-03FC91BF2E79', 'PN', 'Острова Питкэрн', 'Pitcairn Islands', 'Pitcairn Islands', '64', 'OC', 'Adamstown', 'NZD'),
-        ('FEDE6811-AD28-4877-949C-01DCAD832264', 'IO', 'Британская территория в Индийском океане', 'British Indian Ocean Territory', 'British Indian Ocean Territory', '246', 'AS', 'Diego Garcia', 'USD');
+        ('FEDE6811-AD28-4877-949C-01DCAD832264', 'IO', 'Британская территория в Индийском океане', 'British Indian Ocean Territory', 'British Indian Ocean Territory', '246', 'AS', 'Diego Garcia', 'USD');";
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+        }
+    }
+}
