@@ -21,14 +21,14 @@ namespace Relaks.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class App_ru {
+    internal class Entity {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal App_ru() {
+        internal Entity() {
         }
         
         /// <summary>
@@ -38,7 +38,7 @@ namespace Relaks.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Relaks.Resources.App.ru", typeof(App_ru).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Relaks.src.Resources.Entity", typeof(Entity).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -60,11 +60,20 @@ namespace Relaks.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to добро пожаловать.
+        ///   Looks up a localized string similar to Дата.
         /// </summary>
-        internal static string welcome {
+        internal static string EiDate {
             get {
-                return ResourceManager.GetString("welcome", resourceCulture);
+                return ResourceManager.GetString("EiDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Телефон.
+        /// </summary>
+        internal static string EiPhone {
+            get {
+                return ResourceManager.GetString("EiPhone", resourceCulture);
             }
         }
     }

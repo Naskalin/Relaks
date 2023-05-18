@@ -17,12 +17,12 @@
 <i class="fa-solid fa-arrow-down-up-lock" aria-hidden="true"></i></p>
   
   @* <p><b>trans</b> @Localizer["Welcome"]</p> *@
-  <p>trans: @__["welcome"]</p>
+  @* <p>trans: @__["welcome"]</p> *@
   
 </PageTemplate>
 @code{
 
-  [Inject]
-  public IStringLocalizer<App> __ { get; set; } = null!;
+  // [Inject]
+  // public IStringLocalizer<App> __ { get; set; } = null!;
 
 }

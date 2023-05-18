@@ -38,7 +38,7 @@ public static class RegisterServices
         //     new CultureInfo(defaultCulture),
         //     new CultureInfo("en")
         // };
-        services.AddLocalization(options => options.ResourcesPath = "Resources");
+        services.AddLocalization(options => options.ResourcesPath = Path.Combine("src", "Resources"));
         // services.AddScoped<IStringLocalizer<App>, StringLocalizer<App>>();
         // services.Configure<RequestLocalizationOptions>(options => {
         //     options.DefaultRequestCulture = new RequestCulture(defaultCulture);

@@ -50,7 +50,7 @@
 @* <Dump Data="@EntryInfo.IsFavorite"/> *@
 
 <div class="mb-3">
-    <label for="" class="form-label">Название</label>
+    <label for="" class="form-label">@Resources.Action.Title</label>
     <input type="text" @bind-value="@EntryInfo.Title" class="form-control">
     <ValidationMessage For="@(() => EntryInfo.Title)"/>
 </div>
@@ -58,7 +58,7 @@
 <div class="mb-3">
     <div class="form-check form-switch">
         <InputCheckbox class="form-check-input" type="checkbox" @bind-Value="@EntryInfo.IsFavorite" role="switch" id="entry-info-favorite-switch"/>
-        <label class="form-check-label" for="entry-info-favorite-switch">Избранное</label>
+        <label class="form-check-label" for="entry-info-favorite-switch">@Resources.Action.Favorite</label>
     </div>
 </div>
 

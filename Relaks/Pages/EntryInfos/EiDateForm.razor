@@ -13,10 +13,10 @@
         <MyTitle>
             <BeforeTitle>
                 <a href="/entries/@EntryId/info" class="btn btn-outline-secondary">
-                    <i class="las la-arrow-left la-lg me-1"></i> Вернуться
+                    <i class="las la-arrow-left la-lg me-1"></i> @Resources.Action.Return
                 </a>
             </BeforeTitle>
-            <ChildContent>@(EntryInfoId.HasValue ? "Изменить" : "Добавить") @nameof(EiDate)</ChildContent>
+            <ChildContent>@(EntryInfoId.HasValue ? Resources.Action.Edit : Resources.Action.Add): @Resources.Entity.ResourceManager.GetString(nameof(EiDate))</ChildContent>
         </MyTitle>
         
         @* <Dump Data="@Model.Date"/> *@
@@ -25,7 +25,7 @@
             <ValidationSummary/>
 
             <div class="mb-3">
-                <label for="" class="form-label">Дата</label>
+                <label for="" class="form-label">@Resources.Action.Date</label>
                 <InputDate Type="@(Model.WithTime ? InputDateType.DateTimeLocal : InputDateType.Date)"
                            @bind-Value="@Model.Date"
                            class="form-control"
@@ -36,20 +36,29 @@
             <div class="mb-3">
                 <div class="form-check form-switch">
                     <InputCheckbox class="form-check-input" type="checkbox" @bind-Value="@Model.WithTime" role="switch" id="entry-info-date-switch"/>
-                    <label class="form-check-label" for="entry-info-date-switch">Со временем</label>
+                    <label class="form-check-label" for="entry-info-date-switch">@Resources.Action.Date_WithTime</label>
                 </div>
             </div>
 
             <EntryInfoFormFields EntryInfo="@Model"/>
 
             <div class="mb-3">
-                <button class="btn btn-primary">@(EntryInfoId.HasValue ? "Сохранить" : "Добавить")</button>
+                <button class="btn btn-primary">
+                    <i class="las la-lg me-1 @(EntryInfoId.HasValue ? "la-edit" : "la-plus-circle")"></i>
+                    @(EntryInfoId.HasValue ? Resources.Action.SaveChanges : Resources.Action.Add)
+                </button>
             </div>
         </EditForm>
         
         @if (EntryInfoId.HasValue)
         {
-            <div class="text-end"><button type="button" class="btn btn-link" @onclick="OnDelete">Удалить</button></div>   
+            <div class="text-end">
+                
+                <button type="button" class="btn btn-link text-danger" @onclick="OnDelete">
+                    <i class="las la-trash la-lg"></i>
+                    @Resources.Action.SoftDelete
+                </button>
+            </div>   
         }
     </HalfPage>
 </EntryProfileLayout>
@@ -77,7 +86,7 @@
     private async Task OnDelete()
     {
         if (!EntryInfoId.HasValue) return;
-        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", $"Удаляем, всё верно?");
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.SoftDelete_Confirmation);
         if (!isConfirmed) return;
         Db.Remove(Model);
         await Db.SaveChangesAsync();
