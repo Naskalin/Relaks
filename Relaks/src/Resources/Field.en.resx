@@ -17,4 +17,7 @@
     <data name="UrlHelpText" xml:space="preserve">
         <value>Absolute url, example: https://google.com</value>
     </data>
+    <data name="DeletedReason" xml:space="preserve">
+        <value>Archivation reason (not required)</value>
+    </data>
 </root>

@@ -60,6 +60,15 @@ namespace Relaks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Причина архивации (не обязательно).
+        /// </summary>
+        internal static string DeletedReason {
+            get {
+                return ResourceManager.GetString("DeletedReason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ссылка.
         /// </summary>
         internal static string Url {

@@ -1,6 +1,5 @@
 ﻿using Relaks.Interfaces;
 using Relaks.Models;
-using Relaks.Models.Requests.EntryInfoRequests;
 
 namespace Relaks.Mappers;
 

@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Relaks.Interfaces;
 using Relaks.Models;
-using Relaks.Models.Requests.EntryInfoRequests;
 using Relaks.Models.Requests.EntryRequests;
 using Relaks.Validators.EntryInfoValidators;
 using Relaks.Validators.EntryValidators;

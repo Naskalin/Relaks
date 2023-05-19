@@ -1,6 +1,5 @@
 ﻿@using Relaks.Models
 @using Relaks.Models.Misc
-@using Relaks.Models.Requests.EntryInfoRequests
 @using Relaks.Models.Requests.EntryRequests
 @using Relaks.Interfaces
 
@@ -66,7 +65,7 @@
 
     [Parameter]
     public IEntryInfo EntryInfo { get; set; } = null!;
-    
+
     [Parameter]
     public EventCallback<IEntryInfo> EntryInfoChanged { get; set; }
 

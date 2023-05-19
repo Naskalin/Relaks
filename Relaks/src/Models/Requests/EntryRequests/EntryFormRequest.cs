@@ -4,13 +4,18 @@ namespace Relaks.Models.Requests.EntryRequests;
 
 public class EntryFormRequest : IEntry
 {
-    public string Name { get; set; } = null!;
+    public string Name { get; set; }
     public string? Description { get; set; }
     public string Discriminator { get; set; } = null!;
     public DateTime? StartAt { get; set; }
     public DateTime? EndAt { get; set; }
     public bool StartAtWithTime { get; set; }
     public bool EndAtWithTime { get; set; }
+
+    public EntryFormRequest()
+    {
+        Name = "";
+    }
 }
 
 public class EntryCreateRequest : EntryFormRequest {}

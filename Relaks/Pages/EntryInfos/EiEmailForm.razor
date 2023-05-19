@@ -31,6 +31,10 @@
             </div>
             
             <EntryInfoFormFields EntryInfo="@Model"/>
+            @if (EntryInfoId.HasValue)
+            {
+                <SoftDeletedReasonField SoftDeletedReason="@Model"/>
+            }
 
             <div class="mb-3">
                 <button class="btn btn-primary">
@@ -40,13 +44,13 @@
             </div>
         </EditForm>
         
-        @if (EntryInfoId.HasValue)
+        @if (EntryInfoId.HasValue && Model.DeletedAt != null)
         {
             <div class="text-end">
                 
                 <button type="button" class="btn btn-link text-danger" @onclick="OnDelete">
                     <i class="las la-trash la-lg"></i>
-                    @Resources.Action.SoftDelete
+                    @Resources.Action.Delete
                 </button>
             </div>   
         }
@@ -76,7 +80,7 @@
     private async Task OnDelete()
     {
         if (!EntryInfoId.HasValue) return;
-        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.SoftDelete_Confirmation);
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
         if (!isConfirmed) return;
         Db.Remove(Model);
         await Db.SaveChangesAsync();

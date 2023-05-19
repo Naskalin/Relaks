@@ -26,11 +26,8 @@
     <data name="Delete" xml:space="preserve">
         <value>Delete</value>
     </data>
-    <data name="SoftDelete" xml:space="preserve">
-        <value>Soft Delete</value>
-    </data>
-    <data name="SoftDelete_Confirmation" xml:space="preserve">
-        <value>Moving to the archive, all right?</value>
+    <data name="Delete_Confirmation" xml:space="preserve">
+        <value>Full delete, all right?</value>
     </data>
     <data name="Date_WithTime" xml:space="preserve">
         <value>Date with time</value>

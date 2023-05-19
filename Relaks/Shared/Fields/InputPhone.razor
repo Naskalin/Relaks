@@ -12,7 +12,6 @@
         <i class="fi fi-@(Phone.Region.ToLower())" style="font-size: 1rem"></i>
     </button>
     <InputText type="text" @bind-Value="Phone.Number" class="form-control"/>
-    
 </div>
 
 <Modal @ref="Modal" IsKeyboard="true" IsBackdrop="true">
@@ -46,7 +45,7 @@
     private string? Search { get; set; }
     
     private Modal Modal { get; set; } = new();
-    
+
     private void ShowModal()
     {
         if (!Countries.Any())

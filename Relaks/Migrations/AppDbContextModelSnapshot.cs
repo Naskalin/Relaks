@@ -61,7 +61,7 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Entries");
+                    b.ToTable("Entries", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseEntry");
 
@@ -103,7 +103,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseEntryInfo");
 
@@ -158,7 +158,7 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.FtsEntry", b =>
@@ -250,7 +250,7 @@ namespace Relaks.Migrations
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
 
-                    b.ToTable("Entries");
+                    b.ToTable("Entries", (string)null);
 
                     b.HasDiscriminator().HasValue("ECompany");
                 });
@@ -259,7 +259,7 @@ namespace Relaks.Migrations
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
 
-                    b.ToTable("Entries");
+                    b.ToTable("Entries", (string)null);
 
                     b.HasDiscriminator().HasValue("EMeet");
                 });
@@ -268,7 +268,7 @@ namespace Relaks.Migrations
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
 
-                    b.ToTable("Entries");
+                    b.ToTable("Entries", (string)null);
 
                     b.HasDiscriminator().HasValue("EPerson");
                 });
@@ -281,7 +281,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator().HasValue("EiCustom");
                 });
@@ -296,7 +296,7 @@ namespace Relaks.Migrations
                     b.Property<bool>("WithTime")
                         .HasColumnType("INTEGER");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator().HasValue("EiDate");
                 });
@@ -309,7 +309,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator().HasValue("EiEmail");
                 });
@@ -326,7 +326,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator().HasValue("EiPhone");
                 });
@@ -339,7 +339,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator().HasValue("EiUrl");
                 });

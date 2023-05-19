@@ -24,4 +24,7 @@
     <data name="Archival" xml:space="preserve">
         <value>Архивные</value>
     </data>
+    <data name="MoveToArchive" xml:space="preserve">
+        <value>В архив</value>
+    </data>
 </root>

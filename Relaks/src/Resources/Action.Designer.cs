@@ -105,6 +105,15 @@ namespace Relaks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Полное удаление, всё верно?.
+        /// </summary>
+        internal static string Delete_Confirmation {
+            get {
+                return ResourceManager.GetString("Delete_Confirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Изменить.
         /// </summary>
         internal static string Edit {
@@ -155,24 +164,6 @@ namespace Relaks.Resources {
         internal static string SaveChanges {
             get {
                 return ResourceManager.GetString("SaveChanges", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Мягкое удаление.
-        /// </summary>
-        internal static string SoftDelete {
-            get {
-                return ResourceManager.GetString("SoftDelete", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Перемещаем в архив, всё верно?.
-        /// </summary>
-        internal static string SoftDelete_Confirmation {
-            get {
-                return ResourceManager.GetString("SoftDelete_Confirmation", resourceCulture);
             }
         }
         

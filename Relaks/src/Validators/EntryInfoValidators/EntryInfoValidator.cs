@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using Relaks.Interfaces;
 using Relaks.Models;
-using Relaks.Models.Requests.EntryInfoRequests;
 using Relaks.Utils;
 
 namespace Relaks.Validators.EntryInfoValidators;
@@ -12,7 +11,7 @@ public class EntryInfoValidator : AbstractValidator<IEntryInfo>
     {
         When(x => !string.IsNullOrEmpty(x.Title), () =>
         {
-            RuleFor(x => x.Title).MinimumLength(2).MaximumLength(255);
+            RuleFor(x => x.Title).Length(2, 255);
         });
 
         // When(x => x.Discriminator.Equals(nameof(EiDate)), () =>

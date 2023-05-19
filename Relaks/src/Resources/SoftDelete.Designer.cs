@@ -76,5 +76,14 @@ namespace Relaks.Resources {
                 return ResourceManager.GetString("Archival", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to В архив.
+        /// </summary>
+        internal static string MoveToArchive {
+            get {
+                return ResourceManager.GetString("MoveToArchive", resourceCulture);
+            }
+        }
     }
 }

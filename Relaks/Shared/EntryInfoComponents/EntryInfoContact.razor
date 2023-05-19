@@ -1,38 +1,44 @@
 ﻿@using Relaks.Models
 @using SixLabors.ImageSharp.Memory
 
-<div class="row align-items-center" id="entry-info-@EntryInfo.Id">
-    <div class="col-auto" style="width: 2rem">
-        <i class="@DataHelper.EntityIcon(EntryInfo.Discriminator) la-lg @(EntryInfo.IsFavorite ? "text-warning" : "")"></i>
+<div>
+    <div class="row align-items-center" id="entry-info-@EntryInfo.Id">
+        <div class="col-auto" style="width: 2rem">
+            <i class="@DataHelper.EntityIcon(EntryInfo.Discriminator) la-lg @(EntryInfo.IsFavorite ? "text-warning" : "")"></i>
+        </div>
+        <div class="col">
+            @if (EiPhone != null)
+            {
+                <a href="tel:@EiPhone.Number" target="_blank">@EiPhone.Region @EiPhone.Number</a>
+            }
+            else if (EiEmail != null)
+            {
+                <a href="mailto:@EiEmail.Email" target="_blank" class="text-break">@EiEmail.Email</a>
+            }
+            else if (EiUrl != null)
+            {
+                <a href="@EiUrl.Url" target="_blank" class="text-break">@EiUrl.Url</a>
+            }
+            else if (EiDate != null)
+            {
+                @EiDate.Date.ToString(EiDate.WithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy")
+            }
+            else
+            {
+                <span class="text-danger">@EntryInfo.Discriminator is not supported</span>
+            }
+    
+            @if (!string.IsNullOrEmpty(EntryInfo.Title))
+            {
+                <div>
+                    <small class="mt-1">@EntryInfo.Title</small>
+                </div>
+            }
+        </div>
     </div>
-    <div class="col">
-        @if (EiPhone != null)
-        {
-            <a href="tel:@EiPhone.Number" target="_blank">@EiPhone.Region @EiPhone.Number</a>
-        }
-        else if (EiEmail != null)
-        {
-            <a href="mailto:@EiEmail.Email" target="_blank" class="text-break">@EiEmail.Email</a>
-        }
-        else if (EiUrl != null)
-        {
-            <a href="@EiUrl.Url" target="_blank" class="text-break">@EiUrl.Url</a>
-        }
-        else if (EiDate != null)
-        {
-            @EiDate.Date.ToString(EiDate.WithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy")
-        }
-
-        @if (!string.IsNullOrEmpty(EntryInfo.Title))
-        {
-            <div>
-                <small class="mt-1">@EntryInfo.Title</small>
-            </div>
-        }
-    </div>
+    
+    <SoftDeleteShow SoftDeletedReason="@EntryInfo" Classes="mt-2 p-1 small"/>
 </div>
-
-<SoftDeleteShow SoftDeletedReason="@EntryInfo" Classes="mt-2"/>
 @code {
     [Parameter]
     public BaseEntryInfo EntryInfo { get; set; } = null!;
@@ -61,8 +67,6 @@
             case nameof(EiDate):
                 EiDate = (EiDate) EntryInfo;
                 break;
-            default:
-                throw new ArgumentException($"Error: Discriminator {EntryInfo.Discriminator} not supported.");
         }
     }
 

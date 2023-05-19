@@ -24,4 +24,7 @@
     <data name="UrlHelpText" xml:space="preserve">
         <value>Абсолютная ссылка, например: https://yandex.ru</value>
     </data>
+    <data name="DeletedReason" xml:space="preserve">
+        <value>Причина архивации (не обязательно)</value>
+    </data>
 </root>

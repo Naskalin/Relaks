@@ -17,4 +17,7 @@
     <data name="Archival" xml:space="preserve">
         <value>Archival</value>
     </data>
+    <data name="MoveToArchive" xml:space="preserve">
+        <value>Move To Archive</value>
+    </data>
 </root>

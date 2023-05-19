@@ -10,7 +10,7 @@ public abstract class BaseEntry : IEntry, ITimestamped, ISoftDeletedReason
     public Guid Id { get; set; }
     [StringLength(50)]
     public string Discriminator { get; set; } = null!;
-    public string Name { get; set; } = null!;
+    public string Name { get; set; }
     // public TypeEnum Type { get; set; }
     public string? Description { get; set; }
     // public int Reputation { get; set; }
@@ -33,11 +33,12 @@ public abstract class BaseEntry : IEntry, ITimestamped, ISoftDeletedReason
     // [JsonIgnore]
     // public List<Structure> Structures { get; set; } = new();
 
-    public BaseEntry()
+    protected BaseEntry()
     {
         Id = Guid.NewGuid();
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
+        Name = "";
     }
 }
 

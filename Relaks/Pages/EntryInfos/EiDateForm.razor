@@ -18,7 +18,7 @@
             </BeforeTitle>
             <ChildContent>@(EntryInfoId.HasValue ? Resources.Action.Edit : Resources.Action.Add): @Resources.Entity.ResourceManager.GetString(nameof(EiDate))</ChildContent>
         </MyTitle>
-        
+
         @* <Dump Data="@Model.Date"/> *@
         <EditForm Model="@Model" OnSubmit="OnSubmit">
             <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
@@ -30,8 +30,7 @@
                            @bind-Value="@Model.Date"
                            class="form-control"
                            @bind-Value:format="YYYY"
-                           autofocus="autofocus"
-                           />
+                           autofocus="autofocus"/>
                 <ValidationMessage For="@(() => Model.Date)"/>
             </div>
             <div class="mb-3">
@@ -43,6 +42,11 @@
 
             <EntryInfoFormFields EntryInfo="@Model"/>
 
+            @if (EntryInfoId.HasValue)
+            {
+                <SoftDeletedReasonField SoftDeletedReason="@Model"/>
+            }
+
             <div class="mb-3">
                 <button class="btn btn-primary">
                     <i class="las la-lg me-1 @(EntryInfoId.HasValue ? "la-edit" : "la-plus-circle")"></i>
@@ -50,16 +54,15 @@
                 </button>
             </div>
         </EditForm>
-        
-        @if (EntryInfoId.HasValue)
+
+        @if (EntryInfoId.HasValue && Model.DeletedAt != null)
         {
             <div class="text-end">
-                
                 <button type="button" class="btn btn-link text-danger" @onclick="OnDelete">
                     <i class="las la-trash la-lg"></i>
-                    @Resources.Action.SoftDelete
+                    @Resources.Action.Delete
                 </button>
-            </div>   
+            </div>
         }
     </HalfPage>
 </EntryProfileLayout>
@@ -87,7 +90,7 @@
     private async Task OnDelete()
     {
         if (!EntryInfoId.HasValue) return;
-        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.SoftDelete_Confirmation);
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
         if (!isConfirmed) return;
         Db.Remove(Model);
         await Db.SaveChangesAsync();
@@ -101,10 +104,11 @@
         if (!EntryInfoId.HasValue)
         {
             Model.EntryId = EntryId;
-            Db.EiDates.Add(Model);   
+            Db.EiDates.Add(Model);
         }
 
         Db.SaveChanges();
         NavigationManager.NavigateTo($"/entries/{EntryId}/info");
     }
+
 }
