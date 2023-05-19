@@ -1,0 +1,77 @@
+﻿@page "/entries/{entryId:guid}/edit"
+@using Relaks.Models
+@using Relaks.Database
+@using Relaks.Mappers
+
+@inject AppDbContext Db;
+@inject NavigationManager NavigationManager;
+@inject IJSRuntime JsRuntime;
+
+<EntryProfileLayout EntryId="@EntryId">
+    <HalfPage>
+        <MyTitle>
+            <BeforeTitle>
+                <a href="/entries/@EntryId/info" class="btn btn-outline-secondary">
+                    <i class="las la-arrow-left la-lg me-1"></i> @Resources.Action.Return
+                </a>
+            </BeforeTitle>
+            <ChildContent>@Resources.Action.Edit @Resources.Entity.BaseEntry.ToLower()</ChildContent>
+        </MyTitle>
+
+        <EditForm Model="@Entry" OnSubmit="@OnSubmit">
+            <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
+            <ValidationSummary/>
+            <FormFields Entry="@Entry"/>
+            <SoftDeletedReasonField SoftDeletedReason="@Entry"/>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="las la-edit la-lg me-1"></i>
+                    @Resources.Action.SaveChanges
+                </button>
+            </div>
+        </EditForm>
+
+        @if (Entry.DeletedAt != null)
+        {
+            <div class="text-end">
+                <button type="button" class="btn btn-link text-danger" @onclick="OnDelete">
+                    <i class="las la-trash la-lg"></i>
+                    @Resources.Action.Delete
+                </button>
+            </div>
+        }
+    </HalfPage>
+</EntryProfileLayout>
+
+@code {
+    
+    [Parameter]
+    public Guid EntryId { get; set; }
+
+    private BaseEntry Entry { get; set; } = null!;
+    private FluentValidationValidator Validator { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        Entry = Db.BaseEntries.First(x => x.Id.Equals(EntryId));
+    }
+    
+    private void OnSubmit()
+    {
+        if (!Validator.Validate()) return;
+        
+        Entry.MapTo(Entry);
+        Db.SaveChanges();
+        NavigationManager.NavigateTo($"/entries/{EntryId}/info");
+    }
+    
+    private async Task OnDelete()
+    {
+        if (Entry.DeletedAt == null) return;
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
+        if (!isConfirmed) return;
+        NavigationManager.NavigateTo($"/entries/{EntryId}/delete");
+    }
+
+}

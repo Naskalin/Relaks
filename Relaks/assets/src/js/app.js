@@ -1,4 +1,5 @@
 ﻿import '../css/app.scss';
+import './_image_cropper.js';
 
 window.SetThemeColorMode = (modeName) => {
     try {

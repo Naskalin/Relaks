@@ -1,0 +1,16 @@
+﻿@page "/entries/{entryId:guid}/delete"
+@using Relaks.Managers
+
+@inject EntryManager EntryManager;
+@inject NavigationManager NavigationManager;
+
+@code {
+    [Parameter]
+    public Guid EntryId { get; set; }
+    
+    protected override void OnParametersSet()
+    {
+        EntryManager.Delete(EntryId);
+        NavigationManager.NavigateTo("/entries");
+    }
+}

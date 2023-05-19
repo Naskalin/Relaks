@@ -2,7 +2,7 @@
 
 @if (SoftDeletedReason.DeletedAt != null)
 {
-    <div class="alert bg-danger bg-opacity-10 text-body @Classes">
+    <div class="alert bg-danger bg-opacity-10 text-body p-2 small @Classes">
         <div class="text-danger"><i class="las la-trash la-lg"></i> <b>@SoftDeletedReason.DeletedAt?.ToLocalTime()</b></div>
         @if (!string.IsNullOrEmpty(SoftDeletedReason.DeletedReason))
         {

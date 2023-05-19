@@ -5,7 +5,6 @@
 <ul class="nav nav-tabs justify-content-center">
     @foreach (var tab in Enum.GetValues<Tabs>())
     {
-        
         <li class="nav-item" @onclick="@(() => SetTab(tab))">
             <button type="button" class="nav-link @(tab.Equals(CurrentTab) ? "active" : "")">@Resources.SoftDelete.ResourceManager.GetString(tab.ToString())</button>
         </li>

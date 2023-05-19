@@ -1,17 +1,15 @@
-﻿<button class="btn btn-sm btn-outline-secondary" @onclick="@(() => SetDarkMode(IsDark = !IsDark))" disabled="@IsLoading">
+﻿@inject IJSRuntime Js;
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage;
+
+<button class="btn btn-sm btn-outline-secondary" @onclick="@(() => SetDarkMode(IsDark = !IsDark))" disabled="@IsLoading">
     <i class="las la-adjust la-lg text-secondary" style="@(IsDark ? "transform: rotate(180deg)" : "")"></i>
 </button>
 
 @code {
 
-    [Inject]
-    private IJSRuntime Js { get; set; } = null!;
-
-    [Inject]
-    private Blazored.LocalStorage.ILocalStorageService LocalStorage { get; set; } = null!;
-
         private const string Dark = "dark";
         private const string Light = "light";
+
     private bool IsDark { get; set; }
     private bool IsLoading { get; set; }
 

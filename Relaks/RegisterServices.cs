@@ -1,12 +1,9 @@
 ﻿using System.Globalization;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Localization;
-using Relaks.Interfaces;
+using Relaks.Managers;
 using Relaks.Models;
-using Relaks.Models.Requests.EntryRequests;
 using Relaks.Validators.EntryInfoValidators;
 using Relaks.Validators.EntryValidators;
 
@@ -17,12 +14,16 @@ public static class RegisterServices
     public static void RegisterManagers(this IServiceCollection services)
     {
         // services.AddSingleton<RelaksConfigManager>();
+        services.AddScoped<EntryManager>();
     }
 
     public static void RegisterValidators(this IServiceCollection services)
     {
         ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
-        services.AddScoped<IValidator<EntryFormRequest>, EntryFormRequestValidator>();
+        // services.AddScoped<IValidator<BaseEntry>, BaseEntryValidator>();
+        services.AddScoped<IValidator<EPerson>, BaseEntryValidator>();
+        services.AddScoped<IValidator<ECompany>, BaseEntryValidator>();
+        services.AddScoped<IValidator<EMeet>, BaseEntryValidator>();
 
         services.AddScoped<IValidator<EiDate>, EiDateValidator>();
         services.AddScoped<IValidator<EiPhone>, EiPhoneValidator>();
@@ -43,7 +44,6 @@ public static class RegisterServices
 
         var supportedCultures = new[] {"ru", "en"};
         services.AddLocalization(options => options.ResourcesPath = Path.Combine("src", "Resources"));
-        // services.AddScoped<IStringLocalizer<App>, StringLocalizer<App>>();
         services.Configure<RequestLocalizationOptions>(options =>
         {
             options

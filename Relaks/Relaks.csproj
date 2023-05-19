@@ -27,46 +27,4 @@
     <ItemGroup>
         <None Remove="relaks.yaml" />
     </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Update="src\Resources\Entity.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Entity.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-      <EmbeddedResource Update="src\Resources\Action.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Action.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-      <EmbeddedResource Update="src\Resources\SoftDelete.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>SoftDelete.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-      <EmbeddedResource Update="src\Resources\Field.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Field.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="src\Resources\Entity.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>Entity.resx</DependentUpon>
-      </Compile>
-      <Compile Update="src\Resources\Action.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>Action.resx</DependentUpon>
-      </Compile>
-      <Compile Update="src\Resources\SoftDelete.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>SoftDelete.resx</DependentUpon>
-      </Compile>
-      <Compile Update="src\Resources\Field.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>Field.resx</DependentUpon>
-      </Compile>
-    </ItemGroup>
 </Project>

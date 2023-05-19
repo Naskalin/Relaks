@@ -1,9 +1,11 @@
 ﻿@page "/entries/new"
 
-@using Relaks.Models.Requests.EntryRequests
 @using Relaks.Database
 @using Relaks.Mappers
 @using Relaks.Models
+
+@inject AppDbContext Db;
+@inject NavigationManager NavigationManager;
 
 <PageTemplate>
     <HalfPage IsCentered="@true">
@@ -13,13 +15,30 @@
                     <i class="las la-arrow-left la-lg me-1"></i> @Resources.Action.Return
                 </a>
             </BeforeTitle>
-            <ChildContent>@Resources.Action.Add @Resources.Entity.BaseEntry</ChildContent>
+            <ChildContent>@Resources.Action.Add @Resources.Entity.BaseEntry.ToLower()</ChildContent>
         </MyTitle>
 
-        <EditForm Model="@Req" OnSubmit="@OnSubmit">
+        <EditForm Model="@Entry" OnSubmit="@OnSubmit">
             <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
             <ValidationSummary/>
-            <FormFields Req="@Req"/>
+            
+            <div class="mb-3">
+                <label for="" class="form-label">@Resources.Action.Type</label>
+            
+                <InputRadioGroup @bind-Value="@Entry.Discriminator">
+                    @foreach (var d in DataHelper.EntryDiscriminators)
+                    {
+                        <div class="form-check">
+                            <InputRadio Value="@d" id="@($"entry-{d}")" class="form-check-input"/>
+                            <label for="@($"entry-{d}")" class="form-check-label">@Resources.Entity.ResourceManager.GetString(d)</label>
+                        </div>
+                    }
+                </InputRadioGroup>
+                
+                <ValidationMessage For="@(() => Entry.Discriminator)"/>
+            </div>
+            
+            <FormFields Entry="@Entry"/>
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">
                     <i class="las la-plus-circle la-lg me-1"></i>
@@ -32,19 +51,13 @@
 
 @code {
 
-    [Inject]
-    public AppDbContext Db { get; set; } = null!;
-
-    [Inject]
-    public NavigationManager NavigationManager { get; set; } = null!;
-
-    private EntryFormRequest Req { get; set; } = null!;
+    private BaseEntry Entry { get; set; } = null!;
     private FluentValidationValidator Validator { get; set; } = null!;
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        Req = new()
+        Entry = new EPerson()
         {
             Discriminator = nameof(EPerson),
         };
@@ -54,15 +67,15 @@
     {
         if (!Validator.Validate()) return;
 
-        BaseEntry entry = Req.Discriminator switch
+        BaseEntry entry = Entry.Discriminator switch
         {
             nameof(EPerson) => new EPerson(),
             nameof(ECompany) => new ECompany(),
             nameof(EMeet) => new EMeet(),
-            _ => throw new ArgumentException($"Error: discriminator {Req.Discriminator} is not supported")
+            _ => throw new ArgumentException($"Error: discriminator {Entry.Discriminator} is not supported")
             };
         
-        Req.MapTo(entry);
+        Entry.MapTo(Entry);
         Db.BaseEntries.Add(entry);
         Db.SaveChanges();
         NavigationManager.NavigateTo($"/entries/{entry.Id}/info");

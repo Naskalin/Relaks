@@ -10,7 +10,7 @@ public class SoftDeletedValidator : AbstractValidator<ISoftDeletedReason>
         RuleFor(x => x.DeletedAt).NotEqual(default(DateTime));
         When(x => !string.IsNullOrEmpty(x.DeletedReason), () =>
         {
-            RuleFor(x => x.DeletedReason).Length(2, 255);
+            RuleFor(x => x.DeletedReason).Length(2, 500);
         });
     }
 }

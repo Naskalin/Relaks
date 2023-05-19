@@ -1,6 +1,12 @@
 ﻿@using Relaks.Models
 
-<div class="my-3 d-flex gap-2 justify-content-center align-items-center">
+<div class="mt-3 d-flex gap-2 justify-content-center align-items-center">
+    <Tooltip Title="@($"{Resources.Action.Edit} {Resources.Entity.BaseEntry.ToLower()}")" Trigger="hover">
+        <NavLink href="@($"/entries/{EntryId}/edit")" class="btn btn-outline-secondary btn-circle">
+            <i class="las la-user-cog la-lg"></i>
+        </NavLink>
+    </Tooltip>
+    <div class="vr"></div>
     @foreach (var d in DataHelper.EntryInfoContactDiscriminators)
     {
         <Tooltip Title="@($"Добавить {Resources.Entity.ResourceManager.GetString(d)}")" Trigger="hover">
@@ -12,6 +18,8 @@
 </div>
 
 @code {
+
     [Parameter]
     public Guid EntryId { get; set; }
+
 }

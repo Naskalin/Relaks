@@ -1,10 +1,16 @@
-﻿<PageTemplate>
+﻿@using Relaks.Models
+@using Relaks.Database
+@inject NavigationManager NavigationManager;
+@inject AppDbContext Db;
+
+<PageTemplate>
+    <SoftDeleteShow SoftDeletedReason="@BaseEntry"/>
     <div class="row gap-4">
         <div class="col-auto">
             <EntryCard EntryId="@EntryId"
                        EntryInfoId="@EntryInfoId"
                        WithEdit="@true"
-                       />
+                       HideSoftDeleted="@true"/>
         </div>
         <div class="col">
             @ChildContent
@@ -18,11 +24,10 @@
     
     [Parameter]
     public RenderFragment ChildContent { get; set; } = null!;
-
-    [Inject]
-    public NavigationManager NavigationManager { get; set; } = null!;
+    
     
     private Guid? EntryInfoId { get; set; }
+    private BaseEntry BaseEntry { get; set; } = null!;
 
     protected override void OnParametersSet()
     {
@@ -30,5 +35,7 @@
         var dict = System.Web.HttpUtility.ParseQueryString(query);
         var entryInfoId = dict["entryInfoId"];
         EntryInfoId = string.IsNullOrEmpty(entryInfoId) ? null : Guid.Parse(entryInfoId);
+
+        BaseEntry = Db.BaseEntries.First(x => x.Id.Equals(EntryId));
     }
 }
