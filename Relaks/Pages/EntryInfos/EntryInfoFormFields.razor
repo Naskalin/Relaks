@@ -3,60 +3,15 @@
 @using Relaks.Models.Requests.EntryRequests
 @using Relaks.Interfaces
 
-@* @switch (Req.Discriminator) *@
-@* { *@
-@*     case nameof(EiEmail): *@
-@*         <div class="mb-3"> *@
-@*             <label for="" class="form-label">E-mail</label> *@
-@*             <input type="text" @bind-value="@Req.Email" class="form-control"> *@
-@*             <ValidationMessage For="@(() => Req.Email)"/> *@
-@*         </div> *@
-@*         break; *@
-@*     case nameof(EiUrl): *@
-@*         <div class="mb-3"> *@
-@*             <label for="" class="form-label">Ссылка</label> *@
-@*             <input type="url" @bind-value="@Req.Url" class="form-control"> *@
-@*             <div class="form-text">Абсолютная ссылка, например: https://ya.ru</div> *@
-@*             <ValidationMessage For="@(() => Req.Url)"/> *@
-@*         </div> *@
-@*         break; *@
-@*     case nameof(EiDate): *@
-@*         <div class="mb-3"> *@
-@*             <label for="" class="form-label">Дата</label> *@
-@*             <InputDate Type="@(Req.WithTime ? InputDateType.DateTimeLocal : InputDateType.Date)" *@
-@*                        @bind-Value="@Req.Date" class="form-control"/> *@
-@*             <ValidationMessage For="@(() => Req.Date)"/> *@
-@*         </div> *@
-@*         <div class="mb-3"> *@
-@*             <div class="form-check form-switch"> *@
-@*                 <input class="form-check-input" type="checkbox" @bind-value="@Req.WithTime" role="switch" id="entry-info-date-switch"> *@
-@*                 <label class="form-check-label" for="entry-info-date-switch">Со временем</label> *@
-@*                 <ValidationMessage For="@(() => Req.WithTime)"/> *@
-@*             </div> *@
-@*         </div> *@
-@*         break; *@
-@*     case nameof(EiPhone): *@
-@*         <div class="mb-3"> *@
-@*             <label for="" class="form-label">Телефон</label> *@
-@*             <InputPhone @bind-Region="@Req.Region" @bind-Number="@Req.Number"/> *@
-@*             <ValidationMessage For="@(() => Req.Region)"/>    *@
-@*             <ValidationMessage For="@(() => Req.Number)"/> *@
-@*         </div> *@
-@*         break; *@
-@* } *@
-
-@* <Dump Data="@EntryInfo.Title"/> *@
-@* <Dump Data="@EntryInfo.IsFavorite"/> *@
-
 <div class="mb-3">
-    <label for="" class="form-label">@Resources.Action.Title</label>
+    <label for="" class="form-label">@Resources.Field.ShortDescription (@Resources.Action.NotRequired)</label>
     <input type="text" @bind-value="@EntryInfo.Title" class="form-control">
     <ValidationMessage For="@(() => EntryInfo.Title)"/>
 </div>
 
 <div class="mb-3">
     <div class="form-check form-switch">
-        <InputCheckbox class="form-check-input" type="checkbox" @bind-Value="@EntryInfo.IsFavorite" role="switch" id="entry-info-favorite-switch"/>
+        <InputCheckbox class="form-check-input" type="checkbox" @bind-Value="@EntryInfo.IsFavorite" id="entry-info-favorite-switch"/>
         <label class="form-check-label" for="entry-info-favorite-switch">@Resources.Action.Favorite</label>
     </div>
 </div>

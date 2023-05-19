@@ -78,6 +78,15 @@ namespace Relaks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Подпись.
+        /// </summary>
+        internal static string Caption {
+            get {
+                return ResourceManager.GetString("Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Дата.
         /// </summary>
         internal static string Date {
@@ -146,6 +155,15 @@ namespace Relaks.Resources {
         internal static string NotFoundResults {
             get {
                 return ResourceManager.GetString("NotFoundResults", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не обязательно.
+        /// </summary>
+        internal static string NotRequired {
+            get {
+                return ResourceManager.GetString("NotRequired", resourceCulture);
             }
         }
         

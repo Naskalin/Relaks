@@ -69,6 +69,15 @@ namespace Relaks.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Краткое описание.
+        /// </summary>
+        internal static string ShortDescription {
+            get {
+                return ResourceManager.GetString("ShortDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ссылка.
         /// </summary>
         internal static string Url {

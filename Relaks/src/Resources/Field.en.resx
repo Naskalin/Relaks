@@ -20,4 +20,7 @@
     <data name="DeletedReason" xml:space="preserve">
         <value>Archivation reason (not required)</value>
     </data>
+    <data name="ShortDescription" xml:space="preserve">
+        <value>Short Description</value>
+    </data>
 </root>

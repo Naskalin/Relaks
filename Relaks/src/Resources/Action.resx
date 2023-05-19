@@ -60,4 +60,10 @@
     <data name="Email" xml:space="preserve">
         <value>E-mail</value>
     </data>
+    <data name="Caption" xml:space="preserve">
+        <value>Подпись</value>
+    </data>
+    <data name="NotRequired" xml:space="preserve">
+        <value>Не обязательно</value>
+    </data>
 </root>

@@ -27,4 +27,7 @@
     <data name="DeletedReason" xml:space="preserve">
         <value>Причина архивации (не обязательно)</value>
     </data>
+    <data name="ShortDescription" xml:space="preserve">
+        <value>Краткое описание</value>
+    </data>
 </root>
