@@ -15,7 +15,7 @@ public partial class DatabaseSeeder
             {
                 var phone = new EiPhone();
                 FakeEntryInfo(phone, entry.Id);
-                phone.Number = "7812000000" + Faker.Random.Number(0, 9);
+                phone.Number = "+7812000000" + Faker.Random.Number(0, 9);
                 phone.Region = "RU";
                 Db.EiPhones.Add(phone);
             }

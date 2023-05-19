@@ -3,6 +3,7 @@
 
 @using Relaks.Models
 @using Relaks.Database
+@using Relaks.Mappers
 
 @inject IJSRuntime JsRuntime;
 @inject NavigationManager NavigationManager;
@@ -101,6 +102,10 @@
     {
         if (!Validator.Validate()) return;
 
+        Model.MapEntryInfo(Model);
+        Model.MapSoftDeleted(Model);
+        Model.MapDate(Model);
+        
         if (!EntryInfoId.HasValue)
         {
             Model.EntryId = EntryId;

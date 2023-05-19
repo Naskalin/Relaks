@@ -7,10 +7,10 @@ public static class EntryInfoMapper
 {
     public static void MapEntryInfo(this IEntryInfo from, IEntryInfo to)
     {
-        to.Title = from.Title;
+        to.Title = from.Title?.Trim();
         to.IsFavorite = from.IsFavorite;
     }
-    
+
     public static string ToFtsBody(this BaseEntryInfo eInfo)
     {
         var arr = new List<string?>() {eInfo.Title};

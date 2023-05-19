@@ -1,5 +1,7 @@
 ﻿@using Relaks.Models
+@using Relaks.Utils
 @using SixLabors.ImageSharp.Memory
+@using PhoneNumbers
 
 <div>
     <div class="row align-items-center" id="entry-info-@EntryInfo.Id">
@@ -9,7 +11,10 @@
         <div class="col">
             @if (EiPhone != null)
             {
-                <a href="tel:@EiPhone.Number" target="_blank">@EiPhone.Region @EiPhone.Number</a>
+                <i class="fi fi-@EiPhone.Region.ToLower() me-1" style="font-size: 1rem"></i>
+                <a href="tel:@EiPhone.Number" target="_blank">
+                    @EiPhone.PhoneFormat(PhoneNumberFormat.INTERNATIONAL)
+                </a>
             }
             else if (EiEmail != null)
             {
