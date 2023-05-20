@@ -21,7 +21,16 @@ public sealed class AppDbContext : DbContext
     public DbSet<EiDate> EiDates { get; set; } = null!;
     public DbSet<EiUrl> EiUrls { get; set; } = null!;
     public DbSet<EiCustom> EiCustoms { get; set; } = null!;
+
+    public DbSet<BaseFile> BaseFiles { get; set; } = null!;
+    public DbSet<EntryFile> EntryFiles { get; set; } = null!;
     
+    public DbSet<BaseFileCategory> BaseFileCategories { get; set; } = null!;
+    public DbSet<EntryFileCategory> EntryFileCategories { get; set; } = null!;
+    
+    public DbSet<BaseFileTag> BaseFileTags { get; set; } = null!;
+    public DbSet<EntryFileTag> EntryFileTags { get; set; } = null!;
+
     [DbFunction]
     public string Snippet(string match, string column, string open, string close, string ellips, int count)
         => throw new NotImplementedException();
