@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Relaks.Database;
 
@@ -10,9 +11,11 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230520060129_CreateFileTables")]
+    partial class CreateFileTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
@@ -29,7 +32,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("TagsId");
 
-                    b.ToTable("BaseFileBaseFileTag", (string)null);
+                    b.ToTable("BaseFileBaseFileTag");
                 });
 
             modelBuilder.Entity("Relaks.Models.BaseEntry", b =>
@@ -76,7 +79,7 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Entries", (string)null);
+                    b.ToTable("Entries");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseEntry");
 
@@ -118,7 +121,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.ToTable("EntryInfos", (string)null);
+                    b.ToTable("EntryInfos");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseEntryInfo");
 
@@ -166,7 +169,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Files", (string)null);
+                    b.ToTable("Files");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseFile");
 
@@ -194,7 +197,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("FileCategories", (string)null);
+                    b.ToTable("FileCategories");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseFileCategory");
 
@@ -217,7 +220,7 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FileTags", (string)null);
+                    b.ToTable("FileTags");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseFileTag");
 
@@ -272,7 +275,7 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries", (string)null);
+                    b.ToTable("Countries");
                 });
 
             modelBuilder.Entity("Relaks.Models.FtsEntry", b =>
@@ -364,7 +367,7 @@ namespace Relaks.Migrations
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
 
-                    b.ToTable("Entries", (string)null);
+                    b.ToTable("Entries");
 
                     b.HasDiscriminator().HasValue("ECompany");
                 });
@@ -373,7 +376,7 @@ namespace Relaks.Migrations
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
 
-                    b.ToTable("Entries", (string)null);
+                    b.ToTable("Entries");
 
                     b.HasDiscriminator().HasValue("EMeet");
                 });
@@ -382,7 +385,7 @@ namespace Relaks.Migrations
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
 
-                    b.ToTable("Entries", (string)null);
+                    b.ToTable("Entries");
 
                     b.HasDiscriminator().HasValue("EPerson");
                 });
@@ -395,7 +398,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("EntryInfos", (string)null);
+                    b.ToTable("EntryInfos");
 
                     b.HasDiscriminator().HasValue("EiCustom");
                 });
@@ -410,7 +413,7 @@ namespace Relaks.Migrations
                     b.Property<bool>("WithTime")
                         .HasColumnType("INTEGER");
 
-                    b.ToTable("EntryInfos", (string)null);
+                    b.ToTable("EntryInfos");
 
                     b.HasDiscriminator().HasValue("EiDate");
                 });
@@ -423,7 +426,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("EntryInfos", (string)null);
+                    b.ToTable("EntryInfos");
 
                     b.HasDiscriminator().HasValue("EiEmail");
                 });
@@ -440,7 +443,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("EntryInfos", (string)null);
+                    b.ToTable("EntryInfos");
 
                     b.HasDiscriminator().HasValue("EiPhone");
                 });
@@ -453,7 +456,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("EntryInfos", (string)null);
+                    b.ToTable("EntryInfos");
 
                     b.HasDiscriminator().HasValue("EiUrl");
                 });
@@ -467,7 +470,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.ToTable("Files", (string)null);
+                    b.ToTable("Files");
 
                     b.HasDiscriminator().HasValue("EntryFile");
                 });
@@ -481,7 +484,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.ToTable("FileCategories", (string)null);
+                    b.ToTable("FileCategories");
 
                     b.HasDiscriminator().HasValue("EntryFileCategory");
                 });
@@ -495,7 +498,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.ToTable("FileTags", (string)null);
+                    b.ToTable("FileTags");
 
                     b.HasDiscriminator().HasValue("EntryFileTag");
                 });

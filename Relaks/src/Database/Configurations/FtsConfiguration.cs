@@ -23,3 +23,13 @@ public class FtsEntryInfoConfiguration : IEntityTypeConfiguration<FtsEntryInfo>
         builder.Property(fts => fts.Match).HasColumnName(FtsTableNames.FtsEntryInfos);
     }
 }
+
+public class FtsFileConfiguration : IEntityTypeConfiguration<FtsFile>
+{
+    public void Configure(EntityTypeBuilder<FtsFile> builder)
+    {
+        builder.HasKey(fts => fts.RowId);
+        builder.ToTable(FtsTableNames.FtsFiles, x => x.ExcludeFromMigrations());
+        builder.Property(fts => fts.Match).HasColumnName(FtsTableNames.FtsFiles);
+    }
+}

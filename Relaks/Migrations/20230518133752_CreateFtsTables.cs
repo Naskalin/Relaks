@@ -40,6 +40,20 @@ namespace Relaks.Migrations
                     }
                 })
             );
+            
+            migrationBuilder.Sql(
+                FtsMigrationHelper.CreateFtsTable(new CreateFtsTableData()
+                {
+                    Table = "FtsFiles",
+                    Columns = new List<CreateFtsTableColumn>()
+                    {
+                        new() {Name = "Id", IsUnindexed = true},
+                        new() {Name = "DeletedAt", IsUnindexed = true},
+                        new() {Name = "Discriminator", IsUnindexed = true},
+                        new() {Name = "Body"},
+                    }
+                })
+            );
         }
 
         /// <inheritdoc />
@@ -50,6 +64,9 @@ namespace Relaks.Migrations
             
             migrationBuilder.DropTable(
                 name: "FtsEntries");
+            
+            migrationBuilder.DropTable(
+                name: "FtsFiles");
         }
     }
 }

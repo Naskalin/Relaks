@@ -6,7 +6,7 @@ public interface IAppFile
 {
     public string Extension { get; set; }
     public string MimeType { get; set; }
-    public string? DisplayName { get; set; }
+    public string DisplayName { get; set; }
     public DateTime CreatedAt { get; set; }
 
     /// <summary>

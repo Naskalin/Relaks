@@ -1,5 +1,8 @@
-﻿namespace Relaks.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
+namespace Relaks.Models;
+
+[Table("FileTags")]
 public abstract class BaseFileTag
 {
     public Guid Id { get; set; }

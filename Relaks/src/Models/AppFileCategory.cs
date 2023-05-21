@@ -1,5 +1,8 @@
-﻿namespace Relaks.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
+namespace Relaks.Models;
+
+[Table("FileCategories")]
 public abstract class BaseFileCategory
 {
     public Guid Id { get; set; }

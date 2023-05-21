@@ -42,6 +42,20 @@ public static class AppEventSpreader
                             break;
                     }
                     break;
+                case BaseFile baseFile:
+                    switch (trackEntry.State)
+                    {
+                        case EntityState.Added:
+                            FileEvents.Create(db, baseFile);
+                            break;
+                        case EntityState.Modified:
+                            FileEvents.Update(db, baseFile);
+                            break;
+                        case EntityState.Deleted:
+                            FileEvents.Delete(db, baseFile);
+                            break;
+                    }
+                    break;
             }
         }
     }
