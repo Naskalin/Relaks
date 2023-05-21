@@ -74,8 +74,10 @@
             nameof(EMeet) => new EMeet(),
             _ => throw new ArgumentException($"Error: discriminator {Entry.Discriminator} is not supported")
             };
-        
-        Entry.MapTo(Entry);
+
+
+    // System.Console.WriteLine(Entry.Name);
+        Entry.MapTo(entry);
         Db.BaseEntries.Add(entry);
         Db.SaveChanges();
         NavigationManager.NavigateTo($"/entries/{entry.Id}/info");
