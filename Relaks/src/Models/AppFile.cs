@@ -7,8 +7,15 @@ namespace Relaks.Models;
 public abstract class BaseFile : IAppFile, ISoftDeletedReason
 {
     public Guid Id { get; set; }
-    public string Extension { get; set; } = null!;
+    /// <summary>
+    /// Системное имя файла вместе с расширением
+    /// </summary>
+    public string Filename { get; set; } = null!;
     public string MimeType { get; set; } = null!;
+    
+    /// <summary>
+    /// Отображаемое имя файла вместе с расширением
+    /// </summary>
     public string DisplayName { get; set; } = null!;
     public DateTime CreatedAt { get; set; }
     public DateTime? DeletedAt { get; set; }
@@ -29,13 +36,11 @@ public abstract class BaseFile : IAppFile, ISoftDeletedReason
         CreatedAt = DateTime.Now;
     }
 
-    public string FileName() => Id + Extension;
-
     public string DirPath()
     {
         return Path.Combine(
-            "relaks_store",
-            "files",
+            // "relaks_store",
+            // "files",
             CreatedAt.Year.ToString(),
             CreatedAt.Month.ToString(),
             CreatedAt.Day.ToString()
@@ -44,7 +49,12 @@ public abstract class BaseFile : IAppFile, ISoftDeletedReason
 
     public string FilePath()
     {
-        return Path.Combine(DirPath(), FileName());
+        return Path.Combine(DirPath(), Filename);
+    }
+
+    public string DisplayNameWithExtension()
+    {
+        return DisplayName + Path.GetExtension(Filename);
     }
 }
 
@@ -54,11 +64,11 @@ public class EntryFile : BaseFile
     public BaseEntry Entry { get; set; } = null!;
 }
 
-public class EntryInfoFile : EntryFile
-{
-    public Guid EntryInfoId { get; set; }
-    public BaseEntryInfo EntryInfo { get; set; } = null!;
-}
+// public class EntryInfoFile : BaseFile
+// {
+//     public Guid EntryInfoId { get; set; }
+//     public BaseEntryInfo EntryInfo { get; set; } = null!;
+// }
 
 public class FtsFile : IFtsEntity
 {

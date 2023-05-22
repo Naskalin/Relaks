@@ -1,0 +1,33 @@
+﻿@using Relaks.Models
+@using Relaks.Database.Repositories
+
+<tr>
+    <td>
+        <a href="#"></a>
+    </td>
+    <td>@AppFile.BaseFile.DisplayNameWithExtension()</td>
+    <td>@AppFile.BaseFile.CreatedAt.ToString("dd.MM.yy HH:mm")</td>
+    <td>@(AppFile.BaseFile.Category?.Title)</td>
+    <td>
+        @foreach (var tag in AppFile.BaseFile.Tags)
+        {
+            <a href="#">@tag.Title</a>   
+        }
+    </td>
+</tr>
+
+@code {
+
+    [Parameter]
+    public AppFileFindResult AppFile { get; set; } = null!;
+    
+    public EntryFile? EntryFile { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        
+        
+    }
+
+}

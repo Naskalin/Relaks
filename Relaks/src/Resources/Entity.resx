@@ -72,4 +72,13 @@
     <data name="BaseEntries" xml:space="preserve">
         <value>Объединения</value>
     </data>
+    <data name="EPerson_About" xml:space="preserve">
+        <value>О человеке</value>
+    </data>
+    <data name="EMeet_About" xml:space="preserve">
+        <value>О встрече</value>
+    </data>
+    <data name="ECompany_About" xml:space="preserve">
+        <value>О компании</value>
+    </data>
 </root>

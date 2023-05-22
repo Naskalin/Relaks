@@ -15,6 +15,7 @@ public static class RegisterServices
     {
         // services.AddSingleton<RelaksConfigManager>();
         services.AddScoped<EntryManager>();
+        services.AddScoped<AppFileManager>();
     }
 
     public static void RegisterValidators(this IServiceCollection services)

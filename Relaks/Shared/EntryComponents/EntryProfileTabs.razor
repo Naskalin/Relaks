@@ -1,4 +1,6 @@
-﻿<ul class="nav nav-tabs mb-3">
+﻿@using Relaks.Models
+
+<ul class="nav nav-tabs mb-3">
     @foreach (var tab in _tabs)
     {
         <li class="nav-item">
@@ -11,9 +13,18 @@
     [Parameter]
     public Guid EntryId { get; set; }
 
-    private readonly List<(string UrlPart, string Title)> _tabs = new()
+    [CascadingParameter]
+    public BaseEntry Entry { get; set; } = null!;
+
+    private List<(string UrlPart, string Title)> _tabs = new();
+
+    protected override void OnParametersSet()
     {
-        (UrlPart: "/info", Title: "Инфо"),
-        (UrlPart: "/files", Title: "Файлы"),
-    };
+        _tabs = new() 
+        {
+            (UrlPart: "/info", Title: Resources.Entity.ResourceManager.GetString($"{Entry.Discriminator}_About") ?? "???"),
+            (UrlPart: "/files", Title: "Файлы"),
+        };
+    }
+
 }

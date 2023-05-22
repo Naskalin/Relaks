@@ -14,13 +14,15 @@
     <InputText type="text" @bind-Value="Phone.Number" class="form-control"/>
 </div>
 
-<Modal @ref="Modal" IsKeyboard="true" IsBackdrop="true">
+<Modal @ref="Modal" IsKeyboard="@true" IsBackdrop="@true">
     <ModalDialog Title="Страна" IsScrolling="true" CloseButtonText="Закрыть">
         <BodyTemplate>
             <div class="mb-3">
-                <input @bind-value="Search"
-                       @oninput="SearchCountries"
-                       class="form-control" placeholder="Поиск страны..."/>
+                <InputText @bind-Value="Search"
+                           @oninput="SearchCountries"
+                           class="form-control"
+                           placeholder="Поиск страны..."
+                           />
             </div>
             <div class="list-group list-group-flush">
                 @foreach (var country in FilteredCountries)
@@ -46,14 +48,14 @@
     
     private Modal Modal { get; set; } = new();
 
-    private void ShowModal()
+    private async Task ShowModal()
     {
         if (!Countries.Any())
         {
             Countries = Db.Countries.OrderBy(x => x.TitleRu).ToList();
         }
         FilteredCountries = RandomCountries();
-        Modal.Toggle();
+        await Modal.Toggle();
     }
     
     private List<Country> RandomCountries() => Countries.OrderBy(_ => Guid.NewGuid()).Take(12).ToList();

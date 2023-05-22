@@ -1,10 +1,24 @@
 ﻿@page "/entries/{entryId:guid}/info"
+@using Relaks.Models
+@using Relaks.Database
+@using Relaks.Database.Repositories
+
+@inject AppDbContext Db;
 
 <EntryProfileLayout EntryId="@EntryId">
     <EntryProfileTabs EntryId="@EntryId"/>
+    <MyTitle>@Resources.Entity.ResourceManager.GetString($"{BaseEntry.Discriminator}_About")</MyTitle>
 </EntryProfileLayout>
 
 @code {
     [Parameter]
     public Guid EntryId { get; set; }
+
+    private BaseEntry BaseEntry { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        BaseEntry = Db.BaseEntries.FindByIdQuery(EntryId).First();
+    }
+
 }

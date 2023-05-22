@@ -1,4 +1,5 @@
-﻿using Relaks.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Relaks.Interfaces;
 using Relaks.Models;
 using Relaks.Models.Misc;
 using Relaks.Utils.Extensions;
@@ -24,6 +25,14 @@ public class EntryFindResult
 
 public static class EntryRepository
 {
+    public static IQueryable<BaseEntry> FindByIdQuery(this IQueryable<BaseEntry> q, Guid entryId)
+    {
+        return q
+                .Where(x => x.Id.Equals(entryId))
+                .Include(x => x.EntryInfos)
+            ;
+    }
+
     public static PaginatableResult<EntryFindResult> FindEntries(this AppDbContext db, EntryFindRequest req)
     {
         if (!string.IsNullOrEmpty(req.Search)) return FtsEntrySearch(db, req);
@@ -48,7 +57,7 @@ public static class EntryRepository
         };
     }
 
-    public static PaginatableResult<EntryFindResult> FtsEntrySearch(this AppDbContext db, EntryFindRequest req)
+    private static PaginatableResult<EntryFindResult> FtsEntrySearch(this AppDbContext db, EntryFindRequest req)
     {
         if (string.IsNullOrEmpty(req.Search)) return new PaginatableResult<EntryFindResult>();
 
@@ -77,7 +86,6 @@ public static class EntryRepository
             ;
 
         var paginated = q.Paginate(req);
-
 
         var entryIds = paginated.Items.Select(x => x.Id).ToList();
         var entries = db.BaseEntries.Where(x => entryIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);

@@ -1,0 +1,40 @@
+﻿@using Relaks.Models
+@using Relaks.Managers
+@using Relaks.Mappers
+@using Relaks.Database
+
+@inject AppFileManager AppFileManager;
+@inject AppDbContext Db;
+
+<div class="mb-3">
+    <label for="@InputId" class="form-label">Выберите файлы для загрузки</label>
+    <InputFile OnChange="@LoadFiles" class="form-control" id="@InputId" multiple/>
+</div>
+
+@code {
+    private Guid InputId { get; } = Guid.NewGuid();
+
+    [Parameter]
+    public Guid EntryId { get; set; }
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        var entryFiles = new List<EntryFile>();
+        foreach (var file in e.GetMultipleFiles(e.FileCount))
+        {
+            var entryFile = new EntryFile()
+            {
+                EntryId = EntryId,
+            };
+            file.MapTo(entryFile);
+            await AppFileManager.UploadAsync(entryFile, file);
+            entryFiles.Add(entryFile);
+        }
+
+        if (entryFiles.Any())
+        {
+            Db.EntryFiles.AddRange(entryFiles);
+            await Db.SaveChangesAsync();
+        }
+    }
+}

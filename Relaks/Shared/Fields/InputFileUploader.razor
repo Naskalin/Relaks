@@ -1,0 +1,43 @@
+﻿@* @using Relaks.Managers *@
+@* @using Relaks.Models *@
+@* @using Relaks.Interfaces *@
+@* *@
+@* @inject AppFileManager AppFileManager; *@
+@* *@
+@* <div class="mb-3"> *@
+@*     <label for="@InputId" class="form-label">Default file input example</label> *@
+@*     <InputFile OnChange="@LoadFiles" class="form-control" id="@InputId" multiple/> *@
+@* </div> *@
+@* *@
+@* @code { *@
+@*     [Parameter] *@
+@*     public string Discriminator { get; set; } = null!; *@
+@* *@
+@*     [Parameter] *@
+@*     public EventCallback<List<BaseFile>> OnAfterUploadFiles { get; set; } *@
+@* *@
+@*     [Parameter] *@
+@*     public string? Label { get; set; } *@
+@* *@
+@*     private Guid InputId { get; } = Guid.NewGuid(); *@
+@* *@
+@*     private async Task LoadFiles(InputFileChangeEventArgs e) *@
+@*     { *@
+@*         List<BaseFile> appFiles; *@
+@*         foreach (var file in e.GetMultipleFiles(e.FileCount)) *@
+@*         { *@
+@*             BaseFile appFile; *@
+@*             switch (Discriminator) *@
+@*             { *@
+@*                 case nameof(EntryFile): *@
+@*                     appFile = new EntryFile(); *@
+@*                     break; *@
+@*                 default: *@
+@*                     throw new ArgumentException($"{Discriminator} is not supported"); *@
+@*             } *@
+@* *@
+@*             await AppFileManager.UploadAsync(appFile, file.); *@
+@*         } *@
+@*     } *@
+@* *@
+@* } *@

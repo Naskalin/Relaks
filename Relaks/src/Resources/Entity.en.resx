@@ -62,4 +62,13 @@
     <data name="BaseEntries" xml:space="preserve">
         <value>Union Entries</value>
     </data>
+    <data name="ECompany_About" xml:space="preserve">
+        <value>About company</value>
+    </data>
+    <data name="EMeet_About" xml:space="preserve">
+        <value>About meet</value>
+    </data>
+    <data name="EPerson_About" xml:space="preserve">
+        <value>About man</value>
+    </data>
 </root>

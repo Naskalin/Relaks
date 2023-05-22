@@ -56,4 +56,7 @@
     <data name="NotRequired" xml:space="preserve">
         <value>Not Required</value>
     </data>
+    <data name="Files" xml:space="preserve">
+        <value>Files</value>
+    </data>
 </root>

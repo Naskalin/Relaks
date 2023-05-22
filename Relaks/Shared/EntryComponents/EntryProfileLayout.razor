@@ -4,18 +4,20 @@
 @inject AppDbContext Db;
 
 <PageTemplate>
-    <SoftDeleteShow SoftDeletedReason="@BaseEntry"/>
-    <div class="row gap-4">
-        <div class="col-auto">
-            <EntryCard EntryId="@EntryId"
-                       EntryInfoId="@EntryInfoId"
-                       WithEdit="@true"
-                       HideSoftDeleted="@true"/>
+    <CascadingValue Value="@BaseEntry">
+        <SoftDeleteShow SoftDeletedReason="@BaseEntry"/>
+        <div class="row gap-4">
+            <div class="col-auto">
+                <EntryCard EntryId="@EntryId"
+                           EntryInfoId="@EntryInfoId"
+                           WithEdit="@true"
+                           HideSoftDeleted="@true"/>
+            </div>
+            <div class="col">
+                @ChildContent
+            </div>
         </div>
-        <div class="col">
-            @ChildContent
-        </div>
-    </div>
+    </CascadingValue>
 </PageTemplate>
 
 @code {
