@@ -1,0 +1,26 @@
+﻿<div class="row align-items-center justify-content-between mb-3">
+    <div class="col"><span class="h6">@Title</span></div>
+    
+    @if (WithEdit == true)
+    {
+        <div class="col-auto">
+            <Tooltip Title="@($"{Resources.Action.Add} {Title.ToLower()}")" Trigger="hover">
+               <button type="button" class="btn btn-outline-primary btn-circle btn-sm" @onclick="@(() => OnAdd.InvokeAsync())">
+                    <i class="las la-plus la-lg"></i>
+                </button>
+            </Tooltip>
+        </div>   
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public string Title { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback OnAdd { get; set; }
+    
+    [Parameter]
+    public bool? WithEdit { get; set; }
+}

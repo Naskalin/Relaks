@@ -11,10 +11,12 @@
         <div class="col-3">
             <_EntryUploader EntryId="@EntryId" OnUpload="@HandleOnUpload"/>
         </div>
-        <div class="col-9"></div>
+        <div class="col-9">
+            
+        </div>
     </div>
     <hr>
-    <AppFileList EntryId="EntryId"/>
+    <AppFileList EntryId="EntryId" WithEdit="@true"/>
 </EntryProfileLayout>
 
 @code {

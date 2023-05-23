@@ -24,8 +24,10 @@
                 <label class="form-check-label" for="@Ids["IsDeleted"]">Архивные файлы</label>
             </div>
         </div>
-        <div>tags</div>
-        <div>categories</div>
+        
+        
+        <AppFileCategories EntryId="@EntryId" WithEdit="@WithEdit"/>
+        <AppFileTags EntryId="@EntryId" WithEdit="@WithEdit"/>
 
     </div>
     <div class="col-9">
@@ -69,14 +71,15 @@
 </div>
 
 @code {
-
+    [Parameter]
+    public Guid? EntryId { get; set; }
+    
+    [Parameter]
+    public bool? WithEdit { get; set; }
     private Dictionary<string, Guid> Ids { get; set; } = new()
     {
         {"IsDeleted", Guid.NewGuid()}
     };
-
-    [Parameter]
-    public Guid? EntryId { get; set; }
 
     private AppFileFindRequest Req { get; set; } = new()
     {
@@ -85,15 +88,6 @@
     };
 
     private TotalResult<AppFileFindResult> Result { get; set; } = new();
-
-    // private static Dictionary<string, string?> EntryDiscriminators() => new()
-    // {
-    //     {Resources.Action.All, null},
-    //     {Resources.Entity.EPerson, nameof(EPerson)},
-    //     {Resources.Entity.ECompany, nameof(ECompany)},
-    //     {Resources.Entity.EMeet, nameof(EMeet)},
-    // };
-    //
 
     [Parameter]
     public EventCallback<Guid> OnRowDoubleClicked { get; set; }
@@ -171,11 +165,6 @@
     {
         Result = Db.FindFiles(Req);
     }
-
-    // protected override void OnInitialized()
-    // {
-    //     
-    // }
 
     protected override void OnParametersSet()
     {

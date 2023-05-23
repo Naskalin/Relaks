@@ -1,0 +1,9 @@
+﻿<AppFileSidebarHeader Title="Метки" WithEdit="@WithEdit"/>
+
+@code {
+    [Parameter]
+    public Guid? EntryId { get; set; }
+    
+    [Parameter]
+    public bool? WithEdit { get; set; }
+}

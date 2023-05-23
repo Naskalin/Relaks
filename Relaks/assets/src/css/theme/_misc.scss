@@ -36,6 +36,10 @@
   height: 40px;
   padding: 0;
   border-radius: 50%;
+  &.btn-sm {
+    width: 32px;
+    height: 32px;
+  }
 }
 .btn-square {
   width: 40px;
