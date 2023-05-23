@@ -5,7 +5,7 @@ namespace Relaks.Database.Repositories;
 
 public static class AppBaseRepository
 {
-    public static TotalResult<TEntity> Total<TEntity>(this IQueryable<TEntity> query)
+    public static TotalResult<TEntity> ToTotalResult<TEntity>(this IQueryable<TEntity> query)
     {
         return new TotalResult<TEntity>()
         {
@@ -14,7 +14,7 @@ public static class AppBaseRepository
         };      
     }
     
-    public static PaginatableResult<TEntity> Total<TEntity>(this IQueryable<TEntity> query, IPaginatable paginatable)
+    public static PaginatableResult<TEntity> ToPaginatedResult<TEntity>(this IQueryable<TEntity> query, IPaginatable paginatable)
     {
         var perPage = paginatable.PerPage;
         var page = paginatable.Page;

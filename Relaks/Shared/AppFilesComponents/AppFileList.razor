@@ -2,92 +2,73 @@
 @using Relaks.Database
 @using Relaks.Database.Repositories
 @using Relaks.Models.Misc
+@using Relaks.Models.Store
 
 @inject AppDbContext Db;
 
-<Dump Data="@Req"/>
+<Dump Data="@Store.Req"/>
+@AppFileCategoryNew
 
-<div class="row">
-    <div class="col-3">
-        <div class="mb-3">
-            <div class="input-group">
-                <input type="text" class="form-control" @bind="@Req.Search" @oninput="@OnInputSearch" placeholder="Поиск...">
-                <button class="btn btn-outline-secondary" type="button" @onclick="@(() => { Req.Search = null; FindData(); })">
-                    <i class="las la-times la-lg"></i>
-                </button>
-            </div>
-        </div>
-        
-        <div class="mb-3">
-            <div class="form-check form-switch">
-                <InputCheckbox class="form-check-input" type="checkbox" @bind-Value="@Req.IsDeleted" @oninput="@OnChangeIsDeleted" id="@Ids["IsDeleted"]"/>
-                <label class="form-check-label" for="@Ids["IsDeleted"]">Архивные файлы</label>
-            </div>
-        </div>
-        
-        
-        <AppFileCategories EntryId="@EntryId" WithEdit="@WithEdit"/>
-        <AppFileTags EntryId="@EntryId" WithEdit="@WithEdit"/>
-
-    </div>
-    <div class="col-9">
-        <div class="d-flex gap-3 align-items-center">
-            <div class="mb-3">Всего найдено: @Result.Total</div>
-        </div>
-        <table class="table table-bordered table-hover align-middle">
-            <thead>
-            <tr style="@(!string.IsNullOrEmpty(Req.Search) ? "opacity: .3; cursor: not-allowed;" : "")">
-                <th style="width: 80px"></th>
-                <th @onclick="@(() => OnSortChange(nameof(BaseFile.DisplayName)))" class="cursor-pointer">
-                    Имя <OrderableIcon Orderable="@Req" Prop="@nameof(BaseFile.DisplayName)"/>
-                </th>
-                <th style="width: 150px" @onclick="@(() => OnSortChange(nameof(BaseFile.CreatedAt)))" class="cursor-pointer">
-                    Создан <OrderableIcon Orderable="@Req" Prop="@nameof(BaseFile.CreatedAt)"/>
-                </th>
-                <th style="width: 150px">Категория</th>
-                <th style="width: 150px">Метки</th>
-            </tr>
-            </thead>
-            <tbody>
-            @if (Result.Items.Any())
+<CascadingValue Value="@Store">
+    <div class="row">
+        <div class="col-3">
+            @switch (Store.State)
             {
-                @foreach (var item in Result.Items)
-                {
-                    <AppFileListItem AppFile="@item"/>
-                }
+                case AppFileListStore.StateEnum.Default:
+                    <AppFileDefaultSidebar OnStateHasChanged="@StateHasChanged"/>
+                    break;
             }
-            else
-            {
-                <tr>
-                    <td colspan="100%" class="text-muted">
-                        <i class="las la-frown la-lg"></i> @Resources.Action.NotFoundResults
-                    </td>
+
+        </div>
+        <div class="col-9">
+            <div class="d-flex gap-3 align-items-center">
+                <div class="mb-3">Всего найдено: @Store.Result.Total</div>
+            </div>
+            <table class="table table-bordered table-hover align-middle">
+                <thead>
+                <tr style="@(!string.IsNullOrEmpty(Store.Req.Search) ? "opacity: .3; cursor: not-allowed;" : "")">
+                    <th style="width: 80px"></th>
+                    <th @onclick="@(() => OnSortChange(nameof(BaseFile.DisplayName)))" class="cursor-pointer">
+                        Имя <OrderableIcon Orderable="@Store.Req" Prop="@nameof(BaseFile.DisplayName)"/>
+                    </th>
+                    <th style="width: 150px" @onclick="@(() => OnSortChange(nameof(BaseFile.CreatedAt)))" class="cursor-pointer">
+                        Создан <OrderableIcon Orderable="@Store.Req" Prop="@nameof(BaseFile.CreatedAt)"/>
+                    </th>
+                    <th style="width: 150px">Категория</th>
+                    <th style="width: 150px">Метки</th>
                 </tr>
-            }
-
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                @if (Store.Result.Items.Any())
+                {
+                    @foreach (var item in Store.Result.Items)
+                    {
+                        <AppFileListItem AppFile="@item"/>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="100%" class="text-muted">
+                            <i class="las la-frown la-lg"></i> @Resources.Action.NotFoundResults
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
+</CascadingValue>
 
 @code {
+
+    private AppFileListStore Store { get; set; } = null!;
+
     [Parameter]
     public Guid? EntryId { get; set; }
-    
+
     [Parameter]
     public bool? WithEdit { get; set; }
-    private Dictionary<string, Guid> Ids { get; set; } = new()
-    {
-        {"IsDeleted", Guid.NewGuid()}
-    };
-
-    private AppFileFindRequest Req { get; set; } = new()
-    {
-        Page = 1,
-        PerPage = 2,
-    };
-
-    private TotalResult<AppFileFindResult> Result { get; set; } = new();
 
     [Parameter]
     public EventCallback<Guid> OnRowDoubleClicked { get; set; }
@@ -95,81 +76,61 @@
     [Parameter]
     public EventCallback<Guid> OnRowClicked { get; set; }
 
+    [Parameter]
+    public string? AppFileCategoryNew { get; set; }
+
     private void OnSortChange(string field)
     {
-        if (!string.IsNullOrEmpty(Req.Search)) return;
-        if (Req.IsOrderByDesc is null)
+        if (!string.IsNullOrEmpty(Store.Req.Search)) return;
+        if (Store.Req.IsOrderByDesc is null)
         {
-            Req.OrderBy = field;
-            Req.IsOrderByDesc = false;
+            Store.Req.OrderBy = field;
+            Store.Req.IsOrderByDesc = false;
         }
-        else if (Req.IsOrderByDesc is false)
+        else if (Store.Req.IsOrderByDesc is false)
         {
-            if (field.Equals(Req.OrderBy))
+            if (field.Equals(Store.Req.OrderBy))
             {
-                Req.IsOrderByDesc = true;
+                Store.Req.IsOrderByDesc = true;
             }
             else
             {
-                Req.OrderBy = field;
-                Req.IsOrderByDesc = false;
+                Store.Req.OrderBy = field;
+                Store.Req.IsOrderByDesc = false;
             }
         }
         else
         {
-            if (field.Equals(Req.OrderBy))
+            if (field.Equals(Store.Req.OrderBy))
             {
-                Req.OrderBy = null;
-                Req.IsOrderByDesc = null;
+                Store.Req.OrderBy = null;
+                Store.Req.IsOrderByDesc = null;
             }
             else
             {
-                Req.OrderBy = field;
-                Req.IsOrderByDesc = false;
+                Store.Req.OrderBy = field;
+                Store.Req.IsOrderByDesc = false;
             }
         }
 
-        FindData();
-    }
-
-    private void OnChangeIsDeleted(ChangeEventArgs e)
-    {
-        Req.IsDeleted = (bool) (e.Value ?? false);
-        
-        Req.Page = 1;
-        FindData();
-    }
-
-    private void OnPageChanged(int page)
-    {
-        Req.Page = page;
-        FindData();
+        Store.FindData();
     }
 
     private void OnChangeDiscriminator(string? discriminator)
     {
-        Req.Page = 1;
-        Req.Discriminator = discriminator;
-        FindData();
-    }
-
-
-    private void OnInputSearch(ChangeEventArgs e)
-    {
-        Req.Search = e.Value?.ToString();
-        Req.Page = 1;
-        FindData();
-    }
-
-    private void FindData()
-    {
-        Result = Db.FindFiles(Req);
+        Store.Req.Discriminator = discriminator;
+        Store.FindData();
     }
 
     protected override void OnParametersSet()
     {
-        Req.EntryId = EntryId;
-        FindData();
+        Store = new AppFileListStore(Db)
+        {
+            EntryId = EntryId,
+            Req = {EntryId = EntryId}
+        };
+
+        Store.FindData();
     }
 
 }

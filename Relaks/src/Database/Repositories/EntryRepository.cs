@@ -45,7 +45,7 @@ public static class EntryRepository
 
         q = string.IsNullOrEmpty(req.OrderBy) ? q.OrderByDescending(x => x.UpdatedAt) : q.OrderBy(req);
 
-        var paginated = q.Total(req);
+        var paginated = q.ToPaginatedResult(req);
 
         return new PaginatableResult<EntryFindResult>
         {
@@ -85,7 +85,7 @@ public static class EntryRepository
                 .OrderByDescending(x => x.Rank)
             ;
 
-        var paginated = q.Total(req);
+        var paginated = q.ToPaginatedResult(req);
 
         var entryIds = paginated.Items.Select(x => x.Id).ToList();
         var entries = db.BaseEntries.Where(x => entryIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);

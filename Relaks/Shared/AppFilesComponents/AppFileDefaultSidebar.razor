@@ -1,0 +1,64 @@
+﻿@using Relaks.Models.Store
+
+<Dump Data="@Store.Req"/>
+
+<div class="mb-3">
+    <div class="input-group">
+        <input type="text" class="form-control" @bind="@Store.Req.Search" @oninput="@OnInputSearch" placeholder="Поиск...">
+        <button class="btn btn-outline-secondary" type="button" @onclick="@OnCleanSearch">
+            <i class="las la-times la-lg"></i>
+        </button>
+    </div>
+</div>
+
+<div class="mb-3">
+    <div class="form-check form-switch">
+        <InputCheckbox class="form-check-input" type="checkbox" @bind-Value="@Store.Req.IsDeleted" @oninput="@OnChangeIsDeleted" id="@Ids["IsDeleted"]"/>
+        <label class="form-check-label" for="@Ids["IsDeleted"]">Архивные файлы</label>
+    </div>
+</div>
+
+<AppFileSidebarHeader Title="Категории"
+                      WithEdit="@Store.WithEdit"
+                      OnAdd="@(() => Store.State = AppFileListStore.StateEnum.AddCategory)"/>
+
+<AppFileSidebarHeader Title="Метки"
+                      WithEdit="@Store.WithEdit"
+                      OnAdd="@(() => Store.State = AppFileListStore.StateEnum.AddTag)"/>
+
+@code {
+
+    private Dictionary<string, Guid> Ids { get; set; } = new()
+    {
+        {"IsDeleted", Guid.NewGuid()}
+    };
+
+    [Parameter]
+    public EventCallback OnStateHasChanged { get; set; }
+    
+    [CascadingParameter]
+    [Parameter]
+    public AppFileListStore Store { get; set; } = null!;
+
+    private async Task OnInputSearch(ChangeEventArgs e)
+    {
+        Store.Req.Search = e.Value?.ToString();
+        Store.FindData();
+        await OnStateHasChanged.InvokeAsync();
+    }
+
+    private async Task OnChangeIsDeleted(ChangeEventArgs e)
+    {
+        Store.Req.IsDeleted = (bool) (e.Value ?? false);
+        Store.FindData();
+        await OnStateHasChanged.InvokeAsync();
+    }
+
+    private async Task OnCleanSearch()
+    {
+        Store.Req.Search = null;
+        Store.FindData();
+        await OnStateHasChanged.InvokeAsync();
+    }
+
+}

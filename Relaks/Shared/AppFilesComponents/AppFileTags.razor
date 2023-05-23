@@ -1,9 +1,22 @@
-﻿<AppFileSidebarHeader Title="Метки" WithEdit="@WithEdit"/>
-
-@code {
-    [Parameter]
-    public Guid? EntryId { get; set; }
-    
-    [Parameter]
-    public bool? WithEdit { get; set; }
-}
+﻿@* @using Console = System.Console *@
+@* @using System.Web *@
+@* @inject NavigationManager NavigationManager; *@
+@* *@
+@* <AppFileSidebarHeader Title="Метки" WithEdit="@WithEdit" OnAdd="@HandleOnAdd"/> *@
+@* *@
+@* @code { *@
+@*     [Parameter] *@
+@*     public Guid? EntryId { get; set; } *@
+@*      *@
+@*     [Parameter] *@
+@*     public bool? WithEdit { get; set; } *@
+@* *@
+@*     private void HandleOnAdd() *@
+@*     { *@
+@*         var uriBuilder = new UriBuilder(NavigationManager.Uri); *@
+@*         var query = HttpUtility.ParseQueryString(uriBuilder.Query); *@
+@*         query["AppFileCategoryNew"] = ""; *@
+@*         uriBuilder.Query = query.ToString(); *@
+@*         NavigationManager.NavigateTo(uriBuilder.ToString(), true); *@
+@*     } *@
+@* } *@

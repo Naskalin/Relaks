@@ -5,7 +5,7 @@ using Relaks.Utils.Extensions;
 
 namespace Relaks.Database.Repositories;
 
-public class AppFileFindRequest : IPaginatable, IOrderable
+public class AppFileFindRequest : IOrderable
 {
     public string? Search { get; set; }
     public Guid? CategoryId { get; set; }
@@ -13,8 +13,6 @@ public class AppFileFindRequest : IPaginatable, IOrderable
     public string? Discriminator { get; set; }
     public List<Guid> TagIds { get; set; } = new();
     public string? Keyword { get; set; }
-    public int Page { get; set; }
-    public int PerPage { get; set; }
     public string? OrderBy { get; set; }
     public bool? IsOrderByDesc { get; set; }
     public bool IsDeleted { get; set; }
@@ -65,7 +63,7 @@ public static class EntryFileRepository
 
         q = string.IsNullOrEmpty(req.OrderBy) ? q.OrderByDescending(x => x.CreatedAt) : q.OrderBy(req);
 
-        var total = q.Total();
+        var total = q.ToTotalResult();
 
         return new TotalResult<AppFileFindResult>()
         {
@@ -109,7 +107,7 @@ public static class EntryFileRepository
 
         q = q.OrderByDescending(x => x.Rank);
         
-        var total = q.Total(req);
+        var total = q.ToTotalResult();
         
         var fileIds = total.Items.Select(x => x.Id).ToList();
         var appFiles = db.BaseFiles.Where(x => fileIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);
