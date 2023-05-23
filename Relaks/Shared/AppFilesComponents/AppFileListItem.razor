@@ -5,7 +5,19 @@
     <td>
         <a href="#"></a>
     </td>
-    <td>@AppFile.BaseFile.DisplayNameWithExtension()</td>
+    <td>
+        @AppFile.BaseFile.DisplayNameWithExtension()
+        @if (AppFile.FtsFile != null)
+        {
+            <div class="fts-result">
+                <i class="las la-search la-lg"></i> @((MarkupString) AppFile.FtsFile.Snippet)
+            </div>
+        }
+        @if (AppFile.BaseFile.DeletedAt != null)
+        {
+            <SoftDeleteShow SoftDeletedReason="@AppFile.BaseFile" Classes="mt-2"/>
+        }
+    </td>
     <td>@AppFile.BaseFile.CreatedAt.ToString("dd.MM.yy HH:mm")</td>
     <td>@(AppFile.BaseFile.Category?.Title)</td>
     <td>
@@ -20,14 +32,5 @@
 
     [Parameter]
     public AppFileFindResult AppFile { get; set; } = null!;
-    
-    public EntryFile? EntryFile { get; set; }
-
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-        
-        
-    }
 
 }

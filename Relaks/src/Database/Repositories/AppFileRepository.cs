@@ -28,15 +28,16 @@ public class AppFileFindResult
 
 public static class EntryFileRepository
 {
-    public static PaginatableResult<AppFileFindResult> FindFiles(this AppDbContext db, AppFileFindRequest req)
+    public static TotalResult<AppFileFindResult> FindFiles(this AppDbContext db, AppFileFindRequest req)
     {
         if (!string.IsNullOrEmpty(req.Search)) return FindFtsFiles(db, req);
 
         var q = db.BaseFiles.AsQueryable();
+        
         if (req.EntryId.HasValue)
         {
-            var entryFileIds = db.EntryFiles.Where(x => x.EntryId.Equals(req.EntryId.Value)).Select(x => x.Id).ToList();
-            q = q.Where(x => entryFileIds.Contains(x.Id));
+            var entryFileIdQuery = db.EntryFiles.Where(x => x.EntryId.Equals(req.EntryId.Value)).Select(x => x.Id);
+            q = q.Where(x => entryFileIdQuery.Contains(x.Id));
         }
         
         q = req.IsDeleted ? q.Where(x => x.DeletedAt != null) : q.Where(x => x.DeletedAt == null);
@@ -63,22 +64,19 @@ public static class EntryFileRepository
         }
 
         q = string.IsNullOrEmpty(req.OrderBy) ? q.OrderByDescending(x => x.CreatedAt) : q.OrderBy(req);
-        
-        var paginated = q.Paginate(req);
 
-        return new PaginatableResult<AppFileFindResult>
+        var total = q.Total();
+
+        return new TotalResult<AppFileFindResult>()
         {
-            Page = paginated.Page,
-            PerPage = paginated.PerPage,
-            PageCount = paginated.PageCount,
-            Total = paginated.Total,
-            Items = paginated.Items.Select(x => new AppFileFindResult {BaseFile = x}).ToList()
+            Total = total.Total,
+            Items = total.Items.Select(x => new AppFileFindResult {BaseFile = x}).ToList()
         };
     }
     
-    private static PaginatableResult<AppFileFindResult> FindFtsFiles(this AppDbContext db, AppFileFindRequest req)
+    private static TotalResult<AppFileFindResult> FindFtsFiles(this AppDbContext db, AppFileFindRequest req)
     {
-        if (string.IsNullOrEmpty(req.Search)) return new PaginatableResult<AppFileFindResult>();
+        if (string.IsNullOrEmpty(req.Search)) return new TotalResult<AppFileFindResult>();
 
         var s = $"\"{req.Search}\"*";
         
@@ -92,13 +90,13 @@ public static class EntryFileRepository
         {
             q = q.Where(x => x.Discriminator.Equals(req.Discriminator));
         }
-
+        
         if (req.EntryId.HasValue)
         {
-            var entryFileIds = db.EntryFiles.Where(x => x.EntryId.Equals(req.EntryId.Value)).Select(x => x.Id).ToList();
-            q = q.Where(x => entryFileIds.Contains(x.Id));
+            var entryFileIdsQuery = db.EntryFiles.Where(x => x.EntryId.Equals(req.EntryId.Value)).Select(x => x.Id.ToString()).ToList();
+            q = q.Where(x => entryFileIdsQuery.Contains(x.Id.ToString()));
         }
-        
+
         q = q.Select(x => new FtsFile()
                 {
                     Id = x.Id,
@@ -107,20 +105,18 @@ public static class EntryFileRepository
                     Discriminator = x.Discriminator,
                     DeletedAt = x.DeletedAt,
                 })
-                .OrderByDescending(x => x.Rank)
             ;
+
+        q = q.OrderByDescending(x => x.Rank);
         
-        var paginated = q.Paginate(req);
+        var total = q.Total(req);
         
-        var fileIds = paginated.Items.Select(x => x.Id).ToList();
+        var fileIds = total.Items.Select(x => x.Id).ToList();
         var appFiles = db.BaseFiles.Where(x => fileIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);
-        return new PaginatableResult<AppFileFindResult>
+        return new TotalResult<AppFileFindResult>()
         {
-            Page = paginated.Page,
-            PerPage = paginated.PerPage,
-            PageCount = paginated.PageCount,
-            Total = paginated.Total,
-            Items = paginated.Items.Select(x => new AppFileFindResult {BaseFile = appFiles[x.Id], FtsFile = x,}).ToList()
+            Total = total.Total,
+            Items = total.Items.Select(x => new AppFileFindResult {BaseFile = appFiles[x.Id], FtsFile = x,}).ToList()
         };
     }
 }

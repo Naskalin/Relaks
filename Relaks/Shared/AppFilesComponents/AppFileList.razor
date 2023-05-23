@@ -5,6 +5,8 @@
 
 @inject AppDbContext Db;
 
+<Dump Data="@Req"/>
+
 <div class="row">
     <div class="col-3">
         <div class="mb-3">
@@ -15,16 +17,7 @@
                 </button>
             </div>
         </div>
-
-        @* <div class="mb-3"> *@
-        @*     <div class="form-check"> *@
-        @*         <input class="form-check-input" type="checkbox" id="entry-search-archive-checkbox" @oninput="@OnChangeIsDeleted"> *@
-        @*         <label class="form-check-label" for="entry-search-archive-checkbox"> *@
-        @*             Архивные файлы *@
-        @*         </label> *@
-        @*     </div> *@
-        @* </div> *@
-        <Dump Data="@Req"/>
+        
         <div class="mb-3">
             <div class="form-check form-switch">
                 <InputCheckbox class="form-check-input" type="checkbox" @bind-Value="@Req.IsDeleted" @oninput="@OnChangeIsDeleted" id="@Ids["IsDeleted"]"/>
@@ -36,11 +29,9 @@
 
     </div>
     <div class="col-9">
-        <MyPagination ActivePage="@Req.Page"
-                      OnPageChanged="@OnPageChanged"
-                      TotalItems="@Result.Total"
-                      TotalPages="@Result.PageCount"/>
-
+        <div class="d-flex gap-3 align-items-center">
+            <div class="mb-3">Всего найдено: @Result.Total</div>
+        </div>
         <table class="table table-bordered table-hover align-middle">
             <thead>
             <tr style="@(!string.IsNullOrEmpty(Req.Search) ? "opacity: .3; cursor: not-allowed;" : "")">
@@ -74,11 +65,6 @@
 
             </tbody>
         </table>
-
-        <MyPagination ActivePage="@Req.Page"
-                      OnPageChanged="@OnPageChanged"
-                      TotalItems="@Result.Total"
-                      TotalPages="@Result.PageCount"/>
     </div>
 </div>
 
@@ -98,7 +84,7 @@
         PerPage = 2,
     };
 
-    private PaginatableResult<AppFileFindResult> Result { get; set; } = new();
+    private TotalResult<AppFileFindResult> Result { get; set; } = new();
 
     // private static Dictionary<string, string?> EntryDiscriminators() => new()
     // {

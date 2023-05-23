@@ -32,7 +32,8 @@ public static class AppFileMapper
 
     public static void MapTo(this IBrowserFile browserFile, BaseFile appFile)
     {
-        appFile.Filename = Path.GetRandomFileName() + GetExtension(browserFile.ContentType, browserFile.Name);
+        var extension = GetExtension(browserFile.ContentType, browserFile.Name);
+        appFile.Filename = Path.GetRandomFileName() + extension;
         appFile.MimeType = browserFile.ContentType;
         appFile.DisplayName = Path.GetFileNameWithoutExtension(browserFile.Name);
     }

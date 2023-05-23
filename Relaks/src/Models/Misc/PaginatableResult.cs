@@ -10,3 +10,9 @@ public class PaginatableResult<TEntity> : IPaginatableResult<TEntity>
     public int Total { get; set; }
     public int PageCount { get; set; }
 }
+
+public class TotalResult<TEntity> : ITotalResult<TEntity>
+{
+    public List<TEntity> Items { get; set; } = new();
+    public int Total { get; set; }
+}

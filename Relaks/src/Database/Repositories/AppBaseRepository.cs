@@ -5,7 +5,16 @@ namespace Relaks.Database.Repositories;
 
 public static class AppBaseRepository
 {
-    public static PaginatableResult<TEntity> Paginate<TEntity>(this IQueryable<TEntity> query, IPaginatable paginatable)
+    public static TotalResult<TEntity> Total<TEntity>(this IQueryable<TEntity> query)
+    {
+        return new TotalResult<TEntity>()
+        {
+            Items = query.ToList(),
+            Total = query.Count(),
+        };      
+    }
+    
+    public static PaginatableResult<TEntity> Total<TEntity>(this IQueryable<TEntity> query, IPaginatable paginatable)
     {
         var perPage = paginatable.PerPage;
         var page = paginatable.Page;
