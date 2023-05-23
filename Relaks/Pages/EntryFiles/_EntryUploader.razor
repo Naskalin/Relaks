@@ -8,17 +8,30 @@
 
 <div class="mb-3">
     <label for="@InputId" class="form-label">Выберите файлы для загрузки</label>
-    <InputFile OnChange="@LoadFiles" class="form-control" id="@InputId" multiple/>
+    <div class="input-group">
+        <InputFile disabled="@IsLoading" OnChange="@LoadFiles" class="form-control" id="@InputId" multiple/>
+        @if (IsLoading)
+        {
+            <div class="input-group-text">
+                Загрузка <span class="ms-2"><i class="fa-solid fa-spinner fa-spin-pulse fa-lg text-primary"></i></span>
+            </div>
+        }
+    </div>
 </div>
 
 @code {
     private Guid InputId { get; } = Guid.NewGuid();
+    private bool IsLoading { get; set; }
 
     [Parameter]
     public Guid EntryId { get; set; }
 
+    [Parameter]
+    public EventCallback<List<Guid>> OnUpload { get; set; }
+
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
+        IsLoading = true;
         var entryFiles = new List<EntryFile>();
         foreach (var file in e.GetMultipleFiles(e.FileCount))
         {
@@ -35,6 +48,10 @@
         {
             Db.EntryFiles.AddRange(entryFiles);
             await Db.SaveChangesAsync();
+            await OnUpload.InvokeAsync(entryFiles.Select(x => x.Id).ToList());
         }
+
+        IsLoading = false;
     }
+
 }
