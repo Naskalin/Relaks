@@ -8,7 +8,7 @@ public static class FileMapper
     {
         var arr = new List<string?>
         {
-            baseFile.DisplayName,
+            baseFile.DisplayNameWithExtension(),
             baseFile.DeletedReason
         };
 
