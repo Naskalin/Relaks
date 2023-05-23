@@ -17,7 +17,7 @@ public class AppFileFindRequest : IPaginatable, IOrderable
     public int PerPage { get; set; }
     public string? OrderBy { get; set; }
     public bool? IsOrderByDesc { get; set; }
-    public bool? IsDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 }
 
 public class AppFileFindResult
@@ -33,18 +33,20 @@ public static class EntryFileRepository
         if (!string.IsNullOrEmpty(req.Search)) return FindFtsFiles(db, req);
 
         var q = db.BaseFiles.AsQueryable();
-        q = req.IsDeleted == true ? q.Where(x => x.DeletedAt != null) : q.Where(x => x.DeletedAt == null);
+        if (req.EntryId.HasValue)
+        {
+            var entryFileIds = db.EntryFiles.Where(x => x.EntryId.Equals(req.EntryId.Value)).Select(x => x.Id).ToList();
+            q = q.Where(x => entryFileIds.Contains(x.Id));
+        }
+        
+        q = req.IsDeleted ? q.Where(x => x.DeletedAt != null) : q.Where(x => x.DeletedAt == null);
+        
 
         if (req.Discriminator != null)
         {
             q = q.Where(x => x.Discriminator.Equals(req.Discriminator));
         }
-        
-        if (req.EntryId.HasValue)
-        {
-            q = db.EntryFiles.Where(x => x.EntryId.Equals(req.EntryId.Value));
-        }
-        
+
         if (req.CategoryId.HasValue)
         {
             q = q.Where(x => x.CategoryId.Equals(req.CategoryId.Value));
@@ -82,7 +84,7 @@ public static class EntryFileRepository
         
         var q = db.Set<FtsFile>().Where(x => x.Match == s);
         
-        q = req.IsDeleted == true
+        q = req.IsDeleted
             ? q.Where(x => !string.IsNullOrEmpty(x.DeletedAt))
             : q.Where(x => string.IsNullOrEmpty(x.DeletedAt));
         
@@ -93,8 +95,8 @@ public static class EntryFileRepository
 
         if (req.EntryId.HasValue)
         {
-            var allFileIds = db.EntryFiles.Where(x => x.EntryId.Equals(req.EntryId.Value)).Select(x => x.Id).ToList();
-            q = q.Where(x => allFileIds.Contains(x.Id));
+            var entryFileIds = db.EntryFiles.Where(x => x.EntryId.Equals(req.EntryId.Value)).Select(x => x.Id).ToList();
+            q = q.Where(x => entryFileIds.Contains(x.Id));
         }
         
         q = q.Select(x => new FtsFile()

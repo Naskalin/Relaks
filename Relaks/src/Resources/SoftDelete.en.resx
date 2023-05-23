@@ -20,4 +20,7 @@
     <data name="MoveToArchive" xml:space="preserve">
         <value>Move To Archive</value>
     </data>
+    <data name="ArchivalFiles" xml:space="preserve">
+        <value>Archival files</value>
+    </data>
 </root>

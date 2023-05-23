@@ -1,0 +1,14 @@
+﻿@inherits InputCheckbox
+
+<div class="form-check form-switch">
+    <InputCheckbox class="form-check-input" type="checkbox" @bind-Value="Value" id="@RandId"/>
+    <label class="form-check-label" for="@RandId">@Label</label>
+</div>
+
+@code {
+    private string RandId { get; set; } = Guid.NewGuid().ToString();
+
+    [Parameter]
+    public string Label { get; set; } = "??? Label ???";
+
+}
