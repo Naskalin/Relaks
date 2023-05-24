@@ -11,18 +11,22 @@ public class AppFileListStore
     public AppFileListStore(AppDbContext db)
     {
         _db = db;
+        State = StateEnum.Default;
     }
 
     public enum StateEnum
     {
         Default,
         AddCategory,
-        AddTag
+        AddTag,
+        EditTag,
+        EditCategory,
     }
-
+    
+    
     public Guid? EntryId { get; set; }
     public bool? WithEdit { get; set; }
-    public StateEnum State { get; set; } = StateEnum.Default;
+    public StateEnum State { get; set; }
     public Guid? EditId { get; set; }
     public AppFileFindRequest Req { get; set; } = new();
     public TotalResult<AppFileFindResult> Result { get; set; } = new();

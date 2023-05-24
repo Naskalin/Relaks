@@ -7,7 +7,7 @@
 @inject AppDbContext Db;
 
 <Dump Data="@Store.Req"/>
-@AppFileCategoryNew
+<Dump Data="@Store.State"/>
 
 <CascadingValue Value="@Store">
     <div class="row">
@@ -17,46 +17,57 @@
                 case AppFileListStore.StateEnum.Default:
                     <AppFileDefaultSidebar OnStateHasChanged="@StateHasChanged"/>
                     break;
+                case AppFileListStore.StateEnum.AddCategory:
+                    <span>AddCategory</span>
+                    break;
+                case AppFileListStore.StateEnum.AddTag:
+                    <AppFileTagForm OnStateHasChanged="@StateHasChanged"/>
+                    break;
+                case AppFileListStore.StateEnum.EditTag:
+                    <span>EditTag</span>
+                    break;
+                case AppFileListStore.StateEnum.EditCategory:
+                    <span>EditCategory</span>
+                    break;
             }
-
         </div>
-        <div class="col-9">
-            <div class="d-flex gap-3 align-items-center">
-                <div class="mb-3">Всего найдено: @Store.Result.Total</div>
-            </div>
-            <table class="table table-bordered table-hover align-middle">
-                <thead>
-                <tr style="@(!string.IsNullOrEmpty(Store.Req.Search) ? "opacity: .3; cursor: not-allowed;" : "")">
-                    <th style="width: 80px"></th>
-                    <th @onclick="@(() => OnSortChange(nameof(BaseFile.DisplayName)))" class="cursor-pointer">
-                        Имя <OrderableIcon Orderable="@Store.Req" Prop="@nameof(BaseFile.DisplayName)"/>
-                    </th>
-                    <th style="width: 150px" @onclick="@(() => OnSortChange(nameof(BaseFile.CreatedAt)))" class="cursor-pointer">
-                        Создан <OrderableIcon Orderable="@Store.Req" Prop="@nameof(BaseFile.CreatedAt)"/>
-                    </th>
-                    <th style="width: 150px">Категория</th>
-                    <th style="width: 150px">Метки</th>
-                </tr>
-                </thead>
-                <tbody>
-                @if (Store.Result.Items.Any())
-                {
-                    @foreach (var item in Store.Result.Items)
-                    {
-                        <AppFileListItem AppFile="@item"/>
-                    }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="100%" class="text-muted">
-                            <i class="las la-frown la-lg"></i> @Resources.Action.NotFoundResults
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
-        </div>
+        @* <div class="col-9"> *@
+        @*     <div class="d-flex gap-3 align-items-center"> *@
+        @*         <div class="mb-3">Всего найдено: @Store.Result.Total</div> *@
+        @*     </div> *@
+        @*     <table class="table table-bordered table-hover align-middle"> *@
+        @*         <thead> *@
+        @*         <tr style="@(!string.IsNullOrEmpty(Store.Req.Search) ? "opacity: .3; cursor: not-allowed;" : "")"> *@
+        @*             <th style="width: 80px"></th> *@
+        @*             <th @onclick="@(() => OnSortChange(nameof(BaseFile.DisplayName)))" class="cursor-pointer"> *@
+        @*                 Имя <OrderableIcon Orderable="@Store.Req" Prop="@nameof(BaseFile.DisplayName)"/> *@
+        @*             </th> *@
+        @*             <th style="width: 150px" @onclick="@(() => OnSortChange(nameof(BaseFile.CreatedAt)))" class="cursor-pointer"> *@
+        @*                 Создан <OrderableIcon Orderable="@Store.Req" Prop="@nameof(BaseFile.CreatedAt)"/> *@
+        @*             </th> *@
+        @*             <th style="width: 150px">Категория</th> *@
+        @*             <th style="width: 150px">Метки</th> *@
+        @*         </tr> *@
+        @*         </thead> *@
+        @*         <tbody> *@
+        @*         @if (Store.Result.Items.Any()) *@
+        @*         { *@
+        @*             @foreach (var item in Store.Result.Items) *@
+        @*             { *@
+        @*                 <AppFileListItem AppFile="@item"/> *@
+        @*             } *@
+        @*         } *@
+        @*         else *@
+        @*         { *@
+        @*             <tr> *@
+        @*                 <td colspan="100%" class="text-muted"> *@
+        @*                     <i class="las la-frown la-lg"></i> @Resources.Action.NotFoundResults *@
+        @*                 </td> *@
+        @*             </tr> *@
+        @*         } *@
+        @*         </tbody> *@
+        @*     </table> *@
+        @* </div> *@
     </div>
 </CascadingValue>
 
@@ -122,15 +133,17 @@
         Store.FindData();
     }
 
-    protected override void OnParametersSet()
+    protected override Task OnParametersSetAsync()
     {
         Store = new AppFileListStore(Db)
         {
             EntryId = EntryId,
-            Req = {EntryId = EntryId}
+            Req = {EntryId = EntryId},
+            WithEdit = WithEdit
         };
 
         Store.FindData();
-    }
 
+        return Task.CompletedTask;
+    }
 }

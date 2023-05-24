@@ -1,23 +1,39 @@
 ﻿@page "/test"
 @using System.Diagnostics.CodeAnalysis
+@using Relaks.Database
 @using Relaks.Models
 
-<div class="mt-3">
-    <Button OnClick="() => Modal.Toggle()">toggle</Button>
-</div>
-<Modal @ref="Modal" IsKeyboard="true">
-    <ModalDialog Title="test">
-        <BodyTemplate>
-            <div>test test</div>
-        </BodyTemplate>
-    </ModalDialog>
-</Modal>
+@inject AppDbContext Db;
+
+@* <div class="mt-3"> *@
+@*     <Button OnClick="() => Modal.Toggle()">toggle</Button> *@
+@* </div> *@
+@* <Modal @ref="Modal" IsKeyboard="true"> *@
+@*     <ModalDialog Title="test"> *@
+@*         <BodyTemplate> *@
+@*             <div>test test</div> *@
+@*         </BodyTemplate> *@
+@*     </ModalDialog> *@
+@* </Modal> *@
+
+<Button OnClick="@AddTag">Add tag</Button>
 
 @* <InputImageCrop/> *@
 
 @code {
     [NotNull]
     private Modal? Modal { get; set; }
+
+    private void AddTag()
+    {
+        var entryFileTag = new EntryFileTag()
+        {
+            Title = "Test",
+            EntryId = Guid.Parse("1D1FEAC8-BC2F-48F4-9AD4-62A0918206B4")
+        };
+        Db.EntryFileTags.Add(entryFileTag);
+        Db.SaveChanges();
+    }
     // private List<SelectedItem> Items { get; set; } = new();
     //
     // private SelectedItem Discriminator { get; set; } = new();

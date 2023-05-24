@@ -1,0 +1,92 @@
+﻿@using Relaks.Models.Store
+@using Relaks.Models
+@using Relaks.Database
+@using Console = System.Console
+
+@inject AppDbContext Db;
+
+<AppFileSidebarHeader Title="@(Store.State.Equals(AppFileListStore.StateEnum.EditTag) ? Resources.Action.Add : Resources.Action.Edit)" 
+                      WithBackLink="@true"
+                      OnBackLink="@ChangeState"/>
+
+<EditForm Model="@Model" OnSubmit="@OnSubmit">
+    <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
+    <div class="mb-3">
+        <label for="" class="form-label">@Resources.Action.Title *</label>
+        <input type="text" @bind-value="@Model.Title" class="form-control">
+        <ValidationMessage For="@(() => Model.Title)"/>
+    </div>
+
+    <div class="mb-3">
+        <button class="btn btn-primary">
+            <i class="las la-lg me-1 @(Store.State.Equals(AppFileListStore.StateEnum.EditTag) ? "la-edit" : "la-plus-circle")"></i>
+            @(Store.State.Equals(AppFileListStore.StateEnum.EditTag) ? Resources.Action.SaveChanges : Resources.Action.Add)
+        </button>
+    </div>
+</EditForm>
+
+@code {
+    
+    [CascadingParameter]
+    [Parameter]
+    public AppFileListStore Store { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback OnStateHasChanged { get; set; }
+
+    private async Task ChangeState()
+    {
+        Store.State = AppFileListStore.StateEnum.Default;
+        await OnStateHasChanged.InvokeAsync();
+    }
+    
+    private FluentValidationValidator Validator { get; set; } = null!;
+    
+    private BaseFileTag Model { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        // if (!Store.State.Equals(AppFileListStore.StateEnum.AddTag) || !Store.State.Equals(AppFileListStore.StateEnum.EditTag))
+        // {
+        //     return;
+        // }
+        
+        if (Store.EntryId.HasValue)
+        {
+            if (Store.State.Equals(AppFileListStore.StateEnum.AddTag))
+            {
+                Model = new EntryFileTag();
+            } else if (Store.EditId.HasValue && Store.State.Equals(AppFileListStore.StateEnum.EditTag))
+            {
+                Model = Db.EntryFileTags.First(x => x.Id.Equals(Store.EditId.Value));
+            }
+        }
+        else
+        {
+            throw new NotSupportedException("EntryId not found");
+        }
+    }
+
+    private async Task OnSubmit()
+    {
+        if (!await Validator.ValidateAsync()) return;
+        if (Store.EntryId.HasValue)
+        {
+            if (Store.State.Equals(AppFileListStore.StateEnum.AddTag))
+            {
+                var entryFileTag = (EntryFileTag) Model;
+                entryFileTag.EntryId = Store.EntryId.Value;
+                
+                Db.EntryFileTags.Add(entryFileTag);
+            }
+            else
+            {
+                //edit
+            }
+            
+            await Db.SaveChangesAsync();
+            await ChangeState();
+        }
+    }
+
+}

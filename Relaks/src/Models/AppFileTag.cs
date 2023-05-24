@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Relaks.Interfaces;
 
 namespace Relaks.Models;
 
 [Table("FileTags")]
-public abstract class BaseFileTag
+public abstract class BaseFileTag : ITag
 {
     public Guid Id { get; set; }
     public string Discriminator { get; set; } = null!;

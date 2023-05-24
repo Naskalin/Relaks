@@ -20,11 +20,11 @@
 
 <AppFileSidebarHeader Title="Категории"
                       WithEdit="@Store.WithEdit"
-                      OnAdd="@(() => Store.State = AppFileListStore.StateEnum.AddCategory)"/>
+                      OnAdd="@(() => { Store.State = AppFileListStore.StateEnum.AddCategory; OnStateHasChanged.InvokeAsync();})"/>
 
 <AppFileSidebarHeader Title="Метки"
                       WithEdit="@Store.WithEdit"
-                      OnAdd="@(() => Store.State = AppFileListStore.StateEnum.AddTag)"/>
+                      OnAdd="@(() => { Store.State = AppFileListStore.StateEnum.AddTag; OnStateHasChanged.InvokeAsync();})"/>
 
 @code {
 
