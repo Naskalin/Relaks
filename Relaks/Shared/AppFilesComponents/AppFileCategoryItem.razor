@@ -1,0 +1,19 @@
+﻿@using Relaks.Models
+
+<div class="list-group-item px-0">
+    @Category.Title
+    @if (Category.Children.Any())
+    {
+        <div class="list-group list-group-flush">
+            @foreach (var child in Category.Children)
+            {
+                <AppFileCategoryItem Category="@child"/>
+            }
+        </div>   
+    }
+</div>
+
+@code {
+    [Parameter]
+    public BaseFileCategory Category { get; set; } = null!;
+}

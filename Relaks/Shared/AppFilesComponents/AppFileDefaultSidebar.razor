@@ -1,6 +1,14 @@
 ﻿@using Relaks.Models.Store
+@using Relaks.Database.Repositories
 
 @* <Dump Data="@Store.Req"/> *@
+
+<div class="list-group list-group-flush">
+    @foreach (var item in Store.Categories.ToTreeSelect())
+    {
+        <p>@item.Title</p>
+    }
+</div>
 
 <div class="mb-3">
     <div class="input-group">
@@ -22,6 +30,13 @@
                       WithAdd="@Store.WithEdit"
                       WithEdit="@Store.WithEdit"
                       OnAdd="@(() => { Store.State = AppFileListStore.StateEnum.AddCategory; OnStateHasChanged.InvokeAsync();})"/>
+
+<div class="list-group list-group-flush">
+    @foreach (var category in Store.Categories)
+    {
+        <AppFileCategoryItem Category="@category"/>
+    }
+</div>
 
 <AppFileSidebarHeader Title="Метки"
                       WithAdd="@Store.WithEdit"

@@ -1,5 +1,4 @@
-﻿using BootstrapBlazor.Components;
-using Relaks.Database;
+﻿using Relaks.Database;
 using Relaks.Database.Repositories;
 using Relaks.Models.Misc;
 
@@ -54,14 +53,13 @@ public class AppFileListStore
 
     public void GetCategories()
     {
+        var q = _db.BaseFileCategories.AsQueryable();
         if (Req.EntryId.HasValue)
         {
-            Categories = _db.EntryFileCategories.Where(x => x.EntryId.Equals(Req.EntryId.Value))
-                .AsEnumerable()
-                .Where(x => x.EntryId.Equals(Req.EntryId.Value))
-                .OrderBy(x => x.Title, StringComparer.OrdinalIgnoreCase)
-                .Select(x => (BaseFileCategory) x)
-                .ToList();
+            var categoryIds = _db.EntryFileCategories.Where(x => x.EntryId.Equals(Req.EntryId.Value)).Select(x => x.Id);
+            q = q.Where(x => categoryIds.Contains(x.Id));
         }
+        
+        Categories = q.ToTree();
     }
 }
