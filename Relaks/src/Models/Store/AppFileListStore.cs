@@ -18,10 +18,14 @@ public class AppFileListStore
     public enum StateEnum
     {
         Default,
-        AddCategory,
+        
         AddTag,
         EditTag,
+        EditTags,
+        
+        AddCategory,
         EditCategory,
+        EditCategories,
     }
 
     public Guid? EntryId { get; set; }

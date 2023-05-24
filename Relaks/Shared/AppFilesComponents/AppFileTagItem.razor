@@ -7,7 +7,7 @@
 <button type="button"
         class="btn btn-sm @(Store.Req.TagIds.Contains(Tag.Id) ? "btn-secondary" : "btn-outline-secondary")"
         @onclick="@OnClickAsync">
-    <i class="las la-tag"></i>
+    <i class="las @(Store.State.Equals(AppFileListStore.StateEnum.EditTags) ? "la-edit" : "la-tag")"></i>
     @Tag.Title
 </button>
 
@@ -17,22 +17,30 @@
     public BaseFileTag Tag { get; set; } = null!;
     
     [Parameter]
-    public EventCallback OnTagSwitch { get; set; }
+    public EventCallback OnStateChanged { get; set; }
 
     [CascadingParameter]
     public AppFileListStore Store { get; set; } = null!;
 
     private async Task OnClickAsync()
     {
-        if (Store.Req.TagIds.Any(id => id.Equals(Tag.Id)))
+        if (Store.State == AppFileListStore.StateEnum.EditTags)
         {
-            Store.Req.TagIds.Remove(Tag.Id);
+            Store.State = AppFileListStore.StateEnum.EditTag;
+            Store.EditId = Tag.Id;
         }
         else
         {
-            Store.Req.TagIds.Add(Tag.Id);
+            if (Store.Req.TagIds.Any(id => id.Equals(Tag.Id)))
+            {
+                Store.Req.TagIds.Remove(Tag.Id);
+            }
+            else
+            {
+                Store.Req.TagIds.Add(Tag.Id);
+            }
+            Store.FindFiles();   
         }
-        Store.FindFiles();
-        await OnTagSwitch.InvokeAsync();
+        await OnStateChanged.InvokeAsync();
     }
 }

@@ -9,12 +9,24 @@
             </button>
         </div>
     }
-    <div class="col"><span class="h6">@Title</span></div>
+    <div class="col">
+        <span class="h6">@Title</span>
+    </div>
     @if (WithEdit == true)
     {
         <div class="col-auto">
+            <Tooltip Title="@($"{Resources.Action.Edit} {Title.ToLower()}")" Trigger="hover">
+                <button type="button" class="btn btn-light btn-circle btn-sm" @onclick="@(() => OnEdit.InvokeAsync())">
+                    <i class="las la-edit la-lg"></i>
+                </button>
+            </Tooltip>
+        </div>
+    }
+    @if (WithAdd == true)
+    {
+        <div class="col-auto">
             <Tooltip Title="@($"{Resources.Action.Add} {Title.ToLower()}")" Trigger="hover">
-                <button type="button" class="btn btn-outline-secondary btn-circle btn-sm" @onclick="@(() => OnAdd.InvokeAsync())">
+                <button type="button" class="btn btn-light btn-circle btn-sm" @onclick="@(() => OnAdd.InvokeAsync())">
                     <i class="las la-plus la-lg"></i>
                 </button>
             </Tooltip>
@@ -31,11 +43,17 @@
     public EventCallback OnAdd { get; set; }
     
     [Parameter]
+    public EventCallback OnEdit { get; set; }
+
+    [Parameter]
     public EventCallback OnBackLink { get; set; }
+
+    [Parameter]
+    public bool? WithAdd { get; set; }
     
     [Parameter]
     public bool? WithEdit { get; set; }
-    
+
     [Parameter]
     public bool? WithBackLink { get; set; }
 

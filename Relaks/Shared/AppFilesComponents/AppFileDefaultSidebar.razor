@@ -19,18 +19,25 @@
 </div>
 
 <AppFileSidebarHeader Title="Категории"
+                      WithAdd="@Store.WithEdit"
                       WithEdit="@Store.WithEdit"
                       OnAdd="@(() => { Store.State = AppFileListStore.StateEnum.AddCategory; OnStateHasChanged.InvokeAsync();})"/>
 
 <AppFileSidebarHeader Title="Метки"
+                      WithAdd="@Store.WithEdit"
                       WithEdit="@Store.WithEdit"
+                      OnEdit="@SwitchEditTags"
                       OnAdd="@(() => { Store.State = AppFileListStore.StateEnum.AddTag; OnStateHasChanged.InvokeAsync();})"/>
 
-<div class="d-flex flex-wrap gap-2">
-@foreach (var tag in Store.Tags)
+@if (Store.State.Equals(AppFileListStore.StateEnum.EditTags))
 {
-    <AppFileTagItem Tag="@tag" OnTagSwitch="@(() => OnStateHasChanged.InvokeAsync())"/>
+    <p class="text-center text-muted"><i class="fa-solid fa-edit fa-beat me-1"></i> Нажмите на метку для изменения</p>
 }
+<div class="d-flex flex-wrap gap-2">
+    @foreach (var tag in Store.Tags)
+    {
+        <AppFileTagItem Tag="@tag" OnStateChanged="@(() => OnStateHasChanged.InvokeAsync())"/>
+    }
 </div>
 
 @code {
@@ -42,7 +49,7 @@
 
     [Parameter]
     public EventCallback OnStateHasChanged { get; set; }
-    
+
     [CascadingParameter]
     [Parameter]
     public AppFileListStore Store { get; set; } = null!;
@@ -68,9 +75,20 @@
         await OnStateHasChanged.InvokeAsync();
     }
 
+    private Task SwitchEditTags()
+    {
+        Store.State = Store.State.Equals(AppFileListStore.StateEnum.EditTags)
+            ? AppFileListStore.StateEnum.Default
+            : AppFileListStore.StateEnum.EditTags
+            ;
+        
+        StateHasChanged();
+        OnStateHasChanged.InvokeAsync();
+        return Task.CompletedTask;
+    }
+
     protected override void OnParametersSet()
     {
-        
     }
 
 }

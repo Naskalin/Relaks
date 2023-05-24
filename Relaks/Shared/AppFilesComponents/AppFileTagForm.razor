@@ -1,6 +1,7 @@
 ﻿@using Relaks.Models.Store
 @using Relaks.Models
 @using Relaks.Database
+@using Relaks.Mappers
 @using Console = System.Console
 
 @inject AppDbContext Db;
@@ -34,12 +35,8 @@
     [Parameter]
     public EventCallback OnStateHasChanged { get; set; }
 
-    private async Task ChangeState()
-    {
-        Store.State = AppFileListStore.StateEnum.Default;
-        await OnStateHasChanged.InvokeAsync();
-    }
-    
+    private Task ChangeState() => OnStateHasChanged.InvokeAsync();
+
     private FluentValidationValidator Validator { get; set; } = null!;
     
     private BaseFileTag Model { get; set; } = null!;
@@ -67,20 +64,20 @@
         if (!await Validator.ValidateAsync()) return;
         if (Store.EntryId.HasValue)
         {
+            var entryFileTag = (EntryFileTag) Model;
+            entryFileTag.MapTo(entryFileTag);
+            
             if (Store.State.Equals(AppFileListStore.StateEnum.AddTag))
             {
-                var entryFileTag = (EntryFileTag) Model;
                 entryFileTag.EntryId = Store.EntryId.Value;
-                
                 Db.EntryFileTags.Add(entryFileTag);
             }
-            else
-            {
-                //edit
-            }
-            
+
             await Db.SaveChangesAsync();
             Store.GetTags();
+            Store.State = Store.State.Equals(AppFileListStore.StateEnum.AddTag) 
+                ? AppFileListStore.StateEnum.Default 
+                : AppFileListStore.StateEnum.EditTags;
             await ChangeState();
         }
     }

@@ -20,7 +20,7 @@
                 @key="@eInfo.Id">
                 <EntryInfoContact EntryInfo="@eInfo" EntryInfoId="EntryInfoId"/>
                 <Tooltip Title="@($"Изменить {eInfo.Discriminator}")" Trigger="hover" Placement="Placement.Right">
-                    <NavLink href="@($"/entries/{eInfo.EntryId}/{eInfo.Discriminator}/{eInfo.Id}/edit")" class="btn btn-ouline-light btn-sm">
+                    <NavLink href="@($"/entries/{eInfo.EntryId}/{eInfo.Discriminator}/{eInfo.Id}/edit")" class="btn btn-light btn-sm btn-circle">
                         <i class="las la-lg la-edit"></i>
                     </NavLink>
                 </Tooltip>
