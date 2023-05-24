@@ -8,7 +8,7 @@
 
 <AppFileSidebarHeader Title="@(Store.State.Equals(AppFileListStore.StateEnum.AddTag) ? $"{Resources.Action.Add} метку" : $"{Resources.Action.Edit} метку")" 
                       WithBackLink="@true"
-                      OnBackLink="@ChangeState"/>
+                      OnBackLink="@GoBack"/>
 
 <EditForm Model="@Model" OnSubmit="@OnSubmit">
     <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
@@ -35,7 +35,13 @@
     [Parameter]
     public EventCallback OnStateHasChanged { get; set; }
 
-    private Task ChangeState() => OnStateHasChanged.InvokeAsync();
+    private async Task GoBack()
+    {
+        Store.State = Store.State.Equals(AppFileListStore.StateEnum.AddTag) 
+            ? AppFileListStore.StateEnum.Default 
+            : AppFileListStore.StateEnum.EditTags;
+        await OnStateHasChanged.InvokeAsync();
+    }
 
     private FluentValidationValidator Validator { get; set; } = null!;
     
@@ -75,10 +81,7 @@
 
             await Db.SaveChangesAsync();
             Store.GetTags();
-            Store.State = Store.State.Equals(AppFileListStore.StateEnum.AddTag) 
-                ? AppFileListStore.StateEnum.Default 
-                : AppFileListStore.StateEnum.EditTags;
-            await ChangeState();
+            await GoBack();
         }
     }
 
