@@ -33,6 +33,7 @@ public static class RegisterServices
         services.AddScoped<IValidator<EiEmail>, EiEmailValidator>();
 
         services.AddScoped<IValidator<EntryFileTag>, EntryFileTagValidator>();
+        services.AddScoped<IValidator<EntryFileCategory>, EntryFileCategoryValidator>();
 
         // services.AddScoped<IValidator<EntryInfoCreateRequest>, EntryInfoCreateRequestValidator>();
     }

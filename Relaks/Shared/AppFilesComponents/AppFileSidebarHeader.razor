@@ -15,7 +15,7 @@
     @if (WithEdit == true)
     {
         <div class="col-auto">
-            <Tooltip Title="@($"{Resources.Action.Edit} {Title.ToLower()}")" Trigger="hover">
+            <Tooltip Title="@($"{Resources.Action.Edit}")" Trigger="hover">
                 <button type="button" class="btn btn-light btn-circle btn-sm" @onclick="@(() => OnEdit.InvokeAsync())">
                     <i class="las la-edit la-lg"></i>
                 </button>
@@ -25,7 +25,7 @@
     @if (WithAdd == true)
     {
         <div class="col-auto">
-            <Tooltip Title="@($"{Resources.Action.Add} {Title.ToLower()}")" Trigger="hover">
+            <Tooltip Title="@($"{Resources.Action.Add}")" Trigger="hover">
                 <button type="button" class="btn btn-light btn-circle btn-sm" @onclick="@(() => OnAdd.InvokeAsync())">
                     <i class="las la-plus la-lg"></i>
                 </button>

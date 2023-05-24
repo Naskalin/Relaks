@@ -25,7 +25,7 @@
                     break;
                 case AppFileListStore.StateEnum.AddCategory:
                 case AppFileListStore.StateEnum.EditCategory:
-                    <span>Add / EditCategory</span>
+                    <AppFileCategoryForm OnStateHasChanged="@StateHasChanged"/>
                     break;
             }
         </div>

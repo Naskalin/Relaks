@@ -17,5 +17,6 @@ public class EntryFileTagValidator : AbstractValidator<EntryFileTag>
     public EntryFileTagValidator()
     {
         RuleFor(x => x).SetValidator(new BaseFileTagValidator());
+        RuleFor(x => x.EntryId).NotEmpty();
     }
 }
