@@ -7,6 +7,6 @@ public class TagValidator : AbstractValidator<ITag>
 {
     public TagValidator()
     {
-        RuleFor(x => x.Title).Length(2, 150);
+        RuleFor(x => x.Title).Length(1, 150);
     }
 }

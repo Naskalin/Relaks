@@ -11,14 +11,16 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230520060129_CreateFileTables")]
-    partial class CreateFileTables
+    [Migration("20230524101318_CreateFtsTables")]
+    partial class CreateFtsTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
+            modelBuilder
+                .UseCollation("NOCASE")
+                .HasAnnotation("ProductVersion", "7.0.5");
 
             modelBuilder.Entity("BaseFileBaseFileTag", b =>
                 {
@@ -154,7 +156,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Extension")
+                    b.Property<string>("Filename")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -358,6 +360,47 @@ namespace Relaks.Migrations
                     b.HasKey("RowId");
 
                     b.ToTable("FtsEntryInfos", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("Relaks.Models.FtsFile", b =>
+                {
+                    b.Property<int>("RowId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DeletedAt")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Match")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("FtsFiles");
+
+                    b.Property<double?>("Rank")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("Snippet")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("RowId");
+
+                    b.ToTable("FtsFiles", null, t =>
                         {
                             t.ExcludeFromMigrations();
                         });

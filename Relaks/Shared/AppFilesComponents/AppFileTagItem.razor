@@ -1,0 +1,38 @@
+﻿@using Relaks.Models
+@using System.Web
+@using Relaks.Models.Store
+
+@inject NavigationManager NavigationManager;
+
+<button type="button"
+        class="btn btn-sm @(Store.Req.TagIds.Contains(Tag.Id) ? "btn-secondary" : "btn-outline-secondary")"
+        @onclick="@OnClickAsync">
+    <i class="las la-tag"></i>
+    @Tag.Title
+</button>
+
+@code {
+    
+    [Parameter]
+    public BaseFileTag Tag { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback OnTagSwitch { get; set; }
+
+    [CascadingParameter]
+    public AppFileListStore Store { get; set; } = null!;
+
+    private async Task OnClickAsync()
+    {
+        if (Store.Req.TagIds.Any(id => id.Equals(Tag.Id)))
+        {
+            Store.Req.TagIds.Remove(Tag.Id);
+        }
+        else
+        {
+            Store.Req.TagIds.Add(Tag.Id);
+        }
+        Store.FindFiles();
+        await OnTagSwitch.InvokeAsync();
+    }
+}

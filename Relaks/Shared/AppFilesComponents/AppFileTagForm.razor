@@ -5,7 +5,7 @@
 
 @inject AppDbContext Db;
 
-<AppFileSidebarHeader Title="@(Store.State.Equals(AppFileListStore.StateEnum.EditTag) ? Resources.Action.Add : Resources.Action.Edit)" 
+<AppFileSidebarHeader Title="@(Store.State.Equals(AppFileListStore.StateEnum.AddTag) ? $"{Resources.Action.Add} метку" : $"{Resources.Action.Edit} метку")" 
                       WithBackLink="@true"
                       OnBackLink="@ChangeState"/>
 
@@ -46,11 +46,6 @@
 
     protected override void OnParametersSet()
     {
-        // if (!Store.State.Equals(AppFileListStore.StateEnum.AddTag) || !Store.State.Equals(AppFileListStore.StateEnum.EditTag))
-        // {
-        //     return;
-        // }
-        
         if (Store.EntryId.HasValue)
         {
             if (Store.State.Equals(AppFileListStore.StateEnum.AddTag))
@@ -85,6 +80,7 @@
             }
             
             await Db.SaveChangesAsync();
+            Store.GetTags();
             await ChangeState();
         }
     }

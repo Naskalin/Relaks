@@ -42,6 +42,7 @@ public sealed class AppDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.UseCollation("NOCASE");
         modelBuilder.ApplyConfiguration(new FtsEntryConfiguration());
         modelBuilder.ApplyConfiguration(new FtsEntryInfoConfiguration());
         modelBuilder.ApplyConfiguration(new FtsFileConfiguration());

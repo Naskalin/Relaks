@@ -11,14 +11,16 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230522060403_ChangeFileNameColumn")]
-    partial class ChangeFileNameColumn
+    [Migration("20230518133751_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
+            modelBuilder
+                .UseCollation("NOCASE")
+                .HasAnnotation("ProductVersion", "7.0.5");
 
             modelBuilder.Entity("BaseFileBaseFileTag", b =>
                 {
@@ -358,6 +360,47 @@ namespace Relaks.Migrations
                     b.HasKey("RowId");
 
                     b.ToTable("FtsEntryInfos", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("Relaks.Models.FtsFile", b =>
+                {
+                    b.Property<int>("RowId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DeletedAt")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Match")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("FtsFiles");
+
+                    b.Property<double?>("Rank")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("Snippet")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("RowId");
+
+                    b.ToTable("FtsFiles", null, t =>
                         {
                             t.ExcludeFromMigrations();
                         });

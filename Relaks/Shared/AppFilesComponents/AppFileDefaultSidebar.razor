@@ -1,6 +1,6 @@
 ﻿@using Relaks.Models.Store
 
-<Dump Data="@Store.Req"/>
+@* <Dump Data="@Store.Req"/> *@
 
 <div class="mb-3">
     <div class="input-group">
@@ -26,6 +26,13 @@
                       WithEdit="@Store.WithEdit"
                       OnAdd="@(() => { Store.State = AppFileListStore.StateEnum.AddTag; OnStateHasChanged.InvokeAsync();})"/>
 
+<div class="d-flex flex-wrap gap-2">
+@foreach (var tag in Store.Tags)
+{
+    <AppFileTagItem Tag="@tag" OnTagSwitch="@(() => OnStateHasChanged.InvokeAsync())"/>
+}
+</div>
+
 @code {
 
     private Dictionary<string, Guid> Ids { get; set; } = new()
@@ -43,22 +50,27 @@
     private async Task OnInputSearch(ChangeEventArgs e)
     {
         Store.Req.Search = e.Value?.ToString();
-        Store.FindData();
+        Store.FindFiles();
         await OnStateHasChanged.InvokeAsync();
     }
 
     private async Task OnChangeIsDeleted(ChangeEventArgs e)
     {
         Store.Req.IsDeleted = (bool) (e.Value ?? false);
-        Store.FindData();
+        Store.FindFiles();
         await OnStateHasChanged.InvokeAsync();
     }
 
     private async Task OnCleanSearch()
     {
         Store.Req.Search = null;
-        Store.FindData();
+        Store.FindFiles();
         await OnStateHasChanged.InvokeAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        
     }
 
 }

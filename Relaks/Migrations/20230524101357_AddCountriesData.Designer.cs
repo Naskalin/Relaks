@@ -11,14 +11,31 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230518134638_AddCountriesData")]
+    [Migration("20230524101357_AddCountriesData")]
     partial class AddCountriesData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
+            modelBuilder
+                .UseCollation("NOCASE")
+                .HasAnnotation("ProductVersion", "7.0.5");
+
+            modelBuilder.Entity("BaseFileBaseFileTag", b =>
+                {
+                    b.Property<Guid>("FilesId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("TagsId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("FilesId", "TagsId");
+
+                    b.HasIndex("TagsId");
+
+                    b.ToTable("BaseFileBaseFileTag");
+                });
 
             modelBuilder.Entity("Relaks.Models.BaseEntry", b =>
                 {
@@ -109,6 +126,105 @@ namespace Relaks.Migrations
                     b.ToTable("EntryInfos");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseEntryInfo");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("Relaks.Models.BaseFile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DeletedReason")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Filename")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Keyword")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("MimeType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Files");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("BaseFile");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("Relaks.Models.BaseFileCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("FileCategories");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("BaseFileCategory");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("Relaks.Models.BaseFileTag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FileTags");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("BaseFileTag");
 
                     b.UseTphMappingStrategy();
                 });
@@ -249,6 +365,47 @@ namespace Relaks.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Relaks.Models.FtsFile", b =>
+                {
+                    b.Property<int>("RowId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DeletedAt")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Match")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("FtsFiles");
+
+                    b.Property<double?>("Rank")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("Snippet")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("RowId");
+
+                    b.ToTable("FtsFiles", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
             modelBuilder.Entity("Relaks.Models.ECompany", b =>
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
@@ -347,10 +504,118 @@ namespace Relaks.Migrations
                     b.HasDiscriminator().HasValue("EiUrl");
                 });
 
+            modelBuilder.Entity("Relaks.Models.EntryFile", b =>
+                {
+                    b.HasBaseType("Relaks.Models.BaseFile");
+
+                    b.Property<Guid>("EntryId")
+                        .HasColumnType("TEXT");
+
+                    b.HasIndex("EntryId");
+
+                    b.ToTable("Files");
+
+                    b.HasDiscriminator().HasValue("EntryFile");
+                });
+
+            modelBuilder.Entity("Relaks.Models.EntryFileCategory", b =>
+                {
+                    b.HasBaseType("Relaks.Models.BaseFileCategory");
+
+                    b.Property<Guid>("EntryId")
+                        .HasColumnType("TEXT");
+
+                    b.HasIndex("EntryId");
+
+                    b.ToTable("FileCategories");
+
+                    b.HasDiscriminator().HasValue("EntryFileCategory");
+                });
+
+            modelBuilder.Entity("Relaks.Models.EntryFileTag", b =>
+                {
+                    b.HasBaseType("Relaks.Models.BaseFileTag");
+
+                    b.Property<Guid>("EntryId")
+                        .HasColumnType("TEXT");
+
+                    b.HasIndex("EntryId");
+
+                    b.ToTable("FileTags");
+
+                    b.HasDiscriminator().HasValue("EntryFileTag");
+                });
+
+            modelBuilder.Entity("BaseFileBaseFileTag", b =>
+                {
+                    b.HasOne("Relaks.Models.BaseFile", null)
+                        .WithMany()
+                        .HasForeignKey("FilesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Relaks.Models.BaseFileTag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Relaks.Models.BaseEntryInfo", b =>
                 {
                     b.HasOne("Relaks.Models.BaseEntry", "Entry")
                         .WithMany("EntryInfos")
+                        .HasForeignKey("EntryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Entry");
+                });
+
+            modelBuilder.Entity("Relaks.Models.BaseFile", b =>
+                {
+                    b.HasOne("Relaks.Models.BaseFileCategory", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Relaks.Models.BaseFileCategory", b =>
+                {
+                    b.HasOne("Relaks.Models.BaseFileCategory", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("Relaks.Models.EntryFile", b =>
+                {
+                    b.HasOne("Relaks.Models.BaseEntry", "Entry")
+                        .WithMany()
+                        .HasForeignKey("EntryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Entry");
+                });
+
+            modelBuilder.Entity("Relaks.Models.EntryFileCategory", b =>
+                {
+                    b.HasOne("Relaks.Models.BaseEntry", "Entry")
+                        .WithMany()
+                        .HasForeignKey("EntryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Entry");
+                });
+
+            modelBuilder.Entity("Relaks.Models.EntryFileTag", b =>
+                {
+                    b.HasOne("Relaks.Models.BaseEntry", "Entry")
+                        .WithMany()
                         .HasForeignKey("EntryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -55,7 +55,7 @@ public static class EntryFileRepository
         {
             q = q.Where(x => x.Tags.Any(t => req.TagIds.Equals(t.Id)));
         }
-        
+
         if (!string.IsNullOrEmpty(req.Keyword))
         {
             q = q.Where(x => x.Keyword != null && x.Keyword.Equals(req.Keyword));

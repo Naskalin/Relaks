@@ -29,6 +29,6 @@
     private void HandleOnUpload(List<Guid> fileIds)
     {
         var paramsFileIds = string.Join("&", fileIds.Select(x=>"fileIds=" + x));
-        NavigationManager.NavigateTo($"{NavigationManager.Uri}?{paramsFileIds}", true);
+        NavigationManager.NavigateTo($"/entries/{EntryId}/files?{paramsFileIds}", true);
     }
 }
