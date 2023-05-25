@@ -4,6 +4,7 @@
 @using Relaks.Mappers
 
 @inject AppDbContext Db;
+@inject IJSRuntime JsRuntime;
 
 <AppFileSidebarHeader Title="@(Store.State.Equals(AppFileListStore.StateEnum.AddTag) ? $"{Resources.Action.Add} метку" : $"{Resources.Action.Edit} метку")" 
                       WithBackLink="@true"
@@ -26,6 +27,16 @@
     </div>
 </EditForm>
 
+@if (Store.State.Equals(AppFileListStore.StateEnum.EditTag))
+{
+    <div class="text-end">
+        <button type="button" class="btn btn-link text-danger" @onclick="@OnDelete">
+            <i class="las la-trash la-lg"></i>
+            @Resources.Action.Delete
+        </button>
+    </div>
+}
+
 @code {
     
     [CascadingParameter]
@@ -37,9 +48,7 @@
 
     private async Task GoBack()
     {
-        Store.State = Store.State.Equals(AppFileListStore.StateEnum.AddTag) 
-            ? AppFileListStore.StateEnum.Default 
-            : AppFileListStore.StateEnum.EditTags;
+        Store.State = AppFileListStore.StateEnum.Default;
         await OnStateHasChanged.InvokeAsync();
     }
 
@@ -85,6 +94,17 @@
             Store.GetTags();
             await GoBack();
         }
+    }
+    
+    private async Task OnDelete()
+    {
+        if (Store.State.Equals(AppFileListStore.StateEnum.AddTag)) return;
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
+        if (!isConfirmed) return;
+        Db.BaseFileTags.Remove(Model);
+        await Db.SaveChangesAsync();
+        Store.GetTags();
+        await GoBack();
     }
 
 }

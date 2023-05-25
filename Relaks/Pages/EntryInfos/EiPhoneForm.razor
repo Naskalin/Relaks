@@ -20,7 +20,7 @@
             <ChildContent>@(EntryInfoId.HasValue ? Resources.Action.Edit : Resources.Action.Add): @Resources.Entity.ResourceManager.GetString(nameof(EiPhone))</ChildContent>
         </MyTitle>
 
-        <EditForm Model="@Model" OnSubmit="OnSubmit">
+        <EditForm Model="@Model" OnSubmit="@OnSubmit">
             <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
             <ValidationSummary/>
 
@@ -48,7 +48,7 @@
          @if (EntryInfoId.HasValue && Model.DeletedAt != null)
          {
              <div class="text-end">
-                 <button type="button" class="btn btn-link text-danger" @onclick="OnDelete">
+                 <button type="button" class="btn btn-link text-danger" @onclick="@OnDelete">
                      <i class="las la-trash la-lg"></i>
                      @Resources.Action.Delete
                  </button>

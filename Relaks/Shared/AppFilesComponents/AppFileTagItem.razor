@@ -7,7 +7,7 @@
 <button type="button"
         class="btn btn-sm @(Store.Req.TagIds.Contains(Tag.Id) ? "btn-secondary" : "btn-outline-secondary")"
         @onclick="@OnClickAsync">
-    <i class="las @(Store.State.Equals(AppFileListStore.StateEnum.EditTags) ? "la-edit text-success" : "la-tag")"></i>
+    <i class="@(Store.State.Equals(AppFileListStore.StateEnum.EditTags) ? "fa-solid fa-edit fa-beat" : "las la-tag")"></i>
     @Tag.Title
 </button>
 

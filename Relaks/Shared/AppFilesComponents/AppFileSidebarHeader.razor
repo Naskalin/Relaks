@@ -16,7 +16,7 @@
     {
         <div class="col-auto">
             <Tooltip Title="@($"{Resources.Action.Edit}")" Trigger="hover">
-                <button type="button" class="btn btn-light btn-circle btn-sm" @onclick="@(() => OnEdit.InvokeAsync())">
+                <button type="button" class="btn btn-circle btn-light btn-sm @(IsEdit == true ? "active" : "")" @onclick="@(() => OnEdit.InvokeAsync())">
                     <i class="las la-edit la-lg"></i>
                 </button>
             </Tooltip>
@@ -34,10 +34,21 @@
     }
 </div>
 
+@if (IsEdit == true)
+{
+    <p class="text-center text-muted small"><i class="las la-info-circle la-lg me-1"></i> @(EditText ?? "???")</p>
+}
+
 @code {
 
     [Parameter]
     public string Title { get; set; } = null!;
+    
+    [Parameter]
+    public string? EditText { get; set; }
+    
+    [Parameter]
+    public bool? IsEdit { get; set; }
 
     [Parameter]
     public EventCallback OnAdd { get; set; }
@@ -56,8 +67,5 @@
 
     [Parameter]
     public bool? WithBackLink { get; set; }
-
-    [CascadingParameter]
-    public AppFileListStore Store { get; set; } = null!;
 
 }

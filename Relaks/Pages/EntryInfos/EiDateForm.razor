@@ -21,7 +21,7 @@
         </MyTitle>
 
         @* <Dump Data="@Model.Date"/> *@
-        <EditForm Model="@Model" OnSubmit="OnSubmit">
+        <EditForm Model="@Model" OnSubmit="@OnSubmit">
             <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
             <ValidationSummary/>
 
@@ -59,7 +59,7 @@
         @if (EntryInfoId.HasValue && Model.DeletedAt != null)
         {
             <div class="text-end">
-                <button type="button" class="btn btn-link text-danger" @onclick="OnDelete">
+                <button type="button" class="btn btn-link text-danger" @onclick="@OnDelete">
                     <i class="las la-trash la-lg"></i>
                     @Resources.Action.Delete
                 </button>

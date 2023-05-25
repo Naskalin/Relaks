@@ -1,5 +1,6 @@
 ﻿using Relaks.Database;
 using Relaks.Database.Repositories;
+using Relaks.Interfaces;
 using Relaks.Models.Misc;
 
 namespace Relaks.Models.Store;

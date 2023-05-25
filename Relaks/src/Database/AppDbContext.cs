@@ -8,7 +8,6 @@ namespace Relaks.Database;
 
 public sealed class AppDbContext : DbContext
 {
-    
     public DbSet<BaseEntry> BaseEntries { get; set; } = null!;
     public DbSet<ECompany> ECompanies { get; set; } = null!;
     public DbSet<EPerson> EPersons { get; set; } = null!;

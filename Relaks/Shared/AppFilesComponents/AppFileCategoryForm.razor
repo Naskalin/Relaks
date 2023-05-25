@@ -1,6 +1,8 @@
 ﻿@using Relaks.Models.Store
 @using Relaks.Models
 @using Relaks.Database
+@using Relaks.Database.Repositories
+@using Relaks.Managers
 @using Relaks.Mappers
 
 @inject AppDbContext Db;
@@ -17,6 +19,18 @@
         <label for="" class="form-label">@Resources.Action.Title *</label>
         <input type="text" @bind-value="@Model.Title" class="form-control">
         <ValidationMessage For="@(() => Model.Title)"/>
+    </div>
+    
+    <div class="mb-3">
+        <label for="" class="form-label">Родительская категория</label>
+        <InputSelect @bind-Value="Model.ParentId" class="form-select">
+            <option value="">(Без родителя)</option>
+            @foreach (var item in Store.Categories.ToTreeSelect())
+            {
+                <option value="@item.Value">@item.Title</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => Model.ParentId)"/>
     </div>
 
     <div class="mb-3">
@@ -38,9 +52,7 @@
 
     private async Task GoBack()
     {
-        Store.State = Store.State.Equals(AppFileListStore.StateEnum.AddCategory) 
-            ? AppFileListStore.StateEnum.Default 
-            : AppFileListStore.StateEnum.EditCategories;
+        Store.State = AppFileListStore.StateEnum.Default;
         await OnStateHasChanged.InvokeAsync();
     }
 
@@ -74,12 +86,21 @@
         if (!await Validator.ValidateAsync()) return;
         if (Store.EntryId.HasValue)
         {
+            var q = Db.EntryFileCategories.Where(x => x.EntryId.Equals(Store.EntryId.Value));
+            
             var entryFileCategory = (EntryFileCategory) Model;
             entryFileCategory.MapTo(entryFileCategory);
-            
+            var parent = q.FirstOrDefault(x => x.Id.Equals(Model.ParentId));
+
             if (Store.State.Equals(AppFileListStore.StateEnum.AddCategory))
             {
+                TreeManager.UpdateTreePath(parent, entryFileCategory);
                 Db.EntryFileCategories.Add(entryFileCategory);
+            }
+            else
+            {
+                await Db.SaveChangesAsync();
+                TreeManager.SyncTreePaths(q, Model.Id, Model);   
             }
 
             await Db.SaveChangesAsync();

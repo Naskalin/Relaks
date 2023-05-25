@@ -1,19 +1,49 @@
 ﻿@using Relaks.Models
+@using Relaks.Interfaces
+@using Relaks.Models.Store
 
-<div class="list-group-item px-0">
-    @Category.Title
+<li>
+    <button class="btn btn-link @(Store.Req.CategoryId.Equals(Category.Id) ? "active" : "")" type="button" @onclick="@OnClickAsync">
+        @Category.Title
+    </button>
+
     @if (Category.Children.Any())
     {
-        <div class="list-group list-group-flush">
+        <ul class="my-tree">
             @foreach (var child in Category.Children)
             {
-                <AppFileCategoryItem Category="@child"/>
+                <AppFileCategoryItem Category="@child" OnStateChanged="@(() => OnStateChanged.InvokeAsync())"/>
             }
-        </div>   
+        </ul>
     }
-</div>
+</li>
 
 @code {
+
     [Parameter]
     public BaseFileCategory Category { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+
+    [CascadingParameter]
+    public AppFileListStore Store { get; set; } = null!;
+
+    private async Task OnClickAsync()
+    {
+        if (Store.State == AppFileListStore.StateEnum.EditCategories)
+        {
+            Store.State = AppFileListStore.StateEnum.EditCategory;
+            Store.EditId = Category.Id;
+        }
+        else
+        {
+            Store.Req.CategoryId = Store.Req.CategoryId.Equals(Category.Id)
+                ? Store.Req.CategoryId = null
+                : Store.Req.CategoryId = Category.Id;
+            Store.FindFiles();
+        }
+        await OnStateChanged.InvokeAsync();
+    }
+
 }

@@ -3,13 +3,6 @@
 
 @* <Dump Data="@Store.Req"/> *@
 
-<div class="list-group list-group-flush">
-    @foreach (var item in Store.Categories.ToTreeSelect())
-    {
-        <p>@item.Title</p>
-    }
-</div>
-
 <div class="mb-3">
     <div class="input-group">
         <input type="text" class="form-control" @bind="@Store.Req.Search" @oninput="@OnInputSearch" placeholder="Поиск...">
@@ -29,29 +22,28 @@
 <AppFileSidebarHeader Title="Категории"
                       WithAdd="@Store.WithEdit"
                       WithEdit="@Store.WithEdit"
-                      OnAdd="@(() => { Store.State = AppFileListStore.StateEnum.AddCategory; OnStateHasChanged.InvokeAsync();})"/>
-
-<div class="list-group list-group-flush">
+                      EditText="Выберите категорию для изменения"
+                      IsEdit="@Store.State.Equals(AppFileListStore.StateEnum.EditCategories)"
+                      OnEdit="@SwitchEditCategories"
+                      OnAdd="@(() => { Store.State = AppFileListStore.StateEnum.AddCategory; OnStateChanged.InvokeAsync();})"/>
+<ul class="my-tree">
     @foreach (var category in Store.Categories)
     {
-        <AppFileCategoryItem Category="@category"/>
+        <AppFileCategoryItem Category="@category" OnStateChanged="@(() => OnStateChanged.InvokeAsync())"/>
     }
-</div>
+</ul>
 
 <AppFileSidebarHeader Title="Метки"
                       WithAdd="@Store.WithEdit"
                       WithEdit="@Store.WithEdit"
+                          EditText="Выберите метку для изменения"
+                                            IsEdit="@Store.State.Equals(AppFileListStore.StateEnum.EditTags)"
                       OnEdit="@SwitchEditTags"
-                      OnAdd="@(() => { Store.State = AppFileListStore.StateEnum.AddTag; OnStateHasChanged.InvokeAsync();})"/>
-
-@if (Store.State.Equals(AppFileListStore.StateEnum.EditTags))
-{
-    <p class="text-center text-muted small"><i class="fa-solid fa-edit fa-beat me-1"></i> Нажмите на метку для изменения</p>
-}
+                      OnAdd="@(() => { Store.State = AppFileListStore.StateEnum.AddTag; OnStateChanged.InvokeAsync();})"/>
 <div class="d-flex flex-wrap gap-2">
     @foreach (var tag in Store.Tags)
     {
-        <AppFileTagItem Tag="@tag" OnStateChanged="@(() => OnStateHasChanged.InvokeAsync())"/>
+        <AppFileTagItem Tag="@tag" OnStateChanged="@(() => OnStateChanged.InvokeAsync())"/>
     }
 </div>
 
@@ -63,7 +55,7 @@
     };
 
     [Parameter]
-    public EventCallback OnStateHasChanged { get; set; }
+    public EventCallback OnStateChanged { get; set; }
 
     [CascadingParameter]
     [Parameter]
@@ -73,32 +65,60 @@
     {
         Store.Req.Search = e.Value?.ToString();
         Store.FindFiles();
-        await OnStateHasChanged.InvokeAsync();
+        await OnStateChanged.InvokeAsync();
     }
 
     private async Task OnChangeIsDeleted(ChangeEventArgs e)
     {
         Store.Req.IsDeleted = (bool) (e.Value ?? false);
         Store.FindFiles();
-        await OnStateHasChanged.InvokeAsync();
+        await OnStateChanged.InvokeAsync();
     }
 
     private async Task OnCleanSearch()
     {
         Store.Req.Search = null;
         Store.FindFiles();
-        await OnStateHasChanged.InvokeAsync();
+        await OnStateChanged.InvokeAsync();
+    }
+
+    private Task SwitchEditCategories()
+    {
+        if (Store.Req.CategoryId.HasValue && Store.State.Equals(AppFileListStore.StateEnum.Default))
+        {
+            Store.State = AppFileListStore.StateEnum.EditCategory;
+            Store.EditId = Store.Req.CategoryId.Value;
+        }
+        else
+        {
+            Store.State = Store.State.Equals(AppFileListStore.StateEnum.EditCategories)
+                ? AppFileListStore.StateEnum.Default
+                : AppFileListStore.StateEnum.EditCategories
+                ;   
+        }
+
+        StateHasChanged();
+        OnStateChanged.InvokeAsync();
+        return Task.CompletedTask;
     }
 
     private Task SwitchEditTags()
     {
-        Store.State = Store.State.Equals(AppFileListStore.StateEnum.EditTags)
-            ? AppFileListStore.StateEnum.Default
-            : AppFileListStore.StateEnum.EditTags
-            ;
-        
+        if (Store.Req.TagIds.Count.Equals(1) && Store.State.Equals(AppFileListStore.StateEnum.Default))
+        {
+            Store.State = AppFileListStore.StateEnum.EditTag;
+            Store.EditId = Store.Req.TagIds.First();
+        }
+        else
+        {
+            Store.State = Store.State.Equals(AppFileListStore.StateEnum.EditTags)
+                ? AppFileListStore.StateEnum.Default
+                : AppFileListStore.StateEnum.EditTags
+                ;   
+        }
+
         StateHasChanged();
-        OnStateHasChanged.InvokeAsync();
+        OnStateChanged.InvokeAsync();
         return Task.CompletedTask;
     }
 

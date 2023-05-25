@@ -35,6 +35,4 @@ public static class MiscMapper
         to.Date = from.Date;
         to.WithTime = from.WithTime;
     }
-    
-    
 }
