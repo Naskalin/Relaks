@@ -6,6 +6,7 @@ namespace Relaks.Managers;
 
 public class RelaksConfigModel : IRelaksConfig
 {
+    public string ProjectDir { get; set; } = null!;
     public string SqliteFilePath { get; set; } = null!;
     public string FilesDirPath { get; set; } = null!;
     public string Timezone { get; set; } = null!;
@@ -46,6 +47,7 @@ public static class RelaksConfigManager
         
         var model = new RelaksConfigModel()
         {
+            ProjectDir = projectDir,
             Timezone = "Europe/Moscow",
             PhoneRegion = "RU",
             FilesDirPath = Path.Combine(storeDir, "files"),
@@ -62,6 +64,17 @@ public static class RelaksConfigManager
 
         return model;
     }
+
+    private static void CreateSymlinkToFilesDir(RelaksConfigModel config)
+    {
+        var webrootPath = Path.Combine(config.ProjectDir, "wwwroot");
+        if (!Directory.Exists(webrootPath))
+        {
+            Directory.CreateDirectory(webrootPath);
+        }
+
+        Directory.CreateSymbolicLink(Path.Combine(webrootPath, "files"), config.FilesDirPath);
+    }
     
     /// <summary>
     /// Получаем существующий или создаём новый конфиг
@@ -71,23 +84,29 @@ public static class RelaksConfigManager
     public static RelaksConfigModel GetOrCreateConfig(string projectDir)
     {
         var relaksConfigPath = RelaksConfigPath(projectDir);
+        RelaksConfigModel config;
+        
         if (!File.Exists(relaksConfigPath))
         {
-            return CreateDefaultConfig(projectDir);
+            config = CreateDefaultConfig(projectDir);
         }
-
-        using var reader = new StreamReader(relaksConfigPath);
-        var yamlString = reader.ReadToEnd();
-        var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .Build();
-        
-        var model = deserializer.Deserialize<RelaksConfigModel>(yamlString);
-        if (string.IsNullOrEmpty(model.SqliteFilePath) || string.IsNullOrEmpty(model.FilesDirPath))
+        else
         {
-            return CreateDefaultConfig(projectDir);
+            using var reader = new StreamReader(relaksConfigPath);
+            var yamlString = reader.ReadToEnd();
+            var deserializer = new DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
+        
+            config = deserializer.Deserialize<RelaksConfigModel>(yamlString);
+            if (string.IsNullOrEmpty(config.SqliteFilePath) || string.IsNullOrEmpty(config.FilesDirPath))
+            {
+                config = CreateDefaultConfig(projectDir);
+            }   
         }
 
-        return model;
+        // CreateSymlinkToFilesDir(config);
+
+        return config;
     }
 }

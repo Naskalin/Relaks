@@ -13,7 +13,7 @@ public class TreeValidator<TEntity> : AbstractValidator<TEntity> where TEntity :
         When(x => x.ParentId != null, () =>
         {
             RuleFor(x => x.ParentId).NotEqual(x => x.Id).NotEqual(default(Guid)).WithMessage("Узел не может быть родительским для самого себя");
-            RuleFor(x => x).Must(x => false == HasRecursion(db.Set<TEntity>(), x));
+            RuleFor(x => x).Must(x => false == HasRecursion(db.Set<TEntity>(), x)).WithMessage("Рекурсия. Родительский узел не может быть вложен в дочерний.");
         });
     }
 

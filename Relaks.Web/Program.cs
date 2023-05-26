@@ -10,7 +10,12 @@ var app = builder.Build();
 app.UseRelaks();
 
 // app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseStaticFiles(
+    new StaticFileOptions()
+    {
+        FileProvider = RelaksExtensions.FilesProvider(),
+    }
+);
 
 app.MapRazorPages();
 

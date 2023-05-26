@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Photino.Blazor;
 using PhotinoNET;
@@ -14,7 +15,10 @@ if (OperatingSystem.IsWindows())
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddBlazorDesktop();
 builder.Services.AddRelaks();
-
+// builder.Services.AddSingleton<IFileProvider>(new CompositeFileProvider(
+//     new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot")),
+//     RelaksExtensions.FilesProvider()
+// ));
 var app = builder.Build();
 app.UseRelaks();
 
@@ -30,7 +34,6 @@ mainWindow
     .SetDevToolsEnabled(true)
     ;
 mainWindow.Centered = true;
-
 
 var windowManager = app.Services.GetRequiredService<PhotinoWebViewManager>();
 mainWindow.RegisterCustomSchemeHandler(PhotinoWebViewManager.BlazorAppScheme, windowManager.HandleWebRequest);

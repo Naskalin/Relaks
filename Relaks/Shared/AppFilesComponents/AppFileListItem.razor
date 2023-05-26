@@ -1,9 +1,12 @@
 ﻿@using Relaks.Models
 @using Relaks.Database.Repositories
+@using Relaks.Managers
+
+@inject RelaksConfigModel RelaksConfigModel;
 
 <tr>
     <td>
-        <a href="#"></a>
+        
     </td>
     <td>
         @AppFile.BaseFile.DisplayNameWithExtension()
@@ -17,6 +20,9 @@
         {
             <SoftDeleteShow SoftDeletedReason="@AppFile.BaseFile" Classes="mt-2"/>
         }
+        <div>
+            <img src="@Path.Combine("files", AppFile.BaseFile.FilePath())" width="100" alt="">
+        </div>
     </td>
     <td>@AppFile.BaseFile.CreatedAt.ToString("dd.MM.yy HH:mm")</td>
     <td>@(AppFile.BaseFile.Category?.Title)</td>

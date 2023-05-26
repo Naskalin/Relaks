@@ -1,6 +1,8 @@
 ﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Relaks.Database;
 using Relaks.Managers;
@@ -24,6 +26,7 @@ public static class RelaksExtensions
         services.RegisterLocalization();
         services.AddBlazoredLocalStorage();
         services.AddBootstrapBlazor();
+        
     }
 
     public static void UseRelaks(this IHost host)
@@ -34,8 +37,15 @@ public static class RelaksExtensions
         db.Database.Migrate();
         
         if (env.IsDevelopment())
-        {   
+        {
             // new Database.Seeders.DatabaseSeeder(db).SeedAll();
         }
+    }
+
+    public static IFileProvider FilesProvider()
+    {
+        var projectDir = AppDomain.CurrentDomain.BaseDirectory;
+        var relaksConfig = RelaksConfigManager.GetOrCreateConfig(projectDir);
+        return new PhysicalFileProvider(relaksConfig.FilesDirPath);
     }
 }
