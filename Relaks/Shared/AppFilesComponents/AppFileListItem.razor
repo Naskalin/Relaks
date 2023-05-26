@@ -3,7 +3,7 @@
 @using Relaks.Managers
 
 @inject RelaksConfigModel RelaksConfigModel;
-
+@inject NavigationManager NavigationManager;
 <tr>
     <td>
         
@@ -20,9 +20,16 @@
         {
             <SoftDeleteShow SoftDeletedReason="@AppFile.BaseFile" Classes="mt-2"/>
         }
-        <div>
-            <img src="@Path.Combine("files", AppFile.BaseFile.FilePath())" width="100" alt="">
-        </div>
+        @if (AppFile.BaseFile.IsImage())
+        {
+            <img src="@NavigationManager.ToAbsoluteUri(AppFile.BaseFile.FilePath())" width="100" alt="">
+        }
+        else
+        {
+            <div class="mime-icon ico-@AppFile.BaseFile.GetExtensionWithoutDot()">
+                <div class="ico"></div>
+            </div>   
+        }
     </td>
     <td>@AppFile.BaseFile.CreatedAt.ToString("dd.MM.yy HH:mm")</td>
     <td>@(AppFile.BaseFile.Category?.Title)</td>

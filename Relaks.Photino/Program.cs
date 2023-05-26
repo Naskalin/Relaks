@@ -15,10 +15,10 @@ if (OperatingSystem.IsWindows())
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddBlazorDesktop();
 builder.Services.AddRelaks();
-// builder.Services.AddSingleton<IFileProvider>(new CompositeFileProvider(
-//     new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot")),
-//     RelaksExtensions.FilesProvider()
-// ));
+builder.Services.AddSingleton<IFileProvider>(new CompositeFileProvider(
+    new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot")),
+    RelaksExtensions.FilesProvider()
+));
 var app = builder.Build();
 app.UseRelaks();
 

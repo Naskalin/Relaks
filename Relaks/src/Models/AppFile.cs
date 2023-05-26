@@ -29,6 +29,7 @@ public abstract class BaseFile : IAppFile, ISoftDeletedReason
     public List<BaseFileTag> Tags { get; set; } = new();
 
     public bool IsImage() => MimeType.StartsWith("image");
+    public string GetExtensionWithoutDot() => Path.GetExtension(Filename).Replace(".", "");
 
     protected BaseFile()
     {
