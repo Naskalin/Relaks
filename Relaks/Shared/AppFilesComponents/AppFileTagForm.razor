@@ -6,7 +6,7 @@
 @inject AppDbContext Db;
 @inject IJSRuntime JsRuntime;
 
-<AppFileSidebarHeader Title="@(Store.State.Equals(AppFileListStore.StateEnum.AddTag) ? $"{Resources.Action.Add} метку" : $"{Resources.Action.Edit} метку")" 
+<AppFileSidebarHeader Title="@(Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.AddTag) ? $"{Resources.Action.Add} метку" : $"{Resources.Action.Edit} метку")" 
                       WithBackLink="@true"
                       OnBackLink="@GoBack"/>
 
@@ -21,13 +21,13 @@
 
     <div class="mb-3">
         <button class="btn btn-primary">
-            <i class="las la-lg me-1 @(Store.State.Equals(AppFileListStore.StateEnum.EditTag) ? "la-edit" : "la-plus-circle")"></i>
-            @(Store.State.Equals(AppFileListStore.StateEnum.EditTag) ? Resources.Action.SaveChanges : Resources.Action.Add)
+            <i class="las la-lg me-1 @(Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.EditTag) ? "la-edit" : "la-plus-circle")"></i>
+            @(Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.EditTag) ? Resources.Action.SaveChanges : Resources.Action.Add)
         </button>
     </div>
 </EditForm>
 
-@if (Store.State.Equals(AppFileListStore.StateEnum.EditTag))
+@if (Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.EditTag))
 {
     <div class="text-end">
         <button type="button" class="btn btn-link text-danger" @onclick="@OnDelete">
@@ -48,7 +48,7 @@
 
     private async Task GoBack()
     {
-        Store.State = AppFileListStore.StateEnum.Default;
+        Store.SidebarState = AppFileListStore.SidebarStateEnum.Default;
         await OnStateHasChanged.InvokeAsync();
     }
 
@@ -60,15 +60,15 @@
     {
         if (Store.EntryId.HasValue)
         {
-            if (Store.State.Equals(AppFileListStore.StateEnum.AddTag))
+            if (Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.AddTag))
             {
                 Model = new EntryFileTag()
                 {
                     EntryId = Store.EntryId.Value,
                 };
-            } else if (Store.EditId.HasValue && Store.State.Equals(AppFileListStore.StateEnum.EditTag))
+            } else if (Store.SidebarEditId.HasValue && Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.EditTag))
             {
-                Model = Db.EntryFileTags.First(x => x.Id.Equals(Store.EditId.Value));
+                Model = Db.EntryFileTags.First(x => x.Id.Equals(Store.SidebarEditId.Value));
             }
         }
         else
@@ -85,7 +85,7 @@
             var entryFileTag = (EntryFileTag) Model;
             entryFileTag.MapTo(entryFileTag);
             
-            if (Store.State.Equals(AppFileListStore.StateEnum.AddTag))
+            if (Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.AddTag))
             {
                 Db.EntryFileTags.Add(entryFileTag);
             }
@@ -98,7 +98,7 @@
     
     private async Task OnDelete()
     {
-        if (Store.State.Equals(AppFileListStore.StateEnum.AddTag)) return;
+        if (Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.AddTag)) return;
         var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
         if (!isConfirmed) return;
         Db.BaseFileTags.Remove(Model);

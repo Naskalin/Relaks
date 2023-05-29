@@ -1,6 +1,5 @@
 ﻿using Relaks.Database;
 using Relaks.Database.Repositories;
-using Relaks.Interfaces;
 using Relaks.Models.Misc;
 
 namespace Relaks.Models.Store;
@@ -12,10 +11,10 @@ public class AppFileListStore
     public AppFileListStore(AppDbContext db)
     {
         _db = db;
-        State = StateEnum.Default;
+        SidebarState = SidebarStateEnum.Default;
     }
 
-    public enum StateEnum
+    public enum SidebarStateEnum
     {
         Default,
         
@@ -28,16 +27,31 @@ public class AppFileListStore
         EditCategories,
     }
 
+    public enum BodyStateEnum
+    {
+        Default,
+        EditFile,
+        MassChangeCategory,
+        // ChangeTags,
+    }
+
     public Guid? EntryId { get; set; }
     public bool? WithEdit { get; set; }
-    public StateEnum State { get; set; }
-    public Guid? EditId { get; set; }
+    public SidebarStateEnum SidebarState { get; set; }
+    public Guid? SidebarEditId { get; set; }
+    public BodyStateEnum BodyState { get; set; }
+    public Guid? BodyEditId { get; set; }
     public AppFileFindRequest Req { get; set; } = new();
     public TotalResult<AppFileFindResult> ResultFiles { get; set; } = new();
     public List<BaseFileTag> Tags { get; set; } = new();
     public List<BaseFileCategory> Categories { get; set; } = new();
+    public List<Guid> SelectedFileIds { get; set; } = new();
 
-    public void FindFiles() => ResultFiles = _db.FindFiles(Req);
+    public void FindFiles()
+    {
+        ResultFiles = _db.FindFiles(Req);
+        SelectedFileIds.Clear();
+    }
 
     public void GetTags()
     {

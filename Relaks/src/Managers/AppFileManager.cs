@@ -16,7 +16,7 @@ public class AppFileManager
         _logger = logger;
     }
 
-    private string ToFullPath(IAppFile appFile)
+    public string ToFullPath(IAppFile appFile)
     {
         return Path.Combine(_relaksConfig.FilesDirPath, appFile.FilePath());
     }

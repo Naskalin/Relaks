@@ -31,10 +31,10 @@
 
     private async Task OnClickAsync()
     {
-        if (Store.State == AppFileListStore.StateEnum.EditCategories)
+        if (Store.SidebarState == AppFileListStore.SidebarStateEnum.EditCategories)
         {
-            Store.State = AppFileListStore.StateEnum.EditCategory;
-            Store.EditId = Category.Id;
+            Store.SidebarState = AppFileListStore.SidebarStateEnum.EditCategory;
+            Store.SidebarEditId = Category.Id;
         }
         else
         {

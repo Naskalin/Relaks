@@ -6,65 +6,58 @@
 
 @inject AppDbContext Db;
 
-<Dump Data="@Store.Req"/>
-<Dump Data="@Store.State"/>
+<Dump Data="@Store.SelectedFileIds"/>
+<Dump Data="@Store.SidebarState"/>
+<Dump Data="@Store.BodyState"/>
 
 <CascadingValue Value="@Store">
-    <div class="row">
+    <div class="row gx-5">
         <div class="col-3">
-            @switch (Store.State)
+            @switch (Store.SidebarState)
             {
-                case AppFileListStore.StateEnum.Default:
-                case AppFileListStore.StateEnum.EditTags:
-                case AppFileListStore.StateEnum.EditCategories:
+                case AppFileListStore.SidebarStateEnum.Default:
+                case AppFileListStore.SidebarStateEnum.EditTags:
+                case AppFileListStore.SidebarStateEnum.EditCategories:
                     <AppFileDefaultSidebar OnStateChanged="@StateHasChanged"/>
                     break;
-                case AppFileListStore.StateEnum.AddTag:
-                case AppFileListStore.StateEnum.EditTag:
+                case AppFileListStore.SidebarStateEnum.AddTag:
+                case AppFileListStore.SidebarStateEnum.EditTag:
                     <AppFileTagForm OnStateHasChanged="@StateHasChanged"/>
                     break;
-                case AppFileListStore.StateEnum.AddCategory:
-                case AppFileListStore.StateEnum.EditCategory:
+                case AppFileListStore.SidebarStateEnum.AddCategory:
+                case AppFileListStore.SidebarStateEnum.EditCategory:
                     <AppFileCategoryForm OnStateHasChanged="@StateHasChanged"/>
                     break;
             }
         </div>
         <div class="col-9">
-            <div class="d-flex gap-3 align-items-center">
-                <div class="mb-3">Всего найдено: @Store.ResultFiles.Total</div>
-            </div>
-            <table class="table table-bordered table-hover align-middle">
-                <thead>
-                <tr style="@(!string.IsNullOrEmpty(Store.Req.Search) ? "opacity: .3; cursor: not-allowed;" : "")">
-                    <th style="width: 80px"></th>
-                    <th @onclick="@(() => OnSortChange(nameof(BaseFile.DisplayName)))" class="cursor-pointer">
-                        Имя <OrderableIcon Orderable="@Store.Req" Prop="@nameof(BaseFile.DisplayName)"/>
-                    </th>
-                    <th style="width: 150px" @onclick="@(() => OnSortChange(nameof(BaseFile.CreatedAt)))" class="cursor-pointer">
-                        Создан <OrderableIcon Orderable="@Store.Req" Prop="@nameof(BaseFile.CreatedAt)"/>
-                    </th>
-                    <th style="width: 150px">Категория</th>
-                    <th style="width: 150px">Метки</th>
-                </tr>
-                </thead>
-                <tbody>
-                @if (Store.ResultFiles.Items.Any())
-                {
-                    @foreach (var item in Store.ResultFiles.Items)
+            @switch (Store.BodyState)
+            {
+                case AppFileListStore.BodyStateEnum.MassChangeCategory:
+                    <AppFileMassChangeCategory OnStateHasChanged="@StateHasChanged"/>
+                    break;
+                case AppFileListStore.BodyStateEnum.EditFile:
+                    <AppFileEditForm OnStateHasChanged="@StateHasChanged"/>
+                    break;
+                default:
+                    <AppFileListHeader OnStateHasChanged="@StateHasChanged"/>
+                    if (Store.ResultFiles.Items.Any())
                     {
-                        <AppFileListItem AppFile="@item"/>
+                        <div class="file-list">
+                            @foreach (var item in Store.ResultFiles.Items)
+                            {
+                                <AppFileListItem AppFile="@item" OnStateHasChanged="@StateHasChanged"/>
+                            }
+                        </div>
                     }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="100%" class="text-muted">
+                    else
+                    {
+                        <p class="text-muted">
                             <i class="las la-frown la-lg"></i> @Resources.Action.NotFoundResults
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
+                        </p>
+                    }
+                    break;
+            }
         </div>
     </div>
 </CascadingValue>
@@ -88,43 +81,6 @@
     [Parameter]
     public string? AppFileCategoryNew { get; set; }
 
-    private void OnSortChange(string field)
-    {
-        if (!string.IsNullOrEmpty(Store.Req.Search)) return;
-        if (Store.Req.IsOrderByDesc is null)
-        {
-            Store.Req.OrderBy = field;
-            Store.Req.IsOrderByDesc = false;
-        }
-        else if (Store.Req.IsOrderByDesc is false)
-        {
-            if (field.Equals(Store.Req.OrderBy))
-            {
-                Store.Req.IsOrderByDesc = true;
-            }
-            else
-            {
-                Store.Req.OrderBy = field;
-                Store.Req.IsOrderByDesc = false;
-            }
-        }
-        else
-        {
-            if (field.Equals(Store.Req.OrderBy))
-            {
-                Store.Req.OrderBy = null;
-                Store.Req.IsOrderByDesc = null;
-            }
-            else
-            {
-                Store.Req.OrderBy = field;
-                Store.Req.IsOrderByDesc = false;
-            }
-        }
-
-        Store.FindFiles();
-    }
-
     private void OnChangeDiscriminator(string? discriminator)
     {
         Store.Req.Discriminator = discriminator;
@@ -146,4 +102,5 @@
 
         return Task.CompletedTask;
     }
+
 }

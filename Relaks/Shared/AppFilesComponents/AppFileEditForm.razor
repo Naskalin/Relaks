@@ -1,0 +1,104 @@
+﻿@using Relaks.Models.Store
+@using Relaks.Database
+@using Relaks.Database.Repositories
+@using Relaks.Mappers
+@using Relaks.Models
+@using Microsoft.EntityFrameworkCore
+
+@inject AppDbContext Db;
+
+<div class="row align-items-center mb-3 gx-3">
+    <div class="col-auto">
+        <button @onclick="@HandleCancel" class="btn btn-outline-secondary">
+            <i class="las la-arrow-left la-lg me-1 "></i> @Resources.Action.Return
+        </button>
+    </div>
+    <div class="col">
+        <h4 class="m-0">Изменить файл</h4>
+    </div>
+</div>
+
+<EditForm Model="@Model" OnSubmit="@OnSubmit">
+    <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
+    <ValidationSummary/>
+    
+    <div class="mb-3">
+        <label for="" class="form-label">@Resources.Action.Title *</label>
+        <input type="text" @bind-value="@Model.DisplayName" minlength="2" maxlength="255" class="form-control" required="required">
+        <ValidationMessage For="@(() => Model.DisplayName)"/>
+    </div>
+
+    <div class="mb-3">
+        <label for="" class="form-label">Выберите категорию</label>
+        <InputSelect @bind-Value="Model.CategoryId" class="form-select">
+            <option value="">(Без категории)</option>
+            @foreach (var item in Store.Categories.ToTreeSelect())
+            {
+                <option value="@item.Value">@item.Title</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label for="" class="form-label">Выберите метки</label>
+        
+        @foreach (var tag in Store.Tags)
+        {
+            <div class="form-check" @key="tag-@tag.Id">
+                <input class="form-check-input" type="checkbox" value="" id="tag-@tag.Id">
+                <label class="form-check-label" for="tag-@tag.Id">
+                    @tag.Title
+                </label>
+            </div>   
+        }
+    </div>
+
+    <button class="btn btn-primary">
+        <i class="las la-lg me-1 la-edit"></i>
+        @Resources.Action.SaveChanges
+    </button>
+</EditForm>
+
+@code {
+
+    [CascadingParameter]
+    [Parameter]
+    public AppFileListStore Store { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback OnStateHasChanged { get; set; }
+    
+    private FluentValidationValidator Validator { get; set; } = null!;
+
+    private async Task HandleCancel()
+    {
+        Store.BodyState = AppFileListStore.BodyStateEnum.Default;
+        await OnStateHasChanged.InvokeAsync();
+    }
+
+    private BaseFile Model { get; set; } = null!;
+    private List<Guid> Tags { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        if (!Store.BodyEditId.HasValue) return;
+
+        Model = Db.BaseFiles
+            .Include(x => x.Tags)
+            .First(x => x.Id.Equals(Store.BodyEditId.Value));
+        Tags = Model.Tags.Select(x => x.Id).ToList();
+    }
+
+    private async Task OnSubmit()
+    {
+        if (!await Validator.ValidateAsync()) return;
+        
+        Model.MapTo(Model);
+        await Db.SaveChangesAsync();
+        Store.FindFiles();
+        Store.BodyState = AppFileListStore.BodyStateEnum.Default;
+        Store.BodyEditId = null;
+        await OnStateHasChanged.InvokeAsync();
+    }
+
+}

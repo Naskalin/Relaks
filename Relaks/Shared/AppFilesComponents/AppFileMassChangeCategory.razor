@@ -1,0 +1,71 @@
+﻿@using Relaks.Models.Store
+@using Relaks.Models
+@using Relaks.Database
+@using Relaks.Database.Repositories
+
+@inject AppDbContext Db;
+
+<div class="row align-items-center mb-3 gx-3">
+    <div class="col-auto">
+        <button @onclick="@HandleCancel" class="btn btn-outline-secondary">
+            <i class="las la-arrow-left la-lg me-1 "></i> @Resources.Action.Return
+        </button>
+    </div>
+    <div class="col">
+        <h4 class="m-0">Перемещение файлов (@Store.SelectedFileIds.Count шт.) в категорию:</h4>
+    </div>
+</div>
+
+<div class="mb-3">
+    <label for="" class="form-label">Выберите категорию</label>
+    <InputSelect @bind-Value="CategoryId" class="form-select">
+        <option value="">(Без категории)</option>
+        @foreach (var item in Store.Categories.ToTreeSelect())
+        {
+            <option value="@item.Value">@item.Title</option>
+        }
+    </InputSelect>
+</div>
+
+<button class="btn btn-primary" @onclick="@HandleChangeCategory">
+    <i class="las la-lg me-1 la-edit"></i>
+    @Resources.Action.SaveChanges
+</button>
+
+@code {
+    [CascadingParameter]
+    [Parameter]
+    public AppFileListStore Store { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback OnStateHasChanged { get; set; }
+    
+    private Guid? CategoryId { get; set; }
+
+    private async Task HandleCancel()
+    {
+        Store.BodyState = AppFileListStore.BodyStateEnum.Default;
+        await OnStateHasChanged.InvokeAsync();
+    }
+
+    private async Task HandleChangeCategory()
+    {
+        var appFiles = Db.BaseFiles.Where(x => Store.SelectedFileIds.Contains(x.Id)).ToList();
+        foreach (var appFile in appFiles)
+        {
+            appFile.CategoryId = CategoryId;
+        }
+        await Db.SaveChangesAsync();
+        Store.FindFiles();
+        Store.BodyState = AppFileListStore.BodyStateEnum.Default;
+        Store.SelectedFileIds.Clear();
+        await OnStateHasChanged.InvokeAsync();
+    }
+    // private List<BaseFile> AppFiles { get; set; } = new();
+    //
+    // protected override void OnParametersSet()
+    // {
+    //     AppFiles = Db.BaseFiles.Where(x => Store.SelectedFileIds.Contains(x.Id)).ToList();
+    // }
+
+}

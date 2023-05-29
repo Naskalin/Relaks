@@ -1,0 +1,81 @@
+﻿.file-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  &__el {
+    width: 170px;
+    //margin-bottom: 2rem;
+  }
+  &__el.active &__preview {
+    border-color: var(--bs-info);
+  }
+  &__preview {
+    display: block;
+    color: var(--bs-body-color);
+    text-decoration: none !important;
+    margin-bottom: .5rem;
+    text-align: center;
+    border: 1px solid transparent;
+    height: 110px;
+    padding: .5rem;
+    border-radius: .4rem;
+    &:hover {
+      border-color: var(--bs-secondary);
+    }
+    img {
+      border-radius: .3rem;
+      max-height: 100%;
+      width: auto;
+    }
+  }
+  &__body {
+    font-size: .85rem;
+  }
+  &__icon {
+    position: relative;
+    text-align: center;
+    i {
+      font-size: 6rem;
+      opacity: .7;
+    }
+  }
+  &__icon-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    color: var(--bs-light);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 0.5rem;
+    &--lg {
+      font-size: 1.2rem;
+    }
+    &--sm {
+      font-size: .76rem;
+    }
+  }
+  &__el:hover &__actions {
+    opacity: 1;
+  }
+  &__actions {
+    opacity: 0;
+    margin-top: .4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+  }
+  &__title {
+    line-height: 1.3rem;
+    text-align: center;
+    max-height: 2.6rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

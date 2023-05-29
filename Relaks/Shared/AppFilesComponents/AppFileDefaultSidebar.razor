@@ -23,9 +23,9 @@
                       WithAdd="@Store.WithEdit"
                       WithEdit="@Store.WithEdit"
                       EditText="Выберите категорию для изменения"
-                      IsEdit="@Store.State.Equals(AppFileListStore.StateEnum.EditCategories)"
+                      IsEdit="@Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.EditCategories)"
                       OnEdit="@SwitchEditCategories"
-                      OnAdd="@(() => { Store.State = AppFileListStore.StateEnum.AddCategory; OnStateChanged.InvokeAsync();})"/>
+                      OnAdd="@(() => { Store.SidebarState = AppFileListStore.SidebarStateEnum.AddCategory; OnStateChanged.InvokeAsync();})"/>
 <ul class="my-tree">
     @foreach (var category in Store.Categories)
     {
@@ -37,9 +37,9 @@
                       WithAdd="@Store.WithEdit"
                       WithEdit="@Store.WithEdit"
                           EditText="Выберите метку для изменения"
-                                            IsEdit="@Store.State.Equals(AppFileListStore.StateEnum.EditTags)"
+                                            IsEdit="@Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.EditTags)"
                       OnEdit="@SwitchEditTags"
-                      OnAdd="@(() => { Store.State = AppFileListStore.StateEnum.AddTag; OnStateChanged.InvokeAsync();})"/>
+                      OnAdd="@(() => { Store.SidebarState = AppFileListStore.SidebarStateEnum.AddTag; OnStateChanged.InvokeAsync();})"/>
 <div class="d-flex flex-wrap gap-2">
     @foreach (var tag in Store.Tags)
     {
@@ -84,16 +84,16 @@
 
     private Task SwitchEditCategories()
     {
-        if (Store.Req.CategoryId.HasValue && Store.State.Equals(AppFileListStore.StateEnum.Default))
+        if (Store.Req.CategoryId.HasValue && Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.Default))
         {
-            Store.State = AppFileListStore.StateEnum.EditCategory;
-            Store.EditId = Store.Req.CategoryId.Value;
+            Store.SidebarState = AppFileListStore.SidebarStateEnum.EditCategory;
+            Store.SidebarEditId = Store.Req.CategoryId.Value;
         }
         else
         {
-            Store.State = Store.State.Equals(AppFileListStore.StateEnum.EditCategories)
-                ? AppFileListStore.StateEnum.Default
-                : AppFileListStore.StateEnum.EditCategories
+            Store.SidebarState = Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.EditCategories)
+                ? AppFileListStore.SidebarStateEnum.Default
+                : AppFileListStore.SidebarStateEnum.EditCategories
                 ;   
         }
 
@@ -104,16 +104,16 @@
 
     private Task SwitchEditTags()
     {
-        if (Store.Req.TagIds.Count.Equals(1) && Store.State.Equals(AppFileListStore.StateEnum.Default))
+        if (Store.Req.TagIds.Count.Equals(1) && Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.Default))
         {
-            Store.State = AppFileListStore.StateEnum.EditTag;
-            Store.EditId = Store.Req.TagIds.First();
+            Store.SidebarState = AppFileListStore.SidebarStateEnum.EditTag;
+            Store.SidebarEditId = Store.Req.TagIds.First();
         }
         else
         {
-            Store.State = Store.State.Equals(AppFileListStore.StateEnum.EditTags)
-                ? AppFileListStore.StateEnum.Default
-                : AppFileListStore.StateEnum.EditTags
+            Store.SidebarState = Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.EditTags)
+                ? AppFileListStore.SidebarStateEnum.Default
+                : AppFileListStore.SidebarStateEnum.EditTags
                 ;   
         }
 

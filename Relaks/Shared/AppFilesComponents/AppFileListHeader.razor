@@ -1,0 +1,117 @@
+﻿@using Relaks.Models.Store
+@using Relaks.Models
+
+<div class="d-flex align-items-center mb-3">
+    <div class="d-flex gap-3 align-items-center text-muted me-3 small">
+        Всего найдено: @Store.ResultFiles.Total
+    </div>
+    <button type="button" class="btn btn-link btn-sm" @onclick="@(() => OnSortChange(nameof(BaseFile.DisplayName)))">
+        По имени <OrderableIcon Orderable="@Store.Req" Prop="@nameof(BaseFile.DisplayName)"/>
+    </button>
+    <button type="button" class="btn btn-link btn-sm" @onclick="@(() => OnSortChange(nameof(BaseFile.CreatedAt)))">
+        По дате создания <OrderableIcon Orderable="@Store.Req" Prop="@nameof(BaseFile.CreatedAt)"/>
+    </button>
+    <button type="button" class="btn btn-link btn-sm" @onclick="@(() => OnSortChange(nameof(BaseFile.MimeType)))">
+        По типу <OrderableIcon Orderable="@Store.Req" Prop="@nameof(BaseFile.MimeType)"/>
+    </button>
+</div>
+
+<div class="d-flex align-items-center mb-3">
+    <div class="d-flex gap-3 align-items-center text-muted me-3 small">
+        <div>
+            Массовые операции
+            @if (Store.SelectedFileIds.Any())
+            {
+                <span>(@Store.SelectedFileIds.Count шт.)</span>
+            }
+        </div>
+    </div>
+    <button type="button" class="btn btn-link btn-sm" @onclick="@HandleSelectAll">
+        @(Store.SelectedFileIds.Count.Equals(Store.ResultFiles.Total) ? "Отмена" : "Выделить всё")
+    </button>
+    @if (Store.SelectedFileIds.Any())
+    {
+        <button type="button" class="btn btn-link btn-sm" @onclick="@HandleChangeCategory">
+            Изменить категорию
+        </button>
+        @* <button type="button" class="btn btn-link btn-sm" @onclick="@HandleChangeCategory"> *@
+        @*     Изменить метки *@
+        @* </button> *@
+    }
+</div>
+
+
+
+@code {
+
+    [CascadingParameter]
+    [Parameter]
+    public AppFileListStore Store { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback OnStateHasChanged { get; set; }
+
+    // private async Task HandleChangeTags()
+    // {
+    //     Store.BodyState = AppFileListStore.BodyStateEnum.ChangeTags;
+    //     await OnStateHasChanged.InvokeAsync();
+    // }
+
+    private async Task HandleChangeCategory()
+    {
+        Store.BodyState = AppFileListStore.BodyStateEnum.MassChangeCategory;
+        await OnStateHasChanged.InvokeAsync();
+    }
+
+    private async Task HandleSelectAll()
+    {
+        if (!Store.SelectedFileIds.Count.Equals(Store.ResultFiles.Total))
+        {
+            Store.SelectedFileIds = Store.ResultFiles.Items.Select(x => x.BaseFile.Id).ToList();
+        }
+        else
+        {
+            Store.SelectedFileIds.Clear();
+        }
+        await OnStateHasChanged.InvokeAsync();
+    }
+
+    private async Task OnSortChange(string field)
+    {
+        if (!string.IsNullOrEmpty(Store.Req.Search)) return;
+        if (Store.Req.IsOrderByDesc is null)
+        {
+            Store.Req.OrderBy = field;
+            Store.Req.IsOrderByDesc = false;
+        }
+        else if (Store.Req.IsOrderByDesc is false)
+        {
+            if (field.Equals(Store.Req.OrderBy))
+            {
+                Store.Req.IsOrderByDesc = true;
+            }
+            else
+            {
+                Store.Req.OrderBy = field;
+                Store.Req.IsOrderByDesc = false;
+            }
+        }
+        else
+        {
+            if (field.Equals(Store.Req.OrderBy))
+            {
+                Store.Req.OrderBy = null;
+                Store.Req.IsOrderByDesc = null;
+            }
+            else
+            {
+                Store.Req.OrderBy = field;
+                Store.Req.IsOrderByDesc = false;
+            }
+        }
+
+        Store.FindFiles();
+        await OnStateHasChanged.InvokeAsync();
+    }
+
+}

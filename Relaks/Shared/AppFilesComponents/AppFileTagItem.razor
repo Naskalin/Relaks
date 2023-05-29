@@ -7,7 +7,7 @@
 <button type="button"
         class="btn btn-sm @(Store.Req.TagIds.Contains(Tag.Id) ? "btn-secondary" : "btn-outline-secondary")"
         @onclick="@OnClickAsync">
-    <i class="@(Store.State.Equals(AppFileListStore.StateEnum.EditTags) ? "fa-solid fa-edit fa-beat" : "las la-tag")"></i>
+    <i class="@(Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.EditTags) ? "fa-solid fa-edit fa-beat" : "las la-tag")"></i>
     @Tag.Title
 </button>
 
@@ -24,10 +24,10 @@
 
     private async Task OnClickAsync()
     {
-        if (Store.State == AppFileListStore.StateEnum.EditTags)
+        if (Store.SidebarState == AppFileListStore.SidebarStateEnum.EditTags)
         {
-            Store.State = AppFileListStore.StateEnum.EditTag;
-            Store.EditId = Tag.Id;
+            Store.SidebarState = AppFileListStore.SidebarStateEnum.EditTag;
+            Store.SidebarEditId = Tag.Id;
         }
         else
         {

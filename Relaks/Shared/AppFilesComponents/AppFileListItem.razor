@@ -1,49 +1,154 @@
 ﻿@using Relaks.Models
 @using Relaks.Database.Repositories
 @using Relaks.Managers
+@using Relaks.Models.Store
+@using System.Net
 
-@inject RelaksConfigModel RelaksConfigModel;
+@* @inject RelaksConfigModel RelaksConfigModel; *@
 @inject NavigationManager NavigationManager;
-<tr>
-    <td>
-        
-    </td>
-    <td>
-        @AppFile.BaseFile.DisplayNameWithExtension()
+@inject AppFileManager AppFileManager;
+@inject IJSRuntime JsRuntime;
+
+<div class="file-list__el @(Store.SelectedFileIds.Contains(AppFile.BaseFile.Id) ? "active" : "")" title="@AppFile.BaseFile.DisplayNameWithExtension()">
+    <a href="#" class="file-list__preview"
+       @onclick="@HandleClick"
+       @ondblclick="@HandleDoubleClick"
+       @onclick:preventDefault="true">
+        @{
+            var ext = AppFile.BaseFile.GetExtensionWithoutDot();
+            if (IsImageTag(ext))
+            {
+                <img src="@NavigationManager.ToAbsoluteUri(AppFile.BaseFile.FilePath())" class="img-fluid" alt="">
+            }
+            else
+            {
+                <div class="file-list__icon">
+                    <i class="fa-solid fa-file"></i>
+                    @{
+                        if (!string.IsNullOrEmpty(ext))
+                        {
+                            <div class="file-list__icon-text @IconTextClass(ext)">@ext</div>
+                        }
+                    }
+                </div>
+            }
+        }
+    </a>
+    <div class="file-list__body">
+        @if (AppFile.BaseFile.DeletedAt != null)
+        {
+            <SoftDeleteShow SoftDeletedReason="@AppFile.BaseFile" Classes="mb-1"/>
+        }
+
+        <div class="file-list__title text-break">@AppFile.BaseFile.DisplayNameWithExtension()</div>
         @if (AppFile.FtsFile != null)
         {
             <div class="fts-result">
                 <i class="las la-search la-lg"></i> @((MarkupString) AppFile.FtsFile.Snippet)
             </div>
         }
-        @if (AppFile.BaseFile.DeletedAt != null)
-        {
-            <SoftDeleteShow SoftDeletedReason="@AppFile.BaseFile" Classes="mt-2"/>
-        }
-        @if (AppFile.BaseFile.IsImage())
-        {
-            <img src="@NavigationManager.ToAbsoluteUri(AppFile.BaseFile.FilePath())" width="100" alt="">
-        }
-        else
-        {
-            <div class="mime-icon ico-@AppFile.BaseFile.GetExtensionWithoutDot()">
-                <div class="ico"></div>
-            </div>   
-        }
-    </td>
-    <td>@AppFile.BaseFile.CreatedAt.ToString("dd.MM.yy HH:mm")</td>
-    <td>@(AppFile.BaseFile.Category?.Title)</td>
-    <td>
-        @foreach (var tag in AppFile.BaseFile.Tags)
-        {
-            <a href="#">@tag.Title</a>   
-        }
-    </td>
-</tr>
+        <div>
+            @foreach (var tag in AppFile.BaseFile.Tags)
+            {
+                <a href="#">@tag.Title</a>
+            }
+        </div>
+        <div class="file-list__actions">
+            <Tooltip Trigger="hover" Title="Изменить">
+                <button class="btn btn-outline-secondary btn-sm btn-circle" type="button" @onclick="@HandleEditFile">
+                    <i class="las la-edit la-lg"></i>
+                </button>
+            </Tooltip>
+            <Tooltip Trigger="hover" Title="Получить оригинал">
+                <button class="btn btn-outline-secondary btn-sm btn-circle" type="button" @onclick="@HandleDownload">
+                    <i class="las la-file-download la-lg"></i>
+                </button>
+            </Tooltip>
+        </div>
+    </div>
+</div>
 
 @code {
 
     [Parameter]
     public AppFileFindResult AppFile { get; set; } = null!;
+
+    [CascadingParameter]
+    [Parameter]
+    public AppFileListStore Store { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback OnStateHasChanged { get; set; }
+
+    // [Parameter]
+    // public EventCallback OnClick { get; set; }
+    //
+    // [Parameter]
+    // public EventCallback OnDoubleClick { get; set; }
+
+    private bool IsImageTag(string ext) => new List<string>()
+    {
+        "png",
+        "bmp",
+        "jpg",
+        "jpeg",
+        "jfif",
+        "pjpeg",
+        "pjp",
+        "gif",
+        "webp",
+        "svg",
+        "avif",
+        "apng",
+        "tif",
+        "tiff",
+        "ico",
+        "cur",
+    }.Contains(ext);
+
+    private string IconTextClass(string ext)
+    {
+        var str = ext.Length switch
+        {
+            <= 3 => "file-list__icon-text--lg",
+            > 5 => "file-list__icon-text--sm",
+            _ => ""
+            };
+        return str;
+    }
+
+    private async Task HandleClick()
+    {
+        var fileId = AppFile.BaseFile.Id;
+        if (Store.SelectedFileIds.Contains(fileId))
+        {
+            Store.SelectedFileIds.Remove(fileId);
+        }
+        else
+        {
+            Store.SelectedFileIds.Add(fileId);
+        }
+
+        await OnStateHasChanged.InvokeAsync();
+    }
+
+    private void HandleDoubleClick()
+    {
+        var fullPath = AppFileManager.ToFullPath(AppFile.BaseFile);
+        System.Diagnostics.Process.Start("explorer.exe", Path.Combine("select", fullPath));
+    }
+
+    private async Task HandleDownload()
+    {
+        var url = NavigationManager.ToAbsoluteUri(AppFile.BaseFile.FilePath());
+        await JsRuntime.InvokeVoidAsync("triggerFileDownload", AppFile.BaseFile.DisplayNameWithExtension(), url);
+    }
+
+    private async Task HandleEditFile()
+    {
+        Store.BodyEditId = AppFile.BaseFile.Id;
+        Store.BodyState = AppFileListStore.BodyStateEnum.EditFile;
+        await OnStateHasChanged.InvokeAsync();
+    }
 
 }

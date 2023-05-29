@@ -2,6 +2,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Relaks.Interfaces;
 using Relaks.Managers;
 using Relaks.Models;
 using Relaks.Validators.AppFileValidators;
@@ -34,6 +35,8 @@ public static class RegisterServices
 
         services.AddScoped<IValidator<EntryFileTag>, EntryFileTagValidator>();
         services.AddScoped<IValidator<EntryFileCategory>, EntryFileCategoryValidator>();
+        // services.AddScoped<IValidator<BaseFile>, BaseFileValidator>();
+        services.AddScoped<IValidator<EntryFile>, EntryFileValidator>();
 
         // services.AddScoped<IValidator<EntryInfoCreateRequest>, EntryInfoCreateRequestValidator>();
     }

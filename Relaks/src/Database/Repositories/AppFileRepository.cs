@@ -45,11 +45,8 @@ public static class EntryFileRepository
         {
             q = q.Where(x => x.Discriminator.Equals(req.Discriminator));
         }
-
-        if (req.CategoryId.HasValue)
-        {
-            q = q.Where(x => x.CategoryId.Equals(req.CategoryId.Value));
-        }
+        
+        q = req.CategoryId.HasValue ? q.Where(x => x.CategoryId.Equals(req.CategoryId.Value)) : q.Where(x => x.CategoryId.Equals(null));
         
         if (req.TagIds.Any())
         {

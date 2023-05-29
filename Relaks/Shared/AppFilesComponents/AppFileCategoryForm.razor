@@ -7,7 +7,7 @@
 
 @inject AppDbContext Db;
 
-<AppFileSidebarHeader Title="@(Store.State.Equals(AppFileListStore.StateEnum.AddCategory) ? $"{Resources.Action.Add} категорию" : $"{Resources.Action.Edit} категорию")" 
+<AppFileSidebarHeader Title="@(Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.AddCategory) ? $"{Resources.Action.Add} категорию" : $"{Resources.Action.Edit} категорию")" 
                       WithBackLink="@true"
                       OnBackLink="@GoBack"/>
 
@@ -35,8 +35,8 @@
 
     <div class="mb-3">
         <button class="btn btn-primary">
-            <i class="las la-lg me-1 @(Store.State.Equals(AppFileListStore.StateEnum.EditCategory) ? "la-edit" : "la-plus-circle")"></i>
-            @(Store.State.Equals(AppFileListStore.StateEnum.EditCategory) ? Resources.Action.SaveChanges : Resources.Action.Add)
+            <i class="las la-lg me-1 @(Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.EditCategory) ? "la-edit" : "la-plus-circle")"></i>
+            @(Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.EditCategory) ? Resources.Action.SaveChanges : Resources.Action.Add)
         </button>
     </div>
 </EditForm>
@@ -52,7 +52,7 @@
 
     private async Task GoBack()
     {
-        Store.State = AppFileListStore.StateEnum.Default;
+        Store.SidebarState = AppFileListStore.SidebarStateEnum.Default;
         await OnStateHasChanged.InvokeAsync();
     }
 
@@ -64,15 +64,15 @@
     {
         if (Store.EntryId.HasValue)
         {
-            if (Store.State.Equals(AppFileListStore.StateEnum.AddCategory))
+            if (Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.AddCategory))
             {
                 Model = new EntryFileCategory()
                 {
                     EntryId = Store.EntryId.Value
                 };
-            } else if (Store.EditId.HasValue && Store.State.Equals(AppFileListStore.StateEnum.EditCategory))
+            } else if (Store.SidebarEditId.HasValue && Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.EditCategory))
             {
-                Model = Db.EntryFileCategories.First(x => x.Id.Equals(Store.EditId.Value));
+                Model = Db.EntryFileCategories.First(x => x.Id.Equals(Store.SidebarEditId.Value));
             }
         }
         else
@@ -92,7 +92,7 @@
             entryFileCategory.MapTo(entryFileCategory);
             var parent = q.FirstOrDefault(x => x.Id.Equals(Model.ParentId));
 
-            if (Store.State.Equals(AppFileListStore.StateEnum.AddCategory))
+            if (Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.AddCategory))
             {
                 TreeManager.UpdateTreePath(parent, entryFileCategory);
                 Db.EntryFileCategories.Add(entryFileCategory);
