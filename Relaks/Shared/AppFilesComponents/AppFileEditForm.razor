@@ -18,6 +18,7 @@
     </div>
 </div>
 
+<Dump Data="@SelectedTags"/>
 <EditForm Model="@Model" OnSubmit="@OnSubmit">
     <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
     <ValidationSummary/>
@@ -42,15 +43,17 @@
     <div class="mb-3">
         <label for="" class="form-label">Выберите метки</label>
         
-        @foreach (var tag in Store.Tags)
-        {
-            <div class="form-check" @key="tag-@tag.Id">
-                <input class="form-check-input" type="checkbox" value="" id="tag-@tag.Id">
-                <label class="form-check-label" for="tag-@tag.Id">
-                    @tag.Title
-                </label>
-            </div>   
-        }
+        <CheckboxList TValue="List<Guid>" Items="@AllTags" @bind-Value="SelectedTags"/>
+        @* @foreach (var tag in Store.Tags) *@
+        @* { *@
+        @*     <div class="form-check" @key="tag-@tag.Id"> *@
+        @*         $1$ <input class="form-check-input" type="checkbox" value="" id="tag-@tag.Id"> #1# *@
+        @*         $1$ <InputCheckbox class="form-check-input" type="checkbox" id="tag-@tag.Id" /> #1# *@
+        @*         <label class="form-check-label" for="tag-@tag.Id"> *@
+        @*             @tag.Title *@
+        @*         </label> *@
+        @*     </div>    *@
+        @* } *@
     </div>
 
     <button class="btn btn-primary">
@@ -77,7 +80,8 @@
     }
 
     private BaseFile Model { get; set; } = null!;
-    private List<Guid> Tags { get; set; } = new();
+    private List<SelectedItem> AllTags { get; set; } = new();
+    private List<Guid> SelectedTags { get; set; } = new();
 
     protected override void OnParametersSet()
     {
@@ -86,7 +90,8 @@
         Model = Db.BaseFiles
             .Include(x => x.Tags)
             .First(x => x.Id.Equals(Store.BodyEditId.Value));
-        Tags = Model.Tags.Select(x => x.Id).ToList();
+        AllTags = Store.Tags.Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        SelectedTags = Model.Tags.Select(x => x.Id).ToList();
     }
 
     private async Task OnSubmit()
@@ -94,11 +99,24 @@
         if (!await Validator.ValidateAsync()) return;
         
         Model.MapTo(Model);
+        UpdateTags();
         await Db.SaveChangesAsync();
         Store.FindFiles();
         Store.BodyState = AppFileListStore.BodyStateEnum.Default;
         Store.BodyEditId = null;
         await OnStateHasChanged.InvokeAsync();
+    }
+    
+    private void UpdateTags()
+    {
+        var currentTagIds = Model.Tags.Select(x => x.Id).ToList();
+        // К добавлению - Исключаем из всех новых тегов имеющеися
+        var toNew = SelectedTags.Except(currentTagIds).ToList();
+        // К удалению - Исключаем из текущих тегов все новые
+        var toDelete = currentTagIds.Except(SelectedTags).ToList();
+        
+        Db.BaseFileTags.Where(x => toNew.Contains(x.Id)).ToList().ForEach(tag => Model.Tags.Add(tag));
+        Db.BaseFileTags.Where(x => toDelete.Contains(x.Id)).ToList().ForEach(tag => Model.Tags.Remove(tag));
     }
 
 }

@@ -47,12 +47,18 @@
                 <i class="las la-search la-lg"></i> @((MarkupString) AppFile.FtsFile.Snippet)
             </div>
         }
-        <div>
-            @foreach (var tag in AppFile.BaseFile.Tags)
-            {
-                <a href="#">@tag.Title</a>
-            }
-        </div>
+        @if (AppFile.BaseFile.Tags.Any())
+        {
+            <div class="d-flex flex-wrap gap-1 my-3 justify-content-center">
+                @foreach (var tag in AppFile.BaseFile.Tags)
+                {
+                    <button class="btn btn-sm btn-outline-secondary py-0 px-1" @onclick="@(() => HandleClickTag(tag.Id))">
+                        <i class="las la-tag"></i>
+                        @tag.Title
+                    </button>
+                }
+            </div>   
+        }
         <div class="file-list__actions">
             <Tooltip Trigger="hover" Title="Изменить">
                 <button class="btn btn-outline-secondary btn-sm btn-circle" type="button" @onclick="@HandleEditFile">
@@ -151,4 +157,17 @@
         await OnStateHasChanged.InvokeAsync();
     }
 
+    private async Task HandleClickTag(Guid tagId)
+    {
+        if (Store.Req.TagIds.Contains(tagId))
+        {
+            Store.Req.TagIds.Remove(tagId);
+        }
+        else
+        {
+            Store.Req.TagIds.Add(tagId);
+        }
+        Store.FindFiles();
+        await OnStateHasChanged.InvokeAsync();
+    }
 }

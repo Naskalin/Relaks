@@ -1,4 +1,5 @@
-﻿using Relaks.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Relaks.Interfaces;
 using Relaks.Models;
 using Relaks.Models.Misc;
 using Relaks.Utils.Extensions;
@@ -30,7 +31,9 @@ public static class EntryFileRepository
     {
         if (!string.IsNullOrEmpty(req.Search)) return FindFtsFiles(db, req);
 
-        var q = db.BaseFiles.AsQueryable();
+        var q = db.BaseFiles
+            .Include(x => x.Tags)
+            .AsQueryable();
         
         if (req.EntryId.HasValue)
         {
@@ -50,7 +53,7 @@ public static class EntryFileRepository
         
         if (req.TagIds.Any())
         {
-            q = q.Where(x => x.Tags.Any(t => req.TagIds.Equals(t.Id)));
+            q = q.Where(x => x.Tags.Any(t => req.TagIds.Contains(t.Id)));
         }
 
         if (!string.IsNullOrEmpty(req.Keyword))
@@ -81,16 +84,18 @@ public static class EntryFileRepository
             ? q.Where(x => !string.IsNullOrEmpty(x.DeletedAt))
             : q.Where(x => string.IsNullOrEmpty(x.DeletedAt));
         
+        if (req.EntryId.HasValue)
+        {
+            var entryFileIdsQuery = db.EntryFiles.Where(x => x.EntryId.Equals(req.EntryId.Value)).Select(x => x.Id);
+            q = q.Where(x => entryFileIdsQuery.Contains(x.Id));
+        }
+        
         if (!string.IsNullOrEmpty(req.Discriminator))
         {
             q = q.Where(x => x.Discriminator.Equals(req.Discriminator));
         }
         
-        if (req.EntryId.HasValue)
-        {
-            var entryFileIdsQuery = db.EntryFiles.Where(x => x.EntryId.Equals(req.EntryId.Value)).Select(x => x.Id.ToString()).ToList();
-            q = q.Where(x => entryFileIdsQuery.Contains(x.Id.ToString()));
-        }
+        
 
         q = q.Select(x => new FtsFile()
                 {
@@ -107,7 +112,19 @@ public static class EntryFileRepository
         var total = q.ToTotalResult();
         
         var fileIds = total.Items.Select(x => x.Id).ToList();
-        var appFiles = db.BaseFiles.Where(x => fileIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);
+        var appFilesQuery = db.BaseFiles
+            .Include(x => x.Tags)
+            .Where(x => fileIds.Contains(x.Id));
+
+        appFilesQuery = req.CategoryId.HasValue
+            ? appFilesQuery.Where(x => x.CategoryId.Equals(req.CategoryId.Value))
+            : appFilesQuery.Where(x => x.CategoryId.Equals(null));
+        if (req.TagIds.Any())
+        {
+            appFilesQuery = appFilesQuery.Where(x => x.Tags.Any(t => req.TagIds.Contains(t.Id)));
+        }
+
+        var appFiles = appFilesQuery.ToDictionary(x => x.Id, x => x);
         return new TotalResult<AppFileFindResult>()
         {
             Total = total.Total,
