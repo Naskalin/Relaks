@@ -1,4 +1,7 @@
 ﻿@page "/entries"
+
+@inject NavigationManager NavigationManager;
+
 <PageTemplate>
     <MyTitle>
         <ChildContent>@Resources.Entity.BaseEntries</ChildContent>
@@ -10,15 +13,30 @@
         </EndTitle>
     </MyTitle>
     
-    <EntryList OnRowClicked="OnRowClicked"></EntryList>
+    <div class="row">
+        <div class="col-auto">
+            @if (EntryIdPreview.HasValue)
+            {
+                <EntryCard EntryId="@EntryIdPreview.Value" WithEdit="@false"/>   
+            }
+        </div>
+        <div class="col">
+            <EntryList OnRowDoubleClicked="@OnRowDoubleClicked" OnRowClicked="@OnRowClicked"></EntryList>
+        </div>
+    </div>
 </PageTemplate>
 
 @code {
-    [Inject]
-    public NavigationManager NavigationManager { get; set; } = null!;
+    
+    private Guid? EntryIdPreview { get; set; }
+
+    private void OnRowDoubleClicked(Guid entryId)
+    {
+        NavigationManager.NavigateTo($"/entries/{entryId}/info");
+    }
 
     private void OnRowClicked(Guid entryId)
     {
-        NavigationManager.NavigateTo($"/entries/{entryId}/info");
+        EntryIdPreview = entryId;
     }
 }

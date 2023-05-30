@@ -18,7 +18,7 @@
     </div>
 </div>
 
-<Dump Data="@SelectedTags"/>
+@* <Dump Data="@SelectedTags"/> *@
 <EditForm Model="@Model" OnSubmit="@OnSubmit">
     <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
     <ValidationSummary/>

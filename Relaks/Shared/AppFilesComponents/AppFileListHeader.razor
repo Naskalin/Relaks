@@ -16,29 +16,33 @@
     </button>
 </div>
 
-<div class="d-flex align-items-center mb-3">
-    <div class="d-flex gap-3 align-items-center text-muted me-3 small">
-        <div>
-            Массовые операции
-            @if (Store.SelectedFileIds.Any())
-            {
-                <span>(@Store.SelectedFileIds.Count шт.)</span>
-            }
+
+@if (Store.ResultFiles.Total > 0)
+{
+    <div class="d-flex align-items-center mb-3">
+        <div class="d-flex gap-3 align-items-center text-muted me-3 small">
+            <div>
+                Массовые действия
+                @if (Store.SelectedFileIds.Any())
+                {
+                    <span>(@Store.SelectedFileIds.Count шт.)</span>
+                }
+            </div>
         </div>
-    </div>
-    <button type="button" class="btn btn-link btn-sm" @onclick="@HandleSelectAll">
-        @(Store.SelectedFileIds.Count.Equals(Store.ResultFiles.Total) ? "Отмена" : "Выделить всё")
-    </button>
-    @if (Store.SelectedFileIds.Any())
-    {
-        <button type="button" class="btn btn-link btn-sm" @onclick="@HandleChangeCategory">
-            Изменить категорию
+        <button type="button" class="btn btn-link btn-sm" @onclick="@HandleSelectAll">
+            @(Store.SelectedFileIds.Count.Equals(Store.ResultFiles.Total) ? "Отмена" : "Выделить всё")
         </button>
+        @if (Store.SelectedFileIds.Any())
+        {
+            <button type="button" class="btn btn-link btn-sm" @onclick="@HandleChangeCategory">
+                Изменить категорию
+            </button>
         @* <button type="button" class="btn btn-link btn-sm" @onclick="@HandleChangeCategory"> *@
         @*     Изменить метки *@
         @* </button> *@
-    }
-</div>
+        }
+    </div>   
+}
 
 
 

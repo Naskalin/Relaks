@@ -27,10 +27,8 @@ public class AppFileFindResult
 
 public static class EntryFileRepository
 {
-    public static TotalResult<AppFileFindResult> FindFiles(this AppDbContext db, AppFileFindRequest req)
+    private static IQueryable<BaseFile> FindBaseFiles(this AppDbContext db, AppFileFindRequest req)
     {
-        if (!string.IsNullOrEmpty(req.Search)) return FindFtsFiles(db, req);
-
         var q = db.BaseFiles
             .Include(x => x.Tags)
             .AsQueryable();
@@ -63,8 +61,14 @@ public static class EntryFileRepository
 
         q = string.IsNullOrEmpty(req.OrderBy) ? q.OrderByDescending(x => x.CreatedAt) : q.OrderBy(req);
 
-        var total = q.ToTotalResult();
-
+        return q;
+    }
+    
+    public static TotalResult<AppFileFindResult> FindFiles(this AppDbContext db, AppFileFindRequest req)
+    {
+        if (!string.IsNullOrEmpty(req.Search)) return FindFtsFiles(db, req);
+        
+        var total = FindBaseFiles(db, req).ToTotalResult();
         return new TotalResult<AppFileFindResult>()
         {
             Total = total.Total,
@@ -77,27 +81,12 @@ public static class EntryFileRepository
         if (string.IsNullOrEmpty(req.Search)) return new TotalResult<AppFileFindResult>();
 
         var s = $"\"{req.Search}\"*";
-        
-        var q = db.Set<FtsFile>().Where(x => x.Match == s);
-        
-        q = req.IsDeleted
-            ? q.Where(x => !string.IsNullOrEmpty(x.DeletedAt))
-            : q.Where(x => string.IsNullOrEmpty(x.DeletedAt));
-        
-        if (req.EntryId.HasValue)
-        {
-            var entryFileIdsQuery = db.EntryFiles.Where(x => x.EntryId.Equals(req.EntryId.Value)).Select(x => x.Id);
-            q = q.Where(x => entryFileIdsQuery.Contains(x.Id));
-        }
-        
-        if (!string.IsNullOrEmpty(req.Discriminator))
-        {
-            q = q.Where(x => x.Discriminator.Equals(req.Discriminator));
-        }
-        
-        
 
-        q = q.Select(x => new FtsFile()
+        // var baseFileIds = FindBaseFiles(db, req).Select(x => x.Id);
+        
+        var ftsQuery = db.Set<FtsFile>().Where(x => x.Match == s);
+
+        ftsQuery = ftsQuery.Select(x => new FtsFile()
                 {
                     Id = x.Id,
                     Rank = x.Rank,
@@ -107,28 +96,18 @@ public static class EntryFileRepository
                 })
             ;
 
-        q = q.OrderByDescending(x => x.Rank);
-        
-        var total = q.ToTotalResult();
-        
-        var fileIds = total.Items.Select(x => x.Id).ToList();
-        var appFilesQuery = db.BaseFiles
-            .Include(x => x.Tags)
-            .Where(x => fileIds.Contains(x.Id));
+        var ftsResult = ftsQuery.ToList();
+        ftsResult = ftsResult
+            .Where(x => FindBaseFiles(db, req).Select(x => x.Id).Contains(x.Id))
+            .OrderByDescending(x => x.Rank)
+            .ToList();
 
-        appFilesQuery = req.CategoryId.HasValue
-            ? appFilesQuery.Where(x => x.CategoryId.Equals(req.CategoryId.Value))
-            : appFilesQuery.Where(x => x.CategoryId.Equals(null));
-        if (req.TagIds.Any())
-        {
-            appFilesQuery = appFilesQuery.Where(x => x.Tags.Any(t => req.TagIds.Contains(t.Id)));
-        }
-
-        var appFiles = appFilesQuery.ToDictionary(x => x.Id, x => x);
+        var baseFileIds = ftsResult.Select(x => x.Id);
+        var appFiles = db.BaseFiles.Where(x => baseFileIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);
         return new TotalResult<AppFileFindResult>()
         {
-            Total = total.Total,
-            Items = total.Items.Select(x => new AppFileFindResult {BaseFile = appFiles[x.Id], FtsFile = x,}).ToList()
+            Total = ftsResult.Count,
+            Items = ftsResult.Select(x => new AppFileFindResult {BaseFile = appFiles[x.Id], FtsFile = x,}).ToList()
         };
     }
 }

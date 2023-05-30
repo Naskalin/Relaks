@@ -40,7 +40,7 @@
                 <p class="card-text text-center">@Entry.Description</p>
             }
 
-            <EntryCardContacts EntryInfoId="@EntryInfoId" EntryInfos="@Entry.EntryInfos"/>
+            <EntryCardContacts EntryInfoId="@EntryInfoId" EntryInfos="@Entry.EntryInfos" WithEdit="@WithEdit"/>
 
             @if (Entry.StartAt != null || Entry.EndAt != null)
             {

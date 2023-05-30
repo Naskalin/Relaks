@@ -5,30 +5,39 @@
 <EntryProfileLayout EntryId="@EntryId">
     <EntryProfileTabs EntryId="@EntryId"/>
     <MyTitle>Файлы</MyTitle>
-    
+
 
     <div class="row">
-        <div class="col-3">
+        <div class="col-5">
             <_EntryUploader EntryId="@EntryId" OnUpload="@HandleOnUpload"/>
         </div>
-        <div class="col-9">
-            
+        <div class="col-7">
+            <div class="alert bg-info bg-opacity-10">
+                <ul class="mb-0">
+                    <li>Выберите или переместите файлы для загрузки</li>
+                    <li>Двойной клик на загруженный файл откроет его</li>
+                    <li>У файла может быть одна категория и много меток</li>
+                    <li>Выберите несколько файлов и задайте им категорию</li>
+                    <li>Измените название файла для лучшего поиска</li>
+                </ul>
+            </div>
         </div>
     </div>
     <hr>
-    <AppFileList 
-        EntryId="EntryId" 
-        WithEdit="@true"
-    />
+    <AppFileList
+        EntryId="EntryId"
+        WithEdit="@true"/>
 </EntryProfileLayout>
 
 @code {
+
     [Parameter]
     public Guid EntryId { get; set; }
 
     private void HandleOnUpload(List<Guid> fileIds)
     {
-        var paramsFileIds = string.Join("&", fileIds.Select(x=>"fileIds=" + x));
+        var paramsFileIds = string.Join("&", fileIds.Select(x => "fileIds=" + x));
         NavigationManager.NavigateTo($"/entries/{EntryId}/files?{paramsFileIds}", true);
     }
+
 }

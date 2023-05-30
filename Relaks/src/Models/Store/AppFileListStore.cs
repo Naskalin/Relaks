@@ -50,7 +50,10 @@ public class AppFileListStore
     public void FindFiles()
     {
         ResultFiles = _db.FindFiles(Req);
-        SelectedFileIds.Clear();
+        if (BodyState == BodyStateEnum.Default)
+        {
+            SelectedFileIds.Clear();   
+        }
     }
 
     public void GetTags()

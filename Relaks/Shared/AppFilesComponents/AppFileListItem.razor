@@ -43,7 +43,7 @@
         <div class="file-list__title text-break">@AppFile.BaseFile.DisplayNameWithExtension()</div>
         @if (AppFile.FtsFile != null)
         {
-            <div class="fts-result">
+            <div class="fts-result text-center small my-1 text-muted">
                 <i class="las la-search la-lg"></i> @((MarkupString) AppFile.FtsFile.Snippet)
             </div>
         }

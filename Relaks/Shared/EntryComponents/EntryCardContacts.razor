@@ -19,11 +19,14 @@
             <li class="list-group-item gx-0 px-0 @(eInfo.Id.Equals(EntryInfoId) ? "border border-3 border-warning" : "") d-flex align-items-center justify-content-between"
                 @key="@eInfo.Id">
                 <EntryInfoContact EntryInfo="@eInfo" EntryInfoId="EntryInfoId"/>
-                <Tooltip Title="@($"Изменить {eInfo.Discriminator}")" Trigger="hover" Placement="Placement.Right">
-                    <NavLink href="@($"/entries/{eInfo.EntryId}/{eInfo.Discriminator}/{eInfo.Id}/edit")" class="btn btn-light btn-sm btn-circle">
-                        <i class="las la-lg la-edit"></i>
-                    </NavLink>
-                </Tooltip>
+                @if (WithEdit == true)
+                {
+                    <Tooltip Title="@($"Изменить {Resources.Entity.ResourceManager.GetString(eInfo.Discriminator)?.ToLower()}")" Trigger="hover" Placement="Placement.Right">
+                        <NavLink href="@($"/entries/{eInfo.EntryId}/{eInfo.Discriminator}/{eInfo.Id}/edit")" class="btn bg-secondary bg-opacity-10 btn-sm btn-circle">
+                            <i class="las la-lg la-edit"></i>
+                        </NavLink>
+                    </Tooltip>   
+                }
             </li>
         }
     </ul>   
@@ -46,6 +49,9 @@ else
 
     [Parameter]
     public List<BaseEntryInfo> EntryInfos { get; set; } = new();
+    
+    [Parameter]
+    public bool? WithEdit { get; set; }
 
     private Tabs CurrentTab { get; set; }
     private List<BaseEntryInfo> FilteredItems { get; set; } = new();
