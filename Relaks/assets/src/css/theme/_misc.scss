@@ -49,3 +49,24 @@
   align-items: center;
   justify-content: center;
 }
+.ul-info {
+  padding-left: 1rem;
+  li {
+    list-style: none;
+    position: relative;
+    padding-left: 1rem;
+    margin-bottom: .4rem;
+    &::before {
+      content: '';
+      display: block;
+      width: 2px;
+      height: 100%;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      position: absolute;
+      background: var(--bs-info);
+      opacity: .7;
+    }
+  }
+}

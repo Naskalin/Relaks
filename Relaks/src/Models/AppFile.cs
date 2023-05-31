@@ -4,7 +4,7 @@ using Relaks.Interfaces;
 namespace Relaks.Models;
 
 [Table("Files")]
-public abstract class BaseFile : IAppFile, ISoftDeletedReason
+public abstract class BaseFile : IBaseFile
 {
     public Guid Id { get; set; }
     /// <summary>
@@ -82,4 +82,13 @@ public class FtsFile : IFtsEntity
     
     public string DeletedAt { get; set; } = null!;
     public string Discriminator { get; set; } = null!;
+}
+
+public class BaseFileRequest : ISoftDeletedReason
+{
+    public string DisplayName { get; set; } = null!;
+    public DateTime? DeletedAt { get; set; }
+    public string? DeletedReason { get; set; }
+    public Guid? CategoryId { get; set; }
+    public List<Guid> Tags { get; set; } = new();
 }

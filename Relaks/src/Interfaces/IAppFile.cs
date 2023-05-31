@@ -19,3 +19,12 @@ public interface IAppFile
     /// </summary>
     public string FilePath();
 }
+
+public interface IBaseFile : IAppFile, ISoftDeletedReason
+{
+    public Guid Id { get; set; }
+    public string Discriminator { get; set; }
+    public string? Keyword { get; set; }
+    
+    public Guid? CategoryId { get; set; }
+}

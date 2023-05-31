@@ -43,7 +43,7 @@ public class AppFileManager
         }
     }
 
-    public void RemoveIfExists(BaseFile appFile)
+    public void DeleteIfExists(BaseFile appFile)
     {
         var filePathFull = ToFullPath(appFile);
         if (File.Exists(filePathFull)) File.Delete(filePathFull);

@@ -45,6 +45,7 @@ public class AppFileListStore
     public TotalResult<AppFileFindResult> ResultFiles { get; set; } = new();
     public List<BaseFileTag> Tags { get; set; } = new();
     public List<BaseFileCategory> Categories { get; set; } = new();
+    public List<BaseFileCategory> FlatCategories { get; set; } = new();
     public List<Guid> SelectedFileIds { get; set; } = new();
 
     public void FindFiles()
@@ -77,7 +78,8 @@ public class AppFileListStore
             var categoryIds = _db.EntryFileCategories.Where(x => x.EntryId.Equals(Req.EntryId.Value)).Select(x => x.Id);
             q = q.Where(x => categoryIds.Contains(x.Id));
         }
-        
+
+        FlatCategories = q.ToList();
         Categories = q.ToTree();
     }
 }

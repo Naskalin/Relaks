@@ -4,8 +4,13 @@
 @using Relaks.Mappers
 @using Relaks.Models
 @using Microsoft.EntityFrameworkCore
+@using System.Text.Json
+@using Relaks.Interfaces
+@using Relaks.Managers
 
 @inject AppDbContext Db;
+@inject IJSRuntime JsRuntime;
+@inject AppFileManager AppFileManager;
 
 <div class="row align-items-center mb-3 gx-3">
     <div class="col-auto">
@@ -19,19 +24,19 @@
 </div>
 
 @* <Dump Data="@SelectedTags"/> *@
-<EditForm Model="@Model" OnSubmit="@OnSubmit">
+<EditForm Model="@Req" OnSubmit="@OnSubmit">
     <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
     <ValidationSummary/>
     
     <div class="mb-3">
         <label for="" class="form-label">@Resources.Action.Title *</label>
-        <input type="text" @bind-value="@Model.DisplayName" minlength="2" maxlength="255" class="form-control" required="required">
-        <ValidationMessage For="@(() => Model.DisplayName)"/>
+        <input type="text" @bind-value="@Req.DisplayName" minlength="2" maxlength="255" class="form-control" required="required">
+        <ValidationMessage For="@(() => Req.DisplayName)"/>
     </div>
 
     <div class="mb-3">
         <label for="" class="form-label">Выберите категорию</label>
-        <InputSelect @bind-Value="Model.CategoryId" class="form-select">
+        <InputSelect @bind-Value="Req.CategoryId" class="form-select">
             <option value="">(Без категории)</option>
             @foreach (var item in Store.Categories.ToTreeSelect())
             {
@@ -44,17 +49,9 @@
         <label for="" class="form-label">Выберите метки</label>
         
         <CheckboxList TValue="List<Guid>" Items="@AllTags" @bind-Value="SelectedTags"/>
-        @* @foreach (var tag in Store.Tags) *@
-        @* { *@
-        @*     <div class="form-check" @key="tag-@tag.Id"> *@
-        @*         $1$ <input class="form-check-input" type="checkbox" value="" id="tag-@tag.Id"> #1# *@
-        @*         $1$ <InputCheckbox class="form-check-input" type="checkbox" id="tag-@tag.Id" /> #1# *@
-        @*         <label class="form-check-label" for="tag-@tag.Id"> *@
-        @*             @tag.Title *@
-        @*         </label> *@
-        @*     </div>    *@
-        @* } *@
     </div>
+    
+    <SoftDeletedReasonField SoftDeletedReason="@Req"/>
 
     <button class="btn btn-primary">
         <i class="las la-lg me-1 la-edit"></i>
@@ -62,8 +59,18 @@
     </button>
 </EditForm>
 
-@code {
+@if (BaseFile.DeletedAt != null)
+{
+    <div class="text-end">
+        <button type="button" class="btn btn-link text-danger" @onclick="@OnDelete">
+            <i class="las la-trash la-lg"></i>
+            @Resources.Action.Delete
+        </button>
+    </div>   
+}
 
+@code {
+    
     [CascadingParameter]
     [Parameter]
     public AppFileListStore Store { get; set; } = null!;
@@ -79,7 +86,8 @@
         await OnStateHasChanged.InvokeAsync();
     }
 
-    private BaseFile Model { get; set; } = null!;
+    private BaseFileRequest Req { get; set; } = new();
+    private BaseFile BaseFile { get; set; } = null!;
     private List<SelectedItem> AllTags { get; set; } = new();
     private List<Guid> SelectedTags { get; set; } = new();
 
@@ -87,18 +95,20 @@
     {
         if (!Store.BodyEditId.HasValue) return;
 
-        Model = Db.BaseFiles
+        BaseFile = Db.BaseFiles
             .Include(x => x.Tags)
             .First(x => x.Id.Equals(Store.BodyEditId.Value));
+
+        BaseFile.MapTo(Req);
         AllTags = Store.Tags.Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
-        SelectedTags = Model.Tags.Select(x => x.Id).ToList();
+        SelectedTags = BaseFile.Tags.Select(x => x.Id).ToList();
     }
 
     private async Task OnSubmit()
     {
         if (!await Validator.ValidateAsync()) return;
         
-        Model.MapTo(Model);
+        Req.MapTo(BaseFile);
         UpdateTags();
         await Db.SaveChangesAsync();
         Store.FindFiles();
@@ -109,14 +119,33 @@
     
     private void UpdateTags()
     {
-        var currentTagIds = Model.Tags.Select(x => x.Id).ToList();
+        var currentTagIds = BaseFile.Tags.Select(x => x.Id).ToList();
         // К добавлению - Исключаем из всех новых тегов имеющеися
-        var toNew = SelectedTags.Except(currentTagIds).ToList();
+        var newTagIds = SelectedTags.Except(currentTagIds).ToList();
         // К удалению - Исключаем из текущих тегов все новые
-        var toDelete = currentTagIds.Except(SelectedTags).ToList();
-        
-        Db.BaseFileTags.Where(x => toNew.Contains(x.Id)).ToList().ForEach(tag => Model.Tags.Add(tag));
-        Db.BaseFileTags.Where(x => toDelete.Contains(x.Id)).ToList().ForEach(tag => Model.Tags.Remove(tag));
-    }
+        var deleteTagIds = currentTagIds.Except(SelectedTags).ToList();
 
+        if (newTagIds.Any())
+        {
+            Db.BaseFileTags.Where(x => newTagIds.Contains(x.Id)).ToList().ForEach(tag => BaseFile.Tags.Add(tag));   
+        }
+        if (deleteTagIds.Any())
+        {
+            Db.BaseFileTags.Where(x => deleteTagIds.Contains(x.Id)).ToList().ForEach(tag => BaseFile.Tags.Remove(tag));   
+        }
+    }
+    
+    private async Task OnDelete()
+    {
+        if (BaseFile.DeletedAt == null) return;
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
+        if (!isConfirmed) return;
+
+        AppFileManager.DeleteIfExists(BaseFile);
+        Db.BaseFiles.Remove(BaseFile);
+        await Db.SaveChangesAsync();
+        Store.BodyState = AppFileListStore.BodyStateEnum.Default;
+        Store.BodyEditId = null;
+        await OnStateHasChanged.InvokeAsync();
+    }
 }

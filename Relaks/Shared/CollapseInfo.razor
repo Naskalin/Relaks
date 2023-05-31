@@ -1,0 +1,22 @@
+﻿<div>
+    <button type="button" class="btn btn-outline-info @BtnClasses" @onclick="@(() => IsShow = !IsShow)">
+        <i class="las la-info-circle la-lg"></i>
+        Информация
+    </button>
+    @if (IsShow)
+    {
+        <div class="alert bg-info bg-opacity-10 mt-3">
+            @ChildContent
+        </div>   
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string? BtnClasses { get; set; }
+    
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+    
+    private bool IsShow { get; set; }
+}

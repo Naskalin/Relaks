@@ -82,8 +82,6 @@ public static class EntryFileRepository
 
         var s = $"\"{req.Search}\"*";
 
-        // var baseFileIds = FindBaseFiles(db, req).Select(x => x.Id);
-        
         var ftsQuery = db.Set<FtsFile>().Where(x => x.Match == s);
 
         ftsQuery = ftsQuery.Select(x => new FtsFile()

@@ -34,14 +34,7 @@ public static class AppFileMapper
         return extension;
     }
 
-    // public static void MapTo(this IFormFile formFile, BaseFile appFile)
-    // {
-    //     appFile.Filename = Path.GetRandomFileName() + GetExtension(formFile.ContentType, formFile.FileName);
-    //     appFile.MimeType = formFile.ContentType;
-    //     appFile.DisplayName = Path.GetFileNameWithoutExtension(formFile.FileName);
-    // }
-
-    public static void MapTo(this IBrowserFile browserFile, BaseFile appFile)
+    public static void MapTo(this IBrowserFile browserFile, IBaseFile appFile)
     {
         var extension = GetExtension(browserFile.ContentType, browserFile.Name);
         
@@ -56,8 +49,24 @@ public static class AppFileMapper
         appFile.DisplayName = Path.GetFileNameWithoutExtension(browserFile.Name);
     }
 
-    public static void MapTo(this IAppFile from, IAppFile to)
+    // public static void MapTo(this IBaseFile from, IBaseFile to)
+    // {
+    //     to.DisplayName = from.DisplayName.Trim();
+    //     to.CategoryId = from.CategoryId;
+    //     from.MapSoftDeleted(to);
+    // }
+
+    public static void MapTo(this BaseFileRequest req, IBaseFile baseFile)
     {
-        to.DisplayName = from.DisplayName.Trim();
+        baseFile.DisplayName = req.DisplayName.Trim();
+        baseFile.CategoryId = req.CategoryId;
+        req.MapSoftDeleted(baseFile);
+    }
+    
+    public static void MapTo(this IBaseFile baseFile, BaseFileRequest req)
+    {
+        req.DisplayName = baseFile.DisplayName.Trim();
+        req.CategoryId = baseFile.CategoryId;
+        baseFile.MapSoftDeleted(req);
     }
 }

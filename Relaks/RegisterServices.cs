@@ -36,7 +36,7 @@ public static class RegisterServices
         services.AddScoped<IValidator<EntryFileTag>, EntryFileTagValidator>();
         services.AddScoped<IValidator<EntryFileCategory>, EntryFileCategoryValidator>();
         // services.AddScoped<IValidator<BaseFile>, BaseFileValidator>();
-        services.AddScoped<IValidator<EntryFile>, EntryFileValidator>();
+        services.AddScoped<IValidator<BaseFileRequest>, BaseFileRequestValidator>();
 
         // services.AddScoped<IValidator<EntryInfoCreateRequest>, EntryInfoCreateRequestValidator>();
     }

@@ -1,5 +1,8 @@
 ﻿@using Relaks.Models.Store
 @using Relaks.Models
+@using Relaks.Database
+
+<h3>@CurrentCategoryTitle</h3>
 
 <div class="d-flex align-items-center mb-3">
     <div class="d-flex gap-3 align-items-center text-muted me-3 small">
@@ -29,9 +32,7 @@
                 }
             </div>
         </div>
-        <button type="button" class="btn btn-link btn-sm" @onclick="@HandleSelectAll">
-            @(Store.SelectedFileIds.Count.Equals(Store.ResultFiles.Total) ? "Отмена" : "Выделить всё")
-        </button>
+        <button type="button" class="btn btn-link btn-sm" @onclick="@HandleSelectAll">Выделить всё</button>
         @if (Store.SelectedFileIds.Any())
         {
             <button type="button" class="btn btn-link btn-sm" @onclick="@HandleChangeCategory">
@@ -55,11 +56,7 @@
     [Parameter]
     public EventCallback OnStateHasChanged { get; set; }
 
-    // private async Task HandleChangeTags()
-    // {
-    //     Store.BodyState = AppFileListStore.BodyStateEnum.ChangeTags;
-    //     await OnStateHasChanged.InvokeAsync();
-    // }
+    private string CurrentCategoryTitle { get; set; } = null!;
 
     private async Task HandleChangeCategory()
     {
@@ -116,6 +113,13 @@
 
         Store.FindFiles();
         await OnStateHasChanged.InvokeAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+            CurrentCategoryTitle = Store.Req.CategoryId.HasValue
+            ? CurrentCategoryTitle = Store.FlatCategories.First(x => x.Id.Equals(Store.Req.CategoryId.Value)).Title
+            : "Без категории";
     }
 
 }
