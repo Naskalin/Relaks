@@ -19,8 +19,12 @@
             {
                 <EntryCard EntryId="@EntryIdPreview.Value" WithEdit="@false"/>   
             }
+            else
+            {
+                <div style="width: 20rem;"></div>
+            }
         </div>
-        <div class="col">
+        <div class="col-9">
             <EntryList OnRowDoubleClicked="@OnRowDoubleClicked" OnRowClicked="@OnRowClicked"></EntryList>
         </div>
     </div>

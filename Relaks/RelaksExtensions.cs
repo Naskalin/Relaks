@@ -26,7 +26,6 @@ public static class RelaksExtensions
         services.RegisterLocalization();
         services.AddBlazoredLocalStorage();
         services.AddBootstrapBlazor();
-        
     }
 
     public static void UseRelaks(this IHost host)

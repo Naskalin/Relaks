@@ -1,38 +1,31 @@
 ﻿@inject IJSRuntime Js;
 
-@* <label for="@InputId" class="form-label">@Label</label> *@
-@* <InputFile OnChange="@LoadFiles" accept="image/*" class="form-control" id="@InputId"/> *@
-@* *@
-@* @if (!string.IsNullOrEmpty(ImgSrc)) *@
-@* { *@
-@* <img src="@ImgSrc" id="js-cropper-image" alt=""> *@
-@* } *@
-<button type="button" class="btn btn-primary" @onclick="HandleBtn">init</button>
-<img id="js-cropper-image" src="https://www.verywellhealth.com/thmb/byKanhPiJ0kC3WLttQV_wVaf4yE=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/What-are-the-three-levels-of-autism-260233-5baab02fc9e77c002c390bd2.png" alt="">
+<InputFile OnChange="@LoadFiles" accept="image/*" class="form-control"/>
+<div id="@CropperBlockId"></div>
+@if (!string.IsNullOrEmpty(ResultImage))
+{
+    <img src="@ResultImage" alt="" class="rounded"/>
+}
+@if (!string.IsNullOrEmpty(RootImage))
+{
+    <button type="button" class="btn btn-primary" @onclick="@HandleCropImage">crop</button>
+}
 
 @code {
+
+    private string CropperBlockId { get; set; } = null!;
 
     [Parameter]
     public string? Label { get; set; } = "Выберите изображение";
 
-    private string? ImgSrc { get; set; }
-    private Guid InputId { get; set; }
-    
-    private object? CropperJs { get; set; }
+    private string? RootImage { get; set; }
+    private string? ResultImage { get; set; }
+    // private Guid InputId { get; set; }
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        InputId = Guid.NewGuid();
-    }
-
-    private async Task HandleBtn()
-    {
-        CropperJs = await Js.InvokeAsync<object>("CropperJs", new
-        {
-            imageId = "js-cropper-image",
-            options = new {}
-        });
+        CropperBlockId = Guid.NewGuid().ToString();
     }
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
@@ -41,7 +34,20 @@
         await using var imageStream = image.OpenReadStream(1024 * 1024 * 10);
         using MemoryStream ms = new();
         await imageStream.CopyToAsync(ms);
-        ImgSrc = $"data:image/png;base64,{Convert.ToBase64String(ms.ToArray())}";
 
+        RootImage = $"data:image/png;base64,{Convert.ToBase64String(ms.ToArray())}";
+        ResultImage = null;
+        await Js.InvokeVoidAsync("CropperJsInit", new
+        {
+            imgSrc = RootImage,
+            blockId = CropperBlockId,
+        });
     }
+
+    private async Task HandleCropImage()
+    {
+        ResultImage = await Js.InvokeAsync<string>("CropperJsCrop");
+        RootImage = null;
+    }
+
 }
