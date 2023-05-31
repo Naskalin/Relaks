@@ -7,21 +7,22 @@
     <MyTitle>Файлы</MyTitle>
 
 
-    <div class="row align-items-center">
-        <div class="col-5">
-            <_EntryUploader EntryId="@EntryId" OnUpload="@HandleOnUpload"/>
-        </div>
-        <div class="col-7">
-            <ul class="mb-3 ul-info">
-                <li>Выберите или переместите файлы для загрузки</li>
-                <li>Двойной клик на загруженный файл откроет его в программе по умолчанию для вашей операционной системы</li>
-                <li>У файла может быть одна категория и много меток</li>
-                <li>Задайте категорию сразу нескольким файлам для этого кликните на иконки нужных файлов.</li>
-                <li>Измените название файла для лучшего поиска</li>
-            </ul>
+    <div class="border border-3 rounded p-3 mb-5">
+        <div class="row align-items-center">
+            <div class="col-5">
+                <_EntryUploader EntryId="@EntryId" OnUpload="@HandleOnUpload"/>
+            </div>
+            <div class="col-7">
+                <ul class="mb-3 ul-info">
+                    <li>Двойной клик на загруженный файл откроет его в программе по умолчанию для вашей операционной системы</li>
+                    <li>У файла может быть одна категория и много меток</li>
+                    <li>Задайте категорию сразу нескольким файлам для этого кликните на иконки нужных файлов.</li>
+                    <li>Измените название файла для лучшего поиска</li>
+                </ul>
+            </div>
         </div>
     </div>
-    <hr>
+
     <AppFileList
         EntryId="EntryId"
         WithEdit="@true"/>

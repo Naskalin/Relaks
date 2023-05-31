@@ -7,7 +7,7 @@
 @inject AppDbContext Db;
 
 <div class="mb-3">
-    <label for="@InputId" class="form-label">Выберите файлы для загрузки</label>
+    <label for="@InputId" class="form-label">Выберите или переместите файлы для загрузки</label>
     <div class="input-group">
         <InputFile disabled="@IsLoading" OnChange="@LoadFiles" class="form-control" id="@InputId" multiple/>
         @if (IsLoading)

@@ -11,7 +11,7 @@
 @* <Dump Data="@Store.BodyState"/> *@
 
 <CascadingValue Value="@Store">
-    <div class="row gx-5">
+    <div class="row">
         <div class="col-3">
             @switch (Store.SidebarState)
             {
@@ -30,7 +30,7 @@
                     break;
             }
         </div>
-        <div class="col-9">
+        <div class="col-9 ps-4">
             @switch (Store.BodyState)
             {
                 case AppFileListStore.BodyStateEnum.MassChangeCategory:
