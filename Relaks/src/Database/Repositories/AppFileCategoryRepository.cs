@@ -42,4 +42,9 @@ public static class AppFileCategoryRepository
 
         return result;
     }
+
+    public static IQueryable<BaseFileCategory> FindTouchedCategories(this IQueryable<BaseFileCategory> q, Guid baseFileCategoryId)
+    {
+        return q.Where(x => x.TreePath.Contains(baseFileCategoryId.ToString()));
+    }
 }

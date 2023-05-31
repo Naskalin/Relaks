@@ -146,6 +146,7 @@
         await Db.SaveChangesAsync();
         Store.BodyState = AppFileListStore.BodyStateEnum.Default;
         Store.BodyEditId = null;
+        Store.FindFiles();
         await OnStateHasChanged.InvokeAsync();
     }
 }

@@ -6,6 +6,7 @@
 @using Relaks.Mappers
 
 @inject AppDbContext Db;
+@inject IJSRuntime JsRuntime;
 
 <AppFileSidebarHeader Title="@(Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.AddCategory) ? $"{Resources.Action.Add} категорию" : $"{Resources.Action.Edit} категорию")" 
                       WithBackLink="@true"
@@ -41,6 +42,16 @@
     </div>
 </EditForm>
 
+@if (Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.EditCategory))
+{
+    <div class="text-end">
+        <button type="button" class="btn btn-link text-danger" @onclick="@OnDelete">
+            <i class="las la-trash la-lg"></i>
+            @Resources.Action.Delete
+        </button>
+    </div>
+}
+
 @code {
     
     [CascadingParameter]
@@ -53,6 +64,7 @@
     private async Task GoBack()
     {
         Store.SidebarState = AppFileListStore.SidebarStateEnum.Default;
+        Store.SidebarEditId = null;
         await OnStateHasChanged.InvokeAsync();
     }
 
@@ -107,6 +119,29 @@
             Store.GetCategories();
             await GoBack();
         }
+    }
+    
+    private async Task OnDelete()
+    {
+        if (Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.AddCategory)) return;
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
+        if (!isConfirmed) return;
+        // Ищем связанных детей с этой категорий (id этой категории будет у них в пути)
+        var touchedCategoryIds = Db.BaseFileCategories.FindTouchedCategories(Model.Id).Select(x => x.Id);
+
+        // Очищаем все связанные файлы от таких категорий
+        Db.BaseFiles
+            .Where(x => x.CategoryId.HasValue && touchedCategoryIds.Contains(x.CategoryId.Value))
+            .ToList()
+            .ForEach(x => x.CategoryId = null);
+        
+        // удаляем дерево категорий
+        Db.BaseFileCategories.Remove(Model);
+        await Db.SaveChangesAsync();
+        Store.Req.CategoryId = null;
+        Store.GetCategories();
+        Store.FindFiles();
+        await GoBack();
     }
 
 }
