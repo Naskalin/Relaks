@@ -1,8 +1,9 @@
 ﻿@using Relaks.Models
 @using Relaks.Interfaces
+@using Relaks.Utils
 @using Relaks.Utils.Extensions
 
-<tr @ondblclick="() => OnRowDoubleClicked.InvokeAsync(BaseEntry.Id)" @onclick="() => OnRowClicked.InvokeAsync(BaseEntry.Id)">
+<tr @ondblclick="@(() => OnRowDoubleClicked.InvokeAsync(BaseEntry.Id))" @onclick="@(() => OnRowClicked.InvokeAsync(BaseEntry.Id))">
     <td>
         <Tooltip Title="@Resources.Entity.ResourceManager.GetString(BaseEntry.Discriminator)" Placement="Placement.Right">
             <div style="width: 40px; height: 40px;" class="border rounded-circle d-flex align-items-center justify-content-center">
@@ -11,7 +12,14 @@
         </Tooltip>
     </td>
     <td>
-        <i class="las la-question-circle" style="font-size: 3rem;"></i>
+        @if (!string.IsNullOrEmpty(BaseEntry.Thumbnail))
+        {
+            <img src="@BaseEntry.Thumbnail" width="60" height="60" class="rounded border" alt="...">
+        }
+        else
+        {
+            <CustomAvatar Text="@BaseEntry.Name"/>
+        }
     </td>
     <td>
         <strong>@BaseEntry.Name</strong>
@@ -23,7 +31,7 @@
         }
         @if (FtsSnippet != null)
         {
-            <div class="fts-result"><i class="las la-search la-lg"></i> @((MarkupString) FtsSnippet)</div>   
+            <div class="fts-result"><i class="las la-search la-lg"></i> @((MarkupString) FtsSnippet)</div>
         }
         @if (BaseEntry.DeletedAt != null)
         {
@@ -49,4 +57,13 @@
     
     [Parameter]
     public EventCallback<Guid> OnRowClicked { get; set; }
+
+    // private AvatarHelper.AvatarCustom AvatarCustom { get; set; } = new();
+    //
+    // protected override void OnParametersSet()
+    // {
+    //     if (string.IsNullOrEmpty(BaseEntry.Thumbnail))
+    //     {
+    //         AvatarCustom = AvatarHelper.Create(BaseEntry.Name);
+    //     }
 }

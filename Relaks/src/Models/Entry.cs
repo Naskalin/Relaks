@@ -11,9 +11,7 @@ public abstract class BaseEntry : IEntry, ITimestamped, ISoftDeletedReason
     [StringLength(50)]
     public string Discriminator { get; set; } = null!;
     public string Name { get; set; }
-    // public TypeEnum Type { get; set; }
     public string? Description { get; set; }
-    // public int Reputation { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 
@@ -24,14 +22,9 @@ public abstract class BaseEntry : IEntry, ITimestamped, ISoftDeletedReason
 
     public DateTime? DeletedAt { get; set; }
     public string? DeletedReason { get; set; }
-
-    // public Guid? Avatar { get; set; }
-    //
+    public string? Thumbnail { get; set; }
+    
     public List<BaseEntryInfo> EntryInfos { get; set; } = new();
-    // [JsonIgnore]
-    // public List<EntryFile> Files { get; set; } = new();
-    // [JsonIgnore]
-    // public List<Structure> Structures { get; set; } = new();
 
     protected BaseEntry()
     {
@@ -70,15 +63,3 @@ public class FtsEntry : IFtsEntity
     public string DeletedAt { get; set; } = null!;
     public string Discriminator { get; set; } = null!;
 }
-
-// public class BaseEntryRequest
-// {
-//     public string Discriminator { get; set; } = null!;
-//     public string Name { get; set; } = null!;
-//     public string? Description { get; set; }
-//     public int Reputation { get; set; }
-//     public DateTime? StartAt { get; set; }
-//     public DateTime? EndAt { get; set; }
-//     public DateTime? DeletedAt { get; set; }
-//     public string? DeletedReason { get; set; }
-// }

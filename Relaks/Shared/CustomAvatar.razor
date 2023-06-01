@@ -1,0 +1,55 @@
+﻿@using Fernandezja.ColorHashSharp
+@using Bogus.DataSets
+
+<div class="custom-avatar @Classes" style="@Styles">
+    @Abbr
+</div>
+
+@code {
+
+    [Parameter]
+    public string? Text { get; set; }
+
+    [Parameter]
+    public string? Classes { get; set; }
+
+    private string Styles { get; set; } = null!;
+    private string Abbr { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        Abbr = GetAbbr();
+
+        var arrStyles = new List<string>()
+        {
+            $"background-color: {GetColor()}"
+        };
+
+        // if (string.IsNullOrEmpty(Width)) arrStyles.Add($"width: {Width}");
+        // if (string.IsNullOrEmpty(Height)) arrStyles.Add($"height: {Height}");
+        
+        Styles = string.Join("; ", arrStyles);
+    }
+
+    private string GetColor()
+    {
+        if (string.IsNullOrEmpty(Text))
+        {
+            return "var(--bs-secondary)";
+        }
+
+        var colorHash = new ColorHash();
+
+        return $"#{colorHash.Hex(Text)}";
+    }
+
+    private string GetAbbr()
+    {
+        if (string.IsNullOrEmpty(Text)) return "?";
+        var result = string.Join(string.Empty,
+            Text.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries).Select(s => s[0]));
+        return string.IsNullOrEmpty(result) ? "?" : result;
+    }
+
+}

@@ -25,6 +25,7 @@ public static class EntryMapper
         to.StartAt = from.StartAt;
         to.StartAtWithTime = from.StartAtWithTime;
         to.EndAtWithTime = from.EndAtWithTime;
+        to.Thumbnail = from.Thumbnail;
     }
 
     // public static void MapTo(this EntryFormRequest req, BaseEntry baseEntry)

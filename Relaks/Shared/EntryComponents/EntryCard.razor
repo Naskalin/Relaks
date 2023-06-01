@@ -12,7 +12,14 @@
     }
 
     <div class="card entry-card @(Entry.DeletedAt != null ? "border-danger" : "")">
-        <img src="https://via.placeholder.com/300x300" class="card-img-top" alt="...">
+        @if (!string.IsNullOrEmpty(Entry.Thumbnail))
+        {
+            <img src="@Entry.Thumbnail" class="card-img-top" alt="...">
+        }
+        else
+        {
+            <CustomAvatar Text="@Entry.Name" Classes="card-img-top"/>
+        }
         @if (WithEdit == true)
         {
             <EntryCardContactsButtons EntryId="@EntryId"/>

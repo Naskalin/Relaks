@@ -8,4 +8,5 @@ public interface IEntry
     public DateTime? EndAt { get; set; }
     public bool StartAtWithTime { get; set; }
     public bool EndAtWithTime { get; set; }
+    public string? Thumbnail { get; set; }
 }

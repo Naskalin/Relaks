@@ -70,3 +70,28 @@
     }
   }
 }
+.custom-avatar {
+  border-radius: var(--bs-border-radius);
+  background-color: var(--bs-secondary);
+  color: var(--bs-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: .25rem;
+  word-wrap: break-word!important;
+  word-break: break-word!important;
+  text-align: center;
+  width: 100%;
+  height: auto;
+  font-weight: bold;
+  &::before {
+    content: '';
+    padding-bottom: 100%;
+  }
+  &.card-img-top {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    font-size: 5rem;
+    line-height: 5rem;
+  }
+}

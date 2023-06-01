@@ -12,6 +12,12 @@ window.CropperJsInit = (data) => {
         blockEl.appendChild(imgEl);
     }
     imgEl.setAttribute('src', data['imgSrc']);
+
+    // show preview
+    const previewEl = document.getElementById(`preview-${data['blockId']}`);
+    if (previewEl) {
+        previewEl.style.cssText = 'overflow: hidden;width: 150px; height: 150px;display: block;border: 1px solid var(--bs-border-color);'
+    }
     
     if (window.CropperJs) {
         window.CropperJs.destroy();
@@ -21,6 +27,7 @@ window.CropperJsInit = (data) => {
         viewMode: 1,
         dragMode: 'move',
         aspectRatio: 1,
+        preview: previewEl,
     })
 };
 
@@ -31,9 +38,15 @@ window.CropperJsCrop = () => {
     const result = window.CropperJs.getCroppedCanvas({
         width: 300,
         height: 300,
-        imageSmoothingQuality: 'low',
+        imageSmoothingQuality: 'high',
         
-    }).toDataURL();
+    }).toDataURL('image/webp', .95);
+
+    // hide preview
+    const previewEl = document.getElementById(`preview-${window.CropperJs.container.id}`);
+    if (previewEl) {
+        previewEl.style.display = 'none';
+    }
 
     // удаляем исходное изображение
     const cropperImgEl = document.getElementById('img-' + window.CropperJs.container.id);

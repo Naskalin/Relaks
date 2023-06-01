@@ -1,9 +1,15 @@
 ﻿@using Relaks.Models
 
+@* <Dump Data="@Entry"/> *@
+
 <div class="mb-3 input-lg">
     <label for="" class="form-label form-label-lg">@Resources.Entity.ResourceManager.GetString(string.Format(Entry.Discriminator+"_Name")) *</label>
     <input type="text" class="form-control form-control-lg" @bind="@Entry.Name"/>
     <ValidationMessage For="@(() => Entry.Name)"/>
+</div>
+
+<div class="mb-3">
+    <InputImageCrop Label="Миниатюра" @bind-Value="@Entry.Thumbnail"/>
 </div>
 
 <div class="mb-3">

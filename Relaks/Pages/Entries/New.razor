@@ -18,6 +18,7 @@
             <ChildContent>@Resources.Action.Add @Resources.Entity.BaseEntry.ToLower()</ChildContent>
         </MyTitle>
 
+        @* <Dump Data="@Entry"/> *@
         <EditForm Model="@Entry" OnSubmit="@OnSubmit">
             <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
             <ValidationSummary/>

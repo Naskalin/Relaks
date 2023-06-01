@@ -1,17 +1,36 @@
 ﻿@inject IJSRuntime Js;
 
-<InputFile OnChange="@LoadFiles" accept="image/*" class="form-control"/>
-<div id="@CropperBlockId"></div>
-@if (!string.IsNullOrEmpty(ResultImage))
-{
-    <img src="@ResultImage" alt="" class="rounded"/>
-}
-@if (!string.IsNullOrEmpty(RootImage))
-{
-    <button type="button" class="btn btn-primary" @onclick="@HandleCropImage">crop</button>
-}
+<label for="@($"input-{CropperBlockId}")" class="form-label">@Label</label>
+<InputFile OnChange="@LoadFiles" accept="image/*" class="form-control" id="@($"input-{CropperBlockId}")"/>
+<div class="row @(!string.IsNullOrEmpty(RootImage) ? "mt-3" : "")">
+    <div class="col">
+        <div id="@CropperBlockId"></div>  
+        @if (!string.IsNullOrEmpty(ResultImage))
+        {
+            <img src="@ResultImage" alt="" class="rounded mt-2 border" style="max-width: 150px"/>
+        }
+    </div>
+    <div class="col">
+        <div id="preview-@CropperBlockId" class="rounded"></div>
+        @if (!string.IsNullOrEmpty(RootImage))
+        {
+            <div class="my-2 text-secondary small">
+                <i class="las la-eye la-lg"></i>
+                предпросмотр
+            </div>
+            <button type="button" class="btn btn-primary" @onclick="@HandleCropImage">
+                Выбрать
+            </button>
+        }
+    </div>
+</div>
 
 @code {
+    [Parameter]
+    public string? Value { get; set; }
+    
+    [Parameter]
+    public EventCallback<string?> ValueChanged { get; set; }
 
     private string CropperBlockId { get; set; } = null!;
 
@@ -26,6 +45,7 @@
     {
         base.OnParametersSet();
         CropperBlockId = Guid.NewGuid().ToString();
+        ResultImage = Value;
     }
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
@@ -35,7 +55,7 @@
         using MemoryStream ms = new();
         await imageStream.CopyToAsync(ms);
 
-        RootImage = $"data:image/png;base64,{Convert.ToBase64String(ms.ToArray())}";
+        RootImage = $"data:image/webp;base64,{Convert.ToBase64String(ms.ToArray())}";
         ResultImage = null;
         await Js.InvokeVoidAsync("CropperJsInit", new
         {
@@ -48,6 +68,7 @@
     {
         ResultImage = await Js.InvokeAsync<string>("CropperJsCrop");
         RootImage = null;
+        await ValueChanged.InvokeAsync(ResultImage);
     }
 
 }
