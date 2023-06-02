@@ -31,6 +31,7 @@ public static class EntryFileRepository
     {
         var q = db.BaseFiles
             .Include(x => x.Tags)
+            .Include(x => x.Category)
             .AsQueryable();
         
         if (req.EntryId.HasValue)

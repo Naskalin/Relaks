@@ -47,12 +47,21 @@
                 <i class="las la-search la-lg"></i> @((MarkupString) AppFile.FtsFile.Snippet)
             </div>
         }
+        @if (AppFile.BaseFile.Category != null)
+        {
+            <div class="text-center mt-1 mb-3">
+                <button class="btn btn-sm btn-outline-secondary file-list__category" type="button" @onclick="@(() => HandleClickCategory(AppFile.BaseFile.Category.Id))">
+                    <i class="las la-folder"></i>
+                    @AppFile.BaseFile.Category.Title
+                </button>
+            </div>
+        }
         @if (AppFile.BaseFile.Tags.Any())
         {
-            <div class="d-flex flex-wrap gap-1 my-3 justify-content-center">
+            <div class="d-flex flex-wrap gap-2 my-3 justify-content-center">
                 @foreach (var tag in AppFile.BaseFile.Tags)
                 {
-                    <button class="btn btn-sm btn-outline-secondary py-0 px-1" @onclick="@(() => HandleClickTag(tag.Id))">
+                    <button class="btn btn-sm btn-outline-secondary file-list__tag" type="button" @onclick="@(() => HandleClickTag(tag.Id))">
                         <i class="las la-tag"></i>
                         @tag.Title
                     </button>
@@ -85,12 +94,6 @@
 
     [Parameter]
     public EventCallback OnStateHasChanged { get; set; }
-
-    // [Parameter]
-    // public EventCallback OnClick { get; set; }
-    //
-    // [Parameter]
-    // public EventCallback OnDoubleClick { get; set; }
 
     private bool IsImageTag(string ext) => new List<string>()
     {
@@ -159,15 +162,22 @@
 
     private async Task HandleClickTag(Guid tagId)
     {
-        if (Store.Req.TagIds.Contains(tagId))
-        {
-            Store.Req.TagIds.Remove(tagId);
-        }
-        else
+        if (!Store.Req.TagIds.Contains(tagId))
         {
             Store.Req.TagIds.Add(tagId);
         }
         Store.FindFiles();
         await OnStateHasChanged.InvokeAsync();
     }
+    
+    private async Task HandleClickCategory(Guid categoryId)
+    {
+        if (!Store.Req.CategoryId.Equals(categoryId))
+        {
+            Store.Req.CategoryId = categoryId;
+            Store.FindFiles();
+            await OnStateHasChanged.InvokeAsync();   
+        }
+    }
+    
 }

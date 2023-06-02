@@ -78,4 +78,14 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  &__tag {
+    border-style: dashed;
+    padding: .15rem .4rem;
+    font-size: .8rem;
+  }
+  &__category {
+    padding: .15rem .4rem;
+    font-size: .8rem;
+  }
 }
