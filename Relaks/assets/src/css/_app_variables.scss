@@ -12,6 +12,11 @@ $green:   #18bc9c !default;
 $teal:    #20c997 !default;
 $cyan:    #3498db !default;
 
+// secondary
+$gray-600: #6c757d !default;
+$pagination-active-bg:              $gray-600 !default;
+$pagination-active-border-color:    $gray-600 !default;
+
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/variables-dark";
 @import "bootstrap/scss/maps";

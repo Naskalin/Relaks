@@ -2,24 +2,27 @@
 @using Relaks.Managers
 @using Relaks.Database
 
-<ul class="nav nav-tabs justify-content-center">
-    @foreach (var tab in Enum.GetValues<Tabs>())
-    {
-        <li class="nav-item" @onclick="@(() => SetTab(tab))">
-            <button type="button" class="nav-link @(tab.Equals(CurrentTab) ? "active" : "")">@Resources.SoftDelete.ResourceManager.GetString(tab.ToString())</button>
-        </li>
-    }
-</ul>
+@if (ViewMode.Equals(EntryCard.ViewModeEnum.WithEdit))
+{
+    <ul class="nav nav-tabs justify-content-center">
+        @foreach (var tab in Enum.GetValues<Tabs>())
+        {
+            <li class="nav-item" @onclick="@(() => SetTab(tab))">
+                <button type="button" class="nav-link @(tab.Equals(CurrentTab) ? "active" : "")">@Resources.SoftDelete.ResourceManager.GetString(tab.ToString())</button>
+            </li>
+        }
+    </ul>   
+}
 
 @if (FilteredItems.Any())
 {
     <ul class="list-group list-group-flush mt-2">
         @foreach (var eInfo in FilteredItems)
         {
-            <li class="list-group-item gx-0 px-0 @(eInfo.Id.Equals(EntryInfoId) ? "border border-3 border-warning" : "") d-flex align-items-center justify-content-between"
+            <li class="list-group-item gx-0 px-0 @(eInfo.Id.Equals(EntryInfoId) ? "border-dashed border-2 border-warning" : "") d-flex align-items-center justify-content-between"
                 @key="@eInfo.Id">
                 <EntryInfoContact EntryInfo="@eInfo" EntryInfoId="EntryInfoId"/>
-                @if (WithEdit == true)
+                @if (ViewMode.Equals(EntryCard.ViewModeEnum.WithEdit))
                 {
                     <Tooltip Title="@($"Изменить {Resources.Entity.ResourceManager.GetString(eInfo.Discriminator)?.ToLower()}")" Trigger="hover" Placement="Placement.Right">
                         <NavLink href="@($"/entries/{eInfo.EntryId}/{eInfo.Discriminator}/{eInfo.Id}/edit")" class="btn bg-secondary bg-opacity-10 btn-sm btn-circle">
@@ -29,7 +32,7 @@
                 }
             </li>
         }
-    </ul>   
+    </ul>
 }
 else
 {
@@ -50,8 +53,11 @@ else
     [Parameter]
     public List<BaseEntryInfo> EntryInfos { get; set; } = new();
     
-    [Parameter]
-    public bool? WithEdit { get; set; }
+    // [Parameter]
+    // public bool? WithEdit { get; set; }
+    
+    [CascadingParameter]
+    public EntryCard.ViewModeEnum ViewMode { get; set; }
 
     private Tabs CurrentTab { get; set; }
     private List<BaseEntryInfo> FilteredItems { get; set; } = new();
@@ -67,7 +73,9 @@ else
         switch (tab)
         {
             case Tabs.Active:
-                FilteredItems = q.Where(x => x.DeletedAt is null).ToList();
+                FilteredItems = ViewMode.Equals(EntryCard.ViewModeEnum.Preview) 
+                    ? q.Where(x => x.DeletedAt is null).Where(x => x.IsFavorite).ToList() 
+                    : q.Where(x => x.DeletedAt is null).ToList();
                 break;
             case Tabs.Archival:
                 FilteredItems = q.Where(x => x.DeletedAt is not null).ToList();

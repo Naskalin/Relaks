@@ -95,3 +95,6 @@
     line-height: 5rem;
   }
 }
+.border-dashed {
+  border: var(--bs-border-width) dashed var(--bs-border-color);
+}

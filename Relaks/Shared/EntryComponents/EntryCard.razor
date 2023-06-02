@@ -5,70 +5,74 @@
 @inject AppDbContext Db;
 @inject NavigationManager NavigationManager;
 
-<div style="width: 20rem;">
-    @if (HideSoftDeleted != true)
-    {
-        <SoftDeleteShow SoftDeletedReason="@Entry"/>
-    }
+<CascadingValue Value="@ViewMode">
+    <div style="width: 20rem;">
+        @if (HideSoftDeleted != true)
+        {
+            <SoftDeleteShow SoftDeletedReason="@Entry"/>
+        }
 
-    <div class="card entry-card @(Entry.DeletedAt != null ? "border-danger" : "")">
-        @if (!string.IsNullOrEmpty(Entry.Thumbnail))
-        {
-            <img src="@Entry.Thumbnail" class="card-img-top" alt="...">
-        }
-        else
-        {
-            <CustomAvatar Text="@Entry.Name" Classes="card-img-top"/>
-        }
-        @if (WithEdit == true)
-        {
-            <EntryCardContactsButtons EntryId="@EntryId"/>
-        }
-        <div class="card-body">
-            <h5 class="card-title text-center">@Entry.Name</h5>
-            <div class="row gx-3 align-items-center text-muted mb-3 justify-content-center">
-                <div class="col-auto">
-                    <Tooltip Title="@Resources.Entity.ResourceManager.GetString(Entry.Discriminator)">
-                        <div style="width: 30px; height: 28px;">
+        <div class="card entry-card @(Entry.DeletedAt != null ? "border-danger" : "")">
+            @if (!string.IsNullOrEmpty(Entry.Thumbnail))
+            {
+                <img src="@Entry.Thumbnail" class="card-img-top" alt="...">
+            }
+            else
+            {
+                <CustomAvatar Text="@Entry.Name" Classes="card-img-top"/>
+            }
+            @if (ViewMode.Equals(ViewModeEnum.WithEdit))
+            {
+                <EntryCardContactsButtons EntryId="@EntryId"/>
+            }
+            <div class="card-body">
+                <h5 class="card-title text-center">@Entry.Name</h5>
+                <div class="row gx-3 align-items-center text-muted mb-3 justify-content-center">
+                    <div class="col-auto">
+                        <div style="width: 30px; height: 28px;" title="@Resources.Entity.ResourceManager.GetString(Entry.Discriminator)">
                             <i class="@DataHelper.EntityIcon(Entry.Discriminator)" style="font-size: 1.8rem;"></i>
                         </div>
-                    </Tooltip>
+                    </div>
+                    @* <div class="col-auto"> *@
+                    @*     <div class="d-flex align-items-center gap-1"> *@
+                    @*         <i class="las la-star-half-alt" style="font-size: 1.7rem;"></i> *@
+                    @*         <span style="font-size: 1.2rem;">@Entry.Reputation</span> *@
+                    @*     </div> *@
+                    @* </div> *@
                 </div>
-                @* <div class="col-auto"> *@
-                @*     <div class="d-flex align-items-center gap-1"> *@
-                @*         <i class="las la-star-half-alt" style="font-size: 1.7rem;"></i> *@
-                @*         <span style="font-size: 1.2rem;">@Entry.Reputation</span> *@
-                @*     </div> *@
-                @* </div> *@
+
+                @if (!string.IsNullOrEmpty(Entry.Description))
+                {
+                    <p class="card-text text-center">@Entry.Description</p>
+                }
+
+                <EntryCardContacts EntryInfoId="@EntryInfoId" EntryInfos="@Entry.EntryInfos"/>
+
+                @if (Entry.StartAt != null || Entry.EndAt != null)
+                {
+                    <div class="row mt-2">
+                        <div class="col">
+                            @if (Entry.StartAt != null)
+                            {
+                                <small title="@Resources.Entity.ResourceManager.GetString(string.Format(Entry.Discriminator+"_StartAt"))">
+                                    @Entry.StartAt?.ToString(Entry.StartAtWithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy")
+                                </small>
+                            }
+                        </div>
+                        <div class="col text-end">
+                            @if (Entry.EndAt != null)
+                            {
+                                <small title="@Resources.Entity.ResourceManager.GetString(string.Format(Entry.Discriminator + "_EndAt"))">
+                                    @Entry.EndAt?.ToString(Entry.EndAtWithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy")
+                                </small>
+                            }
+                        </div>
+                    </div>
+                }
             </div>
-
-            @if (!string.IsNullOrEmpty(Entry.Description))
-            {
-                <p class="card-text text-center">@Entry.Description</p>
-            }
-
-            <EntryCardContacts EntryInfoId="@EntryInfoId" EntryInfos="@Entry.EntryInfos" WithEdit="@WithEdit"/>
-
-            @if (Entry.StartAt != null || Entry.EndAt != null)
-            {
-                <div class="row mt-2">
-                    <div class="col">
-                        @if (Entry.StartAt != null)
-                        {
-                            <small>@Entry.StartAt?.ToString(Entry.StartAtWithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy")</small>
-                        }
-                    </div>
-                    <div class="col text-end">
-                        @if (Entry.EndAt != null)
-                        {
-                            <small>@Entry.EndAt?.ToString(Entry.EndAtWithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy")</small>
-                        }
-                    </div>
-                </div>
-            }
         </div>
     </div>
-</div>
+</CascadingValue>
 
 @code {
     
@@ -79,10 +83,16 @@
     public Guid? EntryInfoId { get; set; }
 
     [Parameter]
-    public bool? WithEdit { get; set; }
-    
-    [Parameter]
     public bool? HideSoftDeleted { get; set; }
+    
+    public enum ViewModeEnum
+    {
+        Preview,
+        WithEdit,
+    }
+
+    [Parameter]
+    public ViewModeEnum ViewMode { get; set; }
 
     private BaseEntry Entry { get; set; } = null!;
 

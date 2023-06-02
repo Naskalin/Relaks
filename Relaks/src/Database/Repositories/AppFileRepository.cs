@@ -46,9 +46,18 @@ public static class EntryFileRepository
         {
             q = q.Where(x => x.Discriminator.Equals(req.Discriminator));
         }
-        
-        q = req.CategoryId.HasValue ? q.Where(x => x.CategoryId.Equals(req.CategoryId.Value)) : q.Where(x => x.CategoryId.Equals(null));
-        
+
+        if (req.CategoryId.HasValue)
+        {
+            // если выбрана категория, то выводим все файлы вложенные в дочерние категории при клике на родительскую
+            var touchedCategoryIds = db.BaseFileCategories.FindTouchedCategories(req.CategoryId.Value).Select(x => x.Id);
+            q = q.Where(x => x.CategoryId.HasValue && touchedCategoryIds.Contains(x.CategoryId.Value));
+        }
+        else
+        {
+            q = q.Where(x => x.CategoryId.Equals(null));
+        }
+
         if (req.TagIds.Any())
         {
             q = q.Where(x => x.Tags.Any(t => req.TagIds.Contains(t.Id)));
