@@ -26,8 +26,8 @@ public static class EntryInfoMapper
             case nameof(EiUrl):
                 arr.Add(((EiUrl) eInfo).Url);
                 break;
-            case nameof(EiCustom):
-                foreach (var group in ((EiCustom) eInfo).Custom.Groups)
+            case nameof(EiDataset):
+                foreach (var group in ((EiDataset) eInfo).Dataset.Groups)
                 {
                     arr.Add(group.Title);
                     foreach (var item in group.Items)

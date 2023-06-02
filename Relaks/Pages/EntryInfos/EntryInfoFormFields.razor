@@ -2,11 +2,14 @@
 @using Relaks.Models.Misc
 @using Relaks.Interfaces
 
-<div class="mb-3">
-    <label for="" class="form-label">@Resources.Field.ShortDescription (@Resources.Action.NotRequired)</label>
-    <input type="text" @bind-value="@EntryInfo.Title" class="form-control">
-    <ValidationMessage For="@(() => EntryInfo.Title)"/>
-</div>
+@if (IsWithoutTitle != true)
+{
+    <div class="mb-3">
+        <label for="" class="form-label">@Resources.Field.ShortDescription (@Resources.Action.NotRequired)</label>
+        <input type="text" @bind-value="@EntryInfo.Title" class="form-control">
+        <ValidationMessage For="@(() => EntryInfo.Title)"/>
+    </div>   
+}
 
 <div class="mb-3">
     <div class="form-check form-switch">
@@ -22,5 +25,8 @@
 
     [Parameter]
     public EventCallback<IEntryInfo> EntryInfoChanged { get; set; }
-
+    
+    [Parameter]
+    public bool? IsWithoutTitle { get; set; }
+    
 }

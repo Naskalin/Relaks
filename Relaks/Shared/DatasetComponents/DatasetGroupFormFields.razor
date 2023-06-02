@@ -1,0 +1,77 @@
+﻿@using Relaks.Models
+
+<div class="card bg-secondary bg-opacity-10 mb-3">
+    <div class="card-body">
+        <div class="row align-items-center mb-4 gx-3">
+            @if (GroupsCount > 1)
+            {
+                <div class="col-auto">
+                    <button type="button" class="btn btn-circle btn-outline-secondary">
+                        <i class="las la-random la-lg"></i>
+                    </button>
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-circle btn-outline-secondary">
+                        <i class="las la-eye la-lg"></i>
+                    </button>
+                </div>   
+            }
+            <div class="col">
+                <InputText @bind-Value="@Group.Title" class="form-control form-control-lg" id="@Id" placeholder="Название группы"/>
+            </div>
+            @if (GroupsCount > 1)
+            {
+                <div class="col-auto">
+                    <button type="button" class="btn btn-circle btn-outline-danger" @onclick="@(() => OnDelete.InvokeAsync(Group))">
+                        <i class="las la-times la-lg"></i>
+                    </button>
+                </div>
+            }
+        </div>
+
+        @foreach (var item in Group.Items)
+        {
+            <DatasetItemFormFields
+                Item="@item"
+                ItemsCount="@Group.Items.Count"
+                OnDelete="@OnDeleteItem"
+            />
+        }
+        
+        <div class="mb-3">
+            <button type="button" class="btn btn-secondary btn-sm" @onclick="@OnAdd">
+                <i class="las la-plus-circle la-lg"></i>
+                Добавить строку
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public DatasetGroup Group { get; set; } = null!;
+    
+    [Parameter]
+    public int GroupsCount { get; set; }
+    
+    [Parameter]
+    public EventCallback<DatasetGroup> GroupChanged { get; set; }
+    
+    [Parameter]
+    public EventCallback<DatasetGroup> OnDelete { get; set; }
+
+    private static Guid Id { get; set; } = Guid.NewGuid();
+
+    private async Task OnAdd()
+    {
+        Group.Items.Add(new DatasetItem());
+        await GroupChanged.InvokeAsync();
+    }
+
+    private async Task OnDeleteItem(DatasetItem item)
+    {
+        Group.Items.Remove(item);
+        await GroupChanged.InvokeAsync();
+    }
+}

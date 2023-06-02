@@ -11,7 +11,7 @@ public static partial class DataHelper
     
     public static readonly List<string> EntryInfoDiscriminators = new()
     {
-        nameof(EiPhone), nameof(EiEmail), nameof(EiDate), nameof(EiUrl), nameof(EiCustom)
+        nameof(EiPhone), nameof(EiEmail), nameof(EiDate), nameof(EiUrl), nameof(EiDataset)
     };
     
     public static readonly List<string> EntryInfoContactDiscriminators = new()

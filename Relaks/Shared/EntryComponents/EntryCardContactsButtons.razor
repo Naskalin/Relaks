@@ -9,7 +9,7 @@
     <div class="vr"></div>
     @foreach (var d in DataHelper.EntryInfoContactDiscriminators)
     {
-        <Tooltip Title="@($"Добавить {Resources.Entity.ResourceManager.GetString(d)}")" Trigger="hover">
+        <Tooltip Title="@($"Добавить {Resources.Entity.ResourceManager.GetString(d)?.ToLower()}")" Trigger="hover">
             <NavLink href="@($"/entries/{EntryId}/{d}/new")" class="btn btn-outline-secondary btn-circle">
                 <i class="@DataHelper.EntityIcon(d) la-lg"></i>
             </NavLink>

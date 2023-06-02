@@ -1,11 +1,16 @@
-﻿@using YamlDotNet.Core.Tokens
-@if (!string.IsNullOrEmpty(Label))
+﻿@if (!string.IsNullOrEmpty(Label))
 {
     <label for="@Id" class="form-label">@Label</label>
 }
-<textarea class="form-control" @bind="@Value" @bind:event="oninput" @bind:after="@OnChanged"></textarea>
+<textarea class="form-control" 
+    @bind="@Value"
+    @bind:event="oninput"
+    @bind:after="@OnChanged"
+    style="resize:both;overflow: hidden;"
+    ></textarea>
 
 @code {
+
     [Parameter]
     public string? Value { get; set; }
 
@@ -20,7 +25,9 @@
     private async Task OnChanged()
     {
         if (string.IsNullOrEmpty(Value)) Value = null;
+        // oninput="this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px';"
         await ValueChanged.InvokeAsync(Value);
+        
     }
 
 }

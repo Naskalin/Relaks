@@ -109,14 +109,14 @@
         if (!await Validator.ValidateAsync()) return;
         
         Req.MapTo(BaseFile);
-        UpdateTags();
+        UpdateTags(); 
         await Db.SaveChangesAsync();
         Store.FindFiles();
         Store.BodyState = AppFileListStore.BodyStateEnum.Default;
         Store.BodyEditId = null;
         await OnStateHasChanged.InvokeAsync();
     }
-    
+
     private void UpdateTags()
     {
         var currentTagIds = BaseFile.Tags.Select(x => x.Id).ToList();

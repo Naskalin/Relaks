@@ -8,7 +8,7 @@ public class BaseFileRequestValidator : AbstractValidator<BaseFileRequest>
 {
     public BaseFileRequestValidator()
     {
-        RuleFor(x => x.DisplayName).NotEmpty().Length(2, 255);
+        RuleFor(x => x.DisplayName).NotEmpty().Length(1, 255);
     }
 }
 

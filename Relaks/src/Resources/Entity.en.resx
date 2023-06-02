@@ -71,4 +71,7 @@
     <data name="EPerson_About" xml:space="preserve">
         <value>About man</value>
     </data>
+    <data name="EiDataset" xml:space="preserve">
+        <value>Dataset</value>
+    </data>
 </root>

@@ -14,7 +14,7 @@ public static partial class DataHelper
         {nameof(EiEmail), "las la-envelope"},
         {nameof(EiUrl), "las la-link"},
         {nameof(EiPhone), "las la-phone"},
-        {nameof(EiCustom), "las la-align-left"},
+        {nameof(EiDataset), "las la-align-left"},
     };
     
     public static string EntityIcon(string className)

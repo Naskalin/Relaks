@@ -81,4 +81,7 @@
     <data name="ECompany_About" xml:space="preserve">
         <value>О компании</value>
     </data>
+    <data name="EiDataset" xml:space="preserve">
+        <value>Набор данных</value>
+    </data>
 </root>

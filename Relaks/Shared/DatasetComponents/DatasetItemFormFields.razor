@@ -1,0 +1,38 @@
+﻿@using Relaks.Models
+
+<div class="row align-items-center mb-3 gx-3">
+    @if (ItemsCount > 1)
+    {
+        <div class="col-auto">
+            <button type="button" class="btn btn-circle btn-sm btn-outline-secondary">
+                <i class="las la-random la-lg"></i>
+            </button>
+        </div>   
+    }
+    <div class="col">
+        <InputText @bind-Value="@Item.Key" class="form-control" id="@($"key-{Id}")" placeholder="Ключ"/>
+    </div>
+    <div class="col">
+        <InputText @bind-Value="@Item.Value" class="form-control" id="@($"val-{Id}")" placeholder="Значение"/>
+    </div>
+    @if (ItemsCount > 1)
+    {
+        <div class="col-auto">
+            <button type="button" class="btn btn-circle btn-sm btn-outline-danger" @onclick="@(() => OnDelete.InvokeAsync(Item))">
+                <i class="las la-times la-lg"></i>
+            </button>
+        </div>   
+    }
+</div>
+@code {
+    [Parameter]
+    public DatasetItem Item { get; set; } = null!;
+
+    [Parameter]
+    public int ItemsCount { get; set; }
+    
+    [Parameter]
+    public EventCallback<DatasetItem> OnDelete { get; set; }
+
+    private static Guid Id { get; set; } = Guid.NewGuid();
+}

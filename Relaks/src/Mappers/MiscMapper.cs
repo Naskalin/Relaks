@@ -35,4 +35,9 @@ public static class MiscMapper
         to.Date = from.Date;
         to.WithTime = from.WithTime;
     }
+
+    public static void MapDataset(this IDataset from, IDataset to)
+    {
+        to.Dataset = from.Dataset;
+    }
 }

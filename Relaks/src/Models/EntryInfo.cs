@@ -55,16 +55,50 @@ public class EiUrl : BaseEntryInfo, IUrl
     public string Url { get; set; } = null!;
 }
 
-public class EiCustom : BaseEntryInfo
+public class EiDataset : BaseEntryInfo, IDataset
 {
-    public string CustomValue { get; set; } = null!;
+    public string DatasetValue { get; set; } = null!;
 
     [NotMapped]
-    public CustomInfo Custom
+    public DatasetModel Dataset
     {
-        get => JsonSerializer.Deserialize<CustomInfo>(CustomValue) ?? new CustomInfo();
-        set => CustomValue = JsonSerializer.Serialize(value);
+        get => JsonSerializer.Deserialize<DatasetModel>(DatasetValue) ?? new DatasetModel();
+        set => DatasetValue = JsonSerializer.Serialize(value);
     }
+
+    public EiDataset()
+    {
+        Dataset = new DatasetModel();
+    }
+}
+
+public record DatasetItem
+{
+    public Guid Id { get; set; }
+    public string? Key { get; set; }
+    public string? Value { get; set; }
+
+    public DatasetItem()
+    {
+        Id = Guid.NewGuid();
+    }
+}
+
+public record DatasetGroup
+{
+    public Guid Id { get; set; }
+    public string? Title { get; set; }
+    public List<DatasetItem> Items { get; set; } = new();
+    
+    public DatasetGroup()
+    {
+        Id = Guid.NewGuid();
+    }
+}
+
+public record DatasetModel
+{
+    public List<DatasetGroup> Groups { get; set; } = new();
 }
 
 public class FtsEntryInfo : IFtsEntity
@@ -79,21 +113,4 @@ public class FtsEntryInfo : IFtsEntity
     public Guid EntryId { get; set; }
     public string DeletedAt { get; set; } = null!;
     public string Discriminator { get; set; } = null!;
-}
-
-public record CustomInfoItem
-{
-    public string Key { get; set; } = null!;
-    public string Value { get; set; } = null!;
-}
-
-public record CustomInfoGroup
-{
-    public string Title { get; set; } = null!;
-    public List<CustomInfoItem> Items { get; set; } = new();
-}
-
-public record CustomInfo
-{
-    public List<CustomInfoGroup> Groups { get; set; } = new();
 }

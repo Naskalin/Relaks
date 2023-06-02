@@ -98,3 +98,6 @@
 .border-dashed {
   border: var(--bs-border-width) dashed var(--bs-border-color);
 }
+textarea {
+  resize: none !important;
+}

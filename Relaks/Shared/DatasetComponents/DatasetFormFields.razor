@@ -1,0 +1,71 @@
+﻿@using Relaks.Interfaces
+@using Relaks.Models
+
+<div class="border p-3 mb-3">
+    <p>DatasetFormFields.razor</p>
+    <Dump Data="@Dataset"/>
+</div>
+
+<div class="mb-3">
+    <button type="button" class="btn btn-sm btn-secondary" @onclick="@AddGroupToStart">
+        <i class="las la-plus-circle la-lg me-1"></i>
+         Добавить группу
+    </button>
+</div>
+
+<div class="mb-3">
+    @foreach (var group in Dataset.Groups)
+    {
+        <DatasetGroupFormFields 
+            Group="@group" 
+            GroupChanged="@(() => DatasetChanged.InvokeAsync())"
+            OnDelete="@OnDeleteGroup"
+            GroupsCount="@Dataset.Groups.Count"
+            />
+    }
+</div>
+
+@* <div class="mb-3"> *@
+@*     <button type="button" class="btn btn-sm btn-secondary" @onclick="@AddGroupToEnd"> *@
+@*         <i class="las la-plus-circle la-lg me-1"></i> *@
+@*         Добавить группу *@
+@*     </button> *@
+@* </div> *@
+
+@code {
+
+    [Parameter]
+    public DatasetModel Dataset { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<DatasetModel> DatasetChanged { get; set; }
+
+    private static DatasetGroup CreateNewGroup() => new()
+    {
+        Items = new List<DatasetItem>()
+        {
+            new()
+        }
+    };
+
+    private async Task OnDeleteGroup(DatasetGroup group)
+    {
+        if (Dataset.Groups.Count <= 1) return;
+        Dataset.Groups.Remove(group);
+        await DatasetChanged.InvokeAsync(Dataset);
+    }
+
+    private async Task AddGroupToStart()
+    {
+        Dataset.Groups.Insert(0, CreateNewGroup());
+        await DatasetChanged.InvokeAsync(Dataset);
+    }
+    
+    // private async Task AddGroupToEnd()
+    // {
+    //     System.Console.WriteLine($">>>> groups count before add: {Dataset.Groups.Count}" );
+    //     Dataset.Groups.Add(CreateNewGroup());
+    //     await DatasetChanged.InvokeAsync();
+    //     System.Console.WriteLine($">>>> groups count after add: {Dataset.Groups.Count}" );
+    // }
+}

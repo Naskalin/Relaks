@@ -1,4 +1,6 @@
-﻿namespace Relaks.Interfaces;
+﻿using Relaks.Models;
+
+namespace Relaks.Interfaces;
 
 public interface IEntryInfo
 {
@@ -26,4 +28,9 @@ public interface IDate
 public interface IUrl
 {
     public string Url { get; set; }
+}
+
+public interface IDataset
+{
+    public DatasetModel Dataset { get; set; }
 }
