@@ -19,7 +19,7 @@ public sealed class AppDbContext : DbContext
     public DbSet<EiEmail> EiEmails { get; set; } = null!;
     public DbSet<EiDate> EiDates { get; set; } = null!;
     public DbSet<EiUrl> EiUrls { get; set; } = null!;
-    public DbSet<EiCustom> EiCustoms { get; set; } = null!;
+    public DbSet<EiDataset> EiDatasets { get; set; } = null!;
 
     public DbSet<BaseFile> BaseFiles { get; set; } = null!;
     public DbSet<EntryFile> EntryFiles { get; set; } = null!;
