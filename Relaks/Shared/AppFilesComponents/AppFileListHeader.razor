@@ -114,9 +114,16 @@
 
     protected override void OnParametersSet()
     {
-            CurrentCategoryTitle = Store.Req.CategoryId.HasValue
-            ? CurrentCategoryTitle = Store.FlatCategories.First(x => x.Id.Equals(Store.Req.CategoryId.Value)).Title
-            : "Без категории";
+        var title = "Все файлы";
+        if (Store.Req.CategoryId.HasValue)
+        {
+            title = Store.FlatCategories.First(x => x.Id.Equals(Store.Req.CategoryId.Value)).Title;
+        } else if (Store.Req.IsWithoutCategory)
+        {
+            title = "Без категории";
+        }
+
+        CurrentCategoryTitle = title;
     }
 
 }

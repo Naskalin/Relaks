@@ -10,6 +10,7 @@ public class AppFileFindRequest : IOrderable
 {
     public string? Search { get; set; }
     public Guid? CategoryId { get; set; }
+    public bool IsWithoutCategory { get; set; }
     public Guid? EntryId { get; set; }
     public string? Discriminator { get; set; }
     public List<Guid> TagIds { get; set; } = new();
@@ -47,14 +48,14 @@ public static class EntryFileRepository
         {
             q = q.Where(x => x.Discriminator.Equals(req.Discriminator));
         }
-
+        
         if (req.CategoryId.HasValue)
         {
             // если выбрана категория, то выводим все файлы вложенные в дочерние категории при клике на родительскую
             var touchedCategoryIds = db.BaseFileCategories.FindTouchedCategories(req.CategoryId.Value).Select(x => x.Id);
             q = q.Where(x => x.CategoryId.HasValue && touchedCategoryIds.Contains(x.CategoryId.Value));
         }
-        else
+        else if (req.IsWithoutCategory)
         {
             q = q.Where(x => x.CategoryId.Equals(null));
         }

@@ -1,7 +1,4 @@
-﻿using BootstrapBlazor.Components;
-using Microsoft.EntityFrameworkCore;
-using Relaks.Interfaces;
-using Relaks.Models;
+﻿using Relaks.Models;
 
 namespace Relaks.Database.Repositories;
 
@@ -10,13 +7,6 @@ public static class AppFileCategoryRepository
     public static List<BaseFileCategory> ToTree(this IQueryable<BaseFileCategory> q)
     {
         return q.ToBaseTree();
-        // var all = q
-        //     .Include(x => x.Children)
-        //     .AsEnumerable()
-        //     .OrderBy(x => x.Title, StringComparer.OrdinalIgnoreCase)
-        //     .ToList();
-        //
-        // return all.Where(c => c.ParentId.Equals(null)).ToList();
     }
 
     public static List<(string Title, Guid Value, int Level)> ToTreeSelect(this List<BaseFileCategory> tree,
