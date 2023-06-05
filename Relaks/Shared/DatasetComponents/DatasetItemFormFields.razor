@@ -10,10 +10,12 @@
         </div>   
     }
     <div class="col">
-        <InputText @bind-Value="@Item.Key" class="form-control" id="@($"key-{Id}")" placeholder="Ключ"/>
+        <InputText @bind-Value="@Item.Key" class="form-control" placeholder="Ключ"/>
+        <ValidationMessage For="@(() => Item.Key)"/>
     </div>
     <div class="col">
-        <InputText @bind-Value="@Item.Value" class="form-control" id="@($"val-{Id}")" placeholder="Значение"/>
+        <InputText @bind-Value="@Item.Value" class="form-control" placeholder="Значение"/>
+        <ValidationMessage For="@(() => Item.Value)"/>
     </div>
     @if (ItemsCount > 1)
     {
@@ -33,6 +35,4 @@
     
     [Parameter]
     public EventCallback<DatasetItem> OnDelete { get; set; }
-
-    private static Guid Id { get; set; } = Guid.NewGuid();
 }

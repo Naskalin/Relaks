@@ -16,12 +16,13 @@
 <div class="mb-3">
     @foreach (var group in Dataset.Groups)
     {
-        <DatasetGroupFormFields 
-            Group="@group" 
-            GroupChanged="@(() => DatasetChanged.InvokeAsync())"
+        <DatasetGroupFormFields
+            @key="@group.Id"
+            Group="@group"
+            GroupChanged="@(() => DatasetChanged.InvokeAsync(Dataset))"
             OnDelete="@OnDeleteGroup"
             GroupsCount="@Dataset.Groups.Count"
-            />
+        />
     }
 </div>
 

@@ -8,6 +8,7 @@
 @inject IJSRuntime JsRuntime;
 @inject NavigationManager NavigationManager;
 @inject AppDbContext Db;
+@implements Relaks.Interfaces.IDataset;
 
 <EntryProfileLayout EntryId="@EntryId">
     <HalfPage>
@@ -19,15 +20,16 @@
             </BeforeTitle>
             <ChildContent>@(EntryInfoId.HasValue ? Resources.Action.Edit : Resources.Action.Add): @Resources.Entity.ResourceManager.GetString(nameof(EiDataset))</ChildContent>
         </MyTitle>
-        
+
         <div class="border p-3 mb-3">
             <p>EiDatasetForm.razor</p>
+            <Dump Data="@Dataset"/>
             <Dump Data="@Model.Title"/>
             <Dump Data="@Model.IsFavorite"/>
-            <Dump Data="@Model.Dataset"/>
-            <Dump Data="@Model.DatasetValue"/>
+            @* <Dump Data="@Model.Dataset"/> *@
+            @* <Dump Data="@Model.DatasetValue"/> *@
         </div>
-        
+
         <EditForm Model="@Model" OnSubmit="@OnSubmit">
             <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
             <ValidationSummary/>
@@ -36,12 +38,12 @@
                 <label for="" class="form-label">Название набора данных *</label>
                 <input type="text" @bind-value="@Model.Title" class="form-control">
                 <ValidationMessage For="@(() => Model.Title)"/>
-            </div>   
-            
-            <div class="mb-3">
-                <DatasetFormFields Dataset="@Model.Dataset"/>
             </div>
-            
+
+            <div class="mb-3">
+                <DatasetFormFields @bind-Dataset="@Dataset"/>
+            </div>
+
             <EntryInfoFormFields EntryInfo="@Model" IsWithoutTitle="@true"/>
             @if (EntryInfoId.HasValue)
             {
@@ -55,16 +57,16 @@
                 </button>
             </div>
         </EditForm>
-        
+
         @if (EntryInfoId.HasValue && Model.DeletedAt != null)
         {
             <div class="text-end">
-                
+
                 <button type="button" class="btn btn-link text-danger" @onclick="@OnDelete">
                     <i class="las la-trash la-lg"></i>
                     @Resources.Action.Delete
                 </button>
-            </div>   
+            </div>
         }
     </HalfPage>
 </EntryProfileLayout>
@@ -78,55 +80,23 @@
     public Guid? EntryInfoId { get; set; }
 
     private EiDataset Model { get; set; } = null!;
+    public DatasetModel Dataset { get; set; } = null!;
 
     protected override void OnParametersSet()
     {
-        Model = EntryInfoId.HasValue ? Db.EiDatasets.First(x => x.Id.Equals(EntryInfoId.Value)) : new EiDataset()
+        if (EntryInfoId.HasValue)
         {
-            Dataset = new DatasetModel()
+            Model = Db.EiDatasets.First(x => x.Id.Equals(EntryInfoId.Value));
+        }
+        else
+        {
+            Model = new()
             {
-                Groups = new List<DatasetGroup>()
-                {
-                    // new()
-                    // {
-                    //     Items = new List<DatasetItem>()
-                    //     {
-                    //         new()
-                    //     }
-                    // }
-                    new()
-                    {
-                        Title = "First",
-                        Items = new List<DatasetItem>()
-                        {
-                            new()
-                            {
-                                Key = "First key 1"
-                            },
-                            new()
-                            {
-                                Key = "First key 2"
-                            }
-                        }
-                    },
-                    new()
-                    {
-                        Title = "Second",
-                        Items = new List<DatasetItem>()
-                        {
-                            new()
-                            {
-                                Key = "Second key 1"
-                            },
-                            new()
-                            {
-                                Key = "Second key 2"
-                            }
-                        }
-                    }
-                }
-            }
-        };
+                Dataset = new DatasetModel() {Groups = new() {new() {Items = new() {new()}}}}
+            };
+        }
+
+        Dataset = Model.Dataset;
     }
 
     private FluentValidationValidator Validator { get; set; } = null!;
@@ -143,21 +113,18 @@
 
     private void OnSubmit()
     {
-        System.Console.WriteLine(Model.DatasetValue);
-        System.Console.WriteLine($">>>> OnSubmit groups count {Model.Dataset.Groups.Count}");
-        // if (!Validator.Validate()) return;
-        //
-        // Model.MapEntryInfo(Model);
-        // Model.MapSoftDeleted(Model);
-        // Model.MapDataset(Model);
-        //
-        // if (!EntryInfoId.HasValue)
-        // {
-        //     Model.EntryId = EntryId;
-        //     Db.EiDatasets.Add(Model);   
-        // }
-        //
-        // Db.SaveChanges();
-        // NavigationManager.NavigateTo($"/entries/{EntryId}/info");
+        Model.Dataset = Dataset;
+        if (!Validator.Validate()) return;
+        Model.MapEntryInfo(Model);
+        Model.MapSoftDeleted(Model);
+    
+        if (!EntryInfoId.HasValue)
+        {
+            Model.EntryId = EntryId;
+            Db.EiDatasets.Add(Model);   
+        }
+    
+        Db.SaveChanges();
+        NavigationManager.NavigateTo($"/entries/{EntryId}/info");
     }
 }

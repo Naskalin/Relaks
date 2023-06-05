@@ -21,12 +21,22 @@ public class DatasetModelValidator : AbstractValidator<DatasetModel>
                 });
                 group.RuleForEach(x => x.Items).ChildRules(item =>
                 {
-                    item.RuleFor(x => x).Must(x => string.IsNullOrEmpty(x.Key) || string.IsNullOrEmpty(x.Value));
-                    item.When(x => string.IsNullOrEmpty(x.Key), () =>
+                    item.RuleFor(x => x.Key).Must((x, _) => !string.IsNullOrEmpty(x.Value) || !string.IsNullOrEmpty(x.Key))
+                        .WithMessage("Ключ или значение должны быть заполнены");
+                    // item.When(x => string.IsNullOrEmpty(x.Key), () =>
+                    // {
+                    //     item.RuleFor(x => x.Value).NotEmpty().WithMessage("Ключ или значение должны быть заполнены");
+                    // }).Otherwise(() =>
+                    // {
+                    //
+                    // });
+               
+                    
+                    item.When(x => !string.IsNullOrEmpty(x.Key), () =>
                     {
                         item.RuleFor(x => x.Key).MaximumLength(255);
                     });
-                    item.When(x => string.IsNullOrEmpty(x.Value), () =>
+                    item.When(x => !string.IsNullOrEmpty(x.Value), () =>
                     {
                         item.RuleFor(x => x.Value).MaximumLength(1000);
                     });

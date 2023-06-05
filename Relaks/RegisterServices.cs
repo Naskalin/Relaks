@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Relaks.Interfaces;
 using Relaks.Managers;
 using Relaks.Models;
+using Relaks.Validators;
 using Relaks.Validators.AppFileValidators;
 using Relaks.Validators.EntryInfoValidators;
 using Relaks.Validators.EntryValidators;
@@ -33,6 +34,7 @@ public static class RegisterServices
         services.AddScoped<IValidator<EiUrl>, EiUrlValidator>();
         services.AddScoped<IValidator<EiEmail>, EiEmailValidator>();
         services.AddScoped<IValidator<EiDataset>, EiDatasetValidator>();
+        services.AddScoped<IValidator<DatasetModel>, DatasetModelValidator>();
 
         services.AddScoped<IValidator<EntryFileTag>, EntryFileTagValidator>();
         services.AddScoped<IValidator<EntryFileCategory>, EntryFileCategoryValidator>();

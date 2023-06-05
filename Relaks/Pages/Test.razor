@@ -1,18 +1,81 @@
 ﻿@page "/test"
 @using Relaks.Database
 @using Relaks.Models
+@using System.Text.Json
+
 
 @inject AppDbContext Db;
+@implements Relaks.Interfaces.IDataset
+@inject IJSRuntime JsRuntime;
 
-<InputImageCrop />
+<hr>
+<ul id="js-sortable">
+	<li>item 1</li>
+	<li>item 2</li>
+	<li>item 3</li>
+</ul>
+<hr>
+
+@* <EditForm Model="@Dataset" OnSubmit="@OnSubmit"> *@
+@*     <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/> *@
+@*     <ValidationSummary/> *@
+@*     <div class="border p-3 mb-3"> *@
+@*         <p>Test.razor</p> *@
+@*         <Dump Data="@Dataset"/> *@
+@*     </div> *@
+@*     <DatasetFormFields @bind-Dataset="@Dataset"/> *@
+@*     <div class="mb-3"> *@
+@*         <button type="submit" class="btn btn-primary"> *@
+@*             submit *@
+@*         </button> *@
+@*     </div> *@
+@* </EditForm> *@
+
 
 @code {
 
-    private BaseFile? BaseFile { get; set; } = null!;
-    
+    private FluentValidationValidator Validator { get; set; } = null!;
     protected override void OnInitialized()
     {
         // Db.BaseFiles.FirstOrDefault(x => x.);
+    }
+
+    public DatasetModel Dataset { get; set; } = new() {Groups = new()
+    {
+        new() {Title = "Group One", Items = new() {new() {Key = "Key One - 1"}, new() {Key = "Key One - 2"}}},
+        new() {Title = "Group Two", Items = new() {new() {Key = "Key Two - 1"}, new() {Key = "Key Two - 2"}}},
+    }};
+
+    private void OnSubmit()
+    {
+        if (!Validator.Validate()) return;
+        System.Console.WriteLine(">>> ok");
+    }
+    
+    object _options = new
+    {
+        animation = 150,
+        ghostClass = "blue-background-class"
+    };
+    private List<string> items = new List<string>
+    {
+        "Item 1-1",
+        "Item 1-2",
+        "Item 1-3",
+    };
+
+    // protected override async Task ()
+    // {
+    //  
+    // }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender == false) return;
+        await JsRuntime.InvokeVoidAsync("SortableJsInit", new
+        {
+            elementId = "js-sortable",
+        });
     }
 
 }

@@ -17,7 +17,8 @@
                 </div>   
             }
             <div class="col">
-                <InputText @bind-Value="@Group.Title" class="form-control form-control-lg" id="@Id" placeholder="Название группы"/>
+                <InputText @bind-Value="@Group.Title" class="form-control form-control-lg" placeholder="Название группы"/>
+                <ValidationMessage For="@(() => Group.Title)"/>
             </div>
             @if (GroupsCount > 1)
             {
@@ -28,10 +29,11 @@
                 </div>
             }
         </div>
-
+                
         @foreach (var item in Group.Items)
         {
             <DatasetItemFormFields
+                @key="@item.Id"
                 Item="@item"
                 ItemsCount="@Group.Items.Count"
                 OnDelete="@OnDeleteItem"
@@ -53,25 +55,25 @@
     public DatasetGroup Group { get; set; } = null!;
     
     [Parameter]
-    public int GroupsCount { get; set; }
+    public EventCallback GroupChanged { get; set; }
+
+    private async Task OnGroupChanged() => await GroupChanged.InvokeAsync();
     
     [Parameter]
-    public EventCallback<DatasetGroup> GroupChanged { get; set; }
-    
+    public int GroupsCount { get; set; }
+
     [Parameter]
     public EventCallback<DatasetGroup> OnDelete { get; set; }
-
-    private static Guid Id { get; set; } = Guid.NewGuid();
 
     private async Task OnAdd()
     {
         Group.Items.Add(new DatasetItem());
-        await GroupChanged.InvokeAsync();
+        await OnGroupChanged();
     }
 
     private async Task OnDeleteItem(DatasetItem item)
     {
         Group.Items.Remove(item);
-        await GroupChanged.InvokeAsync();
+        await OnGroupChanged();
     }
 }
