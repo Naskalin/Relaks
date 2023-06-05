@@ -8,7 +8,6 @@
 @inject IJSRuntime JsRuntime;
 @inject NavigationManager NavigationManager;
 @inject AppDbContext Db;
-@implements Relaks.Interfaces.IDataset;
 
 <EntryProfileLayout EntryId="@EntryId">
     <HalfPage>
@@ -21,33 +20,33 @@
             <ChildContent>@(EntryInfoId.HasValue ? Resources.Action.Edit : Resources.Action.Add): @Resources.Entity.ResourceManager.GetString(nameof(EiDataset))</ChildContent>
         </MyTitle>
 
-        <div class="border p-3 mb-3">
-            <p>EiDatasetForm.razor</p>
-            <Dump Data="@Dataset"/>
-            <Dump Data="@Model.Title"/>
-            <Dump Data="@Model.IsFavorite"/>
-            @* <Dump Data="@Model.Dataset"/> *@
-            @* <Dump Data="@Model.DatasetValue"/> *@
-        </div>
+        @* <div class="border p-3 mb-3"> *@
+        @*     <p>EiDatasetForm.razor</p> *@
+        @*     <Dump Data="@Req"/> *@
+        @*     $1$ <Dump Data="@Model.Title"/> #1# *@
+        @*     $1$ <Dump Data="@Model.IsFavorite"/> #1# *@
+        @*     $1$ <Dump Data="@Model.Dataset"/> #1# *@
+        @*     $1$ <Dump Data="@Model.DatasetValue"/> #1# *@
+        @* </div> *@
 
-        <EditForm Model="@Model" OnSubmit="@OnSubmit">
+        <EditForm Model="@Req" OnSubmit="@OnSubmit">
             <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
             <ValidationSummary/>
 
             <div class="mb-3">
                 <label for="" class="form-label">Название набора данных *</label>
-                <input type="text" @bind-value="@Model.Title" class="form-control">
-                <ValidationMessage For="@(() => Model.Title)"/>
+                <input type="text" @bind-value="@Req.Title" class="form-control">
+                <ValidationMessage For="@(() => Req.Title)"/>
             </div>
 
             <div class="mb-3">
-                <DatasetFormFields @bind-Dataset="@Dataset"/>
+                <DatasetFormFields @bind-Dataset="@Req.Dataset"/>
             </div>
 
-            <EntryInfoFormFields EntryInfo="@Model" IsWithoutTitle="@true"/>
+            <EntryInfoFormFields EntryInfo="@Req" IsWithoutTitle="@true"/>
             @if (EntryInfoId.HasValue)
             {
-                <SoftDeletedReasonField SoftDeletedReason="@Model"/>
+                <SoftDeletedReasonField SoftDeletedReason="@Req"/>
             }
 
             <div class="mb-3">
@@ -58,7 +57,7 @@
             </div>
         </EditForm>
 
-        @if (EntryInfoId.HasValue && Model.DeletedAt != null)
+        @if (EntryInfoId.HasValue && Req.DeletedAt != null)
         {
             <div class="text-end">
 
@@ -78,51 +77,53 @@
 
     [Parameter]
     public Guid? EntryInfoId { get; set; }
-
-    private EiDataset Model { get; set; } = null!;
-    public DatasetModel Dataset { get; set; } = null!;
+    
+    private EiDataset? EiDataset { get; set; }
+    private EiDatasetRequest Req { get; set; } = null!;
 
     protected override void OnParametersSet()
     {
         if (EntryInfoId.HasValue)
         {
-            Model = Db.EiDatasets.First(x => x.Id.Equals(EntryInfoId.Value));
+            EiDataset = Db.EiDatasets.First(x => x.Id.Equals(EntryInfoId.Value));
+            Req = new();
+            EiDataset.MapTo(Req);
         }
         else
         {
-            Model = new()
+            Req = new()
             {
                 Dataset = new DatasetModel() {Groups = new() {new() {Items = new() {new()}}}}
             };
         }
-
-        Dataset = Model.Dataset;
     }
 
     private FluentValidationValidator Validator { get; set; } = null!;
 
     private async Task OnDelete()
     {
-        if (!EntryInfoId.HasValue) return;
+        if (EiDataset == null) return;
         var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
         if (!isConfirmed) return;
-        Db.Remove(Model);
+        Db.EiDatasets.Remove(EiDataset);
         await Db.SaveChangesAsync();
         NavigationManager.NavigateTo($"/entries/{EntryId}/info");
     }
 
     private void OnSubmit()
     {
-        Model.Dataset = Dataset;
         if (!Validator.Validate()) return;
-        Model.MapEntryInfo(Model);
-        Model.MapSoftDeleted(Model);
-    
-        if (!EntryInfoId.HasValue)
+        
+        if (EiDataset == null)
         {
-            Model.EntryId = EntryId;
-            Db.EiDatasets.Add(Model);   
+            EiDataset = new EiDataset()
+            {
+                EntryId = EntryId,
+            };
+            Db.EiDatasets.Add(EiDataset);
         }
+        
+        Req.MapTo(EiDataset);
     
         Db.SaveChanges();
         NavigationManager.NavigateTo($"/entries/{EntryId}/info");

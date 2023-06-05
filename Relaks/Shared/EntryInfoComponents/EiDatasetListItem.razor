@@ -1,0 +1,59 @@
+﻿@using Relaks.Models
+
+<div class="card">
+    <div class="card-header bg-secondary bg-opacity-10">
+        <div class="row align-items-center">
+            <div class="col">
+                <strong class="h5">@EiDataset.Title</strong>
+            </div>
+            <div class="col-auto">
+                <a href="@($"/entries/{EiDataset.EntryId}/eidataset/{EiDataset.Id}/edit")" class="btn btn-outline-secondary btn-circle">
+                    <i class="las la-edit la-lg"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        @foreach (var group in EiDataset.Dataset.Groups)
+        {
+            <table class="table table-bordered">
+                @if (!string.IsNullOrEmpty(group.Title))
+                {
+                    <thead>
+                    <tr>
+                        <td colspan="100%" class="table-light">
+                            <b>@group.Title</b>
+                        </td>
+                    </tr>
+                    </thead>   
+                }
+                <tbody>
+                @foreach (var item in group.Items)
+                {
+                    <tr>
+                        @if (!string.IsNullOrEmpty(item.Key))
+                        {
+                            <td colspan="@(string.IsNullOrEmpty(item.Value) ? "100%" : "2")">
+                                @item.Key
+                            </td>
+                        }
+                        @if (!string.IsNullOrEmpty(item.Value))
+                        {
+                            <td colspan="@(string.IsNullOrEmpty(item.Key) ? "100%" : "2")">@item.Key
+                                @item.Value
+                            </td>
+                        }
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+                    
+  
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EiDataset EiDataset { get; set; } = null!;
+}

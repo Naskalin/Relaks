@@ -1,24 +1,48 @@
 ﻿@page "/entries/{entryId:guid}/info"
 @using Relaks.Models
 @using Relaks.Database
-@using Relaks.Database.Repositories
 
 @inject AppDbContext Db;
 
 <EntryProfileLayout EntryId="@EntryId">
     <EntryProfileTabs EntryId="@EntryId"/>
-    <MyTitle>@Resources.Entity.ResourceManager.GetString($"{BaseEntry.Discriminator}_About")</MyTitle>
+    <MyTitle>
+        <ChildContent>@Resources.Entity.ResourceManager.GetString($"{Discriminator}_About")</ChildContent>
+        <EndTitle>
+            <a href="@($"/entries/{EntryId}/eidataset/new")" class="btn btn-primary">
+                <i class="las la-plus-circle la-lg me-1"></i>
+                @Resources.Action.Add
+            </a>
+        </EndTitle>
+    </MyTitle>
+    
+     @foreach (var eiDataset in EiDatasets)
+     {
+         <EiDatasetListItem EiDataset="@eiDataset"/>
+     }
 </EntryProfileLayout>
 
 @code {
     [Parameter]
     public Guid EntryId { get; set; }
+    
+    private string Discriminator { get; set; } = null!;
 
-    private BaseEntry BaseEntry { get; set; } = null!;
+    private List<EiDataset> EiDatasets { get; set; } = new();
 
     protected override void OnParametersSet()
     {
-        BaseEntry = Db.BaseEntries.FindByIdQuery(EntryId).First();
+        Discriminator = Db.BaseEntries
+            .Where(x => x.Id.Equals(EntryId))
+            .Select(x => x.Discriminator)
+            .First()
+            .ToString();
+
+        EiDatasets = Db.EiDatasets
+            .Where(x => x.EntryId.Equals(EntryId))
+            .OrderByDescending(x => x.IsFavorite)
+            .ThenByDescending(x => x.UpdatedAt)
+            .ToList();
     }
 
 }

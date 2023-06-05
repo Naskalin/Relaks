@@ -33,7 +33,7 @@ public static class RegisterServices
         services.AddScoped<IValidator<EiPhone>, EiPhoneValidator>();
         services.AddScoped<IValidator<EiUrl>, EiUrlValidator>();
         services.AddScoped<IValidator<EiEmail>, EiEmailValidator>();
-        services.AddScoped<IValidator<EiDataset>, EiDatasetValidator>();
+        services.AddScoped<IValidator<EiDatasetRequest>, EiDatasetRequestValidator>();
         services.AddScoped<IValidator<DatasetModel>, DatasetModelValidator>();
 
         services.AddScoped<IValidator<EntryFileTag>, EntryFileTagValidator>();

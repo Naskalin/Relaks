@@ -66,16 +66,15 @@ else
     private void SetTab(Tabs tab)
     {
         CurrentTab = tab;
-        var q = EntryInfos.Where(x => DataHelper.EntryInfoContactDiscriminators.Contains(x.Discriminator))
+        var q = EntryInfos
+            .Where(x => DataHelper.EntryInfoContactDiscriminators.Contains(x.Discriminator))
             .OrderByDescending(x => x.IsFavorite)
             .ThenByDescending(x => x.UpdatedAt)
         ;
         switch (tab)
         {
             case Tabs.Active:
-                FilteredItems = ViewMode.Equals(EntryCard.ViewModeEnum.Preview) 
-                    ? q.Where(x => x.DeletedAt is null).Where(x => x.IsFavorite).ToList() 
-                    : q.Where(x => x.DeletedAt is null).ToList();
+                FilteredItems = q.Where(x => x.DeletedAt is null).ToList(); 
                 break;
             case Tabs.Archival:
                 FilteredItems = q.Where(x => x.DeletedAt is not null).ToList();

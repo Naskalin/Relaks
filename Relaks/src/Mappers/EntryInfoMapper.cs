@@ -43,4 +43,20 @@ public static class EntryInfoMapper
 
         return string.Join(" ", arr.Where(x => !string.IsNullOrEmpty(x)));
     }
+
+    public static void MapTo(this EiDatasetRequest req, EiDataset model)
+    {
+        req.MapDataset(model);
+        req.MapSoftDeleted(model);
+        model.Title = req.Title;
+        model.IsFavorite = req.IsFavorite;
+    }
+    
+    public static void MapTo(this EiDataset model, EiDatasetRequest req)
+    {
+        model.MapDataset(req);
+        model.MapSoftDeleted(req);
+        req.Title = model.Title;
+        req.IsFavorite = model.IsFavorite;
+    }
 }

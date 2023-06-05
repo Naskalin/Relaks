@@ -5,7 +5,6 @@
 
 <div class="card bg-secondary bg-opacity-10 mb-3" data-id="@Group.Id">
     <div class="card-body">
-        @Group.Id
         <div class="row align-items-center mb-4 gx-3">
             @if (GroupsCount > 1)
             {
@@ -15,10 +14,10 @@
                     </button>
                 </div>
                 <div class="col-auto">
-                    <button type="button" class="btn btn-circle btn-outline-secondary">
-                        <i class="las la-eye la-lg"></i>
+                    <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@(() => IsHide = !IsHide)">
+                        <i class="las la-lg @(IsHide ? "la-low-vision" : "la-eye")"></i>
                     </button>
-                </div>   
+                </div>
             }
             <div class="col">
                 <InputText @bind-Value="@Group.Title" class="form-control form-control-lg" placeholder="Название группы"/>
@@ -35,22 +34,24 @@
         </div>
         
         <div id="@($"{Group.Id}-items")">
-            @foreach (var item in Group.Items)
+            @if (!IsHide)
             {
-                <DatasetItemFormFields
-                    @key="@item.Id"
-                    Item="@item"
-                    ItemsCount="@Group.Items.Count"
-                    OnDelete="@OnDeleteItem"
-                />
+                @foreach (var item in Group.Items)
+                {
+                    <DatasetItemFormFields
+                        @key="@item.Id"
+                        Item="@item"
+                        ItemsCount="@Group.Items.Count"
+                        OnDelete="@OnDeleteItem"/>
+                }
+                
+                <div class="mb-3">
+                    <button type="button" class="btn btn-secondary btn-sm" @onclick="@OnAdd">
+                        <i class="las la-plus-circle la-lg"></i>
+                        Добавить строку
+                    </button>
+                </div>
             }
-        </div>
-
-        <div class="mb-3">
-            <button type="button" class="btn btn-secondary btn-sm" @onclick="@OnAdd">
-                <i class="las la-plus-circle la-lg"></i>
-                Добавить строку
-            </button>
         </div>
     </div>
 </div>
@@ -59,7 +60,7 @@
 
     [Parameter]
     public DatasetGroup Group { get; set; } = null!;
-    
+
     [Parameter]
     public EventCallback GroupChanged { get; set; }
 
@@ -68,23 +69,25 @@
 
     [Parameter]
     public EventCallback<DatasetGroup> OnDelete { get; set; }
-    
+
+    private bool IsHide { get; set; }
+
     private async Task OnGroupChanged() => await GroupChanged.InvokeAsync();
-    
+
     private DotNetObjectReference<DatasetGroupFormFields>? ObjectReference { get; set; }
-    
+
     protected override void OnInitialized()
     {
         ObjectReference = DotNetObjectReference.Create(this);
     }
-    
+
     [JSInvokable]
     public async Task OnSortItems(List<Guid> itemsIds)
     {
         Group.Items = Group.Items.OrderBy(i => itemsIds.IndexOf(i.Id)).ToList();
         await OnGroupChanged();
     }
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender == false) return;

@@ -25,13 +25,13 @@ public class EntryFindResult
 
 public static class EntryRepository
 {
-    public static IQueryable<BaseEntry> FindByIdQuery(this IQueryable<BaseEntry> q, Guid entryId)
-    {
-        return q
-                .Where(x => x.Id.Equals(entryId))
-                .Include(x => x.EntryInfos)
-            ;
-    }
+    // public static IQueryable<BaseEntry> FindByIdQuery(this IQueryable<BaseEntry> q, Guid entryId)
+    // {
+    //     return q
+    //             .Where(x => x.Id.Equals(entryId))
+    //             .Include(x => x.EntryInfos)
+    //         ;
+    // }
 
     public static PaginatableResult<EntryFindResult> FindEntries(this AppDbContext db, EntryFindRequest req)
     {

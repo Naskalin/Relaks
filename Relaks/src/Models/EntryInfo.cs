@@ -72,6 +72,15 @@ public class EiDataset : BaseEntryInfo, IDataset
     }
 }
 
+public class EiDatasetRequest : IEntryInfo, IDataset, ISoftDeletedReason
+{
+    public string? Title { get; set; }
+    public bool IsFavorite { get; set; }
+    public DatasetModel Dataset { get; set; } = new();
+    public DateTime? DeletedAt { get; set; }
+    public string? DeletedReason { get; set; }
+}
+
 public record DatasetItem
 {
     public Guid Id { get; set; }
