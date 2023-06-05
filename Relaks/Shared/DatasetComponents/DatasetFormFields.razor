@@ -1,6 +1,9 @@
 ﻿@using Relaks.Interfaces
 @using Relaks.Models
 
+@inject IJSRuntime JsRuntime;
+@implements IDisposable
+
 <div class="border p-3 mb-3">
     <p>DatasetFormFields.razor</p>
     <Dump Data="@Dataset"/>
@@ -13,7 +16,7 @@
     </button>
 </div>
 
-<div class="mb-3">
+<div class="mb-3" id="js-sortable-groups">
     @foreach (var group in Dataset.Groups)
     {
         <DatasetGroupFormFields
@@ -21,8 +24,7 @@
             Group="@group"
             GroupChanged="@(() => DatasetChanged.InvokeAsync(Dataset))"
             OnDelete="@OnDeleteGroup"
-            GroupsCount="@Dataset.Groups.Count"
-        />
+            GroupsCount="@Dataset.Groups.Count"/>
     }
 </div>
 
@@ -35,6 +37,8 @@
 
 @code {
 
+    private DotNetObjectReference<DatasetFormFields>? ObjectReference { get; set; }
+    
     [Parameter]
     public DatasetModel Dataset { get; set; } = null!;
 
@@ -61,12 +65,28 @@
         Dataset.Groups.Insert(0, CreateNewGroup());
         await DatasetChanged.InvokeAsync(Dataset);
     }
-    
-    // private async Task AddGroupToEnd()
-    // {
-    //     System.Console.WriteLine($">>>> groups count before add: {Dataset.Groups.Count}" );
-    //     Dataset.Groups.Add(CreateNewGroup());
-    //     await DatasetChanged.InvokeAsync();
-    //     System.Console.WriteLine($">>>> groups count after add: {Dataset.Groups.Count}" );
-    // }
+
+    protected override void OnInitialized()
+    {
+        ObjectReference = DotNetObjectReference.Create(this);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender == false) return;
+        await JsRuntime.InvokeVoidAsync("SortableJsGroupsInit", ObjectReference);
+    }
+
+    [JSInvokable]
+    public async Task OnSortGroups(List<Guid> groupIds)
+    {
+        Dataset.Groups = Dataset.Groups.OrderBy(g => groupIds.IndexOf(g.Id)).ToList();
+        await DatasetChanged.InvokeAsync(Dataset);
+    }
+
+    public void Dispose()
+    {
+        ObjectReference?.Dispose();
+    }
+
 }

@@ -1,12 +1,16 @@
 ﻿@using Relaks.Models
 
-<div class="card bg-secondary bg-opacity-10 mb-3">
+@inject IJSRuntime JsRuntime;
+@implements IDisposable
+
+<div class="card bg-secondary bg-opacity-10 mb-3" data-id="@Group.Id">
     <div class="card-body">
+        @Group.Id
         <div class="row align-items-center mb-4 gx-3">
             @if (GroupsCount > 1)
             {
                 <div class="col-auto">
-                    <button type="button" class="btn btn-circle btn-outline-secondary">
+                    <button type="button" class="btn btn-circle btn-outline-secondary js-sortable-handle">
                         <i class="las la-random la-lg"></i>
                     </button>
                 </div>
@@ -29,17 +33,19 @@
                 </div>
             }
         </div>
-                
-        @foreach (var item in Group.Items)
-        {
-            <DatasetItemFormFields
-                @key="@item.Id"
-                Item="@item"
-                ItemsCount="@Group.Items.Count"
-                OnDelete="@OnDeleteItem"
-            />
-        }
         
+        <div id="@($"{Group.Id}-items")">
+            @foreach (var item in Group.Items)
+            {
+                <DatasetItemFormFields
+                    @key="@item.Id"
+                    Item="@item"
+                    ItemsCount="@Group.Items.Count"
+                    OnDelete="@OnDeleteItem"
+                />
+            }
+        </div>
+
         <div class="mb-3">
             <button type="button" class="btn btn-secondary btn-sm" @onclick="@OnAdd">
                 <i class="las la-plus-circle la-lg"></i>
@@ -57,13 +63,33 @@
     [Parameter]
     public EventCallback GroupChanged { get; set; }
 
-    private async Task OnGroupChanged() => await GroupChanged.InvokeAsync();
-    
     [Parameter]
     public int GroupsCount { get; set; }
 
     [Parameter]
     public EventCallback<DatasetGroup> OnDelete { get; set; }
+    
+    private async Task OnGroupChanged() => await GroupChanged.InvokeAsync();
+    
+    private DotNetObjectReference<DatasetGroupFormFields>? ObjectReference { get; set; }
+    
+    protected override void OnInitialized()
+    {
+        ObjectReference = DotNetObjectReference.Create(this);
+    }
+    
+    [JSInvokable]
+    public async Task OnSortItems(List<Guid> itemsIds)
+    {
+        Group.Items = Group.Items.OrderBy(i => itemsIds.IndexOf(i.Id)).ToList();
+        await OnGroupChanged();
+    }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender == false) return;
+        await JsRuntime.InvokeVoidAsync("SortableJsItemsInit", ObjectReference, $"{Group.Id}-items");
+    }
 
     private async Task OnAdd()
     {
@@ -76,4 +102,10 @@
         Group.Items.Remove(item);
         await OnGroupChanged();
     }
+
+    public void Dispose()
+    {
+        ObjectReference?.Dispose();
+    }
+
 }

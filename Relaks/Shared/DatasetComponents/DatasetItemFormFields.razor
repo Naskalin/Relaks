@@ -1,10 +1,10 @@
 ﻿@using Relaks.Models
 
-<div class="row align-items-center mb-3 gx-3">
+<div class="row align-items-center mb-3 gx-3" data-id="@Item.Id">
     @if (ItemsCount > 1)
     {
         <div class="col-auto">
-            <button type="button" class="btn btn-circle btn-sm btn-outline-secondary">
+            <button type="button" class="btn btn-circle btn-sm btn-outline-secondary js-sortable-handle">
                 <i class="las la-random la-lg"></i>
             </button>
         </div>   
