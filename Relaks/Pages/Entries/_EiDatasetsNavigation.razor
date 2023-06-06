@@ -1,0 +1,16 @@
+﻿@using Relaks.Models
+
+@inject IJSRuntime JsRuntime;
+
+<button
+    type="button"
+    class="list-group-item list-group-item-action @(EiDataset.IsFavorite ? "bg-warning bg-opacity-25" : "")"
+    @onclick="@(() => JsRuntime.InvokeVoidAsync("ScrollToId", $"dataset-{EiDataset.Id}", -64))"
+    href="@($"/entries/{EiDataset.EntryId}/info#")">
+    @EiDataset.Title
+</button>
+
+@code {
+    [Parameter]
+    public EiDataset EiDataset { get; set; } = null!;
+}

@@ -11,15 +11,28 @@
         <EndTitle>
             <a href="@($"/entries/{EntryId}/eidataset/new")" class="btn btn-primary">
                 <i class="las la-plus-circle la-lg me-1"></i>
-                @Resources.Action.Add
+                @Resources.Action.Add набор данных
             </a>
         </EndTitle>
+        <Subtitle>Наборы данных</Subtitle>
     </MyTitle>
     
-     @foreach (var eiDataset in EiDatasets)
-     {
-         <EiDatasetListItem EiDataset="@eiDataset"/>
-     }
+    <div class="row">
+        <div class="col-3">
+            <div class="list-group">
+                @foreach (var eiDataset in EiDatasets)
+                {
+                    <_EiDatasetsNavigation EiDataset="@eiDataset"/>
+                }
+            </div>
+        </div>
+        <div class="col-9 ps-4">
+            @foreach (var eiDataset in EiDatasets)
+            {
+                <EiDatasetListItem EiDataset="@eiDataset"/>
+            }
+        </div>
+    </div>
 </EntryProfileLayout>
 
 @code {
@@ -42,6 +55,7 @@
             .Where(x => x.EntryId.Equals(EntryId))
             .OrderByDescending(x => x.IsFavorite)
             .ThenByDescending(x => x.UpdatedAt)
+            .ThenBy(x => x.DeletedAt != null)
             .ToList();
     }
 

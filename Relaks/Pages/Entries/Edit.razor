@@ -61,6 +61,7 @@
     {
         if (!Validator.Validate()) return;
         
+        Entry.UpdatedAt = DateTime.UtcNow;
         Entry.MapTo(Entry);
         Db.SaveChanges();
         NavigationManager.NavigateTo($"/entries/{EntryId}/info");

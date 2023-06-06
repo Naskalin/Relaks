@@ -3,6 +3,7 @@ import './_image_cropper.js';
 import './_file_download.js';
 import './_dataset_sortable.js';
 import './_textarea_autosize.js';
+import './_scroll_to.js';
 
 window.SetThemeColorMode = (modeName) => {
     try {

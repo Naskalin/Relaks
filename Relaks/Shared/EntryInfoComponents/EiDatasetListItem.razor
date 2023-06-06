@@ -1,10 +1,12 @@
 ﻿@using Relaks.Models
 
-<div class="card">
-    <div class="card-header bg-secondary bg-opacity-10">
+<div class="card mb-4 @(EiDataset.DeletedAt != null ? "border-danger" : "")" id="dataset-@EiDataset.Id">
+    <div class="card-header @(EiDataset.IsFavorite ? "bg-warning" : "bg-secondary") bg-opacity-25">
         <div class="row align-items-center">
             <div class="col">
-                <strong class="h5">@EiDataset.Title</strong>
+                <strong class="h5">
+                    @EiDataset.Title
+                </strong>
             </div>
             <div class="col-auto">
                 <a href="@($"/entries/{EiDataset.EntryId}/eidataset/{EiDataset.Id}/edit")" class="btn btn-outline-secondary btn-circle">
@@ -14,19 +16,18 @@
         </div>
     </div>
     <div class="card-body">
+        <SoftDeleteShow SoftDeletedReason="@EiDataset"/>
+        
         @foreach (var group in EiDataset.Dataset.Groups)
         {
-            <table class="table table-bordered">
-                @if (!string.IsNullOrEmpty(group.Title))
-                {
-                    <thead>
-                    <tr>
-                        <td colspan="100%" class="table-light">
-                            <b>@group.Title</b>
-                        </td>
-                    </tr>
-                    </thead>   
-                }
+            @if (!string.IsNullOrEmpty(group.Title))
+            {
+                <h6 class="mb-3">
+                    <i class="las la-border-all la-lg me-1"></i>
+                    @group.Title
+                </h6>
+            }
+            <table class="table table-bordered mb-4">
                 <tbody>
                 @foreach (var item in group.Items)
                 {
@@ -48,8 +49,8 @@
                 </tbody>
             </table>
         }
-                    
-  
+
+
     </div>
 </div>
 
