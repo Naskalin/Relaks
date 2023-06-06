@@ -11,20 +11,22 @@
     <tbody>
     @foreach (var item in Group.Items)
     {
+        if (string.IsNullOrEmpty(item.Value))
+        {
+            continue;
+        }
+        
         <tr>
             @if (!string.IsNullOrEmpty(item.Key))
             {
-                <td colspan="@(string.IsNullOrEmpty(item.Value) ? "100%" : "2")">
+                <td colspan="50%">
                     @item.Key
                 </td>
             }
-            @if (!string.IsNullOrEmpty(item.Value))
-            {
-                <td colspan="@(string.IsNullOrEmpty(item.Key) ? "100%" : "2")">
-                    @item.Key
-                    @item.Value
-                </td>
-            }
+            <td colspan="@(string.IsNullOrEmpty(item.Key) ? "100%" : "50%")">
+                @item.Key
+                @item.Value
+            </td>
         </tr>
     }
     </tbody>

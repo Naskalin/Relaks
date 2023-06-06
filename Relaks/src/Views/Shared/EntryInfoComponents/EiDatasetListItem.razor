@@ -1,7 +1,7 @@
 ﻿@using Relaks.Models
 
 <div class="card mb-4 @(EiDataset.DeletedAt != null ? "border-danger" : "")" id="dataset-@EiDataset.Id">
-    <div class="card-header @(EiDataset.IsFavorite ? "bg-warning" : "bg-secondary") bg-opacity-25">
+    <div class="card-header @(EiDataset.IsFavorite ? "bg-info bg-opacity-25" : "bg-secondary bg-opacity-25")">
         <div class="row align-items-center">
             <div class="col">
                 <strong class="h5">
