@@ -1,0 +1,115 @@
+﻿@page "/countries"
+@using Relaks.Models
+@using Relaks.Database
+@using Relaks.Interfaces
+@using Relaks.Utils.Extensions
+
+@inject AppDbContext Db;
+@implements IOrderable;
+
+<PageTemplate>
+    <MyTitle>Страны</MyTitle>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Флаг</th>
+            <th @onclick="@(() => OnSortChange(nameof(Country.TitleRu)))" class="cursor-pointer">
+                Название
+                <OrderableIcon Orderable="@this" Prop="@nameof(Country.TitleRu)"/>
+            </th>
+            <th @onclick="@(() => OnSortChange(nameof(Country.Capital)))" class="cursor-pointer">
+                Столица
+                <OrderableIcon Orderable="@this" Prop="@nameof(Country.Capital)"/>
+            </th>
+            <th @onclick="@(() => OnSortChange(nameof(Country.Continent)))" class="cursor-pointer">
+                Континент
+                <OrderableIcon Orderable="@this" Prop="@nameof(Country.Continent)"/>
+            </th>
+            <th @onclick="@(() => OnSortChange(nameof(Country.Currency)))" class="cursor-pointer">
+                Валюта
+                <OrderableIcon Orderable="@this" Prop="@nameof(Country.Currency)"/>
+            </th>
+            <th @onclick="@(() => OnSortChange(nameof(Country.Alpha2)))" class="cursor-pointer">
+                Alpha2
+                <OrderableIcon Orderable="@this" Prop="@nameof(Country.Alpha2)"/>
+            </th>
+            <th>Код телефона</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var c in Countries)
+        {
+            <tr>
+                <td>
+                    <i class="fi fi-@(c.Alpha2.ToLower())" style="font-size: 2rem"></i>
+                </td>
+                <td>
+                    @c.TitleRu (@c.Native) <small class="text-muted">@c.TitleEn</small>
+                </td>
+                <td>@c.Capital</td>
+                <td>@c.Continent</td>
+                <td>@c.Currency</td>
+                <td>@c.Alpha2</td>
+                <td>@c.Phone</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</PageTemplate>
+
+@code {
+    private List<Country> Countries { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        FindCountries();
+    }
+
+    private void FindCountries()
+    {
+        var q = Db.Countries.AsQueryable();
+        q = string.IsNullOrEmpty(OrderBy) ? q.OrderByDescending(x => x.TitleRu) : q.OrderBy(this);
+        Countries = q.ToList();
+    }
+
+    public string? OrderBy { get; set; }
+    public bool? IsOrderByDesc { get; set; }
+
+    private void OnSortChange(string field)
+    {
+        if (IsOrderByDesc is null)
+        {
+            OrderBy = field;
+            IsOrderByDesc = false;
+        }
+        else if (IsOrderByDesc is false)
+        {
+            if (field.Equals(OrderBy))
+            {
+                IsOrderByDesc = true;
+            }
+            else
+            {
+                OrderBy = field;
+                IsOrderByDesc = false;
+            }
+        }
+        else
+        {
+            if (field.Equals(OrderBy))
+            {
+                OrderBy = null;
+                IsOrderByDesc = null;
+            }
+            else
+            {
+                OrderBy = field;
+                IsOrderByDesc = false;
+            }
+        }
+
+        FindCountries();
+    }
+
+}

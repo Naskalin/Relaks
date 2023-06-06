@@ -1,0 +1,26 @@
+﻿@page "/dataset-templates"
+
+<PageTemplate>
+    <MyTitle>
+        <ChildContent>Шаблоны для наборов данных</ChildContent>
+        <EndTitle>
+            <a href="/dataset-templates/new" class="btn btn-primary">
+                <i class="las la-plus-circle la-lg me-1"></i>
+                @Resources.Action.Add
+            </a>
+        </EndTitle>
+    </MyTitle>
+
+    <div class="row">
+        <div class="col-auto">
+            filters
+        </div>
+        <div class="col-9 ps-4">
+            data
+        </div>
+    </div>
+</PageTemplate>
+
+@code {
+    
+}
