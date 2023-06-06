@@ -1,33 +1,52 @@
-﻿@if (!string.IsNullOrEmpty(Label))
-{
-    <label for="@Id" class="form-label">@Label</label>
-}
-<textarea class="form-control" 
+﻿@inject IJSRuntime JsRuntime;
+
+<textarea class="form-control js-textarea-autosize" 
+    data-id="@Id"
     @bind="@Value"
     @bind:event="oninput"
     @bind:after="@OnChanged"
-    style="resize:both;overflow: hidden;"
+    @attributes="@InputAttributes"
     ></textarea>
 
-@code {
+@if (InputAttributes.ContainsKey("maxlength") && !string.IsNullOrEmpty(Value))
+{
+    <div class="text-end">
+        <small class="text-muted">@Value.Length / @InputAttributes["maxlength"]</small>
+    </div>       
+}
 
+@code {
     [Parameter]
     public string? Value { get; set; }
-
+    
     [Parameter]
     public EventCallback<string?> ValueChanged { get; set; }
 
-    [Parameter]
-    public string? Label { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> InputAttributes { get; set; } = new();
+
+    private int Counter { get; set; }
 
     private Guid Id { get; set; } = Guid.NewGuid();
 
     private async Task OnChanged()
     {
         if (string.IsNullOrEmpty(Value)) Value = null;
-        // oninput="this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px';"
+        CalculateLetters();
         await ValueChanged.InvokeAsync(Value);
-        
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            CalculateLetters();
+            await JsRuntime.InvokeVoidAsync("TextareaAutosize", $"[data-id=\"{Id}\"]");
+        }
+    }
+
+    private void CalculateLetters()
+    {
+        Counter = string.IsNullOrEmpty(Value) ? 0 : Value.Length;
+    }
 }

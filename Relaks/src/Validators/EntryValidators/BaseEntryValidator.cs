@@ -7,10 +7,10 @@ public class BaseEntryValidator : AbstractValidator<BaseEntry>
 {
     public BaseEntryValidator()
     {
-        RuleFor(x => x.Name).NotEmpty().MinimumLength(2).MaximumLength(150);
+        RuleFor(x => x.Name).NotEmpty().MinimumLength(1).MaximumLength(150);
         When(x => !string.IsNullOrEmpty(x.Description), () =>
         {
-            RuleFor(x => x.Description).MinimumLength(2).MaximumLength(300);
+            RuleFor(x => x.Description).MinimumLength(1).MaximumLength(300);
         });
         RuleFor(x => x.Discriminator).NotEmpty().Must(IsValidDiscriminator);
         RuleFor(x => x).SetValidator(new SoftDeletedValidator());

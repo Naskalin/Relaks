@@ -4,19 +4,19 @@
 @inject IJSRuntime JsRuntime;
 @implements IDisposable
 
-@* <div class="border p-3 mb-3"> *@
-@*     <p>DatasetFormFields.razor</p> *@
-@*     <Dump Data="@Dataset"/> *@
-@* </div> *@
+<div class="border p-3 mb-3">
+    <p>DatasetFormFields.razor</p>
+    <Dump Data="@Dataset"/>
+</div>
 
 <div class="mb-3">
     <button type="button" class="btn btn-sm btn-secondary" @onclick="@AddGroupToStart">
         <i class="las la-plus-circle la-lg me-1"></i>
-         Добавить группу
+         Добавить группу в начало
     </button>
 </div>
 
-<div class="mb-3" id="js-sortable-groups">
+<div class="mb-3 dataset" id="js-sortable-groups">
     @foreach (var group in Dataset.Groups)
     {
         <DatasetGroupFormFields
@@ -28,12 +28,12 @@
     }
 </div>
 
-@* <div class="mb-3"> *@
-@*     <button type="button" class="btn btn-sm btn-secondary" @onclick="@AddGroupToEnd"> *@
-@*         <i class="las la-plus-circle la-lg me-1"></i> *@
-@*         Добавить группу *@
-@*     </button> *@
-@* </div> *@
+<div class="mb-3">
+    <button type="button" class="btn btn-sm btn-secondary" @onclick="@AddGroupToEnd">
+        <i class="las la-plus-circle la-lg me-1"></i>
+        Добавить группу в конец
+    </button>
+</div>
 
 @code {
 
@@ -65,6 +65,11 @@
         Dataset.Groups.Insert(0, CreateNewGroup());
         await DatasetChanged.InvokeAsync(Dataset);
     }
+    private async Task AddGroupToEnd()
+    {
+        Dataset.Groups.Add(CreateNewGroup());
+        await DatasetChanged.InvokeAsync(Dataset);
+    }
 
     protected override void OnInitialized()
     {
@@ -78,7 +83,7 @@
     }
 
     [JSInvokable]
-    public async Task OnSortGroups(List<Guid> groupIds)
+    public async Task OnSortGroups(List<string> groupIds)
     {
         Dataset.Groups = Dataset.Groups.OrderBy(g => groupIds.IndexOf(g.Id)).ToList();
         await DatasetChanged.InvokeAsync(Dataset);

@@ -1,7 +1,6 @@
 ﻿import Sortable from 'sortablejs';
 
 window.SortableJsGroupsInit = async (netDataset) => {
-    console.log(netDataset);
     const groupWrapperEl = document.getElementById('js-sortable-groups');
     if (!groupWrapperEl) throw new Error(`Sortable group element not found`);
     const sortableGroups = Sortable.create(groupWrapperEl, {

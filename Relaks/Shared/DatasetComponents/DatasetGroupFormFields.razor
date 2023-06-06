@@ -82,7 +82,7 @@
     }
 
     [JSInvokable]
-    public async Task OnSortItems(List<Guid> itemsIds)
+    public async Task OnSortItems(List<string> itemsIds)
     {
         Group.Items = Group.Items.OrderBy(i => itemsIds.IndexOf(i.Id)).ToList();
         await OnGroupChanged();

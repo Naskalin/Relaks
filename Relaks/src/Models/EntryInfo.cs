@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Relaks.Interfaces;
+using Relaks.Utils;
 
 namespace Relaks.Models;
 
@@ -83,25 +85,25 @@ public class EiDatasetRequest : IEntryInfo, IDataset, ISoftDeletedReason
 
 public record DatasetItem
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; }
     public string? Key { get; set; }
     public string? Value { get; set; }
 
     public DatasetItem()
     {
-        Id = Guid.NewGuid();
+        Id = Guid.NewGuid().ToString();
     }
 }
 
 public record DatasetGroup
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; }
     public string? Title { get; set; }
     public List<DatasetItem> Items { get; set; } = new();
     
     public DatasetGroup()
     {
-        Id = Guid.NewGuid();
+        Id = Guid.NewGuid().ToString();
     }
 }
 

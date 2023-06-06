@@ -13,7 +13,10 @@
 </div>
 
 <div class="mb-3">
-    <MyTextarea Label="@Resources.Field.ShortDescription" @bind-Value="@Entry.Description"/>
+    <label for="" class="form-label">@Resources.Field.ShortDescription</label>
+    <MyTextarea
+        maxlength="300"
+        @bind-Value="@Entry.Description"/>
     <ValidationMessage For="@(() => Entry.Description)"/>
 </div>
 

@@ -1,6 +1,6 @@
 ﻿@using Relaks.Models
 
-<div class="row align-items-center mb-3 gx-3" data-id="@Item.Id">
+<div class="row align-items-start mb-3 gx-3" data-id="@Item.Id">
     @if (ItemsCount > 1)
     {
         <div class="col-auto">
@@ -10,11 +10,18 @@
         </div>   
     }
     <div class="col">
-        <InputText @bind-Value="@Item.Key" class="form-control" placeholder="Ключ"/>
+        <MyTextarea placeholder="Ключ"
+                    @bind-Value="@Item.Key"
+                    maxlength="255"
+                    />
+
         <ValidationMessage For="@(() => Item.Key)"/>
     </div>
     <div class="col">
-        <InputText @bind-Value="@Item.Value" class="form-control" placeholder="Значение"/>
+        <MyTextarea placeholder="Значение"
+                    @bind-Value="@Item.Value"
+                    maxlength="1000"
+                    />
         <ValidationMessage For="@(() => Item.Value)"/>
     </div>
     @if (ItemsCount > 1)

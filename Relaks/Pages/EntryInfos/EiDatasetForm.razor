@@ -10,64 +10,62 @@
 @inject AppDbContext Db;
 
 <EntryProfileLayout EntryId="@EntryId">
-    <HalfPage>
-        <MyTitle>
-            <BeforeTitle>
-                <a href="/entries/@EntryId/info" class="btn btn-outline-secondary">
-                    <i class="las la-arrow-left la-lg me-1"></i> @Resources.Action.Return
-                </a>
-            </BeforeTitle>
-            <ChildContent>@(EntryInfoId.HasValue ? Resources.Action.Edit : Resources.Action.Add): @Resources.Entity.ResourceManager.GetString(nameof(EiDataset))</ChildContent>
-        </MyTitle>
+    <MyTitle>
+        <BeforeTitle>
+            <a href="/entries/@EntryId/info" class="btn btn-outline-secondary">
+                <i class="las la-arrow-left la-lg me-1"></i> @Resources.Action.Return
+            </a>
+        </BeforeTitle>
+        <ChildContent>@(EntryInfoId.HasValue ? Resources.Action.Edit : Resources.Action.Add): @Resources.Entity.ResourceManager.GetString(nameof(EiDataset))</ChildContent>
+    </MyTitle>
 
-        @* <div class="border p-3 mb-3"> *@
-        @*     <p>EiDatasetForm.razor</p> *@
-        @*     <Dump Data="@Req"/> *@
-        @*     $1$ <Dump Data="@Model.Title"/> #1# *@
-        @*     $1$ <Dump Data="@Model.IsFavorite"/> #1# *@
-        @*     $1$ <Dump Data="@Model.Dataset"/> #1# *@
-        @*     $1$ <Dump Data="@Model.DatasetValue"/> #1# *@
-        @* </div> *@
+    @* <div class="border p-3 mb-3"> *@
+    @*     <p>EiDatasetForm.razor</p> *@
+    @*     <Dump Data="@Req"/> *@
+    @*     $1$ <Dump Data="@Model.Title"/> #1# *@
+    @*     $1$ <Dump Data="@Model.IsFavorite"/> #1# *@
+    @*     $1$ <Dump Data="@Model.Dataset"/> #1# *@
+    @*     $1$ <Dump Data="@Model.DatasetValue"/> #1# *@
+    @* </div> *@
 
-        <EditForm Model="@Req" OnSubmit="@OnSubmit">
-            <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
-            <ValidationSummary/>
+    <EditForm Model="@Req" OnSubmit="@OnSubmit">
+        <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
+        <ValidationSummary/>
 
-            <div class="mb-3">
-                <label for="" class="form-label">Название набора данных *</label>
-                <input type="text" @bind-value="@Req.Title" class="form-control">
-                <ValidationMessage For="@(() => Req.Title)"/>
-            </div>
+        <div class="mb-3">
+            <label for="" class="form-label">Название набора данных *</label>
+            <input type="text" @bind-value="@Req.Title" class="form-control">
+            <ValidationMessage For="@(() => Req.Title)"/>
+        </div>
 
-            <div class="mb-3">
-                <DatasetFormFields @bind-Dataset="@Req.Dataset"/>
-            </div>
+        <div class="mb-3">
+            <DatasetFormFields @bind-Dataset="@Req.Dataset"/>
+        </div>
 
-            <EntryInfoFormFields EntryInfo="@Req" IsWithoutTitle="@true"/>
-            @if (EntryInfoId.HasValue)
-            {
-                <SoftDeletedReasonField SoftDeletedReason="@Req"/>
-            }
-
-            <div class="mb-3">
-                <button class="btn btn-primary">
-                    <i class="las la-lg me-1 @(EntryInfoId.HasValue ? "la-edit" : "la-plus-circle")"></i>
-                    @(EntryInfoId.HasValue ? Resources.Action.SaveChanges : Resources.Action.Add)
-                </button>
-            </div>
-        </EditForm>
-
-        @if (EntryInfoId.HasValue && Req.DeletedAt != null)
+        <EntryInfoFormFields EntryInfo="@Req" IsWithoutTitle="@true"/>
+        @if (EntryInfoId.HasValue)
         {
-            <div class="text-end">
-
-                <button type="button" class="btn btn-link text-danger" @onclick="@OnDelete">
-                    <i class="las la-trash la-lg"></i>
-                    @Resources.Action.Delete
-                </button>
-            </div>
+            <SoftDeletedReasonField SoftDeletedReason="@Req"/>
         }
-    </HalfPage>
+
+        <div class="mb-3">
+            <button class="btn btn-primary">
+                <i class="las la-lg me-1 @(EntryInfoId.HasValue ? "la-edit" : "la-plus-circle")"></i>
+                @(EntryInfoId.HasValue ? Resources.Action.SaveChanges : Resources.Action.Add)
+            </button>
+        </div>
+    </EditForm>
+
+    @if (EntryInfoId.HasValue && Req.DeletedAt != null)
+    {
+        <div class="text-end">
+
+            <button type="button" class="btn btn-link text-danger" @onclick="@OnDelete">
+                <i class="las la-trash la-lg"></i>
+                @Resources.Action.Delete
+            </button>
+        </div>
+    }
 </EntryProfileLayout>
 
 @code {
@@ -77,7 +75,7 @@
 
     [Parameter]
     public Guid? EntryInfoId { get; set; }
-    
+
     private EiDataset? EiDataset { get; set; }
     private EiDatasetRequest Req { get; set; } = null!;
 
@@ -113,7 +111,7 @@
     private void OnSubmit()
     {
         if (!Validator.Validate()) return;
-        
+
         if (EiDataset == null)
         {
             EiDataset = new EiDataset()
@@ -122,10 +120,11 @@
             };
             Db.EiDatasets.Add(EiDataset);
         }
-        
+
         Req.MapTo(EiDataset);
-    
+
         Db.SaveChanges();
         NavigationManager.NavigateTo($"/entries/{EntryId}/info");
     }
+
 }
