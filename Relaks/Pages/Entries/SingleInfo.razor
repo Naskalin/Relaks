@@ -3,6 +3,7 @@
 @using Relaks.Database
 
 @inject AppDbContext Db;
+@inject NavigationManager NavigationManager;
 
 <EntryProfileLayout EntryId="@EntryId">
     <EntryProfileTabs EntryId="@EntryId"/>
@@ -22,7 +23,7 @@
             <div class="list-group">
                 @foreach (var eiDataset in EiDatasets)
                 {
-                    <_EiDatasetsNavigation EiDataset="@eiDataset"/>
+                    <_EiDatasetsNavigation EiDataset="@eiDataset" EntryInfoId="@EntryInfoId"/>
                 }
             </div>
         </div>
@@ -38,6 +39,8 @@
 @code {
     [Parameter]
     public Guid EntryId { get; set; }
+    
+    private Guid? EntryInfoId { get; set; }
     
     private string Discriminator { get; set; } = null!;
 
@@ -57,6 +60,10 @@
             .ThenByDescending(x => x.UpdatedAt)
             .ThenBy(x => x.DeletedAt != null)
             .ToList();
+        
+        var query = new Uri(NavigationManager.Uri).Query;
+        var dict = System.Web.HttpUtility.ParseQueryString(query);
+        var entryInfoId = dict["entryInfoId"];
+        EntryInfoId = string.IsNullOrEmpty(entryInfoId) ? null : Guid.Parse(entryInfoId);
     }
-
 }

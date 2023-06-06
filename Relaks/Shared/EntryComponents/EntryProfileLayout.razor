@@ -4,19 +4,21 @@
 @inject AppDbContext Db;
 
 <PageTemplate>
-    <CascadingValue Value="@BaseEntry">
-        <SoftDeleteShow SoftDeletedReason="@BaseEntry"/>
-        <div class="row gap-4">
-            <div class="col-auto">
-                <EntryCard EntryId="@EntryId"
-                           EntryInfoId="@EntryInfoId"
-                           ViewMode="@EntryCard.ViewModeEnum.WithEdit"
-                           HideSoftDeleted="@true"/>
+    <CascadingValue Value="@EntryInfoId">
+        <CascadingValue Value="@BaseEntry">
+            <SoftDeleteShow SoftDeletedReason="@BaseEntry"/>
+            <div class="row gap-4">
+                <div class="col-auto">
+                    <EntryCard EntryId="@EntryId"
+                               EntryInfoId="@EntryInfoId"
+                               ViewMode="@EntryCard.ViewModeEnum.WithEdit"
+                               HideSoftDeleted="@true"/>
+                </div>
+                <div class="col">
+                    @ChildContent
+                </div>
             </div>
-            <div class="col">
-                @ChildContent
-            </div>
-        </div>
+        </CascadingValue>
     </CascadingValue>
 </PageTemplate>
 

@@ -4,7 +4,10 @@
 
 <button
     type="button"
-    class="list-group-item list-group-item-action @(EiDataset.IsFavorite ? "bg-warning bg-opacity-25" : "")"
+    class="list-group-item list-group-item-action 
+@(EiDataset.IsFavorite ? "bg-warning bg-opacity-25" : "")
+@(EiDataset.Id.Equals(EntryInfoId) ? "border-dashed border-2 border-warning" : "")
+"
     @onclick="@(() => JsRuntime.InvokeVoidAsync("ScrollToId", $"dataset-{EiDataset.Id}", -64))"
     href="@($"/entries/{EiDataset.EntryId}/info#")">
     @EiDataset.Title
@@ -13,4 +16,7 @@
 @code {
     [Parameter]
     public EiDataset EiDataset { get; set; } = null!;
+    
+    [Parameter]
+    public Guid? EntryInfoId { get; set; }
 }
