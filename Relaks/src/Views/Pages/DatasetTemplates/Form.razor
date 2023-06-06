@@ -1,0 +1,100 @@
+﻿@page "/dataset-templates/new"
+@page "/dataset-templates/{datasetTemplateId:guid}"
+@using Relaks.Models
+@using Relaks.Database
+@using Relaks.Mappers
+
+@inject AppDbContext Db;
+@inject NavigationManager NavigationManager;
+@inject IJSRuntime JsRuntime;
+
+<PageTemplate>
+    <HalfPage IsCentered="@true">
+        <MyTitle>
+            <BeforeTitle>
+                <a href="/dataset-templates" class="btn btn-outline-secondary">
+                    <i class="las la-arrow-left la-lg me-1"></i> @Resources.Action.Return
+                </a>
+            </BeforeTitle>
+            <ChildContent>
+                @(DatasetTemplateId.HasValue ? Resources.Action.Edit : Resources.Action.Add) шаблон для набора данных
+            </ChildContent>
+        </MyTitle>
+
+        <EditForm Model="@Req" OnSubmit="@OnSubmit">
+            <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
+            <ValidationSummary/>
+            
+            <div class="mb-3">
+                <label for="" class="form-label">Название шаблона для набора данных *</label>
+                <input type="text" @bind-value="@Req.Title" class="form-control">
+                <ValidationMessage For="@(() => Req.Title)"/>
+            </div>
+    
+            <div class="mb-3">
+                <DatasetFormFields @bind-Dataset="@Req.Dataset"/>
+            </div>
+
+            <div class="mb-3">
+                <button class="btn btn-primary">
+                    <i class="las la-lg me-1 @(DatasetTemplateId.HasValue ? "la-edit" : "la-plus-circle")"></i>
+                    @(DatasetTemplateId.HasValue ? Resources.Action.SaveChanges : Resources.Action.Add)
+                </button>
+            </div>
+        </EditForm>
+        
+        @if (DatasetTemplateId.HasValue)
+        {
+            <div class="text-end">
+                <button type="button" class="btn btn-link text-danger" @onclick="@OnDelete">
+                    <i class="las la-trash la-lg"></i>
+                    @Resources.Action.Delete
+                </button>
+            </div>
+        }
+    </HalfPage>
+</PageTemplate>
+
+@code {
+    [Parameter]
+    public Guid? DatasetTemplateId { get; set; }
+    private DatasetTemplate? DatasetTemplate { get; set; }
+    private DatasetTemplateRequest Req { get; set; } = new()
+    {
+        Dataset = new DatasetModel() {Groups = new() {new() {Items = new() {new()}}}}
+    };
+    private FluentValidationValidator Validator { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        if (DatasetTemplateId.HasValue)
+        {
+            DatasetTemplate = Db.DatasetTemplates.First(x => x.Id.Equals(DatasetTemplateId.Value));
+            DatasetTemplate.MapTo(Req);
+        }
+    }
+    
+    private void OnSubmit()
+    {
+        if (!Validator.Validate()) return;
+
+        var datasetTemplate = DatasetTemplate ?? new DatasetTemplate();
+        if (DatasetTemplate == null)
+        {
+            Db.DatasetTemplates.Add(datasetTemplate);
+        }
+        
+        Req.MapTo(datasetTemplate);
+        Db.SaveChanges();
+        NavigationManager.NavigateTo($"/dataset-templates");
+    }
+
+    private async Task OnDelete()
+    {
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
+        if (!isConfirmed || DatasetTemplate == null) return;
+        Db.DatasetTemplates.Remove(DatasetTemplate);
+        await Db.SaveChangesAsync();
+        NavigationManager.NavigateTo("/dataset-templates");
+    }
+}

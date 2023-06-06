@@ -284,6 +284,25 @@ namespace Relaks.Migrations
                     b.ToTable("Countries");
                 });
 
+            modelBuilder.Entity("Relaks.Models.DatasetTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DatasetValue")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DatasetTemplates");
+                });
+
             modelBuilder.Entity("Relaks.Models.FtsEntry", b =>
                 {
                     b.Property<int>("RowId")

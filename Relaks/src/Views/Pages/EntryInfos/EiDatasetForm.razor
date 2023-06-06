@@ -19,14 +19,34 @@
         <ChildContent>@(EntryInfoId.HasValue ? Resources.Action.Edit : Resources.Action.Add): @Resources.Entity.ResourceManager.GetString(nameof(EiDataset))</ChildContent>
     </MyTitle>
 
-    @* <div class="border p-3 mb-3"> *@
-    @*     <p>EiDatasetForm.razor</p> *@
-    @*     <Dump Data="@Req"/> *@
-    @*     $1$ <Dump Data="@Model.Title"/> #1# *@
-    @*     $1$ <Dump Data="@Model.IsFavorite"/> #1# *@
-    @*     $1$ <Dump Data="@Model.Dataset"/> #1# *@
-    @*     $1$ <Dump Data="@Model.DatasetValue"/> #1# *@
-    @* </div> *@
+    <div class="alert bg-info bg-opacity-10 border-info border-opacity-25">
+        <div class="row">
+            <div class="col">
+                <div class="row align-items-center gx-3">
+                    <div class="col-auto"><i class="las la-info-circle la-lg text-secondary" style="font-size: 2rem;"></i></div>
+                    <div class="col">Вы можете изначально предзаполнить набор данных по шаблону, для этого выберите его. Это удалит все заполненные данные.</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group">
+                    <InputSelect @bind-Value="@DatasetTemplateId" class="form-select">
+                        <option value="">(Без шаблона)</option>
+                        @foreach (var dt in DatasetTemplates)
+                        {
+                            <option value="@dt.Id">@dt.Title</option>
+                        }
+                    </InputSelect>
+                    <button class="btn btn-secondary" 
+                            type="button" 
+                            disabled="@(!DatasetTemplateId.HasValue)"
+                            @onclick="@PresetDataset"
+                            >
+                        Предзаполнить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <EditForm Model="@Req" OnSubmit="@OnSubmit">
         <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
@@ -79,6 +99,13 @@
     private EiDataset? EiDataset { get; set; }
     private EiDatasetRequest Req { get; set; } = null!;
 
+    private Guid? DatasetTemplateId { get; set; }
+
+    protected override void OnInitialized()
+    {
+        DatasetTemplates = Db.DatasetTemplates.OrderBy(x => x.Title).ToList();
+    }
+
     protected override void OnParametersSet()
     {
         if (EntryInfoId.HasValue)
@@ -125,6 +152,16 @@
 
         Db.SaveChanges();
         NavigationManager.NavigateTo($"/entries/{EntryId}/info");
+    }
+
+    private List<DatasetTemplate> DatasetTemplates { get; set; } = new();
+
+    private void PresetDataset()
+    {
+        if (!DatasetTemplateId.HasValue) return;
+        var dt = DatasetTemplates.First(x => x.Id.Equals(DatasetTemplateId.Value));
+        dt.MapTo(Req);
+        DatasetTemplateId = null;
     }
 
 }

@@ -60,7 +60,7 @@ public static class EntryInfoMapper
         req.IsFavorite = model.IsFavorite;
     }
 
-    public static void MapTo(this DatasetTemplate template, EiDataset model)
+    public static void MapTo(this DatasetTemplate template, EiDatasetRequest model)
     {
         var dataset = template.Dataset;
         dataset.Groups.ForEach(group =>

@@ -69,7 +69,7 @@
     private void FindCountries()
     {
         var q = Db.Countries.AsQueryable();
-        q = string.IsNullOrEmpty(OrderBy) ? q.OrderByDescending(x => x.TitleRu) : q.OrderBy(this);
+        q = string.IsNullOrEmpty(OrderBy) ? q.OrderBy(x => x.TitleRu) : q.OrderBy(this);
         Countries = q.ToList();
     }
 

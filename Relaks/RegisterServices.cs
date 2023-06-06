@@ -35,6 +35,7 @@ public static class RegisterServices
         services.AddScoped<IValidator<EiEmail>, EiEmailValidator>();
         services.AddScoped<IValidator<EiDatasetRequest>, EiDatasetRequestValidator>();
         services.AddScoped<IValidator<DatasetModel>, DatasetModelValidator>();
+        services.AddScoped<IValidator<DatasetTemplateRequest>, DatasetTemplateRequestValidator>();
 
         services.AddScoped<IValidator<EntryFileTag>, EntryFileTagValidator>();
         services.AddScoped<IValidator<EntryFileCategory>, EntryFileCategoryValidator>();

@@ -1,4 +1,8 @@
 ﻿@page "/dataset-templates"
+@using Relaks.Models
+@using Relaks.Database
+
+@inject AppDbContext Db;
 
 <PageTemplate>
     <MyTitle>
@@ -10,17 +14,26 @@
             </a>
         </EndTitle>
     </MyTitle>
-
-    <div class="row">
-        <div class="col-auto">
-            filters
-        </div>
-        <div class="col-9 ps-4">
-            data
-        </div>
+    
+    <div class="d-flex flex-wrap gap-3">
+        @foreach (var dt in DatasetTemplates)
+        {
+            <div class="col-2">
+                <a href="@($"/dataset-templates/{dt.Id}")"
+                   class="border bg-secondary bg-opacity-10 d-block p-2 rounded text-decoration-none">
+                    @dt.Title
+                </a>
+            </div>
+        }
     </div>
 </PageTemplate>
 
 @code {
-    
+    private List<DatasetTemplate> DatasetTemplates { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        DatasetTemplates = Db.DatasetTemplates.OrderBy(x => x.Title).ToList();
+    }
+
 }

@@ -8,14 +8,20 @@ public class DatasetTemplate : IDataset
 {
     public Guid Id { get; set; }
     public string Title { get; set; } = null!;
+    
+    public string DatasetValue { get; set; } = null!;
+    
+    [NotMapped]
     public DatasetModel Dataset
     {
         get => JsonSerializer.Deserialize<DatasetModel>(DatasetValue) ?? new DatasetModel();
         set => DatasetValue = JsonSerializer.Serialize(value);
     }
-    
-    [NotMapped]
-    public string DatasetValue { get; set; } = null!;
+
+    public DatasetTemplate()
+    {
+        Id = Guid.NewGuid();
+    }
 }
 
 public class DatasetTemplateRequest : IDataset

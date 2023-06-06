@@ -20,6 +20,7 @@ public sealed class AppDbContext : DbContext
     public DbSet<EiDate> EiDates { get; set; } = null!;
     public DbSet<EiUrl> EiUrls { get; set; } = null!;
     public DbSet<EiDataset> EiDatasets { get; set; } = null!;
+    public DbSet<DatasetTemplate> DatasetTemplates { get; set; } = null!;
 
     public DbSet<BaseFile> BaseFiles { get; set; } = null!;
     public DbSet<EntryFile> EntryFiles { get; set; } = null!;
