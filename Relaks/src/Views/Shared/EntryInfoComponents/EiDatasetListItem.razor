@@ -20,6 +20,7 @@
         
         @foreach (var group in EiDataset.Dataset.Groups)
         {
+            if (group.Items.All(x => string.IsNullOrEmpty(x.Value))) continue;
             <DatasetGroupShow Group="@group"/>
         }
     </div>

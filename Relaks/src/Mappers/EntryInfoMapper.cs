@@ -68,15 +68,8 @@ public static class EntryInfoMapper
             group.Id = Guid.NewGuid().ToString();
             group.Items.ForEach(item => item.Id = Guid.NewGuid().ToString());
         });
-        // foreach (var group in dataset.Groups)
-        // {
-        //     group.Id = Guid.NewGuid().ToString();
-        //     foreach (var item in group.Items)
-        //     {
-        //         item.Id = Guid.NewGuid().ToString();
-        //     }
-        // }
 
+        model.Title = template.Title;
         model.Dataset = dataset;
     }
 }
