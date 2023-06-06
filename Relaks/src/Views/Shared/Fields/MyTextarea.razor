@@ -1,24 +1,25 @@
 ﻿@inject IJSRuntime JsRuntime;
 
 <textarea class="form-control js-textarea-autosize" 
-    data-id="@Id"
-    @bind="@Value"
-    @bind:event="oninput"
-    @bind:after="@OnChanged"
-    @attributes="@InputAttributes"
-    ></textarea>
+        data-id="@Id"
+        @bind="@Value"
+        @bind:event="oninput"
+        @bind:after="@OnChanged"
+        @attributes="@InputAttributes"
+        ></textarea>
 
-@if (InputAttributes.ContainsKey("maxlength") && !string.IsNullOrEmpty(Value))
+@if (InputAttributes.TryGetValue("maxlength", out var attribute))
 {
-    <div class="text-end">
-        <small class="text-muted">@Value.Length / @InputAttributes["maxlength"]</small>
-    </div>       
+    <div class="text-end text-muted" style="font-size: .8rem; position: relative; top: -1px;margin-bottom: -6px;">
+        @(Value?.Length ?? 0) / @(attribute)
+    </div>
 }
 
 @code {
+
     [Parameter]
     public string? Value { get; set; }
-    
+
     [Parameter]
     public EventCallback<string?> ValueChanged { get; set; }
 
@@ -49,4 +50,5 @@
     {
         Counter = string.IsNullOrEmpty(Value) ? 0 : Value.Length;
     }
+
 }
