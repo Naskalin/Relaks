@@ -22,10 +22,6 @@
                 Столица
                 <OrderableIcon Orderable="@this" Prop="@nameof(Country.Capital)"/>
             </th>
-            <th @onclick="@(() => OnSortChange(nameof(Country.Continent)))" class="cursor-pointer">
-                Континент
-                <OrderableIcon Orderable="@this" Prop="@nameof(Country.Continent)"/>
-            </th>
             <th @onclick="@(() => OnSortChange(nameof(Country.Currency)))" class="cursor-pointer">
                 Валюта
                 <OrderableIcon Orderable="@this" Prop="@nameof(Country.Currency)"/>
@@ -34,7 +30,11 @@
                 Alpha2
                 <OrderableIcon Orderable="@this" Prop="@nameof(Country.Alpha2)"/>
             </th>
-            <th>Код телефона</th>
+            <th>Тел. код</th>
+            <th @onclick="@(() => OnSortChange(nameof(Country.Continent)))" class="cursor-pointer">
+                Континент
+                <OrderableIcon Orderable="@this" Prop="@nameof(Country.Continent)"/>
+            </th>
         </tr>
         </thead>
         <tbody>
@@ -48,10 +48,10 @@
                     @c.TitleRu (@c.Native) <small class="text-muted">@c.TitleEn</small>
                 </td>
                 <td>@c.Capital</td>
-                <td>@c.Continent</td>
                 <td>@c.Currency</td>
                 <td>@c.Alpha2</td>
                 <td>@c.Phone</td>
+                <td>@c.Continent</td>
             </tr>
         }
         </tbody>

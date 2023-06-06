@@ -49,7 +49,7 @@
         if (string.IsNullOrEmpty(Text)) return "?";
         var result = string.Join(string.Empty,
             Text.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries).Select(s => s[0]));
-        return string.IsNullOrEmpty(result) ? "?" : result;
+        return string.IsNullOrEmpty(result) ? "?" : result.ToUpper();
     }
 
 }
