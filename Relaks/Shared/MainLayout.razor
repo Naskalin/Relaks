@@ -9,9 +9,24 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center header-navbar-menu">
         <li class="nav-item">
-          <a class="nav-link" href="/entries">@Resources.Entity.BaseEntries</a>
+          <a class="nav-link" href="/entries">
+            <div>@Resources.Entity.BaseEntries</div>
+            <small class="text-muted">люди/компании/встречи</small>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/entries">
+            <div>Шаблоны</div>
+            <small class="text-muted">для наборов данных</small>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/entries">
+            <div>Страны</div>
+            <small class="text-muted">столицы, валюты</small>
+          </a>
         </li>
       </ul>
       <div class="d-flex gap-4" role="search">

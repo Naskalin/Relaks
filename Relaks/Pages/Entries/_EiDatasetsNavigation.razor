@@ -5,7 +5,7 @@
 <button
     type="button"
     class="list-group-item list-group-item-action 
-@(EiDataset.IsFavorite ? "bg-warning bg-opacity-25" : "")
+@(EiDataset.IsFavorite ? "text-warning fw-medium" : "")
 @(EiDataset.Id.Equals(EntryInfoId) ? "border-dashed border-2 border-warning" : "")
 "
     @onclick="@(() => JsRuntime.InvokeVoidAsync("ScrollToId", $"dataset-{EiDataset.Id}", -64))"

@@ -59,4 +59,24 @@ public static class EntryInfoMapper
         req.Title = model.Title;
         req.IsFavorite = model.IsFavorite;
     }
+
+    public static void MapTo(this DatasetTemplate template, EiDataset model)
+    {
+        var dataset = template.Dataset;
+        dataset.Groups.ForEach(group =>
+        {
+            group.Id = Guid.NewGuid().ToString();
+            group.Items.ForEach(item => item.Id = Guid.NewGuid().ToString());
+        });
+        // foreach (var group in dataset.Groups)
+        // {
+        //     group.Id = Guid.NewGuid().ToString();
+        //     foreach (var item in group.Items)
+        //     {
+        //         item.Id = Guid.NewGuid().ToString();
+        //     }
+        // }
+
+        model.Dataset = dataset;
+    }
 }

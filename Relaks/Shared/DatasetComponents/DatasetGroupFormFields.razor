@@ -13,11 +13,14 @@
                         <i class="las la-random la-lg"></i>
                     </button>
                 </div>
-                <div class="col-auto">
-                    <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@(() => IsHide = !IsHide)">
-                        <i class="las la-lg @(IsHide ? "la-low-vision" : "la-eye")"></i>
-                    </button>
-                </div>
+                @if (Group.Items.Count > 1)
+                {
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@(() => IsHide = !IsHide)">
+                            <i class="las la-lg @(IsHide ? "la-low-vision" : "la-eye")"></i>
+                        </button>
+                    </div>
+                } 
             }
             <div class="col">
                 <InputText @bind-Value="@Group.Title" class="form-control form-control-lg" placeholder="Название группы"/>
