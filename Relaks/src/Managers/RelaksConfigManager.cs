@@ -4,13 +4,11 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace Relaks.Managers;
 
-public class RelaksConfigModel : IRelaksConfig
+public class RelaksConfig : IRelaksConfig
 {
     public string ProjectDir { get; set; } = null!;
     public string SqliteFilePath { get; set; } = null!;
     public string FilesDirPath { get; set; } = null!;
-    public string Timezone { get; set; } = null!;
-    public string PhoneRegion { get; set; } = null!;
 
     public string SqliteConnectionString() => "Data Source=" + SqliteFilePath;
 }
@@ -41,15 +39,13 @@ public static class RelaksConfigManager
     /// </summary>
     /// <param name="projectDir"></param>
     /// <returns></returns>
-    private static RelaksConfigModel CreateDefaultConfig(string projectDir)
+    private static RelaksConfig CreateDefaultConfig(string projectDir)
     {
         var storeDir = DefaultStorePath(projectDir);
         
-        var model = new RelaksConfigModel()
+        var model = new RelaksConfig()
         {
             ProjectDir = projectDir,
-            Timezone = "Europe/Moscow",
-            PhoneRegion = "RU",
             FilesDirPath = Path.Combine(storeDir, "files"),
             SqliteFilePath = Path.Combine(storeDir, "relaks.db"),
         };
@@ -65,26 +61,15 @@ public static class RelaksConfigManager
         return model;
     }
 
-    private static void CreateSymlinkToFilesDir(RelaksConfigModel config)
-    {
-        var webrootPath = Path.Combine(config.ProjectDir, "wwwroot");
-        if (!Directory.Exists(webrootPath))
-        {
-            Directory.CreateDirectory(webrootPath);
-        }
-
-        Directory.CreateSymbolicLink(Path.Combine(webrootPath, "files"), config.FilesDirPath);
-    }
-    
     /// <summary>
     /// Получаем существующий или создаём новый конфиг
     /// </summary>
     /// <param name="projectDir"></param>
     /// <returns></returns>
-    public static RelaksConfigModel GetOrCreateConfig(string projectDir)
+    public static RelaksConfig GetOrCreateConfig(string projectDir)
     {
         var relaksConfigPath = RelaksConfigPath(projectDir);
-        RelaksConfigModel config;
+        RelaksConfig config;
         
         if (!File.Exists(relaksConfigPath))
         {
@@ -98,14 +83,12 @@ public static class RelaksConfigManager
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();
         
-            config = deserializer.Deserialize<RelaksConfigModel>(yamlString);
+            config = deserializer.Deserialize<RelaksConfig>(yamlString);
             if (string.IsNullOrEmpty(config.SqliteFilePath) || string.IsNullOrEmpty(config.FilesDirPath))
             {
                 config = CreateDefaultConfig(projectDir);
             }   
         }
-
-        // CreateSymlinkToFilesDir(config);
 
         return config;
     }

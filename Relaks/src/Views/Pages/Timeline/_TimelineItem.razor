@@ -1,0 +1,67 @@
+﻿@using TimelineItem = Relaks.Database.Repositories.TimelineItem
+@using Relaks.Models
+<div class="timeline__el">
+    <div class="timeline__time">
+        @Item.Date.ToString(Item.WithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy")
+    </div>
+    <div class="timeline__icon">
+        <div class="timeline__icon-el"><i class="@DataHelper.EntityIcon(Item.EntityName) la-lg"></i></div>
+    </div>
+    <div class="timeline__body">
+        <div class="timeline__header">
+            @if (!string.IsNullOrEmpty(Avatar))
+            {
+                <img src="@Avatar" class="timeline__avatar" alt="">
+            }
+            else
+            {
+                <CustomAvatar Text="@Title" Classes="timeline__avatar" />
+            }
+            <div class="timeline__title">@Title</div>
+        </div>
+        @if (string.IsNullOrEmpty(Description))
+        {
+            <div class="text-muted mb-1">@Description</div>
+        }
+        @if (string.IsNullOrEmpty(More))
+        {
+            <div class="fst-italic mb-1">@Description</div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public TimelineItem Item { get; set; } = null!;
+
+    private string Date { get; set; } = null!;
+    private string Title { get; set; } = "?";
+    private string? Description { get; set; }
+    private string? More { get; set; }
+    private string? Avatar { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        switch (Item.EntityName)
+        {
+            case nameof(EPerson):
+            case nameof(EMeet):
+            case nameof(ECompany):
+                EntryPreset((BaseEntry) Item.Entity);
+                break;
+           case nameof(EiDate):
+               var eiDate = (EiDate) Item.Entity;
+               More = eiDate.Title;
+               EntryPreset(eiDate.Entry);
+               break;
+        }
+    }
+
+    private void EntryPreset(BaseEntry entry)
+    {
+        Title = entry.Name;
+        Description = entry.Description;
+        Avatar = !string.IsNullOrEmpty(entry.Thumbnail) ? entry.Thumbnail : null;
+    }
+
+}

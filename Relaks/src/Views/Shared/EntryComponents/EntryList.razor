@@ -49,9 +49,7 @@
 <table class="table table-bordered table-hover align-middle">
     <thead>
     <tr style="@(!string.IsNullOrEmpty(Req.Search) ? "opacity: .3; cursor: not-allowed;" : "")">
-        <th style="width: 80px" @onclick="@(() => OnSortChange(nameof(BaseEntry.Discriminator)))" class="cursor-pointer">
-            @Resources.Action.Type <OrderableIcon Orderable="@Req" Prop="@nameof(BaseEntry.Discriminator)"/>
-        </th>
+        <th style="width: 60px"></th>
         <th style="width: 80px"></th>
         <th @onclick="@(() => OnSortChange(nameof(BaseEntry.Name)))" class="cursor-pointer">
             Имя <OrderableIcon Orderable="@Req" Prop="@nameof(BaseEntry.Name)"/>

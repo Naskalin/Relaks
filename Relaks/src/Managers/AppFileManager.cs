@@ -7,10 +7,10 @@ namespace Relaks.Managers;
 
 public class AppFileManager
 {
-    private readonly RelaksConfigModel _relaksConfig;
+    private readonly RelaksConfig _relaksConfig;
     private readonly ILogger<AppFileManager> _logger;
 
-    public AppFileManager(RelaksConfigModel relaksConfig, ILogger<AppFileManager> logger)
+    public AppFileManager(RelaksConfig relaksConfig, ILogger<AppFileManager> logger)
     {
         _relaksConfig = relaksConfig;
         _logger = logger;

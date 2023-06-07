@@ -1,0 +1,83 @@
+﻿@page "/timeline"
+@using Relaks.Database
+@using Relaks.Database.Repositories
+@using Relaks.Utils.Extensions
+@using TimelineItem = Relaks.Database.Repositories.TimelineItem
+@using System.Globalization
+
+@inject AppDbContext Db;
+
+<PageTemplate>
+    <MyTitle>События</MyTitle>
+
+
+    <div class="row">
+        <div class="col">
+            @if (!Items.Any())
+            {
+                <p class="text-muted">
+                    <i class="las la-frown la-lg"></i> @Resources.Action.NotFoundResults
+                </p>
+            }
+            else
+            {
+                <div class="timeline">
+                    @foreach (var item in Items)
+                    {
+                        <_TimelineItem Item="@item"/>
+                    }
+                </div>
+            }
+        </div>
+        <div class="col">
+            <div class="mb-3">
+                <label for="" class="form-label">Выберите месяц</label>
+
+                <div class="timeline__months">
+                    @for (var i = 1; i <= 12; i++)
+                    {
+                        {
+                            var month = i;
+                            <div class="timeline__months-el">
+                                <button type="button"
+                                        class="btn timeline__months-btn @(Date.Month.Equals(month) ? "btn-secondary" : "btn-outline-secondary")"
+                                        @onclick="@(() => OnChangeMonth(month))">
+                                    @DateTimeFormatInfo.CurrentInfo.GetMonthName(i)
+                                </button>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <p class="text-muted">Всего найдено событий: @Items.Count</p>
+        </div>
+    </div>
+
+</PageTemplate>
+
+@code {
+    private List<TimelineItem> Items { get; set; } = new();
+    private TimelineRequest Req { get; set; } = new();
+    private DateTime Date { get; set; } = DateTime.Now;
+
+    protected override void OnInitialized()
+    {
+        FindItems();
+    }
+
+    private void FindItems()
+    {
+        Req.StartDay = Date.StartTimeOfMonth();
+        Req.EndDay = Date.EndTimeOfMonth();
+        Items = Db.FindTimeline(Req);
+        StateHasChanged();
+    }
+
+    private void OnChangeMonth(int month)
+    {
+        Date = new DateTime(Date.Year, month, Date.Day);
+        FindItems();
+    }
+
+}
