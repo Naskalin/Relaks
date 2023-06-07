@@ -27,10 +27,10 @@ public static class EntryInfoMapper
                 arr.Add(((EiUrl) eInfo).Url);
                 break;
             case nameof(EiDataset):
-                foreach (var group in ((EiDataset) eInfo).Dataset.Groups)
+                foreach (var group in ((EiDataset) eInfo).Dataset.Groups.Where(group => !group.Items.All(x => string.IsNullOrEmpty(x.Value))))
                 {
                     arr.Add(group.Title);
-                    foreach (var item in group.Items)
+                    foreach (var item in group.Items.Where(item => !string.IsNullOrEmpty(item.Value)))
                     {
                         arr.Add(item.Key);
                         arr.Add(item.Value);

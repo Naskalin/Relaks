@@ -20,11 +20,11 @@
     </MyTitle>
 
     <div class="alert bg-info bg-opacity-10 border-info border-opacity-25">
-        <div class="row">
+        <div class="row align-items-center">
             <div class="col">
                 <div class="row align-items-center gx-3">
                     <div class="col-auto"><i class="las la-info-circle la-lg text-secondary" style="font-size: 2rem;"></i></div>
-                    <div class="col">Вы можете изначально предзаполнить набор данных по шаблону, для этого выберите его. Будьте внимательны, это удалит ранее заполненные данные.</div>
+                    <div class="col">Вы можете изначально предзаполнить набор данных по шаблону. Добавить или изменить шаблоны <a href="/dataset-templates">можно здесь</a>.</div>
                 </div>
             </div>
             <div class="col">
@@ -40,13 +40,19 @@
                             type="button" 
                             disabled="@(!DatasetTemplateId.HasValue)"
                             @onclick="@PresetDataset"
-                            >
+                    >
                         Предзаполнить
                     </button>
                 </div>
+                <div class="form-text">Будьте внимательны, шаблон перезапишет все заполненные данные в этой форме.</div>
             </div>
         </div>
     </div>
+    
+        <div class="alert bg-secondary bg-opacity-10">
+            <i class="las la-info-circle la-lg me-1"></i>
+            При отображении ключи и группы без значений будут скрыты, это сделано для того, чтобы показывать только заполненные значения.
+        </div>
 
     <EditForm Model="@Req" OnSubmit="@OnSubmit">
         <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
