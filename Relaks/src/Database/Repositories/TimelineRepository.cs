@@ -72,7 +72,7 @@ public static class TimelineRepository
             .AsEnumerable()
             .Union(queryEntryStarts)
             .Union(queryEntryEnds)
-            .OrderBy(x => x.Date)
+            .OrderBy(x => x.Date.Day)
             .ToList();
     }
 }
