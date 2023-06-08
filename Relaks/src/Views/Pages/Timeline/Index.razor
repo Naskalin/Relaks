@@ -4,14 +4,31 @@
 @using Relaks.Utils.Extensions
 @using TimelineItem = Relaks.Database.Repositories.TimelineItem
 @using System.Globalization
+@using Relaks.Models
 
 @inject AppDbContext Db;
+@inject NavigationManager NavigationManager;
 
 <PageTemplate>
     <MyTitle>События</MyTitle>
 
 
     <div class="row">
+     <div class="col-auto">
+              @if (PreviewEntryId.HasValue)
+              {
+                  <EntryCard EntryId="@PreviewEntryId.Value"/>
+              }
+              else
+              {
+                  <div style="width: 20rem;">
+                      <ul class="ul-info">
+                          <li>Одиночный клик по строке откроет предпросмотр</li>
+                          <li>Двойной клик по строке откроет объединение</li>
+                      </ul>
+                  </div>
+              }
+          </div>
         <div class="col">
             @if (!Items.Any())
             {
@@ -24,7 +41,11 @@
                 <div class="timeline">
                     @foreach (var item in Items)
                     {
-                        <_TimelineItem Item="@item"/>
+                        <_TimelineItem 
+                            Item="@item"
+                            OnSingleClick="@(entryId => PreviewEntryId = entryId)"
+                            OnDoubleClick="@OnDoubleClick"
+                        />
                     }
                 </div>
             }
@@ -60,6 +81,7 @@
     private List<TimelineItem> Items { get; set; } = new();
     private TimelineRequest Req { get; set; } = new();
     private DateTime Date { get; set; } = DateTime.Now;
+    private Guid? PreviewEntryId { get; set; }
 
     protected override void OnInitialized()
     {
@@ -72,6 +94,14 @@
         Req.EndDay = Date.EndTimeOfMonth();
         Items = Db.FindTimeline(Req);
         StateHasChanged();
+    }
+
+    private void OnDoubleClick(Guid? baseEntryId)
+    {
+        if (baseEntryId.HasValue)
+        {
+            NavigationManager.NavigateTo($"/entries/{baseEntryId.Value}/info");
+        }
     }
 
     private void OnChangeMonth(int month)

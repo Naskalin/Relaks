@@ -39,10 +39,10 @@
         <value>Date of death</value>
     </data>
     <data name="ECompany_EndAt" xml:space="preserve">
-        <value>Liquidation</value>
+        <value>Liquidation company</value>
     </data>
     <data name="ECompany_StartAt" xml:space="preserve">
-        <value>Registration</value>
+        <value>Registration company</value>
     </data>
     <data name="EMeet_EndAt" xml:space="preserve">
         <value>End of the meeting</value>

@@ -6,6 +6,7 @@ namespace Relaks.Database.Repositories;
 public class TimelineItem
 {
     public DateTime Date { get; set; }
+    public string? DateType { get; set; }
     public bool WithTime { get; set; }
     public string EntityName { get; set; } = null!;
     public object Entity { get; set; } = null!;
@@ -13,6 +14,10 @@ public class TimelineItem
 
 public class TimelineRequest
 {
+    public bool IsStarts { get; set; }
+    public bool IsEnds { get; set; }
+    public string? Discriminator { get; set; }
+    
     public DateTime StartDay { get; set; }
     public DateTime EndDay { get; set; }
 }
@@ -38,6 +43,7 @@ public static class TimelineRepository
                 EntityName = x.Discriminator,
                 Entity = x,
                 WithTime = x.StartAtWithTime,
+                DateType = Resources.Entity.ResourceManager.GetString(string.Format(x.Discriminator+"_StartAt"))
             });
 
         var queryEntryEnds = db.BaseEntries
@@ -51,7 +57,8 @@ public static class TimelineRepository
                 Date = x.EndAt!.Value,
                 EntityName = x.Discriminator,
                 Entity = x,
-                WithTime = x.EndAtWithTime
+                WithTime = x.EndAtWithTime,
+                DateType = Resources.Entity.ResourceManager.GetString(string.Format(x.Discriminator+"_EndAt"))
             });
         
         var queryEiDates = db.EiDates

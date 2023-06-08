@@ -1,8 +1,14 @@
 ﻿@using TimelineItem = Relaks.Database.Repositories.TimelineItem
 @using Relaks.Models
-<div class="timeline__el">
+<div class="timeline__el" 
+     @onclick="@(() => OnSingleClick.InvokeAsync(BaseEntryId))"
+     @ondblclick="@(() => OnDoubleClick.InvokeAsync(BaseEntryId))">
     <div class="timeline__time">
-        @Item.Date.ToString(Item.WithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy")
+        <div>@Item.Date.ToString(Item.WithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy")</div>
+        @if (!string.IsNullOrEmpty(Item.DateType))
+        {
+            <span class="badge text-bg-secondary">@Item.DateType</span>
+        }
     </div>
     <div class="timeline__icon">
         <div class="timeline__icon-el"><i class="@DataHelper.EntityIcon(Item.EntityName) la-lg"></i></div>
@@ -19,11 +25,11 @@
             }
             <div class="timeline__title">@Title</div>
         </div>
-        @if (string.IsNullOrEmpty(Description))
+        @if (!string.IsNullOrEmpty(Description))
         {
             <div class="text-muted mb-1">@Description</div>
         }
-        @if (string.IsNullOrEmpty(More))
+        @if (!string.IsNullOrEmpty(More))
         {
             <div class="fst-italic mb-1">@Description</div>
         }
@@ -33,12 +39,19 @@
 @code {
     [Parameter]
     public TimelineItem Item { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback<Guid?> OnSingleClick { get; set; }
+    
+    [Parameter]
+    public EventCallback<Guid?> OnDoubleClick { get; set; }
 
     private string Date { get; set; } = null!;
     private string Title { get; set; } = "?";
     private string? Description { get; set; }
     private string? More { get; set; }
     private string? Avatar { get; set; }
+    private Guid? BaseEntryId { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -62,6 +75,7 @@
         Title = entry.Name;
         Description = entry.Description;
         Avatar = !string.IsNullOrEmpty(entry.Thumbnail) ? entry.Thumbnail : null;
+        BaseEntryId = entry.Id;
     }
 
 }

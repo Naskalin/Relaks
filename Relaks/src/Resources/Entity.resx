@@ -52,13 +52,13 @@
         <value>Начало встречи</value>
     </data>
     <data name="ECompany_StartAt" xml:space="preserve">
-        <value>Регистрация</value>
+        <value>Регистрация компании</value>
     </data>
     <data name="EMeet_EndAt" xml:space="preserve">
         <value>Окончание встречи</value>
     </data>
     <data name="ECompany_EndAt" xml:space="preserve">
-        <value>Ликвидация</value>
+        <value>Ликвидация компании</value>
     </data>
     <data name="EPerson_Name" xml:space="preserve">
         <value>ФИО</value>

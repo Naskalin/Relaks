@@ -15,9 +15,9 @@
 
     <div class="row">
         <div class="col-auto">
-            @if (EntryIdPreview.HasValue)
+            @if (PreviewEntryId.HasValue)
             {
-                <EntryCard EntryId="@EntryIdPreview.Value"/>
+                <EntryCard EntryId="@PreviewEntryId.Value"/>
             }
             else
             {
@@ -37,7 +37,7 @@
 
 @code {
 
-    private Guid? EntryIdPreview { get; set; }
+    private Guid? PreviewEntryId { get; set; }
 
     private void OnRowDoubleClicked(Guid entryId)
     {
@@ -46,7 +46,7 @@
 
     private void OnRowClicked(Guid entryId)
     {
-        EntryIdPreview = entryId;
+        PreviewEntryId = entryId;
     }
 
 }
