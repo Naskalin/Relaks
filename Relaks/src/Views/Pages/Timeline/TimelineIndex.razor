@@ -3,8 +3,6 @@
 @using Relaks.Database.Repositories
 @using Relaks.Utils.Extensions
 @using TimelineItem = Relaks.Database.Repositories.TimelineItem
-@using System.Globalization
-@using Relaks.Models
 
 @inject AppDbContext Db;
 @inject NavigationManager NavigationManager;
@@ -51,36 +49,18 @@
             }
         </div>
         <div class="col">
-            <div class="mb-3">
-                <label for="" class="form-label">Выберите месяц</label>
-
-                <div class="timeline__months">
-                    @for (var i = 1; i <= 12; i++)
-                    {
-                        {
-                            var month = i;
-                            <div class="timeline__months-el">
-                                <button type="button"
-                                        class="btn timeline__months-btn @(Date.Month.Equals(month) ? "btn-secondary" : "btn-outline-secondary")"
-                                        @onclick="@(() => OnChangeMonth(month))">
-                                    @DateTimeFormatInfo.CurrentInfo.GetMonthName(i)
-                                </button>
-                            </div>
-                        }
-                    }
-                </div>
-            </div>
-
-            <p class="text-muted">Всего найдено событий: @Items.Count</p>
+            <CascadingValue Value="@this">
+                <_TimelineFilter/>
+            </CascadingValue>
         </div>
     </div>
 
 </PageTemplate>
 
 @code {
-    private List<TimelineItem> Items { get; set; } = new();
-    private TimelineRequest Req { get; set; } = new();
-    private DateTime Date { get; set; } = DateTime.Now;
+    public List<TimelineItem> Items { get; set; } = new();
+    public TimelineRequest Req { get; set; } = new();
+    public DateTime Date { get; set; } = DateTime.Now;
     private Guid? PreviewEntryId { get; set; }
 
     protected override void OnInitialized()
@@ -88,7 +68,7 @@
         FindItems();
     }
 
-    private void FindItems()
+    public void FindItems()
     {
         Req.StartDay = Date.StartTimeOfMonth();
         Req.EndDay = Date.EndTimeOfMonth();
@@ -103,11 +83,4 @@
             NavigationManager.NavigateTo($"/entries/{baseEntryId.Value}/info");
         }
     }
-
-    private void OnChangeMonth(int month)
-    {
-        Date = new DateTime(Date.Year, month, Date.Day);
-        FindItems();
-    }
-
 }

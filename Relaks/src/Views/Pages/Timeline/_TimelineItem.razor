@@ -5,9 +5,9 @@
      @ondblclick="@(() => OnDoubleClick.InvokeAsync(BaseEntryId))">
     <div class="timeline__time">
         <div>@Item.Date.ToString(Item.WithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy")</div>
-        @if (!string.IsNullOrEmpty(Item.DateType))
+        @if (!string.IsNullOrEmpty(Item.KeywordTitle))
         {
-            <span class="badge text-bg-secondary">@Item.DateType</span>
+            <span class="badge text-bg-secondary">@Item.KeywordTitle</span>
         }
     </div>
     <div class="timeline__icon">
