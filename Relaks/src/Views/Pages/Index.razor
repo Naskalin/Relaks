@@ -1,33 +1,31 @@
 ﻿@page "/"
-@using Microsoft.AspNetCore.Mvc.Localization
-@using Microsoft.Extensions.Localization
-@using System.Globalization
 
 <PageTemplate>
-  <MyTitle>Index</MyTitle>
-  
-  <p><a href="/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/info">Вася Пупкин</a></p>
-  
-  <p><a href="/asd">error</a></p>
-  <p><a href="/test">test</a></p>
-  <p><NavLink href="/entries/new">new entry</NavLink></p>
-  <p>bootstrap icons <i class="bi bi-1-square text-red"></i></p>
-  <p>line awesome icons <i class="las la-info text-red"></i></p>
-  <p>font awesome icons <i class="fa fa-solid fa-info"></i></p>
-  <p>font awesome icons 2
-    <i class="fa-solid fa-arrow-down-up-lock" aria-hidden="true"></i></p>
-  <p>@Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName</p>
-  <div>
-    <div class="mime-icon ico-application ico-asx">
-      <div class="ico"></div>
-    </div>
-    
-    @* <img src="/2023/5/26/sample1.heic" alt=""> *@
-  </div>
+  <MyTitle>Статистика</MyTitle>
 
-  <button class="btn btn-dark" @onclick="SwitchCulture">switchCulture</button>
-  <p>trans: @Resources.Action.Add</p>
-  @* <p>trans: @__["welcome"]</p> *@
+  stats...
+  @* <p><a href="/entries/01FBDDDD-1D69-4757-A8D2-5050A1AED4D4/info">Вася Пупкин</a></p> *@
+  @* *@
+  @* <p><a href="/asd">error</a></p> *@
+  @* <p><a href="/test">test</a></p> *@
+  @* <p><NavLink href="/entries/new">new entry</NavLink></p> *@
+  @* <p>bootstrap icons <i class="bi bi-1-square text-red"></i></p> *@
+  @* <p>line awesome icons <i class="las la-info text-red"></i></p> *@
+  @* <p>font awesome icons <i class="fa fa-solid fa-info"></i></p> *@
+  @* <p>font awesome icons 2 *@
+  @*   <i class="fa-solid fa-arrow-down-up-lock" aria-hidden="true"></i></p> *@
+  @* <p>@Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName</p> *@
+  @* <div> *@
+  @*   <div class="mime-icon ico-application ico-asx"> *@
+  @*     <div class="ico"></div> *@
+  @*   </div> *@
+  @*    *@
+  @*   $1$ <img src="/2023/5/26/sample1.heic" alt=""> #1# *@
+  @* </div> *@
+  @* *@
+  @* <button class="btn btn-dark" @onclick="SwitchCulture">switchCulture</button> *@
+  @* <p>trans: @Resources.Action.Add</p> *@
+  @* $1$ <p>trans: @__["welcome"]</p> #1# *@
   
 </PageTemplate>
 @code{
@@ -35,11 +33,11 @@
   // [Inject]
   // public IStringLocalizer<App> __ { get; set; } = null!;
 
-  private void SwitchCulture()
-  {
-    var current = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
-
-    Thread.CurrentThread.CurrentCulture = new CultureInfo("en");
-    Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
-  }
+  // private void SwitchCulture()
+  // {
+  //   var current = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+  //
+  //   Thread.CurrentThread.CurrentCulture = new CultureInfo("en");
+  //   Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
+  // }
 }

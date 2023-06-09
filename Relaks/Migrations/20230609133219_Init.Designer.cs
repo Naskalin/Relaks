@@ -11,8 +11,8 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230525081320_TreePathToFileCategories")]
-    partial class TreePathToFileCategories
+    [Migration("20230609133219_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,6 +75,9 @@ namespace Relaks.Migrations
 
                     b.Property<bool>("StartAtWithTime")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Thumbnail")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
@@ -284,6 +287,25 @@ namespace Relaks.Migrations
                     b.ToTable("Countries");
                 });
 
+            modelBuilder.Entity("Relaks.Models.DatasetTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DatasetValue")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DatasetTemplates");
+                });
+
             modelBuilder.Entity("Relaks.Models.FtsEntry", b =>
                 {
                     b.Property<int>("RowId")
@@ -437,17 +459,17 @@ namespace Relaks.Migrations
                     b.HasDiscriminator().HasValue("EPerson");
                 });
 
-            modelBuilder.Entity("Relaks.Models.EiCustom", b =>
+            modelBuilder.Entity("Relaks.Models.EiDataset", b =>
                 {
                     b.HasBaseType("Relaks.Models.BaseEntryInfo");
 
-                    b.Property<string>("CustomValue")
+                    b.Property<string>("DatasetValue")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.ToTable("EntryInfos");
 
-                    b.HasDiscriminator().HasValue("EiCustom");
+                    b.HasDiscriminator().HasValue("EiDataset");
                 });
 
             modelBuilder.Entity("Relaks.Models.EiDate", b =>

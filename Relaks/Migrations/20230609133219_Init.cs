@@ -31,6 +31,19 @@ namespace Relaks.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DatasetTemplates",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    DatasetValue = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DatasetTemplates", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Entries",
                 columns: table => new
                 {
@@ -45,7 +58,8 @@ namespace Relaks.Migrations
                     StartAtWithTime = table.Column<bool>(type: "INTEGER", nullable: false),
                     EndAtWithTime = table.Column<bool>(type: "INTEGER", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    DeletedReason = table.Column<string>(type: "TEXT", nullable: true)
+                    DeletedReason = table.Column<string>(type: "TEXT", nullable: true),
+                    Thumbnail = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -65,7 +79,7 @@ namespace Relaks.Migrations
                     Discriminator = table.Column<string>(type: "TEXT", nullable: false),
                     DeletedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
                     DeletedReason = table.Column<string>(type: "TEXT", nullable: true),
-                    CustomValue = table.Column<string>(type: "TEXT", nullable: true),
+                    DatasetValue = table.Column<string>(type: "TEXT", nullable: true),
                     Date = table.Column<DateTime>(type: "TEXT", nullable: true),
                     WithTime = table.Column<bool>(type: "INTEGER", nullable: true),
                     Email = table.Column<string>(type: "TEXT", nullable: true),
@@ -91,6 +105,7 @@ namespace Relaks.Migrations
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     Discriminator = table.Column<string>(type: "TEXT", nullable: false),
+                    TreePath = table.Column<string>(type: "TEXT", nullable: false),
                     ParentId = table.Column<Guid>(type: "TEXT", nullable: true),
                     EntryId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
@@ -107,7 +122,8 @@ namespace Relaks.Migrations
                         name: "FK_FileCategories_FileCategories_ParentId",
                         column: x => x.ParentId,
                         principalTable: "FileCategories",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -230,6 +246,9 @@ namespace Relaks.Migrations
 
             migrationBuilder.DropTable(
                 name: "Countries");
+
+            migrationBuilder.DropTable(
+                name: "DatasetTemplates");
 
             migrationBuilder.DropTable(
                 name: "EntryInfos");

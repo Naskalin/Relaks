@@ -11,8 +11,8 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230518133751_Init")]
-    partial class Init
+    [Migration("20230609133246_CreateFtsTables")]
+    partial class CreateFtsTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,6 +75,9 @@ namespace Relaks.Migrations
 
                     b.Property<bool>("StartAtWithTime")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Thumbnail")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
@@ -195,6 +198,10 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("TreePath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ParentId");
@@ -278,6 +285,25 @@ namespace Relaks.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Countries");
+                });
+
+            modelBuilder.Entity("Relaks.Models.DatasetTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DatasetValue")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DatasetTemplates");
                 });
 
             modelBuilder.Entity("Relaks.Models.FtsEntry", b =>
@@ -433,17 +459,17 @@ namespace Relaks.Migrations
                     b.HasDiscriminator().HasValue("EPerson");
                 });
 
-            modelBuilder.Entity("Relaks.Models.EiCustom", b =>
+            modelBuilder.Entity("Relaks.Models.EiDataset", b =>
                 {
                     b.HasBaseType("Relaks.Models.BaseEntryInfo");
 
-                    b.Property<string>("CustomValue")
+                    b.Property<string>("DatasetValue")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.ToTable("EntryInfos");
 
-                    b.HasDiscriminator().HasValue("EiCustom");
+                    b.HasDiscriminator().HasValue("EiDataset");
                 });
 
             modelBuilder.Entity("Relaks.Models.EiDate", b =>
@@ -584,8 +610,9 @@ namespace Relaks.Migrations
             modelBuilder.Entity("Relaks.Models.BaseFileCategory", b =>
                 {
                     b.HasOne("Relaks.Models.BaseFileCategory", "Parent")
-                        .WithMany()
-                        .HasForeignKey("ParentId");
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Parent");
                 });
@@ -626,6 +653,11 @@ namespace Relaks.Migrations
             modelBuilder.Entity("Relaks.Models.BaseEntry", b =>
                 {
                     b.Navigation("EntryInfos");
+                });
+
+            modelBuilder.Entity("Relaks.Models.BaseFileCategory", b =>
+                {
+                    b.Navigation("Children");
                 });
 #pragma warning restore 612, 618
         }
