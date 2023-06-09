@@ -1,0 +1,35 @@
+﻿@using System.Globalization
+@inject IJSRuntime JsRuntime;
+
+
+<div class="d-flex mb-4 justify-content-center gap-3 align-items-center">
+    <button type="button" class="btn btn-outline-secondary text-capitalize" @onclick="@PrevMonth">
+        <i class="las la-arrow-left la-lg me-1"></i>
+        @DateTimeFormatInfo.CurrentInfo.GetMonthName(Store.Date.AddMonths(-1).Month)
+    </button>
+    <div class="text-muted">Найдено событий: @Store.Items.Count</div>
+    <button type="button" class="btn btn-outline-secondary text-capitalize" @onclick="@NextMonth">
+        @DateTimeFormatInfo.CurrentInfo.GetMonthName(Store.Date.AddMonths(1).Month)
+        <i class="las la-arrow-right la-lg ms-1"></i>
+    </button>
+</div>
+
+@code {
+    [CascadingParameter]
+    [Parameter]
+    public TimelineIndex Store { get; set; } = null!;
+    
+    private async Task PrevMonth()
+    {
+        Store.Date = Store.Date.AddMonths(-1);
+        await JsRuntime.InvokeVoidAsync("ScrollToSelector", "body", 0);
+        Store.FindItems();
+    }
+
+    private async Task NextMonth()
+    {
+        Store.Date = Store.Date.AddMonths(1);
+        await JsRuntime.InvokeVoidAsync("ScrollToSelector", "body", 0);
+        Store.FindItems();
+    }
+}

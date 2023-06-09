@@ -2,8 +2,6 @@
 @using System.Linq.Expressions
 @using Relaks.Models
 
-<p class="text-muted">Всего найдено событий: @Store.Items.Count</p>
-
 <div class="mb-3">
     <label for="" class="form-label">Выберите месяц</label>
 
@@ -29,17 +27,25 @@
 
     @foreach (var discriminator in DataHelper.EntryDiscriminators)
     {
-        foreach(var propName in new List<string>{nameof(BaseEntry.StartAt), nameof(BaseEntry.EndAt)})
+        foreach(var entryDateName in _entryDateNames)
         {
             var id = Guid.NewGuid();
             <div class="form-check form-switch mb-2">
-                <input class="form-check-input" type="checkbox" id="@id" @onchange="@(e => OnSwitchEntryDateType(e, discriminator, propName))">
+                <input class="form-check-input" type="checkbox" id="@id" @onchange="@(e => OnSwitchEntryDateType(e, discriminator, entryDateName))">
                 <label class="form-check-label" for="@id">
-                    @Resources.Entity.ResourceManager.GetString($"{discriminator}_{propName}")
+                    @Resources.Entity.ResourceManager.GetString($"{discriminator}_{entryDateName}")
                 </label>
             </div>   
         }
     }
+
+    @{ var eiDatesId = Guid.NewGuid();}
+    <div class="form-check form-switch mb-2">
+        <input class="form-check-input" type="checkbox" id="@eiDatesId" @onchange="@(e => OnSwitchEntryDateType(e, nameof(EiDate), nameof(EiDate.Date)))">
+        <label class="form-check-label" for="@eiDatesId">
+            Все другие даты
+        </label>
+    </div>   
 </div>
 
 @code {
@@ -81,4 +87,7 @@
 
         Store.FindItems();
     }
+
+    private static string[] _entryDateNames = {nameof(BaseEntry.StartAt), nameof(BaseEntry.EndAt)};
+
 }

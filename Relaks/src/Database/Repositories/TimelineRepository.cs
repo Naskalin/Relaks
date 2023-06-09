@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using Relaks.DataHelpers;
 using Relaks.Mappers;
 using Relaks.Models;
 
@@ -24,62 +25,96 @@ public class TimelineRequest
 
 public static class TimelineRepository
 {
-    public static List<TimelineItem> FindTimeline(this AppDbContext db, TimelineRequest req)
+    public static IReadOnlyList<TimelineItem> FindTimeline(this AppDbContext db, TimelineRequest req)
     {
         var sDay = req.StartDay.Day;
         var sMonth = req.StartDay.Month;
         var eDay = req.EndDay.Day;
         var eMonth = req.EndDay.Month;
+        var result = new List<TimelineItem>();
+        var reqEntryDiscriminatorsDict = req.DiscriminatorProperties
+                .Where(x => DataHelper.EntryDiscriminators.Contains(x.Key))
+                .ToDictionary(x => x.Key, x => x.Value)
+            ;
 
-        var queryEntryStarts = db.BaseEntries
-            .Where(x => x.StartAt.HasValue
-                        && x.StartAt.Value.Day >= sDay
-                        && x.StartAt.Value.Month >= sMonth
-                        && x.StartAt.Value.Day <= eDay
-                        && x.StartAt.Value.Month <= eMonth)
-            .Select(x => new TimelineItem()
+        var discriminatorStarts = reqEntryDiscriminatorsDict
+                .Where(x => x.Value.Contains(nameof(BaseEntry.StartAt)))
+                .Select(x => x.Key)
+                .ToArray()
+            ;
+        if (!req.DiscriminatorProperties.Any() || discriminatorStarts.Any())
+        {
+            var queryEntryStarts = db.BaseEntries
+                    .Where(x => x.StartAt.HasValue
+                                && x.StartAt.Value.Day >= sDay
+                                && x.StartAt.Value.Month >= sMonth
+                                && x.StartAt.Value.Day <= eDay
+                                && x.StartAt.Value.Month <= eMonth)
+                ;
+
+            if (discriminatorStarts.Any())
+            {
+                queryEntryStarts = queryEntryStarts.Where(x => discriminatorStarts.Contains(x.Discriminator));   
+            }
+            
+            result.AddRange(queryEntryStarts.Select(x => new TimelineItem()
             {
                 Date = x.StartAt!.Value,
                 EntityName = x.Discriminator,
                 Entity = x,
                 WithTime = x.StartAtWithTime,
                 KeywordTitle = Resources.Entity.ResourceManager.GetString($"{x.Discriminator}_StartAt")
-            });
+            }));   
+        }
 
-        var queryEntryEnds = db.BaseEntries
-            .Where(x => x.EndAt.HasValue 
-                        && x.EndAt.Value.Day >= sDay 
-                        && x.EndAt.Value.Month >= sMonth 
-                        && x.EndAt.Value.Day <= eDay 
-                        && x.EndAt.Value.Month <= eMonth)
-            .Select(x => new TimelineItem()
+        var discriminatorEnds = reqEntryDiscriminatorsDict
+                .Where(x => x.Value.Contains(nameof(BaseEntry.EndAt)))
+                .Select(x => x.Key)
+                .ToArray()
+            ;
+        if (!req.DiscriminatorProperties.Any() || discriminatorEnds.Any())
+        {
+            var queryEntryEnds = db.BaseEntries
+                    .Where(x => x.EndAt.HasValue 
+                                && x.EndAt.Value.Day >= sDay 
+                                && x.EndAt.Value.Month >= sMonth 
+                                && x.EndAt.Value.Day <= eDay 
+                                && x.EndAt.Value.Month <= eMonth)
+                ;
+
+            if (discriminatorEnds.Any())
+            {
+                queryEntryEnds = queryEntryEnds.Where(x => discriminatorEnds.Contains(x.Discriminator));   
+            }
+
+            result.AddRange(queryEntryEnds.Select(x => new TimelineItem()
             {
                 Date = x.EndAt!.Value,
                 EntityName = x.Discriminator,
                 Entity = x,
                 WithTime = x.EndAtWithTime,
                 KeywordTitle = Resources.Entity.ResourceManager.GetString($"{x.Discriminator}_EndAt")
-            });
-
-        var eiDates = db.EiDates;
-        if (!req.DiscriminatorProperties.Any() || req.DiscriminatorProperties.ContainsKey(nameof(EiDate)))
-        {
-            
+            }));   
         }
 
-        var queryEiDates = db.EiDates
-            .Include(x => x.Entry)
-            .Where(x => x.Date.Day >= sDay 
-                        && x.Date.Month >= sMonth 
-                        && x.Date.Day <= eDay 
-                        && x.Date.Month <= eMonth)
-            .Select(x => x.ToTimelineItem());
+        if (!req.DiscriminatorProperties.Any() || req.DiscriminatorProperties.ContainsKey(nameof(EiDate)))
+        {
+            var queryEiDates = db.EiDates
+                    .Include(x => x.Entry)
+                    .Where(x => x.Date.Day >= sDay 
+                                && x.Date.Month >= sMonth 
+                                && x.Date.Day <= eDay 
+                                && x.Date.Month <= eMonth)
+                    .Select(x => x.ToTimelineItem())
+                ;
+            
+            result.AddRange(queryEiDates);
+        }
 
-        return queryEiDates
-            .AsEnumerable()
-            .Union(queryEntryStarts)
-            .Union(queryEntryEnds)
+        return result
             .OrderBy(x => x.Date.Day)
-            .ToList();
+            .ThenBy(x => x.Date.Hour)
+            .ThenBy(x => x.Date.Minute)
+            .ToArray();
     }
 }

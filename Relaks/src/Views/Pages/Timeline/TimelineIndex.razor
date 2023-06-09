@@ -10,55 +10,55 @@
 <PageTemplate>
     <MyTitle>События</MyTitle>
 
-
-    <div class="row">
-     <div class="col-auto">
-              @if (PreviewEntryId.HasValue)
-              {
-                  <EntryCard EntryId="@PreviewEntryId.Value"/>
-              }
-              else
-              {
-                  <div style="width: 20rem;">
-                      <ul class="ul-info">
-                          <li>Одиночный клик по строке откроет предпросмотр</li>
-                          <li>Двойной клик по строке откроет объединение</li>
-                      </ul>
+    <CascadingValue Value="@this">
+        <div class="row">
+             <div class="col-auto">
+                      @if (PreviewEntryId.HasValue)
+                      {
+                          <EntryCard EntryId="@PreviewEntryId.Value"/>
+                      }
+                      else
+                      {
+                          <div style="width: 20rem;">
+                              <ul class="ul-info">
+                                  <li>Одиночный клик по строке откроет предпросмотр</li>
+                                  <li>Двойной клик по строке откроет объединение</li>
+                              </ul>
+                          </div>
+                      }
                   </div>
-              }
-          </div>
-        <div class="col">
-            @if (!Items.Any())
-            {
-                <p class="text-muted">
-                    <i class="las la-frown la-lg"></i> @Resources.Action.NotFoundResults
-                </p>
-            }
-            else
-            {
-                <div class="timeline">
-                    @foreach (var item in Items)
-                    {
-                        <_TimelineItem 
-                            Item="@item"
-                            OnSingleClick="@(entryId => PreviewEntryId = entryId)"
-                            OnDoubleClick="@OnDoubleClick"
-                        />
-                    }
+            <div class="col">
+                <_TimelineNavigation/>
+                @if (!Items.Any())
+                {
+                    <p class="text-muted">
+                        <i class="las la-frown la-lg"></i> @Resources.Action.NotFoundResults
+                    </p>
+                }
+                else
+                {
+                    <div class="timeline">
+                        @foreach (var item in Items)
+                        {
+                            <_TimelineItem
+                                Item="@item"
+                                OnSingleClick="@(entryId => PreviewEntryId = entryId)"
+                                OnDoubleClick="@OnDoubleClick"/>
+                        }
+                    </div>
+                }
+                <_TimelineNavigation/>
+            </div>
+                <div class="col">
+                    <_TimelineFilter/>
                 </div>
-            }
-        </div>
-        <div class="col">
-            <CascadingValue Value="@this">
-                <_TimelineFilter/>
-            </CascadingValue>
-        </div>
-    </div>
+            </div>
+    </CascadingValue>
 
 </PageTemplate>
 
 @code {
-    public List<TimelineItem> Items { get; set; } = new();
+    public IReadOnlyList<TimelineItem> Items { get; set; } = new List<TimelineItem>();
     public TimelineRequest Req { get; set; } = new();
     public DateTime Date { get; set; } = DateTime.Now;
     private Guid? PreviewEntryId { get; set; }

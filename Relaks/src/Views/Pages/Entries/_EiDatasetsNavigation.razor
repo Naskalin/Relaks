@@ -8,7 +8,7 @@
 @(EiDataset.IsFavorite ? "text-info fw-medium" : "")
 @(EiDataset.Id.Equals(EntryInfoId) ? "border-dashed border-2 border-warning" : "")
 "
-    @onclick="@(() => JsRuntime.InvokeVoidAsync("ScrollToId", $"dataset-{EiDataset.Id}", -64))"
+    @onclick="@(() => JsRuntime.InvokeVoidAsync("ScrollToSelector", $"#dataset-{EiDataset.Id}", -80))"
     href="@($"/entries/{EiDataset.EntryId}/info#")">
     @EiDataset.Title
 </button>

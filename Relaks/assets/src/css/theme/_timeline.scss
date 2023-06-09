@@ -57,9 +57,9 @@ $timelineIconSize: 40px;
     position: absolute;
     left: 0;
     text-align: right;
-    top: calc(calc($timelineIconSize / 2) - 2px);
+    top: 5px;
     width: calc($timelineLeft - $timelineIconSize);
-    padding-right: 5px;
+    padding-right: 8px;
   }
   &__avatar {
     width: 50px;

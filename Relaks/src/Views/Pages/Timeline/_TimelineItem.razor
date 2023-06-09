@@ -11,7 +11,7 @@
         }
     </div>
     <div class="timeline__icon">
-        <div class="timeline__icon-el"><i class="@DataHelper.EntityIcon(Item.EntityName) la-lg"></i></div>
+        <div class="timeline__icon-el"><i class="@DataHelper.EntityIcon(EntityIcon) la-lg"></i></div>
     </div>
     <div class="timeline__body">
         <div class="timeline__header">
@@ -52,6 +52,7 @@
     private string? More { get; set; }
     private string? Avatar { get; set; }
     private Guid? BaseEntryId { get; set; }
+    private string EntityIcon { get; set; } = null!;
 
     protected override void OnParametersSet()
     {
@@ -64,6 +65,7 @@
                 break;
            case nameof(EiDate):
                var eiDate = (EiDate) Item.Entity;
+               Item.KeywordTitle = "Другие даты";
                More = eiDate.Title;
                EntryPreset(eiDate.Entry);
                break;
@@ -76,6 +78,7 @@
         Description = entry.Description;
         Avatar = !string.IsNullOrEmpty(entry.Thumbnail) ? entry.Thumbnail : null;
         BaseEntryId = entry.Id;
+        EntityIcon = entry.Discriminator;
     }
 
 }
