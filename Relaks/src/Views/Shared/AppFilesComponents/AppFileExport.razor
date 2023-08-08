@@ -20,9 +20,9 @@
 </div>
 
 <div class="mb-3">
-    <label for="" class="form-label">Выберите директорию</label>
-    <InputText @bind-Value="@DirPath" class="form-control" placeholder="Путь к директории"/>
-    <div class="form-text">Путь к директории, в которую будут экспортированы файлы</div>
+    <label for="" class="form-label">Путь к директории</label>
+    <InputText @bind-Value="@DirPath" class="form-control" placeholder="Укажите путь..."/>
+    <div class="form-text">Путь к директории, в которую будут экспортированы файлы. При совпадении имён файлов они будут перезаписаны.</div>
     @if (IsErrorDirectoryNotExists && !IsErrorPathEmpty)
     {
         <div class="form-text text-danger">Директориия не найдена по указанному пути</div>   

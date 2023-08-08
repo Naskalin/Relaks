@@ -28,3 +28,27 @@
 //     //
 //     // anchorEl.remove();
 // }
+
+
+
+window.downloadAll = () => {
+
+    const links = [
+        'http://localhost:5000/2023/6/12/uogj2dml.ayz.jpg',
+        'http://localhost:5000/2023/8/8/zvp3xfqj.ori.jpg',
+    ];
+    
+    let link = document.createElement('a');
+
+    link.setAttribute('download', null);
+    link.style.display = 'none';
+
+    document.body.appendChild(link);
+
+    for (let i = 0; i < links.length; i++) {
+        link.setAttribute('href', links[i]);
+        link.click();
+    }
+
+    document.body.removeChild(link);
+}
