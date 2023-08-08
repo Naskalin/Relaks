@@ -1,6 +1,12 @@
 ﻿@using Relaks.Models.Store
 @using Relaks.Models
 @using Relaks.Database
+@using System.IO.Compression
+@using System.Text.Json
+@using LinqKit
+@using Microsoft.AspNetCore.Mvc
+@using Relaks.Managers
+@using Relaks.src.Views.Pages.Countries
 
 <h3>@CurrentCategoryTitle</h3>
 
@@ -35,14 +41,15 @@
         <button type="button" class="btn btn-link btn-sm" @onclick="@HandleSelectAll">Выделить всё</button>
         @if (Store.SelectedFileIds.Any())
         {
+            <button type="button" class="btn btn-link btn-sm" @onclick="@HandleFileExport">
+                Экспорт
+            </button>
             <button type="button" class="btn btn-link btn-sm" @onclick="@HandleChangeCategory">
                 Изменить категорию
             </button>
         }
     </div>   
 }
-
-
 
 @code {
 
@@ -58,6 +65,12 @@
     private async Task HandleChangeCategory()
     {
         Store.BodyState = AppFileListStore.BodyStateEnum.MassChangeCategory;
+        await OnStateHasChanged.InvokeAsync();
+    }
+    
+    private async Task HandleFileExport()
+    {
+        Store.BodyState = AppFileListStore.BodyStateEnum.ExportFiles;
         await OnStateHasChanged.InvokeAsync();
     }
 

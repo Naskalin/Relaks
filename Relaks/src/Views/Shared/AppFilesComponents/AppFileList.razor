@@ -39,6 +39,9 @@
                 case AppFileListStore.BodyStateEnum.EditFile:
                     <AppFileEditForm OnStateHasChanged="@StateHasChanged"/>
                     break;
+                case AppFileListStore.BodyStateEnum.ExportFiles:
+                    <AppFileExport OnStateHasChanged="@StateHasChanged"/>
+                    break;
                 default:
                     <AppFileListHeader OnStateHasChanged="@StateHasChanged"/>
                     if (Store.ResultFiles.Items.Any())

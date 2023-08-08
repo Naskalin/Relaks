@@ -32,6 +32,7 @@ public class AppFileListStore
         Default,
         EditFile,
         MassChangeCategory,
+        ExportFiles,
         // ChangeTags,
     }
 
