@@ -1,0 +1,48 @@
+﻿@using Relaks.Database
+@using Relaks.Models
+@using Microsoft.EntityFrameworkCore
+
+<ul>
+    @foreach (var entryId in EntryIds)
+    {
+        <li>
+            <EntryInlineItem EntryId="@entryId"/>
+        </li>
+    }
+</ul>
+
+<button type="button" class="btn btn-primary" @onclick="@(() => Modal.Show())">
+    asd
+</button>
+
+<Modal @ref="Modal" IsKeyboard="@true" IsBackdrop="@true">
+    <ModalDialog Title="Выберите объединение" IsScrolling="true" CloseButtonText="Закрыть" FullScreenSize="FullScreenSize.Always">
+        <BodyTemplate>
+            <EntryList OnRowClicked="@OnEntrySelect"/>
+        </BodyTemplate>
+    </ModalDialog>
+</Modal>
+
+@code {
+    private Modal Modal { get; set; } = new();
+
+    [Parameter]
+    public bool IsMultiple { get; set; }
+
+    // [Parameter]
+    // public EventCallback<List<Guid>> OnSelected { get; set; }
+
+    private List<Guid> EntryIds { get; set; } = new();
+
+    private async Task OnEntrySelect(Guid entryId)
+    {
+        if (!EntryIds.Contains(entryId))
+        {
+            EntryIds.Add(entryId);
+            // await OnSelected.InvokeAsync(EntryIds);
+        }
+
+        await Modal.Toggle();
+    }
+
+}

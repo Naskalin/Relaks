@@ -21,6 +21,7 @@ public class TimelineRequest
 
     public DateTime StartDay { get; set; }
     public DateTime EndDay { get; set; }
+    public List<Guid> EntryIds { get; set; } = new();
 }
 
 public static class TimelineRepository
@@ -36,6 +37,11 @@ public static class TimelineRepository
                 .Where(x => DataHelper.EntryDiscriminators.Contains(x.Key))
                 .ToDictionary(x => x.Key, x => x.Value)
             ;
+        var entriesQuery = db.BaseEntries.AsQueryable();
+        if (req.EntryIds.Any())
+        {
+            entriesQuery = entriesQuery.Where(x => req.EntryIds.Contains(x.Id));
+        }
 
         var discriminatorStarts = reqEntryDiscriminatorsDict
                 .Where(x => x.Value.Contains(nameof(BaseEntry.StartAt)))
@@ -44,7 +50,7 @@ public static class TimelineRepository
             ;
         if (!req.DiscriminatorProperties.Any() || discriminatorStarts.Any())
         {
-            var queryEntryStarts = db.BaseEntries
+            var queryEntryStarts = entriesQuery
                     .Where(x => x.StartAt.HasValue
                                 && x.StartAt.Value.Day >= sDay
                                 && x.StartAt.Value.Month >= sMonth
@@ -74,7 +80,7 @@ public static class TimelineRepository
             ;
         if (!req.DiscriminatorProperties.Any() || discriminatorEnds.Any())
         {
-            var queryEntryEnds = db.BaseEntries
+            var queryEntryEnds = entriesQuery
                     .Where(x => x.EndAt.HasValue 
                                 && x.EndAt.Value.Day >= sDay 
                                 && x.EndAt.Value.Month >= sMonth 
@@ -105,10 +111,14 @@ public static class TimelineRepository
                                 && x.Date.Month >= sMonth 
                                 && x.Date.Day <= eDay 
                                 && x.Date.Month <= eMonth)
-                    .Select(x => x.ToTimelineItem())
                 ;
             
-            result.AddRange(queryEiDates);
+            if (req.EntryIds.Any())
+            {
+                queryEiDates = queryEiDates.Where(x => req.EntryIds.Contains(x.Entry.Id));
+            }
+            
+            result.AddRange(queryEiDates.Select(x => x.ToTimelineItem()));
         }
 
         return result

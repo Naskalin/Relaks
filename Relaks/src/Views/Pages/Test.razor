@@ -1,20 +1,13 @@
 ﻿@page "/test"
-@using Relaks.Database
-@using Relaks.Models
-@using System.Text.Json
 
-
-@inject AppDbContext Db;
-@inject IJSRuntime JsRuntime;
-
-
-<button class="btn btn-primary" @onclick="@DownloadAll">test</button>
+<PageTemplate>
+    <MyTitle>Test</MyTitle>
+    
+    @* asd: @EntryId  *@
+    @* *@
+    <SelectEntry/>
+</PageTemplate>
 
 @code {
-
-    private async Task DownloadAll()
-    {
-        await JsRuntime.InvokeAsync<bool>("downloadAll", Resources.Action.Delete_Confirmation);
-    }
-
+    // private Guid? EntryId { get; set; }
 }

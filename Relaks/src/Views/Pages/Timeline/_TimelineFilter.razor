@@ -3,8 +3,11 @@
 @using Relaks.Models
 
 <div class="mb-3">
-    <label for="" class="form-label">Выберите месяц</label>
+    @* <SelectEntry OnSelected="@OnEntrySelected"/> *@
+</div>
 
+<div class="mb-3">
+    <label for="" class="form-label">Выберите месяц</label>
     <div class="timeline__months">
         @for (var i = 1; i <= 12; i++)
         {
@@ -24,7 +27,6 @@
 
 <div class="mb-3">
     <label for="" class="form-label">Только эти типы дат</label>
-
     @foreach (var discriminator in DataHelper.EntryDiscriminators)
     {
         foreach(var entryDateName in _entryDateNames)

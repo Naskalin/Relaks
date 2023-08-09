@@ -1,0 +1,31 @@
+﻿@using Relaks.Models
+@using Relaks.Database
+@using Microsoft.EntityFrameworkCore
+
+@inject AppDbContext Db;
+
+@if (!string.IsNullOrEmpty(Entry.Thumbnail))
+{
+    <img src="@Entry.Thumbnail" class="timeline__avatar" alt="">
+}
+else
+{
+    <CustomAvatar Text="@Entry.Name" Classes="timeline__avatar" />
+}
+@Entry.Name
+
+@code {
+    [Parameter]
+    public Guid EntryId { get; set; }
+
+    private BaseEntry Entry { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        Entry = Db.BaseEntries
+            .Include(x => x.EntryInfos)
+            .First(x => x.Id.Equals(EntryId))
+            ;
+    }
+
+}
