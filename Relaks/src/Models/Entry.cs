@@ -10,7 +10,11 @@ public abstract class BaseEntry : IEntry, ITimestamped, ISoftDeletedReason
     public Guid Id { get; set; }
     [StringLength(50)]
     public string Discriminator { get; set; } = null!;
+    
+    [StringLength(255)]
     public string Name { get; set; }
+    
+    [StringLength(500)]
     public string? Description { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
