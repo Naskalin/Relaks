@@ -19,6 +19,7 @@ public class TimelineRequest
 {
     public Dictionary<string, List<string>> DiscriminatorProperties { get; set; } = new();
 
+    public bool IsFullYear { get; set; }
     public DateTime StartDay { get; set; }
     public DateTime EndDay { get; set; }
     public List<Guid> EntryIds { get; set; } = new();
@@ -50,13 +51,20 @@ public static class TimelineRepository
             ;
         if (!req.DiscriminatorProperties.Any() || discriminatorStarts.Any())
         {
-            var queryEntryStarts = entriesQuery
-                    .Where(x => x.StartAt.HasValue
-                                && x.StartAt.Value.Day >= sDay
-                                && x.StartAt.Value.Month >= sMonth
-                                && x.StartAt.Value.Day <= eDay
-                                && x.StartAt.Value.Month <= eMonth)
-                ;
+            IQueryable<BaseEntry> queryEntryStarts;
+            if (req.IsFullYear)
+            {
+                queryEntryStarts = entriesQuery.Where(x => x.StartAt.HasValue);
+            } else
+            {
+                queryEntryStarts = entriesQuery
+                        .Where(x => x.StartAt.HasValue
+                                    && x.StartAt.Value.Day >= sDay
+                                    && x.StartAt.Value.Month >= sMonth
+                                    && x.StartAt.Value.Day <= eDay
+                                    && x.StartAt.Value.Month <= eMonth)
+                    ;   
+            }
 
             if (discriminatorStarts.Any())
             {
@@ -80,19 +88,25 @@ public static class TimelineRepository
             ;
         if (!req.DiscriminatorProperties.Any() || discriminatorEnds.Any())
         {
-            var queryEntryEnds = entriesQuery
-                    .Where(x => x.EndAt.HasValue 
-                                && x.EndAt.Value.Day >= sDay 
-                                && x.EndAt.Value.Month >= sMonth 
-                                && x.EndAt.Value.Day <= eDay 
-                                && x.EndAt.Value.Month <= eMonth)
-                ;
-
+            IQueryable<BaseEntry> queryEntryEnds;
+            if (req.IsFullYear)
+            {
+                queryEntryEnds = entriesQuery.Where(x => x.EndAt.HasValue);
+            } else {
+                queryEntryEnds = entriesQuery
+                        .Where(x => x.EndAt.HasValue 
+                                    && x.EndAt.Value.Day >= sDay 
+                                    && x.EndAt.Value.Month >= sMonth 
+                                    && x.EndAt.Value.Day <= eDay 
+                                    && x.EndAt.Value.Month <= eMonth)
+                    ;   
+            }
+        
             if (discriminatorEnds.Any())
             {
                 queryEntryEnds = queryEntryEnds.Where(x => discriminatorEnds.Contains(x.Discriminator));   
             }
-
+        
             result.AddRange(queryEntryEnds.Select(x => new TimelineItem()
             {
                 Date = x.EndAt!.Value,
@@ -105,13 +119,17 @@ public static class TimelineRepository
 
         if (!req.DiscriminatorProperties.Any() || req.DiscriminatorProperties.ContainsKey(nameof(EiDate)))
         {
-            var queryEiDates = db.EiDates
-                    .Include(x => x.Entry)
-                    .Where(x => x.Date.Day >= sDay 
-                                && x.Date.Month >= sMonth 
-                                && x.Date.Day <= eDay 
-                                && x.Date.Month <= eMonth)
-                ;
+            var queryEiDates = db.EiDates.Include(x => x.Entry).AsQueryable();
+        
+            if (!req.IsFullYear)
+            {
+                queryEiDates = queryEiDates
+                        .Where(x => x.Date.Day >= sDay 
+                                    && x.Date.Month >= sMonth 
+                                    && x.Date.Day <= eDay 
+                                    && x.Date.Month <= eMonth)
+                    ;   
+            }
             
             if (req.EntryIds.Any())
             {
@@ -122,7 +140,8 @@ public static class TimelineRepository
         }
 
         return result
-            .OrderBy(x => x.Date.Day)
+            .OrderBy(x => x.Date.Month)
+            .ThenBy(x => x.Date.Day)
             .ThenBy(x => x.Date.Hour)
             .ThenBy(x => x.Date.Minute)
             .ToArray();

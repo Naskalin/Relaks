@@ -2,18 +2,32 @@
 @using Relaks.Models
 @using Microsoft.EntityFrameworkCore
 
-<ul>
-    @foreach (var entryId in EntryIds)
-    {
-        <li>
-            <EntryInlineItem EntryId="@entryId"/>
-        </li>
-    }
-</ul>
-
-<button type="button" class="btn btn-primary" @onclick="@(() => Modal.Show())">
-    asd
-</button>
+<div class="d-flex align-items-center gap-3 mb-3">
+    <label for="" class="form-label mb-0">Объединения</label>
+    <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="@(() => Modal.Show())">
+        Добавить <i class="las la-plus-circle la-lg"></i>
+    </button>
+</div>
+@if (EntryIds.Any())
+{
+    <ul class="list-group">
+        @foreach (var entryId in EntryIds)
+        {
+            <li class="list-group-item">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-10">
+                        <EntryInlineItem EntryId="@entryId"/>
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-sm btn-circle btn-outline-secondary" @onclick="@(() => OnDelete(entryId))">
+                            <i class="las la-times text-danger"></i>
+                        </button>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>   
+}
 
 <Modal @ref="Modal" IsKeyboard="@true" IsBackdrop="@true">
     <ModalDialog Title="Выберите объединение" IsScrolling="true" CloseButtonText="Закрыть" FullScreenSize="FullScreenSize.Always">
@@ -27,10 +41,7 @@
     private Modal Modal { get; set; } = new();
 
     [Parameter]
-    public bool IsMultiple { get; set; }
-
-    // [Parameter]
-    // public EventCallback<List<Guid>> OnSelected { get; set; }
+    public EventCallback<List<Guid>> OnSelected { get; set; }
 
     private List<Guid> EntryIds { get; set; } = new();
 
@@ -39,10 +50,19 @@
         if (!EntryIds.Contains(entryId))
         {
             EntryIds.Add(entryId);
-            // await OnSelected.InvokeAsync(EntryIds);
+            await OnSelected.InvokeAsync(EntryIds);
         }
 
         await Modal.Toggle();
+    }
+
+    private async Task OnDelete(Guid entryId)
+    {
+        if (EntryIds.Contains(entryId))
+        {
+            EntryIds.Remove(entryId);
+            await OnSelected.InvokeAsync(EntryIds);
+        }
     }
 
 }

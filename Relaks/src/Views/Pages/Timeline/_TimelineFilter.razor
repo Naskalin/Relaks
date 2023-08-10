@@ -2,12 +2,18 @@
 @using System.Linq.Expressions
 @using Relaks.Models
 
-<div class="mb-3">
-    @* <SelectEntry OnSelected="@OnEntrySelected"/> *@
+<div class="mb-4">
+    <SelectEntry OnSelected="@OnSelectedEntries"/>
 </div>
 
-<div class="mb-3">
-    <label for="" class="form-label">Выберите месяц</label>
+<div class="mb-4">
+    <div class="d-flex align-items-center gap-3 mb-3">
+        <label for="" class="form-label mb-0">Период</label>
+        <button type="button" class="btn btn-sm @(Store.Req.IsFullYear ? "btn-secondary" : "btn-outline-secondary")" @onclick="@SwitchFullYear">
+            Весь год
+            <i class="las la-calendar la-lg ms-1"></i>
+        </button>
+    </div>
     <div class="timeline__months">
         @for (var i = 1; i <= 12; i++)
         {
@@ -15,7 +21,7 @@
                 var month = i;
                 <div class="timeline__months-el">
                     <button type="button"
-                            class="btn timeline__months-btn @(Store.Date.Month.Equals(month) ? "btn-secondary" : "btn-outline-secondary")"
+                            class="btn timeline__months-btn @(!Store.Req.IsFullYear && Store.Date.Month.Equals(month) ? "btn-secondary" : "btn-outline-secondary")"
                             @onclick="@(() => OnChangeMonth(month))">
                         @DateTimeFormatInfo.CurrentInfo.GetMonthName(i)
                     </button>
@@ -25,7 +31,7 @@
     </div>
 </div>
 
-<div class="mb-3">
+<div class="mb-4">
     <label for="" class="form-label">Только эти типы дат</label>
     @foreach (var discriminator in DataHelper.EntryDiscriminators)
     {
@@ -58,6 +64,7 @@
 
     private void OnChangeMonth(int month)
     {
+        Store.Req.IsFullYear = false;
         Store.Date = new DateTime(Store.Date.Year, month, Store.Date.Day);
         Store.FindItems();
     }
@@ -90,6 +97,18 @@
         Store.FindItems();
     }
 
+    private void OnSelectedEntries(List<Guid> entryIds)
+    {
+        Store.Req.EntryIds = entryIds;
+        Store.FindItems();
+    }
+
     private static string[] _entryDateNames = {nameof(BaseEntry.StartAt), nameof(BaseEntry.EndAt)};
+
+    private void SwitchFullYear()
+    {
+        Store.Req.IsFullYear = !Store.Req.IsFullYear;
+        Store.FindItems();
+    }
 
 }

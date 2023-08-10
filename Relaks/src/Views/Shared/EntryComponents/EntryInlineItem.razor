@@ -4,15 +4,29 @@
 
 @inject AppDbContext Db;
 
-@if (!string.IsNullOrEmpty(Entry.Thumbnail))
-{
-    <img src="@Entry.Thumbnail" class="timeline__avatar" alt="">
-}
-else
-{
-    <CustomAvatar Text="@Entry.Name" Classes="timeline__avatar" />
-}
-@Entry.Name
+<div class="d-flex align-items-center gap-2">
+    <div class="avatar-sm">
+        @if (!string.IsNullOrEmpty(Entry.Thumbnail))
+        {
+            <img src="@Entry.Thumbnail" alt="">
+        }
+        else
+        {
+            <CustomAvatar Text="@Entry.Name" />
+        }
+    </div>
+
+    <div>
+        <div class="fw-semibold">@Entry.Name</div>
+        
+        <div style="line-height: 1.2rem;max-height: 2.4rem;overflow: hidden;text-overflow: ellipsis;">
+            @if (!string.IsNullOrEmpty(Entry.Description))
+            {
+                <div class="small">@Entry.Description</div>   
+            }
+        </div>
+    </div>
+</div>
 
 @code {
     [Parameter]
