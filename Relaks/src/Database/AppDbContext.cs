@@ -31,6 +31,9 @@ public sealed class AppDbContext : DbContext
     public DbSet<BaseFileTag> BaseFileTags { get; set; } = null!;
     public DbSet<EntryFileTag> EntryFileTags { get; set; } = null!;
 
+    public DbSet<Profession> Professions { get; set; } = null!;
+    public DbSet<ProfessionCategory> ProfessionCategories { get; set; } = null!;
+
     [DbFunction]
     public string Snippet(string match, string column, string open, string close, string ellips, int count)
         => throw new NotImplementedException();

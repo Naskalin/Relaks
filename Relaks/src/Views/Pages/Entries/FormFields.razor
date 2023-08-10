@@ -20,6 +20,10 @@
     <ValidationMessage For="@(() => Entry.Description)"/>
 </div>
 
+<div class="mb-3">
+    <SelectProfession/>
+</div>
+
 <div class="row">
     <div class="col">
         <div class="mb-3">
@@ -59,4 +63,5 @@
     public BaseEntry Entry { get; set; } = null!;
 
     private bool IsMeet() => nameof(EMeet).Equals(Entry.Discriminator);
+
 }

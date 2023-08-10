@@ -1,0 +1,51 @@
+﻿@using Relaks.Database
+@using Microsoft.EntityFrameworkCore
+@using Relaks.Models
+
+@inject AppDbContext Db;
+
+<div class="d-flex align-items-center gap-3 mb-2">
+    <label for="" class="form-label mb-0">Профессии</label>
+    <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="@(() => Modal.Show())">
+        Выбрать <i class="las la-checkbox la-lg"></i>
+    </button>
+</div>
+
+<Modal @ref="Modal" IsKeyboard="@true" IsBackdrop="@true">
+    <ModalDialog Title="Выберите профессии" IsScrolling="true" CloseButtonText="Закрыть">
+        <BodyTemplate>
+            @foreach (var professionCategory in ProfessionCategories)
+            {
+                <div class="list-group mb-3">
+                    <div class="list-group-item fw-semibold text-muted">@professionCategory.Title</div>
+                    
+                    @foreach (var profession in professionCategory.Professions)
+                    {
+                        <div class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="@profession.Id.ToString()"/>
+                                <label class="form-check-label" for="@profession.Id.ToString()">@profession.Title</label>
+                            </div>
+                        </div>   
+                    }
+                </div>
+            }
+        </BodyTemplate>
+    </ModalDialog>
+</Modal>
+
+@code {
+    private Modal Modal { get; set; } = new();
+    private List<ProfessionCategory> ProfessionCategories { get; set; } = new();
+    private List<Guid> ProfessionSelected { get; set; } = new();
+
+
+    protected override void OnInitialized()
+    {
+        ProfessionCategories = Db
+            .ProfessionCategories
+            .Include(x => x.Professions.OrderBy(p => p.Title))
+            .OrderBy(x => x.Title)
+            .ToList();
+    }    
+}

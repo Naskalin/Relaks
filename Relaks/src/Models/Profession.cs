@@ -11,4 +11,6 @@ public class Profession
     
     public Guid CategoryId { get; set; }
     public ProfessionCategory Category { get; set; } = null!;
+
+    public List<BaseEntry> Entries { get; set; } = new();
 }

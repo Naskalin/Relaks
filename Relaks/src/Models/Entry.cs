@@ -29,6 +29,7 @@ public abstract class BaseEntry : IEntry, ITimestamped, ISoftDeletedReason
     public string? Thumbnail { get; set; }
     
     public List<BaseEntryInfo> EntryInfos { get; set; } = new();
+    public List<Profession> Professions { get; set; } = new();
 
     protected BaseEntry()
     {
