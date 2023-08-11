@@ -13,10 +13,13 @@
 
 @if (ProfessionIds.Any())
 {
-    <div class="d-flex flex-wrap gap-1">
+    <div class="d-flex flex-wrap gap-2">
         @foreach (var profession in Professions)
         {
-            <div class="badge text-bg-secondary">@profession.Title</div>
+            <div class="badge bg-secondary text-body bg-opacity-10 d-flex align-items-center gap-1">
+                @profession.Title
+                <button type="button" class="btn-close" @onclick="@(() => OnProfessionDeleteAsync(profession.Id))"></button>
+            </div>
         }
     </div>    
 }
@@ -56,6 +59,9 @@ else
 
     [Parameter]
     public EventCallback<List<Guid>> ProfessionIdsChanged { get; set; }
+    
+    [Parameter]
+    public EventCallback<Guid> OnProfessionDelete { get; set; }
 
     private List<Guid> CurrentSelectedIds { get; set; } = new();
     
@@ -86,10 +92,18 @@ else
 
     private async Task<bool> OnModalSelectAsync()
     {
-        // ProfessionIds = CurrentSelectedIds;
         await ProfessionIdsChanged.InvokeAsync(CurrentSelectedIds);
         FindProfessions();
         await Modal.Close();
         return await Task.FromResult(true);
+    }
+
+    private async Task OnProfessionDeleteAsync(Guid professionId)
+    {
+        if (CurrentSelectedIds.Contains(professionId))
+        {
+            CurrentSelectedIds.Remove(professionId);
+            await ProfessionIdsChanged.InvokeAsync(CurrentSelectedIds);   
+        }
     }
 }
