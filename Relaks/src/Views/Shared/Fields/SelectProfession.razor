@@ -13,12 +13,12 @@
 
 @if (ProfessionIds.Any())
 {
-    <ul>
+    <div class="d-flex flex-wrap gap-1">
         @foreach (var profession in Professions)
         {
-            <li>@profession.Title</li>
+            <div class="badge text-bg-secondary">@profession.Title</div>
         }
-    </ul>    
+    </div>    
 }
 else
 {
