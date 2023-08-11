@@ -318,6 +318,7 @@ public partial class DatabaseSeeder
   ]
 }";
       var data = JsonSerializer.Deserialize<Dictionary<string, List<string>>>(json);
+      ArgumentNullException.ThrowIfNull(data);
       
       foreach (var item in data)
       {
