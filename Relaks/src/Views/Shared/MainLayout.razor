@@ -22,17 +22,38 @@
             <small class="text-muted">линия времени</small>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/dataset-templates">
-            <div>Шаблоны</div>
-            <small class="text-muted">для наборов данных</small>
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <div>Общие данные</div>
+            <small class="text-muted">метки, шаблоны</small>
           </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/countries">
-            <div>Страны</div>
-            <small class="text-muted">столицы, валюты</small>
-          </a>
+
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="/professions">
+                <div>Профессии</div>
+                <small class="text-muted">метки объединений</small>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/dataset-templates">
+                <div>Шаблоны</div>
+                <small class="text-muted">для наборов данных</small>
+              </a>
+            </li>
+
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item" href="/countries">
+                <div>Страны</div>
+                <small class="text-muted">столицы, валюты</small>
+              </a>
+            </li>
+          </ul>
         </li>
       </ul>
       <div class="d-flex gap-4" role="search">

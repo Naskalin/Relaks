@@ -1,0 +1,14 @@
+﻿<button type="button" class="btn btn-success" @onclick="() => Modal.Show()">Modal 2</button>
+
+<Modal @ref="Modal" IsKeyboard="@true" IsBackdrop="@true">
+    <ModalDialog Title="Modal 2" Size="Size.Small">
+        <BodyTemplate>
+            <h1>Modal 2</h1>
+        </BodyTemplate>
+    </ModalDialog>
+</Modal>
+
+@code {
+    private Modal Modal { get; set; } = new();
+
+}

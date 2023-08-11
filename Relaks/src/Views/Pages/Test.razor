@@ -1,13 +1,42 @@
 ﻿@page "/test"
 
+@inject DialogService DialogService;
+
 <PageTemplate>
     <MyTitle>Test</MyTitle>
-    
-    @* asd: @EntryId  *@
-    @* *@
-    <SelectEntry/>
+
+    <button type="button" class="btn btn-primary" @onclick="() => Modal1.Show()">Modal 1</button>
+
+    <Modal @ref="Modal1" IsKeyboard="@true" IsBackdrop="@true">
+        <ModalDialog Title="Modal 1" Size="Size.Small">
+            <BodyTemplate>
+                <h1>Modal 1</h1>
+
+                <button type="button" class="btn btn-success" @onclick="@ShowDynamicModal">Modal 2</button>
+                @* <Modal @ref="Modal2" IsKeyboard="@true" IsBackdrop="@true"> *@
+                @*     <ModalDialog Title="Modal 2" Size="Size.Small"> *@
+                @*         <BodyTemplate> *@
+                @*             <h1>Modal 2</h1> *@
+                @*         </BodyTemplate> *@
+                @*     </ModalDialog> *@
+                @* </Modal> *@
+            </BodyTemplate>
+        </ModalDialog>
+    </Modal>
+
+
 </PageTemplate>
 
 @code {
-    // private Guid? EntryId { get; set; }
+    private Modal Modal1 { get; set; } = new();
+    // private Modal Modal2 { get; set; } = new();
+    private Task ShowDynamicModal()
+    {
+        return DialogService.Show(new DialogOption()
+        {
+            Title = "Resize dialog",
+            ShowResize = true,
+            BodyTemplate = builder => builder.AddContent(0, "I am content")
+        });
+    }
 }
