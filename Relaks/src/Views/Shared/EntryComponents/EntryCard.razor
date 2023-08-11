@@ -45,6 +45,16 @@
                 {
                     <p class="card-text text-center">@Entry.Description</p>
                 }
+                
+                @if (Entry.Professions.Any())
+                {
+                    <div class="mb-3 d-flex gap-1 flex-wrap justify-content-center">
+                        @foreach (var profession in Entry.Professions)
+                        {
+                            <span class="badge text-bg-info text-light" title="Профессии > @profession.Category.Title > @profession.Title">@profession.Title</span>
+                        }
+                    </div>
+                }
 
                 <EntryCardContacts EntryInfoId="@EntryInfoId" EntryInfos="@Entry.EntryInfos"/>
 
@@ -100,6 +110,7 @@
     {
         Entry = Db.BaseEntries
             .Include(x => x.EntryInfos)
+            .Include(x => x.Professions).ThenInclude(x => x.Category)
             .First(x => x.Id.Equals(EntryId))
         ;
     }

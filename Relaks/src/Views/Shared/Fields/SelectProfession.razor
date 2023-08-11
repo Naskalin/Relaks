@@ -79,7 +79,9 @@ else
 
     private void FindProfessions()
     {
-        Professions = Db.Professions.Where(x => ProfessionIds.Contains(x.Id)).ToList();
+        Professions = Db.Professions
+            .Include(x => x.Category)
+            .Where(x => ProfessionIds.Contains(x.Id)).ToList();
     }
 
     private async Task<bool> OnModalSelectAsync()

@@ -33,19 +33,21 @@
 
 <div class="mb-4">
     <label for="" class="form-label">Только эти типы дат</label>
-    @foreach (var discriminator in DataHelper.EntryDiscriminators)
-    {
-        foreach(var entryDateName in _entryDateNames)
+    <div>
+        @foreach (var discriminator in DataHelper.EntryDiscriminators)
         {
-            var id = Guid.NewGuid();
-            <div class="form-check form-switch mb-2">
-                <input class="form-check-input" type="checkbox" id="@id" @onchange="@(e => OnSwitchEntryDateType(e, discriminator, entryDateName))">
-                <label class="form-check-label" for="@id">
-                    @Resources.Entity.ResourceManager.GetString($"{discriminator}_{entryDateName}")
-                </label>
-            </div>   
+            foreach(var entryDateName in _entryDateNames)
+            {
+                var id = Guid.NewGuid();
+                <div class="form-check form-switch mb-2">
+                    <input class="form-check-input" type="checkbox" id="@id" @onchange="@(e => OnSwitchEntryDateType(e, discriminator, entryDateName))">
+                    <label class="form-check-label" for="@id">
+                        @Resources.Entity.ResourceManager.GetString($"{discriminator}_{entryDateName}")
+                    </label>
+                </div>   
+            }
         }
-    }
+    </div>
 
     @{ var eiDatesId = Guid.NewGuid();}
     <div class="form-check form-switch mb-2">
