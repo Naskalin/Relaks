@@ -2,6 +2,7 @@
 @using Relaks.Models
 @using Relaks.Database
 @using Relaks.Mappers
+@using Microsoft.EntityFrameworkCore
 
 @inject AppDbContext Db;
 @inject NavigationManager NavigationManager;
@@ -21,7 +22,7 @@
         <EditForm Model="@Entry" OnSubmit="@OnSubmit">
             <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
             <ValidationSummary/>
-            <FormFields Entry="@Entry"/>
+            <FormFields Entry="@Entry" ProfessionIds="@ProfessionIds"/>
             <SoftDeletedReasonField SoftDeletedReason="@Entry"/>
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">
@@ -49,22 +50,38 @@
     public Guid EntryId { get; set; }
 
     private BaseEntry Entry { get; set; } = null!;
+    private List<Guid> ProfessionIds { get; set; } = new();
     private FluentValidationValidator Validator { get; set; } = null!;
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        Entry = Db.BaseEntries.First(x => x.Id.Equals(EntryId));
+        Entry = Db.BaseEntries
+            .Include(x => x.Professions)
+            .First(x => x.Id.Equals(EntryId))
+        ;
+        ProfessionIds = Entry.Professions.Select(x => x.Id).ToList();
     }
     
     private void OnSubmit()
     {
         if (!Validator.Validate()) return;
-        
+
         Entry.UpdatedAt = DateTime.UtcNow;
         Entry.MapTo(Entry);
+        MapProfessions();
+        
         Db.SaveChanges();
         NavigationManager.NavigateTo($"/entries/{EntryId}/info");
+    }
+
+    private void MapProfessions()
+    {
+        var currentIds = Entry.Professions.Select(x => x.Id).ToList();
+        var newIds = ProfessionIds.Except(currentIds).ToList();
+        var deleteIds = currentIds.Except(ProfessionIds).ToList();
+        Entry.Professions.AddRange(Db.Professions.Where(x => newIds.Contains(x.Id)));
+        Entry.Professions.RemoveAll(x => deleteIds.Contains(x.Id));
     }
     
     private async Task OnDelete()

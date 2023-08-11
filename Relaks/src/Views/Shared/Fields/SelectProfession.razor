@@ -1,140 +1,93 @@
 ﻿@using Relaks.Database
 @using Microsoft.EntityFrameworkCore
 @using Relaks.Models
-@using Console = System.Console
 
 @inject AppDbContext Db;
 
 <div class="d-flex align-items-center gap-3 mb-2">
     <label for="" class="form-label mb-0">Профессии</label>
     <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="@(() => Modal.Show())">
-        Выбрать <i class="las la-checkbox la-lg"></i>
+        Выбрать профессии <i class="las la-check-square la-lg ms-1"></i>
     </button>
 </div>
 
+@if (ProfessionIds.Any())
+{
+    <ul>
+        @foreach (var profession in Professions)
+        {
+            <li>@profession.Title</li>
+        }
+    </ul>    
+}
+else
+{
+    <div class="text-muted small">Профессии не выбраны...</div>   
+}
+
 <Modal @ref="Modal" IsKeyboard="@true" IsBackdrop="@true">
-    <ModalDialog Title="Выберите профессии" IsScrolling="true" CloseButtonText="Закрыть" Size="Size.ExtraLarge">
+    <ModalDialog Title="Выберите профессии"
+                 IsScrolling="true" 
+                 CloseButtonText="Закрыть" 
+                 Size="Size.ExtraLarge" 
+                 SaveButtonText="Выбрать профессии" 
+                 OnSaveAsync="@OnModalSelectAsync"
+                 ShowSaveButton="@true">
         <BodyTemplate>
-            <div class="row">
-                <div class="col-4">
-                    <div class="mb-3 input-group">
-                        <input @bind-value="@Search" @oninput="@OnValueChanged" class="form-control" placeholder="Поиск профессий..."/>
-                        <button class="btn btn-outline-secondary" type="button" @onclick="@OnSearchClear">
-                            <i class="las la-times la-lg"></i>
-                        </button>
+            <ProfessionList OnProfessionClick="@HandleProfessionClick" ListGroupClasses="p-0">
+                <CustomProfessionTitle>
+                    <div class="d-flex align-items-center gap-3 p-2 @(CurrentSelectedIds.Contains(context.Id) ? "text-success bg-secondary bg-opacity-10": "")">
+                        <i class="las la-check-square la-lg"></i>
+                        <span>@context.Title</span>
                     </div>
-                    
-                    <div class="mb-3">
-                        <div class="list-group mb-3">
-                            @foreach (var category in Categories)
-                            {
-                                <div class="list-group-item cursor-pointer @(SelectedCategoryId.Equals(category.Id) ? "bg-primary bg-opacity-10" : "")" @onclick="@(() => SwitchFindCategory(category.Id))">
-                                    @category.Title
-                                </div>
-                            }
-                        </div>
-                    </div>
-                </div>
-                <div class="col-8">
-                    @foreach (var category in FilteredCategories)
-                    {
-                        <div class="list-group mb-3">
-                            <div class="list-group-item fw-semibold text-muted">@category.Title</div>
-                            @foreach (var profession in FilteredProfessions.Where(x => x.CategoryId.Equals(category.Id)))
-                            {
-                                <div class="list-group-item p-0">
-                                    <div class="form-check form-switch">
-                                        <label class="d-flex align-items-center gap-3 p-2" for="@profession.Id.ToString()">
-                                            <input class="form-check-input" type="radio" id="@profession.Id.ToString()"/>
-                                            <span>@profession.Title</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    }
-                </div>
-            </div>
+                </CustomProfessionTitle>
+            </ProfessionList>
         </BodyTemplate>
     </ModalDialog>
 </Modal>
 
 @code {
     private Modal Modal { get; set; } = new();
-    private List<ProfessionCategory> Categories { get; set; } = new();
+    
+    [Parameter]
+    public List<Guid> ProfessionIds { get; set; } = new();
+
     private List<Profession> Professions { get; set; } = new();
-    private List<ProfessionCategory> FilteredCategories { get; set; } = new();
-    private List<Profession> FilteredProfessions { get; set; } = new();
-    private List<Guid> ProfessionSelected { get; set; } = new();
-    private Guid? SelectedCategoryId { get; set; } = null!;
-    private string? Search { get; set; }
 
-    private void OnValueChanged(ChangeEventArgs e)
+    [Parameter]
+    public EventCallback<List<Guid>> ProfessionIdsChanged { get; set; }
+
+    private List<Guid> CurrentSelectedIds { get; set; } = new();
+    
+    private void HandleProfessionClick(Guid professionId)
     {
-        SelectedCategoryId = null;
-        var str = e.Value?.ToString();
-        if (string.IsNullOrEmpty(str))
+        if (CurrentSelectedIds.Contains(professionId))
         {
-            FindByCategoryId();
+            CurrentSelectedIds.Remove(professionId);
         }
         else
         {
-            str = str.ToLower();
-            FilteredProfessions = Professions.Where(x => x.Title.ToLower().Contains(str)).ToList();
-            var categoryIds = FilteredProfessions.Select(x => x.CategoryId);
-            FilteredCategories = Categories.Where(x => categoryIds.Contains(x.Id)).ToList();
+            CurrentSelectedIds.Add(professionId);
         }
     }
 
-    private void OnSearchClear()
+    protected override void OnParametersSet()
     {
-        SelectedCategoryId = null;
-        Search = "";
-        FindByCategoryId();
+        CurrentSelectedIds = ProfessionIds;
+        FindProfessions();
     }
 
-    private void SwitchFindCategory(Guid categoryId)
+    private void FindProfessions()
     {
-        Search = "";
-        if (SelectedCategoryId.HasValue)
-        {
-            if (SelectedCategoryId.Value.Equals(categoryId))
-            {
-                SelectedCategoryId = null;
-                FindByCategoryId();
-            }
-            else
-            {
-                SelectedCategoryId = categoryId;
-                FindByCategoryId(categoryId);  
-            }
-        }
-        else
-        {
-            SelectedCategoryId = categoryId;
-            FindByCategoryId(categoryId); 
-        }
+        Professions = Db.Professions.Where(x => ProfessionIds.Contains(x.Id)).ToList();
     }
 
-    private void FindByCategoryId(Guid? categoryId = null)
+    private async Task<bool> OnModalSelectAsync()
     {
-        if (categoryId.HasValue)
-        {
-            FilteredCategories = Categories.Where(x => x.Id.Equals(categoryId)).ToList();
-            FilteredProfessions = Professions.Where(x => x.CategoryId.Equals(categoryId)).ToList();
-        }
-        else
-        {
-            FilteredCategories = Categories;
-            FilteredProfessions = Professions;
-        }
+        // ProfessionIds = CurrentSelectedIds;
+        await ProfessionIdsChanged.InvokeAsync(CurrentSelectedIds);
+        FindProfessions();
+        await Modal.Close();
+        return await Task.FromResult(true);
     }
-
-    protected override void OnInitialized()
-    {
-        Categories = Db.ProfessionCategories.OrderBy(x => x.Title).ToList();
-        Professions = Db.Professions.OrderBy(x => x.Title).ToList();
-        FindByCategoryId();
-    }
-
 }

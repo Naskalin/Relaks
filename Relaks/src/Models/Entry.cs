@@ -10,9 +10,9 @@ public abstract class BaseEntry : IEntry, ITimestamped, ISoftDeletedReason
     public Guid Id { get; set; }
     [StringLength(50)]
     public string Discriminator { get; set; } = null!;
-    
+
     [StringLength(255)]
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
     
     [StringLength(500)]
     public string? Description { get; set; }
@@ -30,14 +30,6 @@ public abstract class BaseEntry : IEntry, ITimestamped, ISoftDeletedReason
     
     public List<BaseEntryInfo> EntryInfos { get; set; } = new();
     public List<Profession> Professions { get; set; } = new();
-
-    protected BaseEntry()
-    {
-        Id = Guid.NewGuid();
-        CreatedAt = DateTime.UtcNow;
-        UpdatedAt = DateTime.UtcNow;
-        Name = "";
-    }
 }
 
 public class EPerson : BaseEntry

@@ -3,6 +3,7 @@
 @using Relaks.Database
 @using Relaks.Mappers
 @using Relaks.Models
+@using Console = System.Console
 
 @inject AppDbContext Db;
 @inject NavigationManager NavigationManager;
@@ -39,7 +40,7 @@
                 <ValidationMessage For="@(() => Entry.Discriminator)"/>
             </div>
             
-            <FormFields Entry="@Entry"/>
+            <FormFields Entry="@Entry" ProfessionIds="@ProfessionIds"/>
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">
                     <i class="las la-plus-circle la-lg me-1"></i>
@@ -53,6 +54,7 @@
 @code {
 
     private BaseEntry Entry { get; set; } = null!;
+    private List<Guid> ProfessionIds { get; set; } = new();
     private FluentValidationValidator Validator { get; set; } = null!;
 
     protected override void OnParametersSet()
@@ -67,7 +69,7 @@
     private void OnSubmit()
     {
         if (!Validator.Validate()) return;
-
+        
         BaseEntry entry = Entry.Discriminator switch
         {
             nameof(EPerson) => new EPerson(),
@@ -75,10 +77,11 @@
             nameof(EMeet) => new EMeet(),
             _ => throw new ArgumentException($"Error: discriminator {Entry.Discriminator} is not supported")
             };
-
-
-    // System.Console.WriteLine(Entry.Name);
+        
         Entry.MapTo(entry);
+        var professions = Db.Professions.Where(x => ProfessionIds.Contains(x.Id));
+        entry.Professions.AddRange(professions);
+        
         Db.BaseEntries.Add(entry);
         Db.SaveChanges();
         NavigationManager.NavigateTo($"/entries/{entry.Id}/info");

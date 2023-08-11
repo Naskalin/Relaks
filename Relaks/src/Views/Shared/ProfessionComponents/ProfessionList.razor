@@ -1,0 +1,133 @@
+﻿@using Relaks.Database
+@using Relaks.Models
+
+@inject AppDbContext Db;
+
+<div class="row">
+    <div class="col-4">
+        <div class="mb-3 input-group">
+            <input @bind-value="@Search" @oninput="@OnValueChanged" class="form-control" placeholder="Поиск профессий..."/>
+            <button class="btn btn-outline-secondary" type="button" @onclick="@OnSearchClear">
+                <i class="las la-times la-lg"></i>
+            </button>
+        </div>
+
+        <div class="mb-3">
+            <div class="list-group mb-3">
+                @foreach (var category in Categories)
+                {
+                    <div class="list-group-item cursor-pointer @(SelectedCategoryId.Equals(category.Id) ? "bg-primary bg-opacity-10" : "")" @onclick="@(() => SwitchFindCategory(category.Id))">
+                        @category.Title
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-8">
+        @foreach (var category in FilteredCategories)
+        {
+            <div class="list-group mb-3">
+                <div class="list-group-item fw-semibold text-muted">@category.Title</div>
+                @foreach (var profession in FilteredProfessions.Where(x => x.CategoryId.Equals(category.Id)))
+                {
+                    <div class="list-group-item cursor-pointer @ListGroupClasses" @onclick="@(() => OnProfessionClick.InvokeAsync(profession.Id))">
+                        @if (CustomProfessionTitle != null)
+                        {
+                            @CustomProfessionTitle(profession)   
+                        }
+                        else
+                        {
+                            @profession.Title
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<Guid> OnProfessionClick { get; set; }
+
+    [Parameter]
+    public string ListGroupClasses { get; set; } = "";
+
+    [Parameter]
+    public RenderFragment<Profession>? CustomProfessionTitle { get; set; }
+
+    private List<ProfessionCategory> Categories { get; set; } = new();
+    private List<Profession> Professions { get; set; } = new();
+    private List<ProfessionCategory> FilteredCategories { get; set; } = new();
+    private List<Profession> FilteredProfessions { get; set; } = new();
+    private Guid? SelectedCategoryId { get; set; }
+    private string? Search { get; set; }
+
+    private void OnValueChanged(ChangeEventArgs e)
+    {
+        SelectedCategoryId = null;
+        var str = e.Value?.ToString();
+        if (string.IsNullOrEmpty(str))
+        {
+            FindByCategoryId();
+        }
+        else
+        {
+            str = str.ToLower();
+            FilteredProfessions = Professions.Where(x => x.Title.ToLower().Contains(str)).ToList();
+            var categoryIds = FilteredProfessions.Select(x => x.CategoryId);
+            FilteredCategories = Categories.Where(x => categoryIds.Contains(x.Id)).ToList();
+        }
+    }
+
+    private void OnSearchClear()
+    {
+        SelectedCategoryId = null;
+        Search = "";
+        FindByCategoryId();
+    }
+
+    private void SwitchFindCategory(Guid categoryId)
+    {
+        Search = "";
+        if (SelectedCategoryId.HasValue)
+        {
+            if (SelectedCategoryId.Value.Equals(categoryId))
+            {
+                SelectedCategoryId = null;
+                FindByCategoryId();
+            }
+            else
+            {
+                SelectedCategoryId = categoryId;
+                FindByCategoryId(categoryId);
+            }
+        }
+        else
+        {
+            SelectedCategoryId = categoryId;
+            FindByCategoryId(categoryId);
+        }
+    }
+
+    private void FindByCategoryId(Guid? categoryId = null)
+    {
+        if (categoryId.HasValue)
+        {
+            FilteredCategories = Categories.Where(x => x.Id.Equals(categoryId)).ToList();
+            FilteredProfessions = Professions.Where(x => x.CategoryId.Equals(categoryId)).ToList();
+        }
+        else
+        {
+            FilteredCategories = Categories;
+            FilteredProfessions = Professions;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        Categories = Db.ProfessionCategories.OrderBy(x => x.Title).ToList();
+        Professions = Db.Professions.OrderBy(x => x.Title).ToList();
+        FindByCategoryId();
+    }
+}
