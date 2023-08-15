@@ -46,6 +46,12 @@
                 <i class="las la-search la-lg"></i> @((MarkupString) AppFile.FtsFile.Snippet)
             </div>
         }
+        @if (IsRelationFile())
+        {
+            <div class="text-center" title="Файл используется в нескольких объединениях">
+                <span class="badge text-bg-warning fw-semibold text-uppercase">связанный файл</span>
+            </div>
+        }
         @if (AppFile.BaseFile.Category != null)
         {
             <div class="text-center mt-1 mb-3">
@@ -65,7 +71,7 @@
                         @tag.Title
                     </button>
                 }
-            </div>   
+            </div>
         }
         <div class="file-list__actions">
             <Tooltip Trigger="hover" Title="Изменить">
@@ -93,6 +99,9 @@
 
     [Parameter]
     public EventCallback OnStateHasChanged { get; set; }
+
+    private bool IsRelationFile() => Store.Req.EntryId.HasValue
+                                     && AppFile.BaseFile.BaseEntryRelations.Any(x => x.Id.Equals(Store.Req.EntryId.Value));
 
     private bool IsImageTag(string ext) => new List<string>()
     {
@@ -161,6 +170,7 @@
 
     private async Task HandleClickTag(Guid tagId)
     {
+        if (IsRelationFile()) return;
         if (!Store.Req.TagIds.Contains(tagId))
         {
             Store.Req.TagIds.Add(tagId);
@@ -171,6 +181,7 @@
     
     private async Task HandleClickCategory(Guid categoryId)
     {
+        if (IsRelationFile()) return;
         if (!Store.Req.CategoryId.Equals(categoryId))
         {
             Store.Req.CategoryId = categoryId;

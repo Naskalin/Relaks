@@ -33,12 +33,16 @@ public static class EntryFileRepository
         var q = db.BaseFiles
             .Include(x => x.Tags)
             .Include(x => x.Category)
+            .Include(x => x.BaseEntryRelations)
             .AsQueryable();
         
         if (req.EntryId.HasValue)
         {
             var entryFileIdQuery = db.EntryFiles.Where(x => x.EntryId.Equals(req.EntryId.Value)).Select(x => x.Id);
-            q = q.Where(x => entryFileIdQuery.Contains(x.Id));
+            var entryFileRelationsQuery = db.BaseFiles
+                .Where(x => x.BaseEntryRelations.Any(be => be.Id.Equals(req.EntryId.Value))).Select(x => x.Id);
+            
+            q = q.Where(x => entryFileIdQuery.Contains(x.Id) || entryFileRelationsQuery.Contains(x.Id));
         }
         
         q = req.IsDeleted ? q.Where(x => x.DeletedAt != null) : q.Where(x => x.DeletedAt == null);
