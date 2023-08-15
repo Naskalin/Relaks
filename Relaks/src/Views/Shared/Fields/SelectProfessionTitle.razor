@@ -1,0 +1,16 @@
+﻿@using Relaks.Models
+
+<div class="d-flex align-items-center gap-3 p-2 @(CurrentSelectedIds.Contains(Profession.Id) ? "text-success bg-secondary bg-opacity-10" : "")">
+    <i class="las la-check-square la-lg"></i>
+    <span>@Profession.Title</span>
+</div>
+
+@code {
+
+    [Parameter]
+    public List<Guid> CurrentSelectedIds { get; set; } = new();
+
+    [Parameter]
+    public Profession Profession { get; set; } = null!;
+
+}
