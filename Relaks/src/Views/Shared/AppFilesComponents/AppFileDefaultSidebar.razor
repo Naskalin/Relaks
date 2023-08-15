@@ -14,6 +14,13 @@
 
 <div class="mb-3">
     <div class="form-check form-switch">
+        <InputCheckbox class="form-check-input" type="checkbox" @bind-Value="@Store.Req.IsEntryRelations" @oninput="@OnChangeIsEntryRelations" id="@Ids["IsEntryRelations"]"/>
+        <label class="form-check-label" for="@Ids["IsEntryRelations"]">Общие файлы</label>
+    </div>
+</div>
+
+<div class="mb-3">
+    <div class="form-check form-switch">
         <InputCheckbox class="form-check-input" type="checkbox" @bind-Value="@Store.Req.IsDeleted" @oninput="@OnChangeIsDeleted" id="@Ids["IsDeleted"]"/>
         <label class="form-check-label" for="@Ids["IsDeleted"]">Архивные файлы</label>
     </div>
@@ -60,6 +67,7 @@
     {
         {"IsDeleted", Guid.NewGuid()},
         {"IsWithoutCategory", Guid.NewGuid()},
+        {"IsEntryRelations", Guid.NewGuid()},
     };
 
     [Parameter]
@@ -82,6 +90,14 @@
         Store.FindFiles();
         await OnStateChanged.InvokeAsync();
     }
+
+    private async Task OnChangeIsEntryRelations(ChangeEventArgs e)
+    {
+        Store.Req.IsEntryRelations = (bool) (e.Value ?? false);
+        Store.FindFiles();
+        await OnStateChanged.InvokeAsync();
+    }
+    
     private async Task OnChangeIsWithoutCategory(ChangeEventArgs e)
     {
         Store.Req.IsWithoutCategory = (bool) (e.Value ?? false);

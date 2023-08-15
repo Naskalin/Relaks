@@ -18,6 +18,7 @@ public class AppFileFindRequest : IOrderable
     public string? OrderBy { get; set; }
     public bool? IsOrderByDesc { get; set; }
     public bool IsDeleted { get; set; }
+    public bool IsEntryRelations { get; set; }
 }
 
 public class AppFileFindResult
@@ -35,6 +36,11 @@ public static class EntryFileRepository
             .Include(x => x.Category)
             .Include(x => x.BaseEntryRelations)
             .AsQueryable();
+
+        if (req.IsEntryRelations)
+        {
+            q = q.Where(x => x.BaseEntryRelations.Any());
+        }
         
         if (req.EntryId.HasValue)
         {
