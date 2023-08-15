@@ -63,10 +63,11 @@ public static class AppFileMapper
         req.MapSoftDeleted(baseFile);
     }
     
-    public static void MapTo(this IBaseFile baseFile, BaseFileRequest req)
+    public static void MapTo(this BaseFile baseFile, BaseFileRequest req)
     {
         req.DisplayName = baseFile.DisplayName.Trim();
         req.CategoryId = baseFile.CategoryId;
+        req.BaseEntryRelationIds = baseFile.BaseEntryRelations.Select(x => x.Id).ToList();
         baseFile.MapSoftDeleted(req);
     }
 }

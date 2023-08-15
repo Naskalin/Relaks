@@ -3,22 +3,22 @@
 @using Microsoft.EntityFrameworkCore
 
 <div class="d-flex align-items-center gap-3 mb-3">
-    <label for="" class="form-label mb-0">Объединения</label>
+    <label for="" class="form-label mb-0">@Label</label>
     <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="@(() => Modal.Show())">
         Выбрать <i class="las la-plus-circle la-lg"></i>
     </button>
 </div>
-@if (EntryIds.Any())
+@if (CurrentEntryIds.Any())
 {
     <ul class="list-group">
-        @foreach (var entryId in EntryIds)
+        @foreach (var entryId in CurrentEntryIds)
         {
             <li class="list-group-item">
                 <div class="row justify-content-between align-items-center">
-                    <div class="col-10">
+                    <div class="col">
                         <EntryInlineItem EntryId="@entryId"/>
                     </div>
-                    <div class="col-2">
+                    <div class="col-auto">
                         <button type="button" class="btn btn-sm btn-circle btn-outline-secondary" @onclick="@(() => OnDelete(entryId))">
                             <i class="las la-times text-danger"></i>
                         </button>
@@ -41,16 +41,27 @@
     private Modal Modal { get; set; } = new();
 
     [Parameter]
-    public EventCallback<List<Guid>> OnSelected { get; set; }
+    public string Label { get; set; } = "Объединения";
 
-    private List<Guid> EntryIds { get; set; } = new();
+    [Parameter]
+    public List<Guid> EntryIds { get; set; } = new();
+    
+    [Parameter]
+    public EventCallback<List<Guid>> EntryIdsChanged { get; set; }
+
+    private List<Guid> CurrentEntryIds { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        CurrentEntryIds = EntryIds;
+    }
 
     private async Task OnEntrySelect(Guid entryId)
     {
-        if (!EntryIds.Contains(entryId))
+        if (!CurrentEntryIds.Contains(entryId))
         {
-            EntryIds.Add(entryId);
-            await OnSelected.InvokeAsync(EntryIds);
+            CurrentEntryIds.Add(entryId);
+            await EntryIdsChanged.InvokeAsync(CurrentEntryIds);
         }
 
         await Modal.Toggle();
@@ -58,10 +69,10 @@
 
     private async Task OnDelete(Guid entryId)
     {
-        if (EntryIds.Contains(entryId))
+        if (CurrentEntryIds.Contains(entryId))
         {
-            EntryIds.Remove(entryId);
-            await OnSelected.InvokeAsync(EntryIds);
+            CurrentEntryIds.Remove(entryId);
+            await EntryIdsChanged.InvokeAsync(CurrentEntryIds);
         }
     }
 

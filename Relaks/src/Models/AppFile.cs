@@ -27,6 +27,8 @@ public abstract class BaseFile : IBaseFile
     public BaseFileCategory? Category { get; set; }
 
     public List<BaseFileTag> Tags { get; set; } = new();
+    
+    public List<BaseEntry> BaseEntryRelations { get; set; } = new();
 
     public string GetExtensionWithoutDot() => Path.GetExtension(Filename).Replace(".", "");
 
@@ -91,4 +93,5 @@ public class BaseFileRequest : ISoftDeletedReason
     public string? DeletedReason { get; set; }
     public Guid? CategoryId { get; set; }
     public List<Guid> Tags { get; set; } = new();
+    public List<Guid> BaseEntryRelationIds { get; set; } = new();
 }
