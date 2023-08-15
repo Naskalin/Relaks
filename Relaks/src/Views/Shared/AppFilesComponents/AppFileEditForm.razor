@@ -29,28 +29,47 @@
     <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
     <ValidationSummary/>
     
+    @if (IsRelationFileIsNotOwner() && EntryFileOwnerId.HasValue)
+    {
+        <div class="p-3 bg-warning bg-opacity-10">
+            <ul class="mb-3 ul-warning">
+                <li>Файл изначально загружен в это объединение, изменить метки и категории вы можете только из этого объединения.</li>
+                <li>
+                    <EntryInlineItem EntryId="@EntryFileOwnerId.Value"/>
+                </li>
+                <li>
+                    <a href="/entries/@EntryFileOwnerId.Value/files" class="btn btn-outline-secondary btn-sm">Перейти</a>
+                </li>
+            </ul>
+        </div>
+    }
+
+    
     <div class="mb-3">
         <label for="" class="form-label">@Resources.Action.Title *</label>
         <input type="text" @bind-value="@Req.DisplayName" minlength="2" maxlength="255" class="form-control" required="required">
         <ValidationMessage For="@(() => Req.DisplayName)"/>
     </div>
-
-    <div class="mb-3">
-        <label for="" class="form-label">Выберите категорию</label>
-        <InputSelect @bind-Value="Req.CategoryId" class="form-select">
-            <option value="">(Без категории)</option>
-            @foreach (var item in Store.Categories.ToTreeSelect())
-            {
-                <option value="@item.Value">@item.Title</option>
-            }
-        </InputSelect>
-    </div>
-
-    <div class="mb-3">
-        <label for="" class="form-label">Выберите метки</label>
+    
+    @if (!IsRelationFileIsNotOwner())
+    {
+        <div class="mb-3">
+            <label for="" class="form-label">Выберите категорию</label>
+            <InputSelect @bind-Value="Req.CategoryId" class="form-select">
+                <option value="">(Без категории)</option>
+                @foreach (var item in Store.Categories.ToTreeSelect())
+                {
+                    <option value="@item.Value">@item.Title</option>
+                }
+            </InputSelect>
+        </div>
+    
+        <div class="mb-3">
+            <label for="" class="form-label">Выберите метки</label>
         
-        <CheckboxList TValue="List<Guid>" Items="@AllTags" @bind-Value="SelectedTags"/>
-    </div>
+            <CheckboxList TValue="List<Guid>" Items="@AllTags" @bind-Value="SelectedTags"/>
+        </div>   
+    }
     
     <div class="mb-3">
         <SelectEntry @bind-EntryIds="@Req.BaseEntryRelationIds" Label="Связанные объединения"/>
@@ -79,7 +98,13 @@
     [CascadingParameter]
     [Parameter]
     public AppFileListStore Store { get; set; } = null!;
+    
+    /// файл связан с объединением, но загружен изначально в другое объединение
+    private bool IsRelationFileIsNotOwner() => Store.Req.EntryId.HasValue
+                                               && BaseFile.BaseEntryRelations.Any(x => x.Id.Equals(Store.Req.EntryId.Value));
 
+    private Guid? EntryFileOwnerId { get; set; }
+    
     [Parameter]
     public EventCallback OnStateHasChanged { get; set; }
     
@@ -104,6 +129,11 @@
             .Include(x => x.Tags)
             .Include(x => x.BaseEntryRelations)
             .First(x => x.Id.Equals(Store.BodyEditId.Value));
+
+        if (BaseFile.Discriminator.Equals(nameof(EntryFile)))
+        {
+            EntryFileOwnerId = Db.EntryFiles.FirstOrDefault(x => x.Id.Equals(BaseFile.Id))?.EntryId;
+        }
 
         BaseFile.MapTo(Req);
         AllTags = Store.Tags.Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();

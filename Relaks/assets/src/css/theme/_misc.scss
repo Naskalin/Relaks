@@ -49,6 +49,7 @@
   align-items: center;
   justify-content: center;
 }
+.ul-warning,
 .ul-info {
   padding-left: 1rem;
   li {
@@ -65,10 +66,15 @@
       top: 0;
       bottom: 0;
       position: absolute;
-      background: var(--bs-info);
       opacity: .7;
     }
   }
+}
+.ul-warning li::before {
+  background: var(--bs-warning);
+}
+.ul-info li::before {
+  background: var(--bs-info);
 }
 .border-dashed {
   border: var(--bs-border-width) dashed var(--bs-border-color);

@@ -46,10 +46,16 @@
                 <i class="las la-search la-lg"></i> @((MarkupString) AppFile.FtsFile.Snippet)
             </div>
         }
-        @if (IsRelationFile())
+          @if (IsRelationOwnerFile())
+                {
+                    <div class="text-center" title="Файл используется в других объединениях">
+                        <span class="badge text-bg-warning fw-semibold text-uppercase">общий файл (владелец)</span>
+                    </div>
+                }
+        @if (IsRelationFileIsNotOwner())
         {
-            <div class="text-center" title="Файл используется в нескольких объединениях">
-                <span class="badge text-bg-warning fw-semibold text-uppercase">связанный файл</span>
+            <div class="text-center" title="Файл используется в других объединениях">
+                <span class="badge text-bg-warning fw-semibold text-uppercase">общий файл</span>
             </div>
         }
         @if (AppFile.BaseFile.Category != null)
@@ -100,7 +106,14 @@
     [Parameter]
     public EventCallback OnStateHasChanged { get; set; }
 
-    private bool IsRelationFile() => Store.Req.EntryId.HasValue
+    /// объединение владеет этим файлом
+    private bool IsRelationOwnerFile() => Store.Req.EntryId.HasValue
+                                          && AppFile.BaseFile.BaseEntryRelations.Any()
+                                          && !AppFile.BaseFile.BaseEntryRelations.Any(x => x.Id.Equals(Store.Req.EntryId.Value));
+                                        
+
+    /// файл связан с объединением, но загружен изначально в другое объединение
+    private bool IsRelationFileIsNotOwner() => Store.Req.EntryId.HasValue
                                      && AppFile.BaseFile.BaseEntryRelations.Any(x => x.Id.Equals(Store.Req.EntryId.Value));
 
     private bool IsImageTag(string ext) => new List<string>()
@@ -170,7 +183,7 @@
 
     private async Task HandleClickTag(Guid tagId)
     {
-        if (IsRelationFile()) return;
+        if (IsRelationFileIsNotOwner()) return;
         if (!Store.Req.TagIds.Contains(tagId))
         {
             Store.Req.TagIds.Add(tagId);
@@ -178,16 +191,16 @@
         Store.FindFiles();
         await OnStateHasChanged.InvokeAsync();
     }
-    
+
     private async Task HandleClickCategory(Guid categoryId)
     {
-        if (IsRelationFile()) return;
+        if (IsRelationFileIsNotOwner()) return;
         if (!Store.Req.CategoryId.Equals(categoryId))
         {
             Store.Req.CategoryId = categoryId;
             Store.FindFiles();
-            await OnStateHasChanged.InvokeAsync();   
+            await OnStateHasChanged.InvokeAsync();
         }
     }
-    
+
 }
