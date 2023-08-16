@@ -4,10 +4,20 @@
 <InputFile OnChange="@LoadFiles" accept="image/*" class="form-control" id="@($"input-{CropperBlockId}")"/>
 <div class="row @(!string.IsNullOrEmpty(RootImage) ? "mt-3" : "")">
     <div class="col">
-        <div id="@CropperBlockId"></div>  
+        <div id="@CropperBlockId"></div>
+        
         @if (!string.IsNullOrEmpty(ResultImage))
         {
-            <img src="@ResultImage" alt="" class="rounded mt-2 border" style="max-width: 150px"/>
+            <div class="row mt-2">
+                <div class="col-auto">
+                    <img src="@ResultImage" alt="" class="rounded border" style="max-width: 150px"/>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="OnDelete">
+                        Удалить миниатюру <i class="las la-times la-lg"></i>
+                    </button>
+                </div>
+            </div>
         }
     </div>
     <div class="col">
@@ -71,4 +81,10 @@
         await ValueChanged.InvokeAsync(ResultImage);
     }
 
+    private async Task OnDelete()
+    {
+        ResultImage = null;
+        RootImage = null;
+        await ValueChanged.InvokeAsync(ResultImage);
+    }
 }
