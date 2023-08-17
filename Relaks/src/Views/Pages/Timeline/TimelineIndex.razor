@@ -13,19 +13,21 @@
     <CascadingValue Value="@this">
         <div class="row">
             <div class="col-auto">
-                @if (PreviewEntryId.HasValue)
-                {
-                    <EntryCard EntryId="@PreviewEntryId.Value"/>
-                }
-                else
-                {
-                    <div style="width: 20rem;">
-                        <ul class="ul-info">
-                            <li>Одиночный клик по строке откроет предпросмотр</li>
-                            <li>Двойной клик по строке откроет объединение</li>
-                        </ul>
-                    </div>
-                }
+                <div style="position: sticky; top: 100px;">
+                    @if (PreviewEntryId.HasValue)
+                    {
+                        <EntryCard EntryId="@PreviewEntryId.Value"/>
+                    }
+                    else
+                    {
+                        <div style="width: 20rem;">
+                            <ul class="ul-info">
+                                <li>Одиночный клик по строке откроет предпросмотр</li>
+                                <li>Двойной клик по строке откроет объединение</li>
+                            </ul>
+                        </div>
+                    }
+                </div>
             </div>
             <div class="col">
                 <_TimelineNavigation/>
@@ -50,7 +52,9 @@
                 <_TimelineNavigation/>
             </div>
             <div class="col-auto" style="max-width: 25rem">
-                <_TimelineFilter/>
+                <div style="position: sticky; top: 100px;">
+                    <_TimelineFilter/>
+                </div>
             </div>
         </div>
     </CascadingValue>

@@ -2,9 +2,11 @@
 @using Relaks.Models
 @using Microsoft.EntityFrameworkCore
 
+@inject DialogService DialogService;
+
 <div class="d-flex align-items-center gap-3 mb-3">
-    <label for="" class="form-label mb-0">@Label</label>
-    <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="@(() => Modal.Show())">
+    <label class="form-label mb-0">@Label</label>
+    <button type="button" class="btn btn-outline-secondary btn-sm" @onclick="@ShowModal">
         Выбрать <i class="las la-plus-circle la-lg"></i>
     </button>
 </div>
@@ -29,17 +31,7 @@
     </ul>   
 }
 
-<Modal @ref="Modal" IsKeyboard="@true" IsBackdrop="@true">
-    <ModalDialog Title="Выберите объединение" IsScrolling="true" CloseButtonText="Закрыть" FullScreenSize="FullScreenSize.Always">
-        <BodyTemplate>
-            <EntryList OnRowClicked="@OnEntrySelect"/>
-        </BodyTemplate>
-    </ModalDialog>
-</Modal>
-
 @code {
-    private Modal Modal { get; set; } = new();
-
     [Parameter]
     public string Label { get; set; } = "Объединения";
 
@@ -63,8 +55,6 @@
             CurrentEntryIds.Add(entryId);
             await EntryIdsChanged.InvokeAsync(CurrentEntryIds);
         }
-
-        await Modal.Toggle();
     }
 
     private async Task OnDelete(Guid entryId)
@@ -76,4 +66,30 @@
         }
     }
 
+    private async Task ShowModal()
+    {
+        var option = new DialogOption
+        {
+            IsKeyboard = true,
+            IsBackdrop = true,
+            Title = "Выберите объединение",
+            IsScrolling = true,
+            CloseButtonText = "Закрыть",
+            FullScreenSize = FullScreenSize.Always
+        };
+
+        option.Component = BootstrapDynamicComponent.CreateComponent<EntryList>(new Dictionary<string, object?>()
+        {
+            ["OnRowClicked"] = EventCallback.Factory.Create<Guid>(this, async guid =>
+            {
+                await OnEntrySelect(guid);
+                await option.CloseDialogAsync();
+            }),
+        });
+        
+        await DialogService.Show(option);
+    }
+    
+    [CascadingParameter]
+    private Func<Task>? OnCloseAsync { get; set; }
 }

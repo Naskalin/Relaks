@@ -7,7 +7,7 @@
 
 <div class="d-flex align-items-center gap-3 mb-2">
     <label for="" class="form-label mb-0">Профессии</label>
-    <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="@(() => ShowModal())">
+    <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="@ShowModal">
         Выбрать профессии <i class="las la-check-square la-lg ms-1"></i>
     </button>
 </div>
@@ -132,12 +132,7 @@
                 ["ListGroupClasses"] = "p-0",
                 ["OnProfessionClick"] = EventCallback.Factory.Create<Guid>(this, HandleProfessionClick),
                 ["CustomProfessionTitle"] = CustomProfessionTitle,
-                // ["CustomProfessionTitle"] = new RenderFragment(builder => builder.AddContent(0, new MarkupString(@"asd"))),
-                // ["CustomProfessionTitle"] = BootstrapDynamicComponent.CreateComponent<SelectProfessionTitle>(new Dictionary<string, object?>()
-                // {
-                //     // ["CurrentSelectedIds"] = CurrentSelectedIds,
-                //     // ["Profession"] = ,
-                // })
+                ["StickyTopOffset"] = "0",
             })
         });
     }

@@ -5,21 +5,23 @@
 
 <div class="row">
     <div class="col-4">
-        <div class="mb-3 input-group">
-            <input @bind-value="@Search" @oninput="@OnValueChanged" class="form-control" placeholder="Поиск профессий..."/>
-            <button class="btn btn-outline-secondary" type="button" @onclick="@OnSearchClear">
-                <i class="las la-times la-lg"></i>
-            </button>
-        </div>
-
-        <div class="mb-3">
-            <div class="list-group mb-3">
-                @foreach (var category in Categories)
-                {
-                    <div class="list-group-item cursor-pointer @(SelectedCategoryId.Equals(category.Id) ? "bg-primary bg-opacity-10" : "")" @onclick="@(() => SwitchFindCategory(category.Id))">
-                        @category.Title
-                    </div>
-                }
+        <div style="position: sticky; top: @StickyTopOffset;">
+            <div class="mb-3 input-group">
+                <input @bind-value="@Search" @oninput="@OnValueChanged" class="form-control" placeholder="Поиск профессий..."/>
+                <button class="btn btn-outline-secondary" type="button" @onclick="@OnSearchClear">
+                    <i class="las la-times la-lg"></i>
+                </button>
+            </div>
+    
+            <div class="mb-3">
+                <div class="list-group mb-3">
+                    @foreach (var category in Categories)
+                    {
+                        <div class="list-group-item cursor-pointer @(SelectedCategoryId.Equals(category.Id) ? "bg-primary bg-opacity-10" : "")" @onclick="@(() => SwitchFindCategory(category.Id))">
+                            @category.Title
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </div>
@@ -52,6 +54,9 @@
 
     [Parameter]
     public string ListGroupClasses { get; set; } = "";
+
+    [Parameter]
+    public string StickyTopOffset { get; set; } = "100px";
 
     [Parameter]
     public RenderFragment<Profession>? CustomProfessionTitle { get; set; }

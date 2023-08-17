@@ -9,10 +9,12 @@
             <SoftDeleteShow SoftDeletedReason="@BaseEntry"/>
             <div class="row gap-4">
                 <div class="col-auto">
-                    <EntryCard EntryId="@EntryId"
-                               EntryInfoId="@EntryInfoId"
-                               ViewMode="@EntryCard.ViewModeEnum.WithEdit"
-                               HideSoftDeleted="@true"/>
+                    <div style="position: sticky; top: 100px;">
+                        <EntryCard EntryId="@EntryId"
+                                   EntryInfoId="@EntryInfoId"
+                                   ViewMode="@EntryCard.ViewModeEnum.WithEdit"
+                                   HideSoftDeleted="@true"/>
+                    </div>
                 </div>
                 <div class="col">
                     @ChildContent
