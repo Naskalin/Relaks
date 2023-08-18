@@ -1,0 +1,37 @@
+﻿@page "/entries/{entryId:guid}/structure"
+
+@using Relaks.Database
+@using Relaks.Models
+@using Relaks.Models.Store
+
+@inject AppDbContext Db;
+
+<EntryProfileLayout EntryId="@EntryId">
+    <EntryProfileTabs EntryId="@EntryId"/>
+    <MyTitle>
+        <ChildContent>Структура @(Store.Discriminator.Equals(nameof(ECompany)) ? "компании" : "встречи")</ChildContent>
+        <EndTitle>
+            <a href="@($"/entries/{EntryId}/structure/new-group")" class="btn btn-primary">
+                <i class="las la-plus-circle la-lg me-1"></i>
+                @Resources.Action.Add структуру
+            </a>
+        </EndTitle>
+    </MyTitle>
+    
+    <CascadingValue Value="@Store">
+        
+    </CascadingValue>
+</EntryProfileLayout>
+
+@code {
+    [Parameter]
+    public Guid EntryId { get; set; }
+
+    private EntryStructureStore Store { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        Store.Discriminator = Db.BaseEntries.Where(x => x.Id.Equals(EntryId)).Select(x => x.Discriminator).First();
+    }
+
+}

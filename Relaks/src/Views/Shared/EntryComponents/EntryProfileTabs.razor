@@ -1,11 +1,15 @@
 ﻿@using Relaks.Models
+@using Relaks.src.Views.Pages.Entries
 
 <ul class="nav nav-tabs mb-3">
     @foreach (var tab in _tabs)
     {
-        <li class="nav-item">
-            <NavLink href="@($"/entries/{EntryId}{tab.UrlPart}")" class="nav-link"><b>@tab.Title</b></NavLink>
-        </li>
+        if (tab.Discriminators == null || tab.Discriminators.Contains(Entry.Discriminator))
+        {
+            <li class="nav-item">
+                <NavLink href="@($"/entries/{EntryId}{tab.UrlPart}")" class="nav-link"><b>@tab.Title</b></NavLink>
+            </li>   
+        }
     }
 </ul>
 
@@ -16,14 +20,15 @@
     [CascadingParameter]
     public BaseEntry Entry { get; set; } = null!;
 
-    private List<(string UrlPart, string Title)> _tabs = new();
+    private List<(string UrlPart, string Title, List<string>? Discriminators)> _tabs = new();
 
     protected override void OnParametersSet()
     {
         _tabs = new() 
         {
-            (UrlPart: "/info", Title: Resources.Entity.ResourceManager.GetString($"{Entry.Discriminator}_About") ?? "???"),
-            (UrlPart: "/files", Title: "Файлы"),
+            (UrlPart: "/info", Title: Resources.Entity.ResourceManager.GetString($"{Entry.Discriminator}_About") ?? "???", Discriminators: null),
+            (UrlPart: "/structure", Title: "Структура", Discriminators: new List<string>() {nameof(ECompany), nameof(EMeet)}),
+            (UrlPart: "/files", Title: "Файлы", Discriminators: null),
         };
     }
 
