@@ -31,7 +31,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("BaseFileRelationsId");
 
-                    b.ToTable("BaseEntryBaseFile");
+                    b.ToTable("BaseEntryBaseFile", (string)null);
                 });
 
             modelBuilder.Entity("BaseEntryProfession", b =>
@@ -46,7 +46,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("ProfessionsId");
 
-                    b.ToTable("BaseEntryProfession");
+                    b.ToTable("BaseEntryProfession", (string)null);
                 });
 
             modelBuilder.Entity("BaseFileBaseFileTag", b =>
@@ -61,7 +61,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("TagsId");
 
-                    b.ToTable("BaseFileBaseFileTag");
+                    b.ToTable("BaseFileBaseFileTag", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.BaseEntry", b =>
@@ -113,7 +113,7 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Entries");
+                    b.ToTable("Entries", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseEntry");
 
@@ -155,7 +155,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseEntryInfo");
 
@@ -203,7 +203,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Files");
+                    b.ToTable("Files", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseFile");
 
@@ -235,7 +235,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("FileCategories");
+                    b.ToTable("FileCategories", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseFileCategory");
 
@@ -258,7 +258,7 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FileTags");
+                    b.ToTable("FileTags", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseFileTag");
 
@@ -313,7 +313,7 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.DatasetTemplate", b =>
@@ -332,7 +332,7 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DatasetTemplates");
+                    b.ToTable("DatasetTemplates", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.FtsEntry", b =>
@@ -479,7 +479,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Professions");
+                    b.ToTable("Professions", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.ProfessionCategory", b =>
@@ -495,87 +495,14 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProfessionCategories");
-                });
-
-            modelBuilder.Entity("Relaks.Models.StructureModels.StructureGroup", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("EndAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("EntryId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("StartAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EntryId");
-
-                    b.HasIndex("ParentId");
-
-                    b.ToTable("StructureGroups");
-                });
-
-            modelBuilder.Entity("Relaks.Models.StructureModels.StructureItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("DeletedReason")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("EndAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("EntryId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("StartAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("StructureGroupId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EntryId");
-
-                    b.HasIndex("StructureGroupId");
-
-                    b.ToTable("StructureItems");
+                    b.ToTable("ProfessionCategories", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.ECompany", b =>
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
 
-                    b.ToTable("Entries");
+                    b.ToTable("Entries", (string)null);
 
                     b.HasDiscriminator().HasValue("ECompany");
                 });
@@ -584,7 +511,7 @@ namespace Relaks.Migrations
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
 
-                    b.ToTable("Entries");
+                    b.ToTable("Entries", (string)null);
 
                     b.HasDiscriminator().HasValue("EMeet");
                 });
@@ -593,7 +520,7 @@ namespace Relaks.Migrations
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
 
-                    b.ToTable("Entries");
+                    b.ToTable("Entries", (string)null);
 
                     b.HasDiscriminator().HasValue("EPerson");
                 });
@@ -606,7 +533,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator().HasValue("EiDataset");
                 });
@@ -621,7 +548,7 @@ namespace Relaks.Migrations
                     b.Property<bool>("WithTime")
                         .HasColumnType("INTEGER");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator().HasValue("EiDate");
                 });
@@ -634,7 +561,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator().HasValue("EiEmail");
                 });
@@ -651,7 +578,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator().HasValue("EiPhone");
                 });
@@ -664,7 +591,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator().HasValue("EiUrl");
                 });
@@ -678,7 +605,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.ToTable("Files");
+                    b.ToTable("Files", (string)null);
 
                     b.HasDiscriminator().HasValue("EntryFile");
                 });
@@ -692,7 +619,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.ToTable("FileCategories");
+                    b.ToTable("FileCategories", (string)null);
 
                     b.HasDiscriminator().HasValue("EntryFileCategory");
                 });
@@ -706,7 +633,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.ToTable("FileTags");
+                    b.ToTable("FileTags", (string)null);
 
                     b.HasDiscriminator().HasValue("EntryFileTag");
                 });
@@ -797,38 +724,6 @@ namespace Relaks.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Relaks.Models.StructureModels.StructureGroup", b =>
-                {
-                    b.HasOne("Relaks.Models.BaseEntry", "Entry")
-                        .WithMany()
-                        .HasForeignKey("EntryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Relaks.Models.StructureModels.StructureGroup", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId");
-
-                    b.Navigation("Entry");
-
-                    b.Navigation("Parent");
-                });
-
-            modelBuilder.Entity("Relaks.Models.StructureModels.StructureItem", b =>
-                {
-                    b.HasOne("Relaks.Models.BaseEntry", "Entry")
-                        .WithMany()
-                        .HasForeignKey("EntryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Relaks.Models.StructureModels.StructureGroup", null)
-                        .WithMany("Items")
-                        .HasForeignKey("StructureGroupId");
-
-                    b.Navigation("Entry");
-                });
-
             modelBuilder.Entity("Relaks.Models.EntryFile", b =>
                 {
                     b.HasOne("Relaks.Models.BaseEntry", "Entry")
@@ -877,13 +772,6 @@ namespace Relaks.Migrations
             modelBuilder.Entity("Relaks.Models.ProfessionCategory", b =>
                 {
                     b.Navigation("Professions");
-                });
-
-            modelBuilder.Entity("Relaks.Models.StructureModels.StructureGroup", b =>
-                {
-                    b.Navigation("Children");
-
-                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }
