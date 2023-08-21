@@ -19,7 +19,7 @@
     </MyTitle>
     
     <CascadingValue Value="@Store">
-        
+        <_StructureDiagram/>
     </CascadingValue>
 </EntryProfileLayout>
 
@@ -28,6 +28,7 @@
     public Guid EntryId { get; set; }
 
     private EntryStructureStore Store { get; set; } = new();
+
 
     protected override void OnParametersSet()
     {
