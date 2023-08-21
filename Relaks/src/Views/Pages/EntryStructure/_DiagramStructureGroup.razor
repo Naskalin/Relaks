@@ -1,0 +1,22 @@
+﻿@using Relaks.Models.StructureModels
+
+<div class="d-flex flex-column align-items-center my-2">
+    <div class="rounded border p-3 my-2 text-center" style="max-width: 10rem">
+        @StructureGroup.Title
+    </div>
+    
+    @if (StructureGroup.Children.Any())
+    {
+        <div class="d-flex justify-content-center gap-2">
+            @foreach (var child in StructureGroup.Children)
+            {
+                <_DiagramStructureGroup StructureGroup="@child"/>
+            }
+        </div>    
+    }
+</div>
+
+@code {
+    [Parameter]
+    public StructureGroup StructureGroup { get; set; } = null!;
+}

@@ -11,7 +11,7 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230821105450_CreateStructures")]
+    [Migration("20230821130755_CreateStructures")]
     partial class CreateStructures
     {
         /// <inheritdoc />
@@ -523,6 +523,11 @@ namespace Relaks.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TreePath")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

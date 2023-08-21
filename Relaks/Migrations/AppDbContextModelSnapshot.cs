@@ -520,6 +520,11 @@ namespace Relaks.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TreePath")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

@@ -1,84 +1,125 @@
-﻿@using Blazor.Diagrams
-@using Blazor.Diagrams.Core.Models
-@using Blazor.Diagrams.Core.PathGenerators
-@using Blazor.Diagrams.Core.Routers
-@using Blazor.Diagrams.Options
-@using Blazor.Diagrams.Core.Geometry
-@using Blazor.Diagrams.Components
-@using Blazor.Diagrams.Core.Anchors
-@using Blazor.Diagrams.Components.Widgets
+﻿@* @using Blazor.Diagrams *@
+@* @using Blazor.Diagrams.Core.Models *@
+@* @using Blazor.Diagrams.Core.PathGenerators *@
+@* @using Blazor.Diagrams.Core.Routers *@
+@* @using Blazor.Diagrams.Options *@
+@* @using Blazor.Diagrams.Core.Geometry *@
+@* @using Blazor.Diagrams.Components *@
+@* @using Blazor.Diagrams.Core.Anchors *@
+@* @using Blazor.Diagrams.Components.Widgets *@
+@using Relaks.Models.Store
+@using Relaks.Models.StructureModels
+@using System.Globalization
 
-<h3>_StructureDiagram</h3>
+@* @inject IJSRuntime JsRuntime; *@
 
-<style>
-    .diagram-container {
-    	width: 100%;
-        height: 400px;
-        border: 1px solid black; /* Just visual */
-    }
-</style>
-<div class="diagram-container">
-    <CascadingValue Value="Diagram" IsFixed="true">
-        <DiagramCanvas>
-            <Widgets>
-            			<NavigatorWidget Width="200" Height="120"
-            								Class="border border-black bg-white absolute"
-            								Style="bottom: 15px; right: 15px;" />
-            		</Widgets>
-        </DiagramCanvas>
-    </CascadingValue>
+@* <div class="diagram-container" style="width: 100%; height: 400px; border: 1px solid #ccc;"> *@
+@*     <CascadingValue Value="Diagram" IsFixed="true"> *@
+@*         <DiagramCanvas> *@
+@*             <Widgets> *@
+@*                 <NavigatorWidget Width="200" Height="120" *@
+@*                                  Class="border border-black bg-white" *@
+@*                                  Style="bottom: 15px; right: 15px; position: absolute"/> *@
+@*                 <GridWidget Size="25" Mode="GridMode.Line" BackgroundColor="white"/> *@
+@*             </Widgets> *@
+@*         </DiagramCanvas> *@
+@*     </CascadingValue> *@
+@* </div> *@
+@* *@
+<div class="d-flex gap-2 my-2 justify-content-center">
+    <button type="button" class="btn btn-secondary btn-circle" @onclick="@(() => ChangeScale(1))" title="Увеличить масштаб">
+        <i class="las la-plus la-lg"></i>
+    </button>
+    <button type="button" class="btn btn-secondary btn-circle" @onclick="@(() => ChangeScale(0))" title="Масштаб 1:1">
+        1:1
+    </button>
+    <button type="button" class="btn btn-secondary btn-circle" @onclick="@(() => ChangeScale(-1))" title="Уменьшить масштаб">
+        <i class="las la-minus la-lg"></i>
+    </button>
 </div>
 
-<div class="d-flex gap-2 my-2">
-    <button type="button" class="btn btn-secondary btn-circle" @onclick="@(() => ChangeScale(1))">
-        <i class="las la-plus"></i>
-    </button>
-    <button type="button" class="btn btn-secondary btn-circle" @onclick="@(() => ChangeScale(-1))">
-        <i class="las la-minus"></i>
-    </button>
+<div class="border rounded p-3" style="overflow: scroll;">
+    <div class="d-flex gap-2 justify-content-center"
+         data-js-draggable-zone
+         style="transform: scale(@ScaleToCss()); transform-origin: 0 0;">
+        @foreach (var sg in Store.StructureGroups)
+        {
+            <_DiagramStructureGroup StructureGroup="@sg"/>
+        }
+    </div>
 </div>
 
 @code {
-    private BlazorDiagram Diagram { get; set; } = null!;
+    [CascadingParameter]
+    public EntryStructureStore Store { get; set; } = null!;
 
-    protected override void OnInitialized()
-    {
-        var options = new BlazorDiagramOptions
-        {
-            AllowMultiSelection = true,
-            Zoom =
-            {
-                Enabled = false,
-            },
-            Links =
-            {
-                DefaultRouter = new NormalRouter(),
-                DefaultPathGenerator = new SmoothPathGenerator()
-            },
-        };
+    private string ScaleToCss() => Store.DiagramScale.ToString(new NumberFormatInfo() {NumberDecimalSeparator = "."});
 
-        Diagram = new BlazorDiagram(options);
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if (!firstRender) return;
+    //     await JsRuntime.InvokeVoidAsync("initializeScrollableContainers");
+    // }
 
-        var firstNode = Diagram.Nodes.Add(new NodeModel(position: new Point(50, 50))
-        {
-            Title = "Node 1"
-        });
-        var secondNode = Diagram.Nodes.Add(new NodeModel(position: new Point(200, 100))
-        {
-            Title = "Node 2"
-        });
-        var leftPort = secondNode.AddPort(PortAlignment.Left);
-        var rightPort = secondNode.AddPort(PortAlignment.Right);
+    // private BlazorDiagram Diagram { get; set; } = null!;
 
-        var sourceAnchor = new ShapeIntersectionAnchor(firstNode);
-    // // The connection point will be the port's position
-        var targetAnchor = new SinglePortAnchor(leftPort);
-        var link = Diagram.Links.Add(new LinkModel(sourceAnchor, targetAnchor));
-    }
-
+    // protected override void OnInitialized()
+    // {
+    //     var options = new BlazorDiagramOptions
+    //     {
+    //         AllowMultiSelection = true, 
+    //         Zoom =
+    //         {
+    //             Enabled = false,
+    //         },
+    //         Links =
+    //         {
+    //             DefaultRouter = new NormalRouter(),
+    //             DefaultPathGenerator = new SmoothPathGenerator()
+    //         },
+    //     };
+    //
+    //     Diagram = new BlazorDiagram(options);
+    //
+    //     var i = 1;
+    //     foreach (var sg in Store.StructureGroups)
+    //     {
+    //         AddStructureNode(sg, 1, i);
+    //         i++;
+    //     }
+    // }
+    //
+    // private void AddStructureNode(StructureGroup sg, int level = 1, int position = 1)
+    // {
+    //     var x = 150 * position;
+    //     var y = 50 * level;
+    //     
+    //     Diagram.Nodes.Add(new NodeModel(new Point(x, y))
+    //     {
+    //         Title = sg.Title,
+    //     });
+    //
+    //     if (!sg.Children.Any()) return;
+    //
+    //     var i = 1;
+    //     foreach (var child in sg.Children)
+    //     {
+    //         AddStructureNode(child, level + 1, i);
+    //         i++;
+    //     }
+    // }
+    //
+    // /// масштабирование без сдвига
+    // /// https://github.com/Blazor-Diagrams/Blazor.Diagrams/issues/151
     private void ChangeScale(int scaleDirection)
     {
-        var newZoom = scaleDirection > 0 ? Diagram.Zoom + 0.1 : Diagram.Zoom - 0.1;
-        Diagram.SetZoom(newZoom);
+        double scale = scaleDirection switch
+        {
+            >= 1 => Store.DiagramScale + 0.1,
+            <= -1 => Store.DiagramScale - 0.1,
+            _ => 1
+            };
+    
+        Store.DiagramScale = scale;
     }
 }

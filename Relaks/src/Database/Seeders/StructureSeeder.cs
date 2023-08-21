@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Relaks.Managers;
 using Relaks.Models;
 using Relaks.Models.StructureModels;
 
@@ -18,13 +19,15 @@ public partial class DatabaseSeeder
                 EntryId = companyId,
                 Description = Faker.Random.ArrayElement(new[] {null, Faker.Lorem.Paragraph(1)}),
                 StartAt = Faker.Date.Past(10),
-                Title = Faker.Random.ArrayElement(new[] {null, Faker.Random.Words(Faker.Random.Int(1, 3))}),
+                Title = Faker.Random.Words(Faker.Random.Int(1, 3)),
             };
 
             if (Faker.Random.Int(1, 3).Equals(1))
             {
                 structureGroup.EndAt = Faker.Date.Past();
             }
+            
+            TreeManager.UpdateTreePath(structureGroup);
             
             parentGroups.Add(structureGroup);
             
@@ -81,7 +84,7 @@ public partial class DatabaseSeeder
                 EntryId = companyId,
                 Description = Faker.Random.ArrayElement(new[] {null, Faker.Lorem.Paragraph(1)}),
                 StartAt = Faker.Date.Past(10),
-                Title = Faker.Random.ArrayElement(new[] {null, Faker.Random.Words(Faker.Random.Int(1, 3))}),
+                Title = Faker.Random.Words(Faker.Random.Int(1, 3)),
             };
             
             if (Faker.Random.Int(1, 3).Equals(1))
@@ -89,6 +92,7 @@ public partial class DatabaseSeeder
                 child.EndAt = Faker.Date.Past();
             }
             
+            TreeManager.UpdateTreePath(child, parent);
             Db.StructureGroups.Add(child);
     
             if (depth <= 5 && Faker.Random.Int(1, 2).Equals(1))

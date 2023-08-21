@@ -2,10 +2,11 @@
 
 namespace Relaks.Models.StructureModels;
 
-public class StructureGroup
+public class StructureGroup : ITree<StructureGroup>
 {
     public Guid Id { get; set; }
-    public string? Title { get; set; } = null!;
+    public string TreePath { get; set; } = null!;
+    public string Title { get; set; } = null!;
     public string? Description { get; set; }
     
     public Guid EntryId { get; set; }
@@ -20,4 +21,9 @@ public class StructureGroup
     
     public DateTime StartAt { get; set; }
     public DateTime? EndAt { get; set; }
+
+    public StructureGroup()
+    {
+        Id = Guid.NewGuid();
+    }
 }

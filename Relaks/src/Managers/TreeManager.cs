@@ -46,15 +46,15 @@ public static class TreeManager
     
     private static void SyncChildPaths<TEntity>(TEntity parentNode, List<TEntity> children, string? parentPath = null) where TEntity : class, ITree<TEntity>
     {
-        if (parentNode.ParentId == null) UpdateTreePath(null, parentNode);
+        if (parentNode.ParentId == null) UpdateTreePath(parentNode);
         foreach (var child in children)
         {
-            UpdateTreePath(parentNode, child);
+            UpdateTreePath(child, parentNode);
             SyncChildPaths(child, child.Children, parentPath);
         }
     }
     
-    public static void UpdateTreePath<TEntity>(ITree<TEntity>? parentNode, ITree<TEntity> child) where TEntity : class, ITree<TEntity>
+    public static void UpdateTreePath<TEntity>(ITree<TEntity> child, ITree<TEntity>? parentNode = null) where TEntity : class, ITree<TEntity>
     {
         string pathParentNode = parentNode?.TreePath ?? "";
         child.TreePath = $"{pathParentNode}/{child.Id}";

@@ -17,4 +17,9 @@ public class StructureItem
     
     public StructureGroup Group { get; set; } = null!;
     public Guid GroupId { get; set; }
+
+    public StructureItem()
+    {
+        Id = Guid.NewGuid();
+    }
 }
