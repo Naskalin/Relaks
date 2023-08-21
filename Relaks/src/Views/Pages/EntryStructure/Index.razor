@@ -10,12 +10,12 @@
     <EntryProfileTabs EntryId="@EntryId"/>
     <MyTitle>
         <ChildContent>Структура @(Store.Discriminator.Equals(nameof(ECompany)) ? "компании" : "встречи")</ChildContent>
-        <EndTitle>
-            <a href="@($"/entries/{EntryId}/structure/new-group")" class="btn btn-primary">
-                <i class="las la-plus-circle la-lg me-1"></i>
-                @Resources.Action.Add структуру
-            </a>
-        </EndTitle>
+        @* <EndTitle> *@
+        @*     <a href="@($"/entries/{EntryId}/structure/new-group")" class="btn btn-primary"> *@
+        @*         <i class="las la-plus-circle la-lg me-1"></i> *@
+        @*         @Resources.Action.Add структуру *@
+        @*     </a> *@
+        @* </EndTitle> *@
     </MyTitle>
     
     <CascadingValue Value="@Store">

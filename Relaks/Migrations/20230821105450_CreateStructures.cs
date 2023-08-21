@@ -16,7 +16,7 @@ namespace Relaks.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", nullable: true),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
                     EntryId = table.Column<Guid>(type: "TEXT", nullable: false),
                     ParentId = table.Column<Guid>(type: "TEXT", nullable: true),
@@ -49,9 +49,7 @@ namespace Relaks.Migrations
                     Description = table.Column<string>(type: "TEXT", nullable: true),
                     StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndAt = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    DeletedReason = table.Column<string>(type: "TEXT", nullable: true),
-                    StructureGroupId = table.Column<Guid>(type: "TEXT", nullable: true)
+                    GroupId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -63,10 +61,11 @@ namespace Relaks.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_StructureItems_StructureGroups_StructureGroupId",
-                        column: x => x.StructureGroupId,
+                        name: "FK_StructureItems_StructureGroups_GroupId",
+                        column: x => x.GroupId,
                         principalTable: "StructureGroups",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -85,9 +84,9 @@ namespace Relaks.Migrations
                 column: "EntryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StructureItems_StructureGroupId",
+                name: "IX_StructureItems_GroupId",
                 table: "StructureItems",
-                column: "StructureGroupId");
+                column: "GroupId");
         }
 
         /// <inheritdoc />

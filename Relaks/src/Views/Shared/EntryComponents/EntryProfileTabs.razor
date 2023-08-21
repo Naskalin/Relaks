@@ -27,7 +27,7 @@
         _tabs = new() 
         {
             (UrlPart: "/info", Title: Resources.Entity.ResourceManager.GetString($"{Entry.Discriminator}_About") ?? "???", Discriminators: null),
-            // (UrlPart: "/structure", Title: "Структура", Discriminators: new List<string>() {nameof(ECompany), nameof(EMeet)}),
+            (UrlPart: "/structure", Title: "Структура", Discriminators: new List<string>() {nameof(ECompany), nameof(EMeet)}),
             (UrlPart: "/files", Title: "Файлы", Discriminators: null),
         };
     }

@@ -2,7 +2,7 @@
 
 namespace Relaks.Models.StructureModels;
 
-public class StructureItem : ISoftDeletedReason
+public class StructureItem
 {
     public Guid Id { get; set; }
     
@@ -15,6 +15,6 @@ public class StructureItem : ISoftDeletedReason
     public DateTime StartAt { get; set; }
     public DateTime? EndAt { get; set; }
     
-    public DateTime? DeletedAt { get; set; }
-    public string? DeletedReason { get; set; }
+    public StructureGroup Group { get; set; } = null!;
+    public Guid GroupId { get; set; }
 }

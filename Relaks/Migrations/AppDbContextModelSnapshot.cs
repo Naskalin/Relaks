@@ -520,7 +520,6 @@ namespace Relaks.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -538,12 +537,6 @@ namespace Relaks.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("DeletedReason")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
@@ -553,10 +546,10 @@ namespace Relaks.Migrations
                     b.Property<Guid>("EntryId")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("StartAt")
+                    b.Property<Guid>("GroupId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("StructureGroupId")
+                    b.Property<DateTime>("StartAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
@@ -566,7 +559,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.HasIndex("StructureGroupId");
+                    b.HasIndex("GroupId");
 
                     b.ToTable("StructureItems");
                 });
@@ -822,11 +815,15 @@ namespace Relaks.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Relaks.Models.StructureModels.StructureGroup", null)
+                    b.HasOne("Relaks.Models.StructureModels.StructureGroup", "Group")
                         .WithMany("Items")
-                        .HasForeignKey("StructureGroupId");
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Entry");
+
+                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("Relaks.Models.EntryFile", b =>
