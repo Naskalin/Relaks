@@ -1,47 +1,23 @@
-﻿@* @using Blazor.Diagrams *@
-@* @using Blazor.Diagrams.Core.Models *@
-@* @using Blazor.Diagrams.Core.PathGenerators *@
-@* @using Blazor.Diagrams.Core.Routers *@
-@* @using Blazor.Diagrams.Options *@
-@* @using Blazor.Diagrams.Core.Geometry *@
-@* @using Blazor.Diagrams.Components *@
-@* @using Blazor.Diagrams.Core.Anchors *@
-@* @using Blazor.Diagrams.Components.Widgets *@
-@using Relaks.Models.Store
+﻿@using Relaks.Models.Store
 @using Relaks.Models.StructureModels
 @using System.Globalization
 
-@* @inject IJSRuntime JsRuntime; *@
+@inject IJSRuntime JsRuntime;
 
-@* <div class="diagram-container" style="width: 100%; height: 400px; border: 1px solid #ccc;"> *@
-@*     <CascadingValue Value="Diagram" IsFixed="true"> *@
-@*         <DiagramCanvas> *@
-@*             <Widgets> *@
-@*                 <NavigatorWidget Width="200" Height="120" *@
-@*                                  Class="border border-black bg-white" *@
-@*                                  Style="bottom: 15px; right: 15px; position: absolute"/> *@
-@*                 <GridWidget Size="25" Mode="GridMode.Line" BackgroundColor="white"/> *@
-@*             </Widgets> *@
-@*         </DiagramCanvas> *@
-@*     </CascadingValue> *@
-@* </div> *@
-@* *@
 <div class="d-flex gap-2 my-2 justify-content-center">
-    <button type="button" class="btn btn-secondary btn-circle" @onclick="@(() => ChangeScale(1))" title="Увеличить масштаб">
+    <button type="button" class="btn btn-secondary btn-circle" @onclick="@(() => ChangeScaleAsync(1))" title="Увеличить масштаб">
         <i class="las la-plus la-lg"></i>
     </button>
-    <button type="button" class="btn btn-secondary btn-circle" @onclick="@(() => ChangeScale(0))" title="Масштаб 1:1">
+    <button type="button" class="btn btn-secondary btn-circle" @onclick="@(() => ChangeScaleAsync(0))" title="Масштаб 1:1">
         1:1
     </button>
-    <button type="button" class="btn btn-secondary btn-circle" @onclick="@(() => ChangeScale(-1))" title="Уменьшить масштаб">
+    <button type="button" class="btn btn-secondary btn-circle" @onclick="@(() => ChangeScaleAsync(-1))" title="Уменьшить масштаб">
         <i class="las la-minus la-lg"></i>
     </button>
 </div>
 
-<div class="border rounded p-3" style="overflow: scroll;">
-    <div class="d-flex gap-2 justify-content-center"
-         data-js-draggable-zone
-         style="transform: scale(@ScaleToCss()); transform-origin: 0 0;">
+<div class="structures-container" id="js-structures-container">
+    <div class="structures-zone" style="transform: scale(@ScaleToCss());">
         @foreach (var sg in Store.StructureGroups)
         {
             <_DiagramStructureGroup StructureGroup="@sg"/>
@@ -55,63 +31,13 @@
 
     private string ScaleToCss() => Store.DiagramScale.ToString(new NumberFormatInfo() {NumberDecimalSeparator = "."});
 
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     if (!firstRender) return;
-    //     await JsRuntime.InvokeVoidAsync("initializeScrollableContainers");
-    // }
-
-    // private BlazorDiagram Diagram { get; set; } = null!;
-
-    // protected override void OnInitialized()
-    // {
-    //     var options = new BlazorDiagramOptions
-    //     {
-    //         AllowMultiSelection = true, 
-    //         Zoom =
-    //         {
-    //             Enabled = false,
-    //         },
-    //         Links =
-    //         {
-    //             DefaultRouter = new NormalRouter(),
-    //             DefaultPathGenerator = new SmoothPathGenerator()
-    //         },
-    //     };
-    //
-    //     Diagram = new BlazorDiagram(options);
-    //
-    //     var i = 1;
-    //     foreach (var sg in Store.StructureGroups)
-    //     {
-    //         AddStructureNode(sg, 1, i);
-    //         i++;
-    //     }
-    // }
-    //
-    // private void AddStructureNode(StructureGroup sg, int level = 1, int position = 1)
-    // {
-    //     var x = 150 * position;
-    //     var y = 50 * level;
-    //     
-    //     Diagram.Nodes.Add(new NodeModel(new Point(x, y))
-    //     {
-    //         Title = sg.Title,
-    //     });
-    //
-    //     if (!sg.Children.Any()) return;
-    //
-    //     var i = 1;
-    //     foreach (var child in sg.Children)
-    //     {
-    //         AddStructureNode(child, level + 1, i);
-    //         i++;
-    //     }
-    // }
-    //
-    // /// масштабирование без сдвига
-    // /// https://github.com/Blazor-Diagrams/Blazor.Diagrams/issues/151
-    private void ChangeScale(int scaleDirection)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        await JsRuntime.InvokeVoidAsync("InitializeStructureGroups");
+    }
+    
+    private async Task ChangeScaleAsync(int scaleDirection)
     {
         double scale = scaleDirection switch
         {
@@ -119,7 +45,9 @@
             <= -1 => Store.DiagramScale - 0.1,
             _ => 1
             };
-    
+        
+        
         Store.DiagramScale = scale;
+        await JsRuntime.InvokeVoidAsync("UpdateStructureLines");
     }
 }

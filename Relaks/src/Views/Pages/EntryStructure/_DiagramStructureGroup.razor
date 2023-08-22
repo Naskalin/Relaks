@@ -1,13 +1,23 @@
 ﻿@using Relaks.Models.StructureModels
 
-<div class="d-flex flex-column align-items-center my-2">
-    <div class="rounded border p-3 my-2 text-center" style="max-width: 10rem">
+<div class="structure-group">
+    <div class="structure-group__el">
+        @if (StructureGroup.ParentId.HasValue)
+        {
+            <div id="sg-top-@StructureGroup.Id.ToString()"
+                 data-structure-group-arrow-parent-id="sg-bottom-@StructureGroup.ParentId.ToString()"
+                 class="structure-group__dot structure-group__dot--top"></div>   
+        }
         @StructureGroup.Title
+        @if (StructureGroup.Children.Any())
+        {
+            <div id="sg-bottom-@StructureGroup.Id.ToString()" class="structure-group__dot structure-group__dot--bottom"></div>
+        }
     </div>
     
     @if (StructureGroup.Children.Any())
     {
-        <div class="d-flex justify-content-center gap-2">
+        <div class="structure-group__child">
             @foreach (var child in StructureGroup.Children)
             {
                 <_DiagramStructureGroup StructureGroup="@child"/>

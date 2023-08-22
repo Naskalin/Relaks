@@ -1,0 +1,55 @@
+﻿.structures-container {
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  padding: 0 1rem;
+  overflow: scroll;
+}
+
+.structures-zone {
+  display: flex;
+  justify-content: center;
+  transform-origin: 0 0;
+  gap: 1rem;
+}
+
+.structure-group {
+  display: flex;
+  flex-direction: column;
+  margin: .5rem 0;
+  align-items: center;
+
+  &__el {
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius-sm);
+    padding: .5rem;
+    margin: .5rem 0;
+    text-align: center;
+    position: relative;
+    max-width: 10rem
+  }
+
+  &__child {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: .5rem;
+  }
+  &__dot {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 50%;
+    //background: var(--bs-secondary);
+    background: var(--bs-body-bg);
+    position: absolute;
+    left: 50%;
+    margin-left: -5px;
+  }
+  &__dot--bottom {
+    bottom: -5px;
+  }
+  &__dot--top {
+    top: -5px;
+  }
+}
