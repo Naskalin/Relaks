@@ -1,53 +1,92 @@
 ﻿@using Relaks.Models.Store
 @using Relaks.Models.StructureModels
 @using System.Globalization
+@using Console = BootstrapBlazor.Components.Console
 
 @inject IJSRuntime JsRuntime;
 
-<div class="d-flex gap-2 my-2 justify-content-center">
-    <button type="button" class="btn btn-secondary btn-circle" @onclick="@(() => ChangeScaleAsync(1))" title="Увеличить масштаб">
-        <i class="las la-plus la-lg"></i>
-    </button>
-    <button type="button" class="btn btn-secondary btn-circle" @onclick="@(() => ChangeScaleAsync(0))" title="Масштаб 1:1">
-        1:1
-    </button>
-    <button type="button" class="btn btn-secondary btn-circle" @onclick="@(() => ChangeScaleAsync(-1))" title="Уменьшить масштаб">
-        <i class="las la-minus la-lg"></i>
-    </button>
+<div class="row mb-3">
+    <div class="col-5">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <span class="text-secondary">Масштаб</span>
+            </div>
+            <div class="col-auto" style="width: 100px">
+                <button type="button" class="btn btn-secondary d-flex align-items-center gap-1" @onclick="@ScaleReset" title="Масштаб 1:1">
+                    @Store.DiagramScale%
+                    <i class="las la-redo-alt"></i>
+                </button>
+            </div>
+            <div class="col">
+                <input type="range" min="10" max="200" step="5" value="@Store.DiagramScale" @oninput="@HandleRangeInput" class="form-range"/>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="structures-container" id="js-structures-container">
-    <div class="structures-zone" style="transform: scale(@ScaleToCss());">
-        @foreach (var sg in Store.StructureGroups)
-        {
-            <_DiagramStructureGroup StructureGroup="@sg"/>
-        }
+<div class="row">
+    <div class="col-9">
+        <div class="structures-container" id="js-structures-container">
+            <div class="structures-zone" id="js-structures-zone" style="transform: scale(@ScaleToCss());">
+                @foreach (var sg in Store.StructureGroups)
+                {
+                    <_DiagramStructureGroup StructureGroup="@sg"/>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        @ScaleToCss()
     </div>
 </div>
 
 @code {
+
     [CascadingParameter]
     public EntryStructureStore Store { get; set; } = null!;
 
-    private string ScaleToCss() => Store.DiagramScale.ToString(new NumberFormatInfo() {NumberDecimalSeparator = "."});
+    private string ScaleToCss()
+    {
+        var scale = (double) (1 * Store.DiagramScale) / 100;
+        return scale.ToString(new NumberFormatInfo() {NumberDecimalSeparator = "."});
+    }
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
         await JsRuntime.InvokeVoidAsync("InitializeStructureGroups");
     }
-    
-    private async Task ChangeScaleAsync(int scaleDirection)
+
+    // protected async Task OnSlide()
+    // {
+    //     
+    // }
+
+    private async Task HandleRangeInput(ChangeEventArgs e)
     {
-        double scale = scaleDirection switch
-        {
-            >= 1 => Store.DiagramScale + 0.1,
-            <= -1 => Store.DiagramScale - 0.1,
-            _ => 1
-            };
-        
-        
-        Store.DiagramScale = scale;
+        var val = e.Value != null ? Convert.ToInt32(e.Value) : 0;
+        Store.DiagramScale = val <= 0 ? 1 : val;
         await JsRuntime.InvokeVoidAsync("UpdateStructureLines");
     }
+
+    private async Task ScaleReset()
+    {
+        Store.DiagramScale = 100;
+        await JsRuntime.InvokeVoidAsync("UpdateStructureLines");
+    }
+
+    // private async Task ChangeScaleAsync(int scaleDirection)
+    // {
+    //     double scale = scaleDirection switch
+    //     {
+    //         >= 1 => Store.DiagramScale + 0.1,
+    //         <= -1 => Store.DiagramScale - 0.1,
+    //         _ => 1
+    //         };
+    //     
+    //     
+    //     Store.DiagramScale = scale;
+    //     await JsRuntime.InvokeVoidAsync("UpdateStructureLines");
+    // }
 }

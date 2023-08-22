@@ -6,7 +6,7 @@ namespace Relaks.Models.Store;
 
 public class EntryStructureStore
 {
-    public double DiagramScale { get; set; } = 1;
+    public int DiagramScale { get; set; } = 100;
     private readonly AppDbContext _db;
     public string Discriminator { get; set; } = null!;
     public List<StructureGroup> StructureGroups { get; set; } = new();

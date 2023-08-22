@@ -1,17 +1,38 @@
-﻿const structureLines = [];
+﻿// check overflow
+// https://github.com/anseki/leader-line/issues/252
+
+const structureLines = [];
+let lineEls = [];
 
 window.UpdateStructureLines = () => {
+    // перерисовываем стрелки
     const structureContainerEl = document.getElementById('js-structures-container');
-    
+
+    console.log(structureContainerEl.getBoundingClientRect())
     setTimeout(() => {
-        structureLines.forEach(line => line.position())
+        structureLines.forEach(line => {
+            line.position();
+        })
     }, 10);
+
+    // lineEls.forEach(lineEl => {
+    //     if (checkOverflow(structureContainerEl, lineEl)) {
+    //         lineEl.style.visibility = 'hidden';
+    //         lineEl.style.opacity = '0';
+    //     } else {
+    //         lineEl.style.visibility = 'visible';
+    //         lineEl.style.opacity = '1';
+    //     }
+    // });
 }
 
 window.InitializeStructureGroups = () => {
     const structureContainerEl = document.getElementById('js-structures-container');
     if (!structureContainerEl) throw new Error('js-structures-container not found');
-    
+
+    const zoneEl = document.getElementById('js-structures-zone');
+    if (!zoneEl) throw new Error('js-structures-zone not found');
+
     // initialize arrows
     const childEls = document.querySelectorAll('[data-structure-group-arrow-parent-id]')
     childEls.forEach(childEl => {
@@ -30,58 +51,19 @@ window.InitializeStructureGroups = () => {
         );
     });
 
-    const lineEls = document.querySelectorAll('.leader-line');
+    // перемещает стрелки внутрь нашего контейнера
+    lineEls = document.querySelectorAll('.leader-line');
     lineEls.forEach(line => structureContainerEl.appendChild(line));
 
+    // перерисовываем стрелки при скроле
     structureContainerEl.addEventListener('scroll', AnimEvent.add(function() {
-        // window.UpdateStructureLines();
         structureLines.forEach(line => line.position())
     }), false);
 }
 
-// // https://javascript.info/mouse-drag-and-drop
-// https://www.w3schools.com/howto/howto_js_draggable.asp
-// window.initializeDraggableZone = () => {
-//     const draggableZoneEl = document.querySelector("[data-js-draggable-zone]");
-//     if (draggableZoneEl) {
-//         const parentEl = draggableZoneEl.parentElement;
-//         if (!parentEl) {
-//             throw new Error('initializeDraggableZone parentEl not found');
-//         }
-//         parentEl.style.width = `${parentEl.offsetWidth}px`;
-//         parentEl.style.height = `${parentEl.offsetHeight}px`;
-//        
-//         draggableZoneEl.onmousedown = function(event) {
-//
-//             let shiftX = event.clientX - draggableZoneEl.getBoundingClientRect().left;
-//             let shiftY = event.clientY - draggableZoneEl.getBoundingClientRect().top;
-//             draggableZoneEl.style.position = 'absolute';
-//             draggableZoneEl.style.zIndex = 1000;
-//             // document.body.append(draggableZoneEl);
-//
-//             moveAt(event.pageX, event.pageY);
-//
-//             function moveAt(pageX, pageY) {
-//                 draggableZoneEl.style.left = pageX - shiftX + 'px';
-//                 draggableZoneEl.style.top = pageY - shiftY + 'px';
-//             }
-//
-//             function onMouseMove(event) {
-//                 moveAt(event.pageX, event.pageY);
-//             }
-//
-//             document.addEventListener('mousemove', onMouseMove);
-//
-//             draggableZoneEl.onmouseup = function() {
-//                 document.removeEventListener('mousemove', onMouseMove);
-//                 draggableZoneEl.onmouseup = null;
-//             };
-//
-//         };
-//
-//         draggableZoneEl.ondragstart = function() {
-//             return false;
-//         };
-//
-//     }   
+// function checkOverflow(container, elem) {
+//     const elemRect = elem.getBoundingClientRect(),
+//         parentRect = container.getBoundingClientRect();
+//     return elemRect.top < parentRect.top || elemRect.bottom > parentRect.bottom ||
+//         elemRect.left < parentRect.left || elemRect.right > parentRect.right;
 // }
