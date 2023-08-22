@@ -2,24 +2,37 @@
 
 <div class="structure-group">
     <div class="structure-group__el">
-        @if (StructureGroup.ParentId.HasValue)
+        @if (Group.ParentId.HasValue)
         {
-            <div data-structure-group-arrow-parent-id="sg-bottom-@StructureGroup.ParentId.ToString()"
+            <div data-structure-group-arrow-parent-id="sg-bottom-@Group.ParentId.ToString()"
                  class="structure-group__dot structure-group__dot--top"></div>
         }
-        @StructureGroup.Title
-        @if (StructureGroup.Children.Any())
+        <div class="structure-group__title">@Group.Title</div>
+        @* @if (!string.IsNullOrEmpty(Group.Description)) *@
+        @* { *@
+        @*     <div class="small text-secondary mt-2">@Group.Description</div>    *@
+        @* } *@
+        @if (Group.Items.Any())
         {
-            <div id="sg-bottom-@StructureGroup.Id.ToString()" class="structure-group__dot structure-group__dot--bottom"></div>
+            <div class="structure-items mt-2">
+               @foreach (var item in Group.Items)
+                {
+                    <_DiagramStructureItem Item="@item"/>
+                }
+            </div>   
+        }
+        @if (Group.Children.Any())
+        {
+            <div id="sg-bottom-@Group.Id.ToString()" class="structure-group__dot structure-group__dot--bottom"></div>
         }
     </div>
     
-    @if (StructureGroup.Children.Any())
+    @if (Group.Children.Any())
     {
         <div class="structure-group__child">
-            @foreach (var child in StructureGroup.Children)
+            @foreach (var child in Group.Children)
             {
-                <_DiagramStructureGroup StructureGroup="@child"/>
+                <_DiagramStructureGroup Group="@child"/>
             }
         </div>    
     }
@@ -27,5 +40,5 @@
 
 @code {
     [Parameter]
-    public StructureGroup StructureGroup { get; set; } = null!;
+    public StructureGroup Group { get; set; } = null!;
 }

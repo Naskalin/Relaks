@@ -8,6 +8,19 @@
     height: 50px;
   }
 }
+.avatar-md {
+  .custom-avatar,
+  img {
+    width: 60px;
+    height: 60px;
+  }
+}
+.avatar-circle {
+  .custom-avatar,
+  img {
+    border-radius: 50%
+  }
+}
 
 .custom-avatar {
   border-radius: var(--bs-border-radius);

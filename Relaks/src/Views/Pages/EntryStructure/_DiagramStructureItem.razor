@@ -1,0 +1,21 @@
+﻿@using Relaks.Models.StructureModels
+
+<div class="structure-items__el">
+    <div class="avatar-md avatar-circle">
+        @if (!string.IsNullOrEmpty(Item.Entry.Thumbnail))
+        {
+            <img src="@Item.Entry.Thumbnail" alt="">
+        }
+        else
+        {
+            <CustomAvatar Text="@Item.Entry.Name" />
+        }
+    </div>
+    
+    <div class="mt-1 small">@Item.Entry.Name</div>
+</div>
+
+@code {
+    [Parameter]
+    public StructureItem Item { get; set; } = null!;
+}
