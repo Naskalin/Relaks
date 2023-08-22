@@ -6,13 +6,13 @@
 @inject IJSRuntime JsRuntime;
 
 <div class="row mb-3">
-    <div class="col-5">
+    <div class="col-4">
         <div class="row align-items-center">
             <div class="col-auto">
                 <span class="text-secondary">Масштаб</span>
             </div>
             <div class="col-auto" style="width: 100px">
-                <button type="button" class="btn btn-secondary d-flex align-items-center gap-1" @onclick="@ScaleReset" title="Масштаб 1:1">
+                <button type="button" class="btn btn-secondary d-flex align-items-center gap-1" @onclick="@(() => Store.DiagramScale = 100)" title="Масштаб 1:1">
                     @Store.DiagramScale%
                     <i class="las la-redo-alt"></i>
                 </button>
@@ -58,35 +58,9 @@
         await JsRuntime.InvokeVoidAsync("InitializeStructureGroups");
     }
 
-    // protected async Task OnSlide()
-    // {
-    //     
-    // }
-
-    private async Task HandleRangeInput(ChangeEventArgs e)
+    private void HandleRangeInput(ChangeEventArgs e)
     {
         var val = e.Value != null ? Convert.ToInt32(e.Value) : 0;
         Store.DiagramScale = val <= 0 ? 1 : val;
-        await JsRuntime.InvokeVoidAsync("UpdateStructureLines");
     }
-
-    private async Task ScaleReset()
-    {
-        Store.DiagramScale = 100;
-        await JsRuntime.InvokeVoidAsync("UpdateStructureLines");
-    }
-
-    // private async Task ChangeScaleAsync(int scaleDirection)
-    // {
-    //     double scale = scaleDirection switch
-    //     {
-    //         >= 1 => Store.DiagramScale + 0.1,
-    //         <= -1 => Store.DiagramScale - 0.1,
-    //         _ => 1
-    //         };
-    //     
-    //     
-    //     Store.DiagramScale = scale;
-    //     await JsRuntime.InvokeVoidAsync("UpdateStructureLines");
-    // }
 }

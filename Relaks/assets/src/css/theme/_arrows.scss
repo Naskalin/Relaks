@@ -1,0 +1,18 @@
+﻿// arrow library
+.arrow {
+  pointer-events: none;
+}
+
+.arrow__path {
+  stroke: var(--bs-secondary);
+  opacity: .4;
+  fill: transparent;
+  stroke-width: 1.6px;
+  //stroke-dasharray: 4 2;
+}
+
+.arrow__head line {
+  stroke: var(--bs-secondary);
+  stroke-width: 1px;
+  opacity: .5;
+}
