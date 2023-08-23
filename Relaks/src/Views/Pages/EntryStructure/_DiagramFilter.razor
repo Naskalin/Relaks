@@ -1,0 +1,61 @@
+﻿@using Relaks.Models.Store
+
+<Dump Data="@Store.DiagramOptions"/>
+<Dump Data="@Store.Req"/>
+<div class="row align-items-center mb-3">
+    <div class="col-auto">
+        <div class="col-form-label">Масштаб</div>
+    </div>
+    <div class="col-auto" style="width: 100px">
+        <button type="button" class="btn btn-secondary d-flex align-items-center gap-1" @onclick="@HandleScaleReset" title="Масштаб 1:1">
+            @Store.DiagramOptions.DiagramScale%
+            <i class="las la-redo-alt"></i>
+        </button>
+    </div>
+    <div class="col">
+        <input type="range" min="10" max="200" step="5" value="@Store.DiagramOptions.DiagramScale" @oninput="@HandleScaleChange" class="form-range"/>
+    </div>
+</div>
+
+<div class="mb-3">
+    <div class="form-check form-switch">
+        <InputCheckbox class="form-check-input" type="checkbox" 
+                       @bind-Value="@Store.DiagramOptions.IsShowStructureItems"
+                       @bind-Value:after="@(() => OnStateChanged.InvokeAsync())"
+                       id="IsShowStructureItems"/>
+        <label class="form-check-label" for="IsShowStructureItems">Отображать объединения</label>
+    </div>
+</div>
+
+<div class="mb-3 row g-3 align-items-center">
+    <div class="col-auto">
+        <div class="col-form-label">Дата</div>
+    </div>
+    <div class="col-auto">
+        <InputDate @bind-Value="@Store.Req.Date" class="form-control"/>
+    </div>
+    <div class="col">
+        <small class="text-secondary">Структура по текущую дату</small>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    public EntryStructureStore Store { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+
+    private async Task HandleScaleChange(ChangeEventArgs e)
+    {
+        var val = e.Value != null ? Convert.ToInt32(e.Value) : 0;
+        Store.DiagramOptions.DiagramScale = val <= 0 ? 1 : val;
+        await OnStateChanged.InvokeAsync();
+    }
+
+    private async Task HandleScaleReset()
+    {
+        Store.DiagramOptions.DiagramScale = 100;
+        await OnStateChanged.InvokeAsync();
+    }
+}

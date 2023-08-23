@@ -6,6 +6,7 @@ namespace Relaks.Database.Repositories;
 public class StructureGroupListRequest
 {
     public Guid EntryId { get; set; }
+    public DateTime Date { get; set; } = DateTime.UtcNow;
 }
 
 public static class StructureRepository

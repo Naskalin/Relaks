@@ -18,20 +18,9 @@
     </div>
     <div class="col-3">
         <div style="position: sticky; top: 100px;">
-            <div class="row align-items-center">
-                <div class="col-auto">
-                    <span class="text-secondary">Масштаб</span>
-                </div>
-                <div class="col-auto" style="width: 100px">
-                    <button type="button" class="btn btn-secondary d-flex align-items-center gap-1" @onclick="@(() => Store.DiagramScale = 100)" title="Масштаб 1:1">
-                        @Store.DiagramScale%
-                        <i class="las la-redo-alt"></i>
-                    </button>
-                </div>
-                <div class="col">
-                    <input type="range" min="10" max="200" step="5" value="@Store.DiagramScale" @oninput="@HandleRangeInput" class="form-range"/>
-                </div>
-            </div>
+            <Dump Data="@Store.DiagramOptions"/>
+            <Dump Data="@Store.Req"/>
+            <_DiagramFilter OnStateChanged="@StateHasChanged"/>
         </div>
     </div>
 </div>
@@ -43,7 +32,7 @@
 
     private string ScaleToCss()
     {
-        var scale = (double) (1 * Store.DiagramScale) / 100;
+        var scale = (double) (1 * Store.DiagramOptions.DiagramScale) / 100;
         return scale.ToString(new NumberFormatInfo() {NumberDecimalSeparator = "."});
     }
 
@@ -52,11 +41,5 @@
     {
         if (!firstRender) return;
         await JsRuntime.InvokeVoidAsync("InitializeStructureGroups");
-    }
-
-    private void HandleRangeInput(ChangeEventArgs e)
-    {
-        var val = e.Value != null ? Convert.ToInt32(e.Value) : 0;
-        Store.DiagramScale = val <= 0 ? 1 : val;
     }
 }

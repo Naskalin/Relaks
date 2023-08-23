@@ -4,9 +4,19 @@ using Relaks.Models.StructureModels;
 
 namespace Relaks.Models.Store;
 
-public class EntryStructureStore
+public class StructureDiagramOptions
 {
     public int DiagramScale { get; set; } = 100;
+    public int LimitStructureItems { get; set; } = 3;
+    public bool IsShowStructureItems { get; set; } = true;
+}
+
+public class EntryStructureStore
+{
+    public StructureDiagramOptions DiagramOptions { get; set; } = new();
+    
+    public StructureGroup? SelectedGroup { get; set; }
+    public StructureItem? SelectedItem { get; set; }
     private readonly AppDbContext _db;
     public string Discriminator { get; set; } = null!;
     public List<StructureGroup> StructureGroups { get; set; } = new();

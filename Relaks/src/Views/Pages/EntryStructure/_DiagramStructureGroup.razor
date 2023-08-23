@@ -1,4 +1,5 @@
 ﻿@using Relaks.Models.StructureModels
+@using Relaks.Models.Store
 
 <div class="structure-group">
     <div class="structure-group__el">
@@ -16,7 +17,7 @@
                 </Popover>
             }
         </div>
-        @if (Group.Items.Any())
+        @if (Store.DiagramOptions.IsShowStructureItems && Group.Items.Any())
         {
             <div class="structure-items mt-2">
                @foreach (var item in Group.Items)
@@ -43,6 +44,9 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    public EntryStructureStore Store { get; set; } = null!;
+    
     [Parameter]
     public StructureGroup Group { get; set; } = null!;
 }
