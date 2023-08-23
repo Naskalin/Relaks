@@ -11,7 +11,9 @@
             <div class="structures-zone" id="js-structures-zone" style="transform: scale(@ScaleToCss(), @ScaleToCss());">
                 @foreach (var sg in Store.StructureGroups)
                 {
-                    <_DiagramStructureGroup Group="@sg"/>
+                    <_DiagramStructureGroup Group="@sg" 
+                                            OnGroupClick="@HandleGroupClick"
+                                            />
                 }
             </div>
         </div>
@@ -21,6 +23,16 @@
             <Dump Data="@Store.DiagramOptions"/>
             <Dump Data="@Store.Req"/>
             <_DiagramFilter OnStateChanged="@StateHasChanged" OnChangeRequest="@HandleResetArrows"/>
+            <div class="border-top my-4"></div>
+            @if (Store.SelectedItem != null)
+            {
+                <_SelectedItem Item="Store.SelectedItem" OnClickReturn="@(() => Store.SelectedItem = null)"/>
+            } else if (Store.SelectedGroup != null)
+            {
+                <_SelectedGroup Group="Store.SelectedGroup"
+                                OnItemClick="@(item => Store.SelectedItem = item)"
+                                />
+            }
         </div>
     </div>
 </div>
@@ -48,5 +60,11 @@
         Store.FindStructure();
         await JsRuntime.InvokeVoidAsync("RemoveStructureArrows");
         await JsRuntime.InvokeVoidAsync("InitializeStructureArrows");
+    }
+
+    private void HandleGroupClick(StructureGroup group)
+    {
+        Store.SelectedGroup = group;
+        Store.SelectedItem = null;
     }
 }

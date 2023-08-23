@@ -20,7 +20,6 @@
             <ChildContent>@(EntryInfoId.HasValue ? Resources.Action.Edit : Resources.Action.Add): @Resources.Entity.ResourceManager.GetString(nameof(EiDate))</ChildContent>
         </MyTitle>
 
-        @* <Dump Data="@Model.Date"/> *@
         <EditForm Model="@Model" OnSubmit="@OnSubmit">
             <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
             <ValidationSummary/>

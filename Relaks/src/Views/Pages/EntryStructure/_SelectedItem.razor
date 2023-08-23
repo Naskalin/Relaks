@@ -1,0 +1,17 @@
+﻿@using Relaks.Models.StructureModels
+
+<h3>@Item.Entry.Name</h3>
+
+<EntryCard EntryId="@Item.EntryId" ViewMode="EntryCard.ViewModeEnum.Preview"/>
+
+<button type="button" class="btn btn-circle btn-outline-seocndary" @onclick="@(() => OnClickReturn.InvokeAsync())">
+    <i class="las la-arrow-left la-lg me-1"></i> @Resources.Action.Return
+</button>
+
+@code {
+    [Parameter]
+    public StructureItem Item { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback OnClickReturn { get; set; }
+}

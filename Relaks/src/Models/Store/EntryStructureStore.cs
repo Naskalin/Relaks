@@ -14,6 +14,10 @@ public class StructureDiagramOptions
 
 public class EntryStructureStore
 {
+    public enum SidebarStateEnum
+    {
+        Default,
+    }
     public StructureDiagramOptions DiagramOptions { get; set; } = new();
     
     public StructureGroup? SelectedGroup { get; set; }
@@ -22,6 +26,7 @@ public class EntryStructureStore
     public string Discriminator { get; set; } = null!;
     public List<StructureGroup> StructureGroups { get; set; } = new();
     public StructureGroupListRequest Req { get; set; } = new();
+    public SidebarStateEnum SidebarState { get; set; } = SidebarStateEnum.Default;
 
     public EntryStructureStore(AppDbContext db)
     {

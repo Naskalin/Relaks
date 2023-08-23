@@ -58,6 +58,7 @@
 .structure-items {
   display: flex;
   gap: .75rem;
+  justify-content: center;
   &__title {
     font-size: .85rem;
     margin-top: .25rem;

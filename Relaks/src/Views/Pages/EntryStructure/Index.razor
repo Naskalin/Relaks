@@ -19,6 +19,14 @@
         @* </EndTitle> *@
     </MyTitle>
     
+    <button type="button" class="btn btn-primary" @onclick="@(() => IsOpen = true)">click me to open</button>
+    <Drawer Placement="Placement.Left" IsOpen="@IsOpen">
+        <div class="d-flex justify-content-center align-items-center flex-column" style="height: 290px;">
+            <p>The layout, components, etc. in the drawer are fully customizable</p>
+            <button type="button" class="btn btn-primary" @onclick="@(() => IsOpen = false)">close the drawer</button>
+        </div>
+    </Drawer>
+    
     <CascadingValue Value="@Store">
         <_StructureDiagram/>
     </CascadingValue>
@@ -27,6 +35,8 @@
 @code {
     [Parameter]
     public Guid EntryId { get; set; }
+
+    private bool IsOpen { get; set; } = false;
 
     private EntryStructureStore Store { get; set; } = null!;
 

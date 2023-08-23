@@ -1,0 +1,34 @@
+﻿@using Relaks.Models.StructureModels
+<div class="d-flex flex-column gap-2 mb-3">
+    <div class="h6 mb-0">@Group.Title</div>
+    <div class="text-secondary">
+        <i class="las la-calendar la-lg me-1"></i>
+        @Group.StartAt.ToString("dd.MM.yyyy") - @Group.EndAt?.ToString("dd.MM.yyyy")
+    </div>   
+    @if (!string.IsNullOrEmpty(Group.Description))
+    {
+        <div>@Group.Description</div>
+    }
+</div>
+
+@if (Group.Items.Any())
+{
+    <div class="text-secondary mb-2">Состав (@Group.Items.Count)</div>
+    <div class="d-flex flex-column gap-3">
+        @foreach (var item in Group.Items)
+        {
+            <div @onclick="@(() => OnItemClick.InvokeAsync(item))">
+                <EntryInlineItem EntryId="@item.EntryId"/>
+            </div>
+        }
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public StructureGroup Group { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback<StructureItem> OnItemClick { get; set; }
+}

@@ -1,8 +1,9 @@
 ﻿@using Relaks.Models.StructureModels
 @using Relaks.Models.Store
+@using Console = System.Console
 
 <div class="structure-group">
-    <div class="structure-group__el">
+    <div class="structure-group__el" @onclick="@(() => OnGroupClick.InvokeAsync(Group))">
         @if (Group.ParentId.HasValue)
         {
             <div data-structure-group-arrow-parent-id="sg-bottom-@Group.ParentId.ToString()"
@@ -27,7 +28,7 @@
         @if (Store.DiagramOptions.IsShowStructureItems && Group.Items.Any())
         {
             <div class="structure-items mt-2">
-               @foreach (var item in Group.Items.Take(Store.DiagramOptions.LimitStructureItems))
+                @foreach (var item in Group.Items.Take(Store.DiagramOptions.LimitStructureItems))
                 {
                     <_DiagramStructureItem Item="@item"/>
                 }
@@ -44,7 +45,7 @@
         <div class="structure-group__child">
             @foreach (var child in Group.Children)
             {
-                <_DiagramStructureGroup Group="@child"/>
+                <_DiagramStructureGroup Group="@child" OnGroupClick="@OnGroupClick"/>
             }
         </div>    
     }
@@ -56,4 +57,10 @@
     
     [Parameter]
     public StructureGroup Group { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback<StructureGroup> OnGroupClick { get; set; }
+    
+    [Parameter]
+    public EventCallback<StructureItem> OnItemClick { get; set; }
 }
