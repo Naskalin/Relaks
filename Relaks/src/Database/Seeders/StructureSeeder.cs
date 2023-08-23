@@ -57,8 +57,8 @@ public partial class DatabaseSeeder
             //         var connection = new StructureConnection()
             //         {
             //             Description = Faker.Random.ArrayElement(new[] {"", Faker.Lorem.Paragraph(1)}),
-            //             CreatedAt = DateTime.UtcNow,
-            //             UpdatedAt = DateTime.UtcNow,
+            //             CreatedAt = DateTime.Now,
+            //             UpdatedAt = DateTime.Now,
             //             StructureFirstId = structureGroup.Id,
             //             StructureSecondId = structureGroups.OrderBy(x => Guid.NewGuid()).First(x => !x.Id.Equals(structureGroup.Id)).Id,
             //             Direction = Faker.Random.Enum<StructureConnection.DirectionEnum>(),
@@ -83,7 +83,6 @@ public partial class DatabaseSeeder
                 Parent = parent,
                 EntryId = companyId,
                 Description = Faker.Random.ArrayElement(new[] {null, Faker.Lorem.Paragraph(1)}),
-                StartAt = Faker.Date.Past(10),
                 Title = Faker.Random.Words(Faker.Random.Int(1, 3)),
             };
             
@@ -91,6 +90,9 @@ public partial class DatabaseSeeder
             {
                 child.EndAt = Faker.Date.Past();
             }
+
+            child.StartAt = Faker.Date.Past(10, child.EndAt);
+
             
             TreeManager.UpdateTreePath(child, parent);
             Db.StructureGroups.Add(child);
@@ -111,15 +113,16 @@ public partial class DatabaseSeeder
             {
                 Description = Faker.Random.ArrayElement(new []{Faker.Lorem.Paragraph(1), null}),
                 Title = Faker.Random.ArrayElement(new []{Faker.Random.Words(Faker.Random.Int(2, 5)), null}),
-                StartAt = Faker.Date.Past(Faker.Random.Int(5, 10)),
                 EntryId = baseEntry.Id,
                 GroupId = structureGroup.Id,
             };
+
             
             if (Faker.Random.Int(1, 3).Equals(1))
             {
                 item.EndAt = Faker.Date.Past();
             }
+            item.StartAt = Faker.Date.Past(Faker.Random.Int(5, 10), item.EndAt);
             
             Db.StructureItems.Add(item);
         }

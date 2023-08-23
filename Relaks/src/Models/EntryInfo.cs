@@ -27,8 +27,8 @@ public abstract class BaseEntryInfo : IEntryInfo, ITimestamped, ISoftDeletedReas
     protected BaseEntryInfo()
     {
         Id = Guid.NewGuid();
-        CreatedAt = DateTime.UtcNow;
-        UpdatedAt = DateTime.UtcNow;
+        CreatedAt = DateTime.Now;
+        UpdatedAt = DateTime.Now;
         IsFavorite = false;
     }
 }

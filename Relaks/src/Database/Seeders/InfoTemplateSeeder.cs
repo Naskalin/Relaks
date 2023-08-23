@@ -12,8 +12,8 @@
 //         {
 //             var infoTemplate = new InfoTemplate()
 //             {
-//                 CreatedAt = DateTime.UtcNow,
-//                 UpdatedAt = DateTime.UtcNow,
+//                 CreatedAt = DateTime.Now,
+//                 UpdatedAt = DateTime.Now,
 //                 Title = Faker.Lorem.Paragraph(1),
 //                 Template = CreateCustomInfo()
 //             };

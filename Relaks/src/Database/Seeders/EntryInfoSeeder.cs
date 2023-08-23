@@ -67,8 +67,8 @@ public partial class DatabaseSeeder
     {
         eInfo.EntryId = entryId;
         eInfo.Title = Faker.Random.ArrayElement(new[] {Faker.Random.Words(), null});
-        eInfo.CreatedAt = DateTime.UtcNow;
-        eInfo.UpdatedAt = DateTime.UtcNow;
+        eInfo.CreatedAt = DateTime.Now;
+        eInfo.UpdatedAt = DateTime.Now;
         eInfo.IsFavorite = Faker.Random.Number(1, 2) > 1;
 
         if (Faker.Random.Number(1, 2) > 8)

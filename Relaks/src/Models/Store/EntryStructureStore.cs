@@ -9,6 +9,7 @@ public class StructureDiagramOptions
     public int DiagramScale { get; set; } = 100;
     public int LimitStructureItems { get; set; } = 3;
     public bool IsShowStructureItems { get; set; } = true;
+    public bool IsShowDates { get; set; }
 }
 
 public class EntryStructureStore

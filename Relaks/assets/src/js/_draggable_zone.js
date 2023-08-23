@@ -48,9 +48,15 @@
 //     }), false);
 // }
 
+let storeArrowEls = [];
+
+window.RemoveStructureArrows = () => {
+    storeArrowEls.forEach(arrow => arrow.clear());
+}
 // https://github.com/sasza2/arrows
-window.InitializeStructureGroups = () => {
-    //     // перерисовываем стрелки
+window.InitializeStructureArrows = () => {
+    // очищаем временное хранилище стрелок
+    storeArrowEls = [];
     const structureContainerEl = document.getElementById('js-structures-container');
 
     // initialize arrows
@@ -72,6 +78,7 @@ window.InitializeStructureGroups = () => {
             },
         })
 
+        storeArrowEls.push(arrow);
         structureContainerEl.appendChild(arrow.node);
     });
 }

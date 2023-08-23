@@ -8,8 +8,15 @@
             <div data-structure-group-arrow-parent-id="sg-bottom-@Group.ParentId.ToString()"
                  class="structure-group__dot structure-group__dot--top"></div>
         }
-        <div class="">
-            <span class="fw-semibold">@Group.Title</span>
+        @if (Store.DiagramOptions.IsShowDates)
+        {
+            <div style="font-size: .8rem;">
+                <i class="las la-calendar la-lg me-1"></i>
+                @Group.StartAt.ToString("dd.MM.yyyy") - @Group.EndAt?.ToString("dd.MM.yyyy")
+            </div>   
+        }
+        <div>
+            <span class="fw-semibold">@Group.Title @(Group.Items.Any() ? $"({Group.Items.Count})" : "")</span>
             @if (!string.IsNullOrEmpty(Group.Description))
             {
                 <Popover Content="@Group.Description">
@@ -20,7 +27,7 @@
         @if (Store.DiagramOptions.IsShowStructureItems && Group.Items.Any())
         {
             <div class="structure-items mt-2">
-               @foreach (var item in Group.Items)
+               @foreach (var item in Group.Items.Take(Store.DiagramOptions.LimitStructureItems))
                 {
                     <_DiagramStructureItem Item="@item"/>
                 }

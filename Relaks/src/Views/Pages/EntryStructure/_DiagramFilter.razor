@@ -1,4 +1,5 @@
 ﻿@using Relaks.Models.Store
+@using Console = System.Console
 
 <Dump Data="@Store.DiagramOptions"/>
 <Dump Data="@Store.Req"/>
@@ -27,17 +28,40 @@
     </div>
 </div>
 
-<div class="mb-3 row g-3 align-items-center">
-    <div class="col-auto">
-        <div class="col-form-label">Дата</div>
-    </div>
-    <div class="col-auto">
-        <InputDate @bind-Value="@Store.Req.Date" class="form-control"/>
-    </div>
-    <div class="col">
-        <small class="text-secondary">Структура по текущую дату</small>
+<div class="mb-3">
+    <div class="form-check form-switch">
+        <InputCheckbox class="form-check-input" type="checkbox" 
+                       @bind-Value="@Store.DiagramOptions.IsShowDates"
+                       @bind-Value:after="@(() => OnStateChanged.InvokeAsync())"
+                       id="IsShowDates"/>
+        <label class="form-check-label" for="IsShowDates">Отображать даты</label>
     </div>
 </div>
+
+<div class="mb-3">
+    <div class="form-check form-switch">
+        <InputCheckbox class="form-check-input" type="checkbox" 
+                       @bind-Value="@Store.Req.IsEnableDate"
+                       @bind-Value:after="@(() => OnChangeRequest.InvokeAsync())"
+                       id="IsEnableDate"/>
+        <label class="form-check-label" for="IsEnableDate">Учитывать выбранную дату</label>
+    </div>
+</div>
+
+@if (Store.Req.IsEnableDate)
+{
+    <div class="mb-3 row g-3 align-items-center">
+        <div class="col-auto">
+            <div class="col-form-label">Дата</div>
+        </div>
+        <div class="col-auto">
+            <InputDate @bind-Value="@Store.Req.Date" @bind-Value:after="@(() => OnChangeRequest.InvokeAsync())" class="form-control"/>
+        </div>
+        <div class="col">
+            <div class="text-secondary small" style="line-height: 1.3em">структура в этот момент времени</div>
+        </div>
+    </div>   
+}
 
 @code {
     [CascadingParameter]
@@ -45,6 +69,9 @@
     
     [Parameter]
     public EventCallback OnStateChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnChangeRequest { get; set; }
 
     private async Task HandleScaleChange(ChangeEventArgs e)
     {
@@ -58,4 +85,10 @@
         Store.DiagramOptions.DiagramScale = 100;
         await OnStateChanged.InvokeAsync();
     }
+
+    // private async Task RequestHasChanged()
+    // {
+    //     Store.FindStructure();
+    //     await OnChangeRequest.InvokeAsync();
+    // }
 }

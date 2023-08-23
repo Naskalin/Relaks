@@ -1,4 +1,5 @@
 ﻿@using Relaks.Models.StructureModels
+@using Relaks.Models.Store
 
 <div class="structure-items__el" title="@Item.Entry.Name">
     <div class="avatar-sm avatar-circle">
@@ -11,12 +12,18 @@
             <CustomAvatar Text="@Item.Entry.Name" />
         }
     </div>
-    
     <div class="structure-items__title">@Item.Entry.Name</div>
-    @if (!string.IsNullOrEmpty(Item.Title) || !string.IsNullOrEmpty(Item.Description))
+    @if (!string.IsNullOrEmpty(Item.Title) || !string.IsNullOrEmpty(Item.Description) || Store.DiagramOptions.IsShowDates)
     {
         <div style="border: 1px dashed #eee; width: 80%; margin: .35rem 0"></div>               
     }
+    @if (Store.DiagramOptions.IsShowDates)
+    {
+        <div style="font-size: .8rem;">
+            @Item.StartAt.ToString("dd.MM.yyyy") - @Item.EndAt?.ToString("dd.MM.yyyy")
+        </div>   
+    }
+    
     @if (!string.IsNullOrEmpty(Item.Title))
     {
         <div class="bg-secondary bg-opacity-10 p-1 small rounded-1 mt-1">@Item.Title</div>
@@ -33,6 +40,9 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    public EntryStructureStore Store { get; set; } = null!;
+    
     [Parameter]
     public StructureItem Item { get; set; } = null!;
 }

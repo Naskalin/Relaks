@@ -20,7 +20,7 @@
         <div style="position: sticky; top: 100px;">
             <Dump Data="@Store.DiagramOptions"/>
             <Dump Data="@Store.Req"/>
-            <_DiagramFilter OnStateChanged="@StateHasChanged"/>
+            <_DiagramFilter OnStateChanged="@StateHasChanged" OnChangeRequest="@HandleResetArrows"/>
         </div>
     </div>
 </div>
@@ -40,6 +40,13 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
-        await JsRuntime.InvokeVoidAsync("InitializeStructureGroups");
+        await JsRuntime.InvokeVoidAsync("InitializeStructureArrows");
+    }
+
+    private async Task HandleResetArrows()
+    {
+        Store.FindStructure();
+        await JsRuntime.InvokeVoidAsync("RemoveStructureArrows");
+        await JsRuntime.InvokeVoidAsync("InitializeStructureArrows");
     }
 }
