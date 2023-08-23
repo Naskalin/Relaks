@@ -5,14 +5,14 @@
 
 .arrow__path {
   stroke: var(--bs-secondary);
-  opacity: .4;
+  opacity: .9;
   fill: transparent;
-  stroke-width: 1.6px;
+  stroke-width: 2px;
   //stroke-dasharray: 4 2;
 }
 
 .arrow__head line {
   stroke: var(--bs-secondary);
   stroke-width: 1px;
-  opacity: .5;
+  opacity: .8;
 }

@@ -5,29 +5,10 @@
 
 @inject IJSRuntime JsRuntime;
 
-<div class="row mb-3">
-    <div class="col-4">
-        <div class="row align-items-center">
-            <div class="col-auto">
-                <span class="text-secondary">Масштаб</span>
-            </div>
-            <div class="col-auto" style="width: 100px">
-                <button type="button" class="btn btn-secondary d-flex align-items-center gap-1" @onclick="@(() => Store.DiagramScale = 100)" title="Масштаб 1:1">
-                    @Store.DiagramScale%
-                    <i class="las la-redo-alt"></i>
-                </button>
-            </div>
-            <div class="col">
-                <input type="range" min="10" max="200" step="5" value="@Store.DiagramScale" @oninput="@HandleRangeInput" class="form-range"/>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="row">
     <div class="col-9">
         <div class="structures-container" id="js-structures-container">
-            <div class="structures-zone" id="js-structures-zone" style="transform: scale(@ScaleToCss());">
+            <div class="structures-zone" id="js-structures-zone" style="transform: scale(@ScaleToCss(), @ScaleToCss());">
                 @foreach (var sg in Store.StructureGroups)
                 {
                     <_DiagramStructureGroup Group="@sg"/>
@@ -36,7 +17,22 @@
         </div>
     </div>
     <div class="col-3">
-        @ScaleToCss()
+        <div style="position: sticky; top: 100px;">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <span class="text-secondary">Масштаб</span>
+                </div>
+                <div class="col-auto" style="width: 100px">
+                    <button type="button" class="btn btn-secondary d-flex align-items-center gap-1" @onclick="@(() => Store.DiagramScale = 100)" title="Масштаб 1:1">
+                        @Store.DiagramScale%
+                        <i class="las la-redo-alt"></i>
+                    </button>
+                </div>
+                <div class="col">
+                    <input type="range" min="10" max="200" step="5" value="@Store.DiagramScale" @oninput="@HandleRangeInput" class="form-range"/>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

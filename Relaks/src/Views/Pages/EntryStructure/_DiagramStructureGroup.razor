@@ -7,11 +7,15 @@
             <div data-structure-group-arrow-parent-id="sg-bottom-@Group.ParentId.ToString()"
                  class="structure-group__dot structure-group__dot--top"></div>
         }
-        <div class="structure-group__title">@Group.Title</div>
-        @* @if (!string.IsNullOrEmpty(Group.Description)) *@
-        @* { *@
-        @*     <div class="small text-secondary mt-2">@Group.Description</div>    *@
-        @* } *@
+        <div class="">
+            <span class="fw-semibold">@Group.Title</span>
+            @if (!string.IsNullOrEmpty(Group.Description))
+            {
+                <Popover Content="@Group.Description">
+                    <i class="las la-comment ms-2 text-info" style="font-size: 1.6rem;"></i>
+                </Popover>
+            }
+        </div>
         @if (Group.Items.Any())
         {
             <div class="structure-items mt-2">

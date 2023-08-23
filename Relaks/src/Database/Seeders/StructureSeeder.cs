@@ -109,7 +109,8 @@ public partial class DatabaseSeeder
         {
             var item = new StructureItem()
             {
-                Description = Faker.Random.ArrayElement(new []{Faker.Random.Words(Faker.Random.Int(2, 5)), ""}),
+                Description = Faker.Random.ArrayElement(new []{Faker.Lorem.Paragraph(1), null}),
+                Title = Faker.Random.ArrayElement(new []{Faker.Random.Words(Faker.Random.Int(2, 5)), null}),
                 StartAt = Faker.Date.Past(Faker.Random.Int(5, 10)),
                 EntryId = baseEntry.Id,
                 GroupId = structureGroup.Id,

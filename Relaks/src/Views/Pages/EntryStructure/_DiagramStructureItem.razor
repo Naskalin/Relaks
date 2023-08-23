@@ -1,7 +1,7 @@
 ﻿@using Relaks.Models.StructureModels
 
-<div class="structure-items__el">
-    <div class="avatar-md avatar-circle">
+<div class="structure-items__el" title="@Item.Entry.Name">
+    <div class="avatar-sm avatar-circle">
         @if (!string.IsNullOrEmpty(Item.Entry.Thumbnail))
         {
             <img src="@Item.Entry.Thumbnail" alt="">
@@ -12,7 +12,24 @@
         }
     </div>
     
-    <div class="mt-1 small">@Item.Entry.Name</div>
+    <div class="structure-items__title">@Item.Entry.Name</div>
+    @if (!string.IsNullOrEmpty(Item.Title) || !string.IsNullOrEmpty(Item.Description))
+    {
+        <div style="border: 1px dashed #eee; width: 80%; margin: .35rem 0"></div>               
+    }
+    @if (!string.IsNullOrEmpty(Item.Title))
+    {
+        <div class="bg-secondary bg-opacity-10 p-1 small rounded-1 mt-1">@Item.Title</div>
+    }
+   
+    @if (!string.IsNullOrEmpty(Item.Description))
+    {
+        <div class="@(!string.IsNullOrEmpty(Item.Title) ? "mt-1" : "")">
+            <Popover Content="@Item.Description">
+                <i class="las la-comment-dots text-success" style="font-size: 1.4rem;"></i>
+            </Popover>
+        </div>
+    }
 </div>
 
 @code {
