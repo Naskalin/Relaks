@@ -11,7 +11,7 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230821130755_CreateStructures")]
+    [Migration("20230824144409_CreateStructures")]
     partial class CreateStructures
     {
         /// <inheritdoc />
@@ -808,7 +808,8 @@ namespace Relaks.Migrations
 
                     b.HasOne("Relaks.Models.StructureModels.StructureGroup", "Parent")
                         .WithMany("Children")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Entry");
 

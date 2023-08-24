@@ -37,7 +37,8 @@ namespace Relaks.Migrations
                         name: "FK_StructureGroups_StructureGroups_ParentId",
                         column: x => x.ParentId,
                         principalTable: "StructureGroups",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

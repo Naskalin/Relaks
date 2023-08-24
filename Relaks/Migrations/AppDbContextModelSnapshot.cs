@@ -805,7 +805,8 @@ namespace Relaks.Migrations
 
                     b.HasOne("Relaks.Models.StructureModels.StructureGroup", "Parent")
                         .WithMany("Children")
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Entry");
 

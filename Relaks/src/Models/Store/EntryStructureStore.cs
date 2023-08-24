@@ -24,6 +24,10 @@ public class EntryStructureStore
     public enum SidebarStateEnum
     {
         Default,
+        GroupEdit,
+        GroupCreate,
+        ItemCreate,
+        ItemEdit,
     }
     public StructureDiagramOptions DiagramOptions { get; set; } = new();
     

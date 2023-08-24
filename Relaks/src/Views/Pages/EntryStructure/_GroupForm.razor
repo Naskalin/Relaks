@@ -1,0 +1,143 @@
+﻿@using Relaks.Models.Store
+@using Relaks.Models.StructureModels
+@using Relaks.Mappers
+@using Relaks.Utils.Extensions
+@using Console = System.Console
+@using Relaks.Database
+@using Relaks.Managers
+
+@inject AppDbContext Db;
+@inject IJSRuntime JsRuntime;
+
+<div class="row align-items-center">
+    <div class="col-auto">
+        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@HandleReturn" title="Вернуться">
+            <i class="las la-arrow-left la-lg"></i>
+        </button>
+    </div>
+    <div class="col">
+        <h5>@(IsEdit ? "Изменить группу" : "Добавить группу")</h5>
+    </div>
+</div>
+
+@* <Dump Data="@Model"/> *@
+<EditForm Model="@Model" OnSubmit="@HandleSubmit">
+    <div class="row">
+        <div class="col">
+            <div class="mb-3">
+                <label for="@_guids()[nameof(Model.StartAt)]" class="form-label">От *</label>
+                <InputDate @bind-Value="@Model.StartAt" class="form-control"/>
+            </div>
+        </div>
+        <div class="col">
+            <div class="mb-3">
+                <label for="@_guids()[nameof(Model.EndAt)]" class="form-label">До</label>
+                <InputDate @bind-Value="@Model.EndAt" class="form-control"/>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mb-3">
+        <label for="@_guids()[nameof(Model.Title)]" class="form-label">Название группы *</label>
+        <InputText @bind-Value="@Model.Title" class="form-control" required="required" id="@_guids()[nameof(Model.Title)]"/>
+    </div>
+
+    <div class="mb-3">
+        <label for="@_guids()[nameof(Model.Description)]" class="form-label">Описание группы</label>
+        <MyTextarea id="@_guids()[nameof(Model.Description)]"
+                    @bind-Value="@Model.Description"
+                    maxlength="255"/>
+    </div>
+
+    <div class="mb-3">
+        <button class="btn btn-primary">
+            <i class="las la-lg me-1 @(IsEdit ? "la-edit" : "la-plus-circle")"></i>
+            @(IsEdit ? Resources.Action.SaveChanges : Resources.Action.Add)
+        </button>
+    </div>
+</EditForm>
+
+<div class="text-end">
+    <button type="button" class="btn btn-link text-danger" @onclick="@OnDelete">
+        <i class="las la-trash la-lg"></i>
+        @Resources.Action.Delete
+    </button>
+</div>
+
+@code {
+    [CascadingParameter]
+    public EntryStructureStore Store { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+    
+    [Parameter]
+    public EventCallback OnChangeDb { get; set; }
+
+    private StructureGroup Model { get; set; } = new();
+    
+    private bool IsEdit { get; set;  }
+
+    private Dictionary<string, Guid> _guids() => new()
+    {
+        {nameof(Model.Title), Guid.NewGuid()},
+        {nameof(Model.Description), Guid.NewGuid()},
+        {nameof(Model.StartAt), Guid.NewGuid()},
+        {nameof(Model.EndAt), Guid.NewGuid()},
+    };
+
+    private async Task HandleReturn()
+    {
+        Store.SidebarState = EntryStructureStore.SidebarStateEnum.Default;
+        await OnStateChanged.InvokeAsync();
+    }
+    
+    protected override void OnParametersSet()
+    {
+        IsEdit = Store is {SelectedGroup: not null, SidebarState: EntryStructureStore.SidebarStateEnum.GroupEdit};
+        if (IsEdit)
+        {
+            Store.SelectedGroup!.MapTo(Model);
+        }
+        else
+        {
+            Model = new StructureGroup()
+            {
+                EntryId = Store.Req.EntryId,
+                StartAt = DateTime.Now.StartOfDay()
+            };
+            TreeManager.UpdateTreePath(Model);
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (IsEdit && Store.SelectedGroup != null)
+        {
+            Model.MapTo(Store.SelectedGroup!);
+            await Db.SaveChangesAsync();
+            var q = Db.StructureGroups.Where(x => x.EntryId.Equals(Store.Req.EntryId));
+            TreeManager.SyncTreePaths(q, Store.SelectedGroup.Id, Store.SelectedGroup);
+        }
+        else
+        {
+            Db.StructureGroups.Add(Model);
+        }
+
+        await Db.SaveChangesAsync();
+        Store.SidebarState = EntryStructureStore.SidebarStateEnum.Default;
+        await OnChangeDb.InvokeAsync();
+    }
+
+    private async Task OnDelete()
+    {
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
+        if (!isConfirmed || !IsEdit || Store.SelectedGroup == null) return;
+        Db.StructureGroups.Remove(Store.SelectedGroup);
+        Store.SelectedGroup = null;
+        await Db.SaveChangesAsync();
+        
+        Store.SidebarState = EntryStructureStore.SidebarStateEnum.Default;
+        await OnChangeDb.InvokeAsync();
+    }
+}

@@ -12,7 +12,7 @@
         </div>  
     </div>
     <div class="col-auto">
-        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@(() => OnClickReturn.InvokeAsync())" title="Изменить">
+        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@(() => OnClickGroupEdit.InvokeAsync(Group))" title="Изменить">
             <i class="las la-edit la-lg"></i>
         </button>
     </div>
@@ -26,9 +26,17 @@
     }
 </div>
 
+<div class="row align-items-center justify-content-between">
+    <div class="col">Состав (@Group.Items.Count)</div>
+    <div class="col-auto">
+        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@(() => OnClickCreateItem.InvokeAsync(Group))" title="Добавить">
+            <i class="las la-plus la-lg"></i>
+        </button>
+    </div>
+</div>
+
 @if (Group.Items.Any())
 {
-    <div class="text-secondary mb-2">Состав (@Group.Items.Count)</div>
     <div class="d-flex flex-column gap-3">
         @foreach (var item in Group.Items)
         {
@@ -56,6 +64,12 @@
     
     [Parameter]
     public EventCallback<StructureItem> OnItemClick { get; set; }
+    
+    [Parameter]
+    public EventCallback<StructureGroup> OnClickGroupEdit { get; set; }
+    
+    [Parameter]
+    public EventCallback<StructureGroup> OnClickCreateItem { get; set; }
     
     [Parameter]
     public EventCallback OnClickReturn { get; set; }

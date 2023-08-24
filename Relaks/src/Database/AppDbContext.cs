@@ -55,6 +55,7 @@ public sealed class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new FtsFileConfiguration());
         modelBuilder.ApplyConfiguration(new FileCategoryConfiguration());
         modelBuilder.ApplyConfiguration(new EntryFileConfiguration());
+        modelBuilder.ApplyConfiguration(new StructureGroupConfiguration());
 
         // DateTime Always UTC
         // https://stackoverflow.com/a/61243301/5638975
