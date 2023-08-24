@@ -65,11 +65,10 @@
 
     private List<StructureItem> GroupItems()
     {
-        var limit = Store.DiagramOptions.LimitStructureItems ?? -1;
-        return limit switch
+        return Store.DiagramOptions.ShowItemsType switch
         {
-            > 0 => Group.Items.Take(limit).ToList(),
-            < 0 => Group.Items,
+            StructureDiagramOptions.ShowItemsTypeEnum.Some => Group.Items.Take(Store.DiagramOptions.LimitStructureItems).ToList(),
+            StructureDiagramOptions.ShowItemsTypeEnum.Show => Group.Items,
             _ => new List<StructureItem>()
             };
     }

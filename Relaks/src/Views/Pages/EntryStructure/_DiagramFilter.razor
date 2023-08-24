@@ -18,30 +18,39 @@
     </div>
 </div>
 
-<div class="mb-3">
-    <div class="form-check form-switch">
-        <InputCheckbox class="form-check-input" type="checkbox" 
-                       @bind-Value="@IsShowStructureItems"
-                       @bind-Value:after="@HandleChangeIsShowStructureItems"
-                       id="IsShowStructureItems"/>
-        <label class="form-check-label" for="IsShowStructureItems">Показать все объединения</label>
-    </div>
+<div class="form-label">
+    Видимость объединений
+    @if (Store.DiagramOptions.ShowItemsType.Equals(StructureDiagramOptions.ShowItemsTypeEnum.Some))
+    {
+        <span>(@Store.DiagramOptions.LimitStructureItems)</span>   
+    }
 </div>
 
-@if (!IsShowStructureItems)
-{
-    <div class="row align-items-center mb-3">
-        <div class="col-auto">
-            <div class="col-form-label">Кол-во объединений (@Store.DiagramOptions.LimitStructureItems)</div>
+<div class="row align-items-center mb-3">
+    <div class="col-auto">
+        <div class="btn-group">
+            @foreach (var o in ShowItemsOptions)
+            {
+                <button type="button"
+                        class="btn btn-sm @(Store.DiagramOptions.ShowItemsType.Equals(o.Key) ? "btn-secondary" : "btn-outline-secondary")"
+                        @onclick="@(() => HandleClickShowItemsOption(o.Key))"
+                >
+                    @o.Value
+                </button>   
+            }
         </div>
+    </div>
+    
+    @if (Store.DiagramOptions.ShowItemsType.Equals(StructureDiagramOptions.ShowItemsTypeEnum.Some))
+    {
         <div class="col">
-            <input type="range" min="0" max="6" step="1" 
+            <input type="range" min="1" max="10" step="1" 
                    value="@Store.DiagramOptions.LimitStructureItems" 
                    @oninput="@HandleChangeLimitStructureItems" 
                    class="form-range"/>
         </div>
-    </div>   
-}
+    }
+</div>
 
 <div class="mb-3">
     <div class="form-check form-switch">
@@ -87,8 +96,6 @@
 
     [Parameter]
     public EventCallback OnChangeRequest { get; set; }
-    
-    private bool IsShowStructureItems { get; set; }
 
     private async Task HandleScaleChange(ChangeEventArgs e)
     {
@@ -99,9 +106,7 @@
 
     private async Task HandleChangeLimitStructureItems(ChangeEventArgs e)
     {
-        if (e.Value == null) return;
         Store.DiagramOptions.LimitStructureItems = Convert.ToInt32(e.Value);
-        IsShowStructureItems = false;
         await OnStateChanged.InvokeAsync();
     }
 
@@ -111,15 +116,16 @@
         await OnStateChanged.InvokeAsync();
     }
 
-    private async Task HandleChangeIsShowStructureItems()
+    private static Dictionary<StructureDiagramOptions.ShowItemsTypeEnum, string> ShowItemsOptions => new()
     {
-        Store.DiagramOptions.LimitStructureItems = IsShowStructureItems ? null : 3;
+        {StructureDiagramOptions.ShowItemsTypeEnum.Show, "Все"},
+        {StructureDiagramOptions.ShowItemsTypeEnum.Some, "Несколько"},
+        {StructureDiagramOptions.ShowItemsTypeEnum.Hide, "Скрыть"},
+    };
+
+    private async Task HandleClickShowItemsOption(StructureDiagramOptions.ShowItemsTypeEnum type)
+    {
+        Store.DiagramOptions.ShowItemsType = type;
         await OnStateChanged.InvokeAsync();
     }
-
-    // private async Task RequestHasChanged()
-    // {
-    //     Store.FindStructure();
-    //     await OnChangeRequest.InvokeAsync();
-    // }
 }
