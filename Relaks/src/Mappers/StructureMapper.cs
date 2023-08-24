@@ -12,4 +12,14 @@ public static class StructureMapper
         model.EndAt = group.EndAt;
         model.ParentId = group.ParentId;
     }
+    
+    public static void MapTo(this StructureItem item, StructureItem model)
+    {
+        model.Title = item.Title;
+        model.Description = item.Description;
+        model.StartAt = item.StartAt;
+        model.EndAt = item.EndAt;
+        model.EntryId = item.EntryId;
+        model.GroupId = item.GroupId;
+    }
 }

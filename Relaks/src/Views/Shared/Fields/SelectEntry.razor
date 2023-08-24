@@ -33,13 +33,16 @@
 
 @code {
     [Parameter]
-    public string Label { get; set; } = "Объединения";
+    public string Label { get; set; } = "Объединение";
 
     [Parameter]
     public List<Guid> EntryIds { get; set; } = new();
     
     [Parameter]
     public EventCallback<List<Guid>> EntryIdsChanged { get; set; }
+    
+    [Parameter]
+    public bool IsMultiple { get; set; }
 
     private List<Guid> CurrentEntryIds { get; set; } = new();
 
@@ -52,7 +55,14 @@
     {
         if (!CurrentEntryIds.Contains(entryId))
         {
-            CurrentEntryIds.Add(entryId);
+            if (IsMultiple)
+            {
+                CurrentEntryIds.Add(entryId);
+            }
+            else
+            {
+                CurrentEntryIds = new List<Guid>(){entryId};
+            }
             await EntryIdsChanged.InvokeAsync(CurrentEntryIds);
         }
     }

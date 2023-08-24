@@ -1,10 +1,12 @@
 ﻿@using Relaks.Models.Store
 @using Relaks.Models.StructureModels
 @using System.Globalization
+@using Relaks.Database
 @using Relaks.Models
 @using Console = BootstrapBlazor.Components.Console
 
 @inject IJSRuntime JsRuntime;
+@inject AppDbContext Db;
 
 <MyTitle>
     <ChildContent>Структура @(Store.Discriminator.Equals(nameof(ECompany)) ? "компании" : "встречи")</ChildContent>
@@ -18,11 +20,6 @@
         </button>
     </EndTitle>
 </MyTitle>
-
-<ul class="ul-info">
-    <li>Предпросмотр группы при клике на её название</li>
-    <li>Предпросмотр объединения при клике на него</li>
-</ul>
 
 <div class="row">
     <div class="col-9">
@@ -57,7 +54,8 @@
                                         OnClickReturn="@HandleGroupReturn"
                                         OnItemClick="@HandleItemClick"
                                         OnClickGroupEdit="@HandleGroupEdit"
-                                        OnClickCreateItem="@HandleClickCreateItem"/>
+                                        OnClickCreateItem="@HandleClickCreateItem"
+                                        />
                     }
                     else
                     {
@@ -73,6 +71,7 @@
                     
                     case EntryStructureStore.SidebarStateEnum.ItemEdit:
                     case EntryStructureStore.SidebarStateEnum.ItemCreate:
+                        <_ItemForm OnStateChanged="@StateHasChanged" OnChangeDb="@HandleReloadStructure"/>
                 break;
             }
         </div>
@@ -130,6 +129,14 @@
         Store.SelectedItem = null;
         Store.SelectedGroup = null;
         StateHasChanged();
+    }
+                
+    private async Task HandleClickItemDelete(StructureItem item) {
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
+        if (!isConfirmed) return;
+        
+        Db.StructureItems.Remove(item);
+        await Db.SaveChangesAsync();
     }
 
     private void HandleGroupEdit(StructureGroup group) => Store.SidebarState = EntryStructureStore.SidebarStateEnum.GroupEdit;

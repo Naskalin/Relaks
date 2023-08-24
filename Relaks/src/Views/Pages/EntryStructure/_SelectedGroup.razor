@@ -9,7 +9,7 @@
         <div class="text-secondary">
             <i class="las la-calendar la-lg me-1"></i>
             @Group.StartAt.ToString("dd.MM.yyyy") - @Group.EndAt?.ToString("dd.MM.yyyy")
-        </div>  
+        </div>
     </div>
     <div class="col-auto">
         <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@(() => OnClickGroupEdit.InvokeAsync(Group))" title="Изменить">
@@ -26,7 +26,7 @@
     }
 </div>
 
-<div class="row align-items-center justify-content-between">
+<div class="row align-items-center justify-content-between mb-3">
     <div class="col">Состав (@Group.Items.Count)</div>
     <div class="col-auto">
         <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@(() => OnClickCreateItem.InvokeAsync(Group))" title="Добавить">
@@ -59,18 +59,20 @@
 
 
 @code {
+
     [Parameter]
     public StructureGroup Group { get; set; } = null!;
-    
+
     [Parameter]
     public EventCallback<StructureItem> OnItemClick { get; set; }
-    
+
     [Parameter]
     public EventCallback<StructureGroup> OnClickGroupEdit { get; set; }
-    
+
     [Parameter]
     public EventCallback<StructureGroup> OnClickCreateItem { get; set; }
-    
+
     [Parameter]
     public EventCallback OnClickReturn { get; set; }
+
 }
