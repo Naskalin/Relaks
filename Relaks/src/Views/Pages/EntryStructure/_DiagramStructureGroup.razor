@@ -25,10 +25,10 @@
                 </Popover>
             }
         </div>
-        @if (Store.DiagramOptions.IsShowStructureItems && Group.Items.Any())
+        @if (GroupItems().Any())
         {
             <div class="structure-items mt-2">
-                @foreach (var item in Group.Items.Take(Store.DiagramOptions.LimitStructureItems))
+                @foreach (var item in GroupItems())
                 {
                     <_DiagramStructureItem Item="@item" OnDiagramClick="@OnDiagramClick"/>
                 }
@@ -62,4 +62,15 @@
     public EventCallback<Tuple<StructureGroup?, StructureItem?>> OnDiagramClick { get; set; }
 
     private Task HandleGroupClick() => OnDiagramClick.InvokeAsync(new Tuple<StructureGroup?, StructureItem?>(Group, null));
+
+    private List<StructureItem> GroupItems()
+    {
+        var limit = Store.DiagramOptions.LimitStructureItems ?? -1;
+        return limit switch
+        {
+            > 0 => Group.Items.Take(limit).ToList(),
+            < 0 => Group.Items,
+            _ => new List<StructureItem>()
+            };
+    }
 }
