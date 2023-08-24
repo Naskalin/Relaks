@@ -1,10 +1,25 @@
 ﻿@using Relaks.Models.StructureModels
+<div class="row align-items-center mb-3 justify-content-between">
+    <div class="col-auto">
+        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@(() => OnClickReturn.InvokeAsync())" title="Вернуться">
+            <i class="las la-arrow-left la-lg"></i>
+        </button>
+    </div>
+    <div class="col">
+        <div class="text-secondary">
+            <i class="las la-calendar la-lg me-1"></i>
+            @Group.StartAt.ToString("dd.MM.yyyy") - @Group.EndAt?.ToString("dd.MM.yyyy")
+        </div>  
+    </div>
+    <div class="col-auto">
+        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@(() => OnClickReturn.InvokeAsync())" title="Изменить">
+            <i class="las la-edit la-lg"></i>
+        </button>
+    </div>
+</div>
+
 <div class="d-flex flex-column gap-2 mb-3">
     <div class="h6 mb-0">@Group.Title</div>
-    <div class="text-secondary">
-        <i class="las la-calendar la-lg me-1"></i>
-        @Group.StartAt.ToString("dd.MM.yyyy") - @Group.EndAt?.ToString("dd.MM.yyyy")
-    </div>   
     @if (!string.IsNullOrEmpty(Group.Description))
     {
         <div>@Group.Description</div>
@@ -18,7 +33,17 @@
         @foreach (var item in Group.Items)
         {
             <div @onclick="@(() => OnItemClick.InvokeAsync(item))">
-                <EntryInlineItem EntryId="@item.EntryId"/>
+                <EntryInlineItem EntryId="@item.EntryId">
+                    <AfterBody>
+                        @if (!string.IsNullOrEmpty(item.Title))
+                        {
+                            <div class="border-top" style="width: 80%; margin: .35rem 0;"></div>
+                            <div class="bg-body-tertiary p-1 small rounded-1 mt-1">
+                                @item.Title
+                            </div>
+                        }
+                    </AfterBody>
+                </EntryInlineItem>
             </div>
         }
     </div>
@@ -31,4 +56,7 @@
     
     [Parameter]
     public EventCallback<StructureItem> OnItemClick { get; set; }
+    
+    [Parameter]
+    public EventCallback OnClickReturn { get; set; }
 }

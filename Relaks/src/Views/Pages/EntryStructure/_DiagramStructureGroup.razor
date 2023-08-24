@@ -3,7 +3,7 @@
 @using Console = System.Console
 
 <div class="structure-group">
-    <div class="structure-group__el" @onclick="@(() => OnGroupClick.InvokeAsync(Group))">
+    <div class="structure-group__el @(Group.Id.Equals(Store.SelectedGroup?.Id) ? "active": "")">
         @if (Group.ParentId.HasValue)
         {
             <div data-structure-group-arrow-parent-id="sg-bottom-@Group.ParentId.ToString()"
@@ -16,12 +16,12 @@
                 @Group.StartAt.ToString("dd.MM.yyyy") - @Group.EndAt?.ToString("dd.MM.yyyy")
             </div>   
         }
-        <div>
-            <span class="fw-semibold">@Group.Title @(Group.Items.Any() ? $"({Group.Items.Count})" : "")</span>
+        <div class="structure-group__title" @onclick="@HandleGroupClick">
+            <span class="">@Group.Title @(Group.Items.Any() ? $"({Group.Items.Count})" : "")</span>
             @if (!string.IsNullOrEmpty(Group.Description))
             {
                 <Popover Content="@Group.Description">
-                    <i class="las la-comment ms-2 text-info" style="font-size: 1.6rem;"></i>
+                    <i class="las la-comment ms-2 text-info" style="font-size: 1.4rem;"></i>
                 </Popover>
             }
         </div>
@@ -30,7 +30,7 @@
             <div class="structure-items mt-2">
                 @foreach (var item in Group.Items.Take(Store.DiagramOptions.LimitStructureItems))
                 {
-                    <_DiagramStructureItem Item="@item"/>
+                    <_DiagramStructureItem Item="@item" OnDiagramClick="@OnDiagramClick"/>
                 }
             </div>   
         }
@@ -45,7 +45,7 @@
         <div class="structure-group__child">
             @foreach (var child in Group.Children)
             {
-                <_DiagramStructureGroup Group="@child" OnGroupClick="@OnGroupClick"/>
+                <_DiagramStructureGroup Group="@child" OnDiagramClick="@OnDiagramClick"/>
             }
         </div>    
     }
@@ -59,8 +59,7 @@
     public StructureGroup Group { get; set; } = null!;
     
     [Parameter]
-    public EventCallback<StructureGroup> OnGroupClick { get; set; }
-    
-    [Parameter]
-    public EventCallback<StructureItem> OnItemClick { get; set; }
+    public EventCallback<Tuple<StructureGroup?, StructureItem?>> OnDiagramClick { get; set; }
+
+    private Task HandleGroupClick() => OnDiagramClick.InvokeAsync(new Tuple<StructureGroup?, StructureItem?>(Group, null));
 }

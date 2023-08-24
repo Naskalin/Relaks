@@ -1,12 +1,42 @@
 ﻿@using Relaks.Models.StructureModels
 
-<h3>@Item.Entry.Name</h3>
+<div class="row align-items-center mb-3 justify-content-between">
+    <div class="col-auto">
+        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@(() => OnClickReturn.InvokeAsync())" title="Вернуться">
+            <i class="las la-arrow-left la-lg"></i>
+        </button>
+    </div>
+    <div class="col">
+        <div class="text-secondary">
+            <i class="las la-calendar la-lg me-1"></i>
+            @Item.StartAt.ToString("dd.MM.yyyy") - @Item.EndAt?.ToString("dd.MM.yyyy")
+        </div>  
+    </div>
+    <div class="col-auto">
+        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@(() => OnClickReturn.InvokeAsync())" title="Изменить">
+            <i class="las la-edit la-lg"></i>
+        </button>
+    </div>
+</div>
 
-<EntryCard EntryId="@Item.EntryId" ViewMode="EntryCard.ViewModeEnum.Preview"/>
+@if (!string.IsNullOrEmpty(Item.Title))
+{
+    <div class="bg-body-tertiary p-1 rounded mb-2">
+        @Item.Title
+    </div>
+}
 
-<button type="button" class="btn btn-circle btn-outline-seocndary" @onclick="@(() => OnClickReturn.InvokeAsync())">
-    <i class="las la-arrow-left la-lg me-1"></i> @Resources.Action.Return
-</button>
+@if (!string.IsNullOrEmpty(Item.Description))
+{
+    <div class="small mb-2">
+      @Item.Description
+    </div>
+}
+
+<EntryCard EntryId="@Item.EntryId"
+           ViewMode="EntryCard.ViewModeEnum.Preview"
+           IsFullWidth="@true"
+           />
 
 @code {
     [Parameter]

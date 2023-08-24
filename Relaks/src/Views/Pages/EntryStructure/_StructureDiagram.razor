@@ -12,7 +12,7 @@
                 @foreach (var sg in Store.StructureGroups)
                 {
                     <_DiagramStructureGroup Group="@sg" 
-                                            OnGroupClick="@HandleGroupClick"
+                                            OnDiagramClick="@HandleDiagramClick"
                                             />
                 }
             </div>
@@ -20,18 +20,22 @@
     </div>
     <div class="col-3">
         <div style="position: sticky; top: 100px;">
-            <Dump Data="@Store.DiagramOptions"/>
-            <Dump Data="@Store.Req"/>
-            <_DiagramFilter OnStateChanged="@StateHasChanged" OnChangeRequest="@HandleResetArrows"/>
-            <div class="border-top my-4"></div>
             @if (Store.SelectedItem != null)
             {
-                <_SelectedItem Item="Store.SelectedItem" OnClickReturn="@(() => Store.SelectedItem = null)"/>
+                <_SelectedItem Item="Store.SelectedItem" OnClickReturn="@HandleItemReturn"/>
             } else if (Store.SelectedGroup != null)
             {
                 <_SelectedGroup Group="Store.SelectedGroup"
-                                OnItemClick="@(item => Store.SelectedItem = item)"
+                                OnClickReturn="@HandleGroupReturn"
+                                OnItemClick="@HandleItemClick"
                                 />
+            }
+            else
+            {
+                <Dump Data="@Store.DiagramOptions"/>
+                <Dump Data="@Store.Req"/>
+                <_DiagramFilter OnStateChanged="@StateHasChanged" OnChangeRequest="@HandleResetArrows"/>
+                <div class="border-top my-4"></div>
             }
         </div>
     </div>
@@ -62,9 +66,28 @@
         await JsRuntime.InvokeVoidAsync("InitializeStructureArrows");
     }
 
-    private void HandleGroupClick(StructureGroup group)
+    private void HandleDiagramClick(Tuple<StructureGroup?, StructureItem?> data)
     {
-        Store.SelectedGroup = group;
+        Store.SelectedGroup = data.Item1;
+        if (Store.SelectedGroup == null && data.Item2 != null)
+        {
+            Store.SelectedGroup = data.Item2.Group;
+        }
+        Store.SelectedItem = data.Item2;
+    }
+
+    private void HandleItemClick(StructureItem item)
+    {
+        Store.SelectedItem = item;
+    }
+
+    private void HandleItemReturn()
+    {
         Store.SelectedItem = null;
+    }
+    private void HandleGroupReturn()
+    {
+        Store.SelectedItem = null;
+        Store.SelectedGroup = null;
     }
 }
