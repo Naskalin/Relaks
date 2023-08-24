@@ -32,8 +32,8 @@
             }
             else
             {
-                <Dump Data="@Store.DiagramOptions"/>
-                <Dump Data="@Store.Req"/>
+                @* <Dump Data="@Store.DiagramOptions"/> *@
+                @* <Dump Data="@Store.Req"/> *@
                 <_DiagramFilter OnStateChanged="@StateHasChanged" OnChangeRequest="@HandleResetArrows"/>
                 <div class="border-top my-4"></div>
             }

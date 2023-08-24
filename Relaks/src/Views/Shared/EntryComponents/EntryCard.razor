@@ -6,7 +6,7 @@
 @inject NavigationManager NavigationManager;
 
 <CascadingValue Value="@ViewMode">
-    <div style="width: @(IsFullWidth ? "100%": "20rem;")">
+    <div style="width: 20rem; @CardClasses">
         @if (HideSoftDeleted != true)
         {
             <SoftDeleteShow SoftDeletedReason="@Entry"/>
@@ -96,7 +96,7 @@
     public bool? HideSoftDeleted { get; set; }
 
     [Parameter]
-    public bool IsFullWidth { get; set; }
+    public string CardClasses { get; set; } = "";
     
     public enum ViewModeEnum
     {
