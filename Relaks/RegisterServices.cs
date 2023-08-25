@@ -6,10 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Relaks.Interfaces;
 using Relaks.Managers;
 using Relaks.Models;
+using Relaks.Models.StructureModels;
 using Relaks.Validators;
 using Relaks.Validators.AppFileValidators;
 using Relaks.Validators.EntryInfoValidators;
 using Relaks.Validators.EntryValidators;
+using Relaks.Validators.StructureValidators;
 
 namespace Relaks;
 
@@ -41,6 +43,9 @@ public static class RegisterServices
         services.AddScoped<IValidator<EntryFileTag>, EntryFileTagValidator>();
         services.AddScoped<IValidator<EntryFileCategory>, EntryFileCategoryValidator>();
         services.AddScoped<IValidator<BaseFileRequest>, BaseFileRequestValidator>();
+        
+        services.AddScoped<IValidator<StructureItem>, StructureItemValidator>();
+        services.AddScoped<IValidator<StructureGroup>, StructureGroupValidator>();
 
         // services.AddScoped<IValidator<EntryInfoCreateRequest>, EntryInfoCreateRequestValidator>();
     }

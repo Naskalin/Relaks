@@ -67,7 +67,7 @@
     {
         if (!Validator.Validate()) return;
 
-        Entry.UpdatedAt = DateTime.UtcNow;
+        Entry.UpdatedAt = DateTime.Now;
         Entry.MapTo(Entry);
         MapProfessions();
         

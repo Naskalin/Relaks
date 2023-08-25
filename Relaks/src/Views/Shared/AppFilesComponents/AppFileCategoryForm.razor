@@ -106,7 +106,7 @@
 
             if (Store.SidebarState.Equals(AppFileListStore.SidebarStateEnum.AddCategory))
             {
-                TreeManager.UpdateTreePath(parent, entryFileCategory);
+                TreeManager.UpdateTreePath(entryFileCategory, parent);
                 Db.EntryFileCategories.Add(entryFileCategory);
             }
             else

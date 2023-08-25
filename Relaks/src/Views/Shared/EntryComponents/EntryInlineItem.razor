@@ -12,27 +12,35 @@
         }
         else
         {
-            <CustomAvatar Text="@Entry.Name" />
+            <CustomAvatar Text="@Entry.Name"/>
         }
     </div>
 
     <div>
-        <div class="fw-semibold">@Entry.Name</div>
-        
-        <div style="line-height: 1.2rem;max-height: 2.4rem;overflow: hidden;text-overflow: ellipsis;">
-            @if (!string.IsNullOrEmpty(Entry.Description))
-            {
-                <div class="small">@Entry.Description</div>   
-            }
-        </div>
+         <div class="fw-semibold">@Entry.Name</div>
+
+         @if (!string.IsNullOrEmpty(Entry.Description))
+         {
+             <div style="line-height: 1.2rem; max-height: 2.4rem;overflow: hidden;text-overflow: ellipsis;">
+                 <div class="small">@Entry.Description</div>
+             </div>
+         }
+         @if (AfterBody != null)
+         {
+             @AfterBody(Entry);
+         }
     </div>
 </div>
 
 @code {
+
     [Parameter]
     public Guid EntryId { get; set; }
 
     private BaseEntry Entry { get; set; } = null!;
+    
+    [Parameter]
+    public RenderFragment<BaseEntry>? AfterBody { get; set; }
 
     protected override void OnParametersSet()
     {

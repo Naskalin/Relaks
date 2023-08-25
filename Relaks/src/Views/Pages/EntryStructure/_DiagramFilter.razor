@@ -1,0 +1,136 @@
+﻿@using Relaks.Models.Store
+@using Console = System.Console
+
+@* <Dump Data="@Store.DiagramOptions"/> *@
+@* <Dump Data="@Store.Req"/> *@
+<div class="row align-items-center mb-3">
+    <div class="col-auto">
+        <div class="col-form-label">Масштаб</div>
+    </div>
+    <div class="col-auto" style="width: 100px">
+        <button type="button" class="btn btn-sm btn-secondary d-flex align-items-center gap-1" @onclick="@HandleScaleReset" title="Масштаб 1:1">
+            @Store.DiagramOptions.DiagramScale%
+            <i class="las la-redo-alt"></i>
+        </button>
+    </div>
+    <div class="col">
+        <input type="range" min="10" max="200" step="5" value="@Store.DiagramOptions.DiagramScale" @oninput="@HandleScaleChange" class="form-range"/>
+    </div>
+</div>
+
+<div class="form-label">
+    Видимость объединений
+    @if (Store.DiagramOptions.ShowItemsType.Equals(StructureDiagramOptions.ShowItemsTypeEnum.Some))
+    {
+        <span>(@Store.DiagramOptions.LimitStructureItems)</span>   
+    }
+</div>
+
+<div class="row align-items-center mb-3">
+    <div class="col-auto">
+        <div class="btn-group">
+            @foreach (var o in ShowItemsOptions)
+            {
+                <button type="button"
+                        class="btn btn-sm @(Store.DiagramOptions.ShowItemsType.Equals(o.Key) ? "btn-secondary" : "btn-outline-secondary")"
+                        @onclick="@(() => HandleClickShowItemsOption(o.Key))"
+                >
+                    @o.Value
+                </button>   
+            }
+        </div>
+    </div>
+    
+    @if (Store.DiagramOptions.ShowItemsType.Equals(StructureDiagramOptions.ShowItemsTypeEnum.Some))
+    {
+        <div class="col">
+            <input type="range" min="1" max="5" step="1" 
+                   value="@Store.DiagramOptions.LimitStructureItems" 
+                   @oninput="@HandleChangeLimitStructureItems" 
+                   class="form-range"/>
+        </div>
+    }
+</div>
+
+<div class="mb-3">
+    <div class="form-check form-switch">
+        <InputCheckbox class="form-check-input" type="checkbox" 
+                       @bind-Value="@Store.DiagramOptions.IsShowDates"
+                       @bind-Value:after="@(() => OnStateChanged.InvokeAsync())"
+                       id="IsShowDates"/>
+        <label class="form-check-label" for="IsShowDates">Отображать даты</label>
+    </div>
+</div>
+
+<div class="mb-3">
+    <div class="form-check form-switch">
+        <InputCheckbox class="form-check-input" type="checkbox" 
+                       @bind-Value="@Store.Req.IsEnableDate"
+                       @bind-Value:after="@(() => OnChangeRequest.InvokeAsync())"
+                       id="IsEnableDate"/>
+        <label class="form-check-label" for="IsEnableDate">Учитывать выбранную дату</label>
+    </div>
+</div>
+
+@if (Store.Req.IsEnableDate)
+{
+    <div class="mb-3 row g-3 align-items-center">
+        <div class="col-auto">
+            <div class="col-form-label">Дата</div>
+        </div>
+        <div class="col-auto">
+            <InputDate @bind-Value="@Store.Req.Date" @bind-Value:after="@(() => OnChangeRequest.InvokeAsync())" class="form-control"/>
+        </div>
+        <div class="col">
+            <div class="text-secondary small" style="line-height: 1.3em">структура в этот момент времени</div>
+        </div>
+    </div>   
+}
+
+<div class="text-secondary small mt-4">
+    <i class="las la-info-circle"></i>
+    Предпросмотр объединений и групп при нажатии на них в диаграмме.
+</div>
+
+@code {
+    [CascadingParameter]
+    public EntryStructureStore Store { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+
+    [Parameter]
+    public EventCallback OnChangeRequest { get; set; }
+
+    private async Task HandleScaleChange(ChangeEventArgs e)
+    {
+        var val = e.Value != null ? Convert.ToInt32(e.Value) : 0;
+        Store.DiagramOptions.DiagramScale = val <= 0 ? 1 : val;
+        await OnStateChanged.InvokeAsync();
+    }
+
+    private async Task HandleChangeLimitStructureItems(ChangeEventArgs e)
+    {
+        Store.DiagramOptions.LimitStructureItems = Convert.ToInt32(e.Value);
+        await OnStateChanged.InvokeAsync();
+    }
+
+    private async Task HandleScaleReset()
+    {
+        Store.DiagramOptions.DiagramScale = 100;
+        await OnStateChanged.InvokeAsync();
+    }
+
+    private static Dictionary<StructureDiagramOptions.ShowItemsTypeEnum, string> ShowItemsOptions => new()
+    {
+        {StructureDiagramOptions.ShowItemsTypeEnum.Show, "Все"},
+        {StructureDiagramOptions.ShowItemsTypeEnum.Some, "Несколько"},
+        {StructureDiagramOptions.ShowItemsTypeEnum.Hide, "Скрыть"},
+    };
+
+    private async Task HandleClickShowItemsOption(StructureDiagramOptions.ShowItemsTypeEnum type)
+    {
+        Store.DiagramOptions.ShowItemsType = type;
+        await OnStateChanged.InvokeAsync();
+    }
+}

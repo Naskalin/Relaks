@@ -1,0 +1,148 @@
+﻿@using Relaks.Models.Store
+@using Relaks.Models.StructureModels
+@using System.Globalization
+@using Relaks.Database
+@using Relaks.Models
+@using Console = BootstrapBlazor.Components.Console
+
+@inject IJSRuntime JsRuntime;
+@inject AppDbContext Db;
+
+<MyTitle>
+    <ChildContent>Структура @(Store.Discriminator.Equals(nameof(ECompany)) ? "компании" : "встречи")</ChildContent>
+    <EndTitle>
+        <button type="button" 
+                @onclick="@(() => Store.SidebarState = EntryStructureStore.SidebarStateEnum.GroupCreate)"
+                disabled="@(Store.SidebarState.Equals(EntryStructureStore.SidebarStateEnum.GroupCreate))"
+                class="btn btn-primary">
+            <i class="las la-plus-circle la-lg me-1"></i>
+            @Resources.Action.Add группу
+        </button>
+    </EndTitle>
+</MyTitle>
+
+<div class="row">
+    <div class="col-9">
+        <div class="structures-container" id="js-structures-container">
+            <div class="structures-zone"
+                 id="js-structures-zone" style="transform: scale(@ScaleToCss(), @ScaleToCss());">
+                <div class="structures-zone__inner">
+                    @foreach (var sg in Store.StructureGroups)
+                    {
+                        <_DiagramStructureGroup Group="@sg"
+                                                OnDiagramClick="@HandleDiagramClick"/>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div style="position: sticky; top: 100px;">
+            @* <Dump Data="@Store.SidebarState"/> *@
+            @* <Dump Data="@Store.DiagramOptions"/> *@
+            
+            @switch (Store.SidebarState)
+            {
+                case EntryStructureStore.SidebarStateEnum.Default:
+                    @if (Store.SelectedItem != null)
+                    {
+                        <_SelectedItem Item="Store.SelectedItem"
+                                       OnClickReturn="@HandleItemReturn"
+                                       OnItemEdit="@HandleItemEdit"/>
+                    }
+                    else if (Store.SelectedGroup != null)
+                    {
+                        <_SelectedGroup Group="Store.SelectedGroup"
+                                        OnClickReturn="@HandleGroupReturn"
+                                        OnItemClick="@HandleItemClick"
+                                        OnClickGroupEdit="@HandleGroupEdit"
+                                        OnClickCreateItem="@HandleClickCreateItem"
+                                        />
+                    }
+                    else
+                    {
+
+                        <_DiagramFilter OnStateChanged="@StateHasChanged" OnChangeRequest="@HandleReloadStructure"/>
+                    }
+                break;
+                    
+                    case EntryStructureStore.SidebarStateEnum.GroupEdit:
+                    case EntryStructureStore.SidebarStateEnum.GroupCreate:
+                        <_GroupForm OnStateChanged="@StateHasChanged" OnChangeDb="@HandleReloadStructure"/>
+                break;
+                    
+                    case EntryStructureStore.SidebarStateEnum.ItemEdit:
+                    case EntryStructureStore.SidebarStateEnum.ItemCreate:
+                        <_ItemForm OnStateChanged="@StateHasChanged" OnChangeDb="@HandleReloadStructure"/>
+                break;
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    public EntryStructureStore Store { get; set; } = null!;
+
+    private string ScaleToCss()
+    {
+        var scale = (double) (1 * Store.DiagramOptions.DiagramScale) / 100;
+        return scale.ToString(new NumberFormatInfo() {NumberDecimalSeparator = "."});
+    }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        await JsRuntime.InvokeVoidAsync("InitializeStructureArrows");
+    }
+
+    private async Task HandleReloadStructure()
+    {
+        Store.FindStructure();
+        await JsRuntime.InvokeVoidAsync("RemoveStructureArrows");
+        await JsRuntime.InvokeVoidAsync("InitializeStructureArrows");
+    }
+
+    private void HandleDiagramClick(Tuple<StructureGroup?, StructureItem?> data)
+    {
+        Store.SidebarState = EntryStructureStore.SidebarStateEnum.Default;
+        Store.SelectedGroup = data.Item1;
+        if (Store.SelectedGroup == null && data.Item2 != null)
+        {
+            Store.SelectedGroup = data.Item2.Group;
+        }
+        Store.SelectedItem = data.Item2;
+    }
+
+    private void HandleItemClick(StructureItem item)
+    {
+        Store.SelectedItem = item;
+    }
+
+    private void HandleItemReturn()
+    {
+        Store.SelectedItem = null;
+        StateHasChanged();
+    }
+    private void HandleGroupReturn()
+    {
+        Store.SelectedItem = null;
+        Store.SelectedGroup = null;
+        StateHasChanged();
+    }
+                
+    private async Task HandleClickItemDelete(StructureItem item) {
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
+        if (!isConfirmed) return;
+        
+        Db.StructureItems.Remove(item);
+        await Db.SaveChangesAsync();
+    }
+
+    private void HandleGroupEdit(StructureGroup group) => Store.SidebarState = EntryStructureStore.SidebarStateEnum.GroupEdit;
+    private void HandleClickCreateItem(StructureGroup group) => Store.SidebarState = EntryStructureStore.SidebarStateEnum.ItemCreate;
+    
+    private void HandleItemEdit(StructureItem item) => Store.SidebarState = EntryStructureStore.SidebarStateEnum.ItemEdit;
+}

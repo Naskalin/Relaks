@@ -1,0 +1,55 @@
+﻿@using Relaks.Models.StructureModels
+@using Relaks.Models.Store
+
+<div class="structure-items__el @(Item.Id.Equals(Store.SelectedItem?.Id) ? "active": "")" title="@Item.Entry.Name" @onclick="@HandleItemClick">
+    <div class="avatar-sm avatar-circle">
+        @if (!string.IsNullOrEmpty(Item.Entry.Thumbnail))
+        {
+            <img src="@Item.Entry.Thumbnail" alt="">
+        }
+        else
+        {
+            <CustomAvatar Text="@Item.Entry.Name" />
+        }
+    </div>
+    <div class="structure-items__title">@Item.Entry.Name</div>
+    @if (!string.IsNullOrEmpty(Item.Title) || !string.IsNullOrEmpty(Item.Description) || Store.DiagramOptions.IsShowDates)
+    {
+        <div class="border-top" style="width: 80%; margin: .35rem 0;"></div>               
+    }
+    @if (Store.DiagramOptions.IsShowDates)
+    {
+        <div style="font-size: .8rem;">
+            @Item.StartAt.ToString("dd.MM.yyyy") - @Item.EndAt?.ToString("dd.MM.yyyy")
+        </div>   
+    }
+    
+    @if (!string.IsNullOrEmpty(Item.Title))
+    {
+        <div class="bg-secondary-subtle p-1 small rounded-1 mt-1">
+            @Item.Title
+        </div>
+    }
+   
+    @if (!string.IsNullOrEmpty(Item.Description))
+    {
+        <div class="@(!string.IsNullOrEmpty(Item.Title) ? "mt-1" : "")">
+            <Popover Content="@Item.Description">
+                <i class="las la-comment-dots text-success" style="font-size: 1.4rem;"></i>
+            </Popover>
+        </div>
+    }
+</div>
+
+@code {
+    [CascadingParameter]
+    public EntryStructureStore Store { get; set; } = null!;
+    
+    [Parameter]
+    public StructureItem Item { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback<Tuple<StructureGroup?, StructureItem?>> OnDiagramClick { get; set; }
+
+    private Task HandleItemClick() => OnDiagramClick.InvokeAsync(new Tuple<StructureGroup?, StructureItem?>(null, Item));
+}

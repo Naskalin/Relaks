@@ -69,7 +69,10 @@
     }
     
     <div class="mb-3">
-        <SelectEntry @bind-EntryIds="@Req.BaseEntryRelationIds" Label="Общий файл для объединений"/>
+        <SelectEntry @bind-EntryIds="@Req.BaseEntryRelationIds"
+                     Label="Общий файл для объединений"
+                     IsMultiple="@true"
+                     />
     </div>   
     
     <SoftDeletedReasonField SoftDeletedReason="@Req"/>

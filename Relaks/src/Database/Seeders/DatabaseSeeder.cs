@@ -24,15 +24,15 @@ public partial class DatabaseSeeder
         Db.Database.ExecuteSqlRaw("DELETE FROM EntryInfos;");
         Db.Database.ExecuteSqlRaw("DELETE FROM Entries;");
 
-        // Db.Database.ExecuteSqlRaw("delete from StructureItems;");
+        Db.Database.ExecuteSqlRaw("delete from StructureItems;");
+        Db.Database.ExecuteSqlRaw("delete from StructureGroups;");
         // Db.Database.ExecuteSqlRaw("delete from StructureConnections;");
-        // Db.Database.ExecuteSqlRaw("delete from Structures;");
         // Db.Database.ExecuteSqlRaw("delete from InfoTemplates;");
 
         // SeedProfessions();
         SeedEntries();
         SeedEntryInfos();
-        // SeedStructures();
+        SeedStructures();
         // SeedInfoTemplate();
     }
 }

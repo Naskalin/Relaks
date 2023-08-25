@@ -1,0 +1,174 @@
+﻿@using Relaks.Models.Store
+@using Relaks.Models.StructureModels
+@using Relaks.Mappers
+@using Relaks.Utils.Extensions
+@using Relaks.Database
+@using Console = System.Console
+
+@inject AppDbContext Db;
+@inject IJSRuntime JsRuntime;
+
+<div class="row align-items-center mb-3">
+    <div class="col-auto">
+        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@HandleReturn" title="Вернуться">
+            <i class="las la-arrow-left la-lg"></i>
+        </button>
+    </div>
+    <div class="col">
+        <h5>@(IsEdit ? "Изменить" : "Добавить")</h5>
+    </div>
+</div>
+
+@* <Dump Data="@Model"/> *@
+<EditForm Model="@Model" OnValidSubmit="@HandleSubmit">
+    <FluentValidationValidator DisableAssemblyScanning="@true"/>
+    <ValidationSummary/>
+    <div class="row mb-3">
+        <div class="col">
+            <label for="@_guids()[nameof(Model.StartAt)]" class="form-label">От *</label>
+            <InputDate @bind-Value="@Model.StartAt" class="form-control"/>
+        </div>
+        <div class="col">
+            <label for="@_guids()[nameof(Model.EndAt)]" class="form-label">До</label>
+            <InputDate @bind-Value="@Model.EndAt" class="form-control"/>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <SelectEntry @bind-EntryIds="@EntryIds" @bind-EntryIds:after="@OnAfterSelectedEntry" Label="Объединение *"/>
+        <ValidationMessage For="@(() => Model.EntryId)"/>
+    </div>
+
+    <div class="mb-3">
+        <label for="@_guids()[nameof(Model.Title)]" class="form-label">Должность</label>
+        <InputText @bind-Value="@Model.Title" class="form-control" id="@_guids()[nameof(Model.Title)]" maxlength="150"/>
+        <ValidationMessage For="@(() => Model.Title)"/>
+    </div>
+
+    <div class="mb-3">
+        <label for="@_guids()[nameof(Model.Description)]" class="form-label">Описание</label>
+        <MyTextarea id="@_guids()[nameof(Model.Description)]"
+                    @bind-Value="@Model.Description"
+                    maxlength="300"/>
+        <ValidationMessage For="@(() => Model.Description)"/>
+    </div>
+
+    <div class="mb-3">
+        <button class="btn btn-primary">
+            <i class="las la-lg me-1 @(IsEdit ? "la-edit" : "la-plus-circle")"></i>
+            @(IsEdit ? Resources.Action.SaveChanges : Resources.Action.Add)
+        </button>
+    </div>
+</EditForm>
+
+<div class="text-end">
+    <button type="button" class="btn btn-link text-danger" @onclick="@OnDelete">
+        <i class="las la-trash la-lg"></i>
+        @Resources.Action.Delete
+    </button>
+</div>
+
+@code {
+    [CascadingParameter]
+    public EntryStructureStore Store { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+    
+    [Parameter]
+    public EventCallback OnChangeDb { get; set; }
+
+    private List<Guid> EntryIds { get; set; } = new();
+
+    private StructureItem Model { get; set; } = new();
+    
+    private bool IsEdit { get; set;  }
+
+    private Dictionary<string, Guid> _guids() => new()
+    {
+        {nameof(Model.Title), Guid.NewGuid()},
+        {nameof(Model.Description), Guid.NewGuid()},
+        {nameof(Model.StartAt), Guid.NewGuid()},
+        {nameof(Model.EndAt), Guid.NewGuid()},
+    };
+
+    private void OnAfterSelectedEntry()
+    {
+        if (EntryIds.Any())
+        {
+            Model.EntryId = EntryIds.First();
+        }  
+    }
+    
+    private async Task HandleReturn()
+    {
+        Store.SidebarState = EntryStructureStore.SidebarStateEnum.Default;
+        await OnStateChanged.InvokeAsync();
+    }
+    
+    protected override void OnParametersSet()
+    {
+        IsEdit = Store is {SelectedItem: not null, SidebarState: EntryStructureStore.SidebarStateEnum.ItemEdit};
+        ArgumentNullException.ThrowIfNull(Store.SelectedGroup);
+        
+        if (IsEdit)
+        {
+            ArgumentNullException.ThrowIfNull(Store.SelectedItem);
+            Store.SelectedItem.MapTo(Model);
+            EntryIds = new List<Guid>(){Store.SelectedItem.EntryId};
+        }
+        else
+        {
+            Model = new StructureItem()
+            {
+                GroupId = Store.SelectedGroup.Id,
+                StartAt = DateTime.Now.StartOfDay(),
+            };
+        }
+    }
+    
+    private async Task HandleSubmit()
+    {
+        if (IsEdit)
+        {
+            Model.MapTo(Store.SelectedItem!);
+        }
+        else
+        {
+            Db.StructureItems.Add(Model);
+        }
+        
+        SyncGroupLifetime();
+        
+        await Db.SaveChangesAsync();
+        Store.SidebarState = EntryStructureStore.SidebarStateEnum.Default;
+        await OnChangeDb.InvokeAsync();
+    }
+
+    /// Если добавили айтем который начинается раньше группы или закончивается позже группы,
+    /// то время жизни группы обновляется 
+    private void SyncGroupLifetime()
+    {
+        ArgumentNullException.ThrowIfNull(Store.SelectedGroup);
+        if (Model.StartAt < Store.SelectedGroup.StartAt)
+        {
+            Store.SelectedGroup.StartAt = Model.StartAt;
+        }
+        if (Store.SelectedGroup.EndAt != null && Model.EndAt > Store.SelectedGroup.EndAt)
+        {
+            Store.SelectedGroup.EndAt = Model.EndAt;
+        }
+    }
+    
+    private async Task OnDelete()
+    {
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
+        if (!isConfirmed || !IsEdit || Store.SelectedItem == null) return;
+        Db.StructureItems.Remove(Store.SelectedItem);
+        Store.SelectedItem = null;
+        await Db.SaveChangesAsync();
+        
+        Store.SidebarState = EntryStructureStore.SidebarStateEnum.Default;
+        await OnChangeDb.InvokeAsync();
+    }
+}

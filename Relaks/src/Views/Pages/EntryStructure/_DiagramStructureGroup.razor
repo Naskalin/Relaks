@@ -1,0 +1,75 @@
+﻿@using Relaks.Models.StructureModels
+@using Relaks.Models.Store
+@using Console = System.Console
+
+<div class="structure-group">
+    <div class="structure-group__el @(Group.Id.Equals(Store.SelectedGroup?.Id) ? "active": "")">
+        @if (Group.ParentId.HasValue)
+        {
+            <div data-structure-group-arrow-parent-id="sg-bottom-@Group.ParentId.ToString()"
+                 class="structure-group__dot structure-group__dot--top"></div>
+        }
+        @if (Store.DiagramOptions.IsShowDates)
+        {
+            <div style="font-size: .8rem;">
+                <i class="las la-calendar la-lg me-1"></i>
+                @Group.StartAt.ToString("dd.MM.yyyy") - @Group.EndAt?.ToString("dd.MM.yyyy")
+            </div>   
+        }
+        <div class="structure-group__title" @onclick="@HandleGroupClick">
+            <span class="">@Group.Title @(Group.Items.Any() ? $"({Group.Items.Count})" : "")</span>
+            @if (!string.IsNullOrEmpty(Group.Description))
+            {
+                <Popover Content="@Group.Description">
+                    <i class="las la-comment ms-2 text-info" style="font-size: 1.4rem;"></i>
+                </Popover>
+            }
+        </div>
+        @if (GroupItems().Any())
+        {
+            <div class="structure-items mt-2">
+                @foreach (var item in GroupItems())
+                {
+                    <_DiagramStructureItem Item="@item" OnDiagramClick="@OnDiagramClick"/>
+                }
+            </div>   
+        }
+        @if (Group.Children.Any())
+        {
+            <div id="sg-bottom-@Group.Id.ToString()" class="structure-group__dot structure-group__dot--bottom"></div>
+        }
+    </div>
+    
+    @if (Group.Children.Any())
+    {
+        <div class="structure-group__child">
+            @foreach (var child in Group.Children)
+            {
+                <_DiagramStructureGroup Group="@child" OnDiagramClick="@OnDiagramClick"/>
+            }
+        </div>    
+    }
+</div>
+
+@code {
+    [CascadingParameter]
+    public EntryStructureStore Store { get; set; } = null!;
+    
+    [Parameter]
+    public StructureGroup Group { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<Tuple<StructureGroup?, StructureItem?>> OnDiagramClick { get; set; }
+
+    private Task HandleGroupClick() => OnDiagramClick.InvokeAsync(new Tuple<StructureGroup?, StructureItem?>(Group, null));
+
+    private List<StructureItem> GroupItems()
+    {
+        return Store.DiagramOptions.ShowItemsType switch
+        {
+            StructureDiagramOptions.ShowItemsTypeEnum.Some => Group.Items.Take(Store.DiagramOptions.LimitStructureItems).ToList(),
+            StructureDiagramOptions.ShowItemsTypeEnum.Show => Group.Items,
+            _ => new List<StructureItem>()
+            };
+    }
+}

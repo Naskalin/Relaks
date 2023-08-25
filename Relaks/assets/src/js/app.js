@@ -4,6 +4,7 @@ import './_file_download.js';
 import './_dataset_sortable.js';
 import './_textarea_autosize.js';
 import './_scroll_to.js';
+import './_draggable_zone.js';
 
 window.SetThemeColorMode = (modeName) => {
     try {

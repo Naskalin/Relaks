@@ -75,10 +75,10 @@ public partial class DatabaseSeeder
         entry.CreatedAt = Faker.Date.Past();
         entry.UpdatedAt = Faker.Date.Past();
 
-        var startAt = Faker.Date.Past(120, DateTime.UtcNow.AddYears(-10));
-        var diffYears = (int) Math.Floor(Math.Abs((startAt - DateTime.UtcNow).TotalDays) / 365);
+        var startAt = Faker.Date.Past(120, DateTime.Now.AddYears(-10));
+        var diffYears = (int) Math.Floor(Math.Abs((startAt - DateTime.Now).TotalDays) / 365);
         if (diffYears < 1) diffYears = 1;
-        var endAt = Faker.Date.Past(diffYears, DateTime.UtcNow);
+        var endAt = Faker.Date.Past(diffYears, DateTime.Now);
 
         if (Faker.Random.Number(1, 5) >= 3)
         {

@@ -1,6 +1,7 @@
 ﻿@page "/entries/{entryId:guid}/structure"
 
 @using Relaks.Database
+@using Relaks.Database.Repositories
 @using Relaks.Models
 @using Relaks.Models.Store
 
@@ -8,18 +9,9 @@
 
 <EntryProfileLayout EntryId="@EntryId">
     <EntryProfileTabs EntryId="@EntryId"/>
-    <MyTitle>
-        <ChildContent>Структура @(Store.Discriminator.Equals(nameof(ECompany)) ? "компании" : "встречи")</ChildContent>
-        <EndTitle>
-            <a href="@($"/entries/{EntryId}/structure/new-group")" class="btn btn-primary">
-                <i class="las la-plus-circle la-lg me-1"></i>
-                @Resources.Action.Add структуру
-            </a>
-        </EndTitle>
-    </MyTitle>
     
     <CascadingValue Value="@Store">
-        
+        <_StructureDiagram/>
     </CascadingValue>
 </EntryProfileLayout>
 
@@ -27,11 +19,20 @@
     [Parameter]
     public Guid EntryId { get; set; }
 
-    private EntryStructureStore Store { get; set; } = new();
+    private EntryStructureStore Store { get; set; } = null!;
 
     protected override void OnParametersSet()
     {
-        Store.Discriminator = Db.BaseEntries.Where(x => x.Id.Equals(EntryId)).Select(x => x.Discriminator).First();
+        Store = new EntryStructureStore(Db)
+        {
+            Req = new StructureGroupListRequest()
+            {
+                EntryId = EntryId,
+            },
+            Discriminator = Db.BaseEntries.Where(x => x.Id.Equals(EntryId)).Select(x => x.Discriminator).First()
+        };
+        
+        Store.FindStructure();
     }
 
 }
