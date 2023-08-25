@@ -40,7 +40,7 @@
     </div>
 
     <div class="mb-3">
-        <label for="@_guids()[nameof(Model.Title)]" class="form-label">Название</label>
+        <label for="@_guids()[nameof(Model.Title)]" class="form-label">Должность</label>
         <InputText @bind-Value="@Model.Title" class="form-control" id="@_guids()[nameof(Model.Title)]" maxlength="150"/>
         <ValidationMessage For="@(() => Model.Title)"/>
     </div>

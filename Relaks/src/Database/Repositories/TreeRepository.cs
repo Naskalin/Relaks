@@ -15,4 +15,30 @@ public static class TreeRepository
     
         return all.Where(c => c.ParentId.Equals(null)).ToList();
     }
+    
+    // public static List<(string Title, Guid Value, int Level)> ToTreeSelect<TEntity>(
+    //     this List<ITree<TEntity>> tree,
+    //     List<(string Title, Guid Value, int Level)>? result = null, int? level = null)
+    //     where TEntity : class, ITree<TEntity>
+    // {
+    //     result ??= new();
+    //     level = level.HasValue ? level.Value + 1 : 0;
+    //
+    //     var dashes = new List<string>();
+    //     for (int i = 0; i < level.Value; i++)
+    //     {
+    //         dashes.Add("—");
+    //     }
+    //
+    //     var beforeTitle = string.Join(" ", dashes);
+    //     if (dashes.Any()) beforeTitle += " ";
+    //
+    //     foreach (var category in tree)
+    //     {
+    //         result.Add((beforeTitle + category.Title, category.Id, level.Value));
+    //         category.Children.ToTreeSelect<TEntity>(result, level);
+    //     }
+    //
+    //     return result;
+    // }
 }

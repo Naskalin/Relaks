@@ -4,6 +4,7 @@
 @using Relaks.Utils.Extensions
 @using Console = System.Console
 @using Relaks.Database
+@using Relaks.Database.Repositories
 @using Relaks.Managers
 
 @inject AppDbContext Db;
@@ -34,12 +35,25 @@
             <InputDate @bind-Value="@Model.EndAt" class="form-control"/>
         </div>
     </div>
+    
+      <div class="mb-3">
+          <label for="@_guids()[nameof(Model.ParentId)]" class="form-label">Родитель</label>
+          <InputSelect @bind-Value="Model.ParentId" class="form-select">
+              <option value="">(Без родителя)</option>
+              @foreach (var item in Store.StructureGroups.ToTreeSelect())
+              {
+                  <option value="@item.Value">@item.Title</option>
+              }
+          </InputSelect>
+          <ValidationMessage For="@(() => Model.ParentId)"/>
+      </div>
 
     <div class="mb-3">
         <label for="@_guids()[nameof(Model.Title)]" class="form-label">Название группы *</label>
         <InputText @bind-Value="@Model.Title" class="form-control" required="required" id="@_guids()[nameof(Model.Title)]" maxlength="150"/>
         <ValidationMessage For="@(() => Model.Title)"/>
     </div>
+    
 
     <div class="mb-3">
         <label for="@_guids()[nameof(Model.Description)]" class="form-label">Описание группы</label>
@@ -84,6 +98,7 @@
         {nameof(Model.Description), Guid.NewGuid()},
         {nameof(Model.StartAt), Guid.NewGuid()},
         {nameof(Model.EndAt), Guid.NewGuid()},
+        {nameof(Model.ParentId), Guid.NewGuid()},
     };
 
     private async Task HandleReturn()
