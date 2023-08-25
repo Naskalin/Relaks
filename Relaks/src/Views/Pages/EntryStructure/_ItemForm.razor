@@ -125,10 +125,27 @@
             Model.EntryId = EntryIds.First();
             Db.StructureItems.Add(Model);
         }
+        
+        SyncGroupLifetime();
     
         await Db.SaveChangesAsync();
         Store.SidebarState = EntryStructureStore.SidebarStateEnum.Default;
         await OnChangeDb.InvokeAsync();
+    }
+
+    /// Если добавили айтем который начинается раньше группы или закончивается позже группы,
+    /// то время жизни группы обновляется 
+    private void SyncGroupLifetime()
+    {
+        ArgumentNullException.ThrowIfNull(Store.SelectedGroup);
+        if (Model.StartAt < Store.SelectedGroup.StartAt)
+        {
+            Store.SelectedGroup.StartAt = Model.StartAt;
+        }
+        if (Store.SelectedGroup.EndAt != null && Model.EndAt > Store.SelectedGroup.EndAt)
+        {
+            Store.SelectedGroup.EndAt = Model.EndAt;
+        }
     }
     
     private async Task OnDelete()
