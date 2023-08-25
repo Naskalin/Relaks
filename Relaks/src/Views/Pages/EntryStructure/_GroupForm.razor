@@ -21,28 +21,32 @@
 </div>
 
 @* <Dump Data="@Model"/> *@
-<EditForm Model="@Model" OnSubmit="@HandleSubmit">
+<EditForm Model="@Model" OnValidSubmit="@HandleSubmit">
+    <FluentValidationValidator DisableAssemblyScanning="@true"/>
+        <ValidationSummary/>
     <div class="row mb-3">
         <div class="col">
-                <label for="@_guids()[nameof(Model.StartAt)]" class="form-label">От *</label>
-                <InputDate @bind-Value="@Model.StartAt" class="form-control"/>
+            <label for="@_guids()[nameof(Model.StartAt)]" class="form-label">От *</label>
+            <InputDate @bind-Value="@Model.StartAt" class="form-control"/>
         </div>
         <div class="col">
-                <label for="@_guids()[nameof(Model.EndAt)]" class="form-label">До</label>
-                <InputDate @bind-Value="@Model.EndAt" class="form-control"/>
+            <label for="@_guids()[nameof(Model.EndAt)]" class="form-label">До</label>
+            <InputDate @bind-Value="@Model.EndAt" class="form-control"/>
         </div>
     </div>
-    
+
     <div class="mb-3">
         <label for="@_guids()[nameof(Model.Title)]" class="form-label">Название группы *</label>
-        <InputText @bind-Value="@Model.Title" class="form-control" required="required" id="@_guids()[nameof(Model.Title)]"/>
+        <InputText @bind-Value="@Model.Title" class="form-control" required="required" id="@_guids()[nameof(Model.Title)]" maxlength="150"/>
+        <ValidationMessage For="@(() => Model.Title)"/>
     </div>
 
     <div class="mb-3">
         <label for="@_guids()[nameof(Model.Description)]" class="form-label">Описание группы</label>
         <MyTextarea id="@_guids()[nameof(Model.Description)]"
                     @bind-Value="@Model.Description"
-                    maxlength="255"/>
+                    maxlength="300"/>
+        <ValidationMessage For="@(() => Model.Description)"/>
     </div>
 
     <div class="mb-3">

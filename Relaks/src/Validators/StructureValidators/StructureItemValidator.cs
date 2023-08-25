@@ -11,5 +11,14 @@ public class StructureItemValidator : AbstractValidator<StructureItem>
         RuleFor(x => x.Description).MaximumLength(300);
         RuleFor(x => x.EntryId).NotEmpty();
         RuleFor(x => x.GroupId).NotEmpty();
+        RuleFor(x => x.EndAt).Must((item, _) =>
+        {
+            if (item.EndAt != null)
+            {
+                return item.EndAt >= item.StartAt;
+            }
+
+            return true;
+        }).WithMessage("Дата окончания должна быть более или равна дате начала");
     }
 }

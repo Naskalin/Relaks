@@ -3,6 +3,7 @@
 @using Relaks.Mappers
 @using Relaks.Utils.Extensions
 @using Relaks.Database
+@using Console = System.Console
 
 @inject AppDbContext Db;
 @inject IJSRuntime JsRuntime;
@@ -19,7 +20,9 @@
 </div>
 
 @* <Dump Data="@Model"/> *@
-<EditForm Model="@Model" OnSubmit="@HandleSubmit">
+<EditForm Model="@Model" OnValidSubmit="@HandleSubmit">
+    <FluentValidationValidator DisableAssemblyScanning="@true"/>
+    <ValidationSummary/>
     <div class="row mb-3">
         <div class="col">
             <label for="@_guids()[nameof(Model.StartAt)]" class="form-label">От *</label>
@@ -30,21 +33,24 @@
             <InputDate @bind-Value="@Model.EndAt" class="form-control"/>
         </div>
     </div>
-    
+
     <div class="mb-3">
-        <SelectEntry @bind-EntryIds="@EntryIds"/>
+        <SelectEntry @bind-EntryIds="@EntryIds" @bind-EntryIds:after="@OnAfterSelectedEntry" Label="Объединение *"/>
+        <ValidationMessage For="@(() => Model.EntryId)"/>
     </div>
 
     <div class="mb-3">
         <label for="@_guids()[nameof(Model.Title)]" class="form-label">Название</label>
-        <InputText @bind-Value="@Model.Title" class="form-control" id="@_guids()[nameof(Model.Title)]"/>
+        <InputText @bind-Value="@Model.Title" class="form-control" id="@_guids()[nameof(Model.Title)]" maxlength="150"/>
+        <ValidationMessage For="@(() => Model.Title)"/>
     </div>
 
     <div class="mb-3">
         <label for="@_guids()[nameof(Model.Description)]" class="form-label">Описание</label>
         <MyTextarea id="@_guids()[nameof(Model.Description)]"
                     @bind-Value="@Model.Description"
-                    maxlength="255"/>
+                    maxlength="300"/>
+        <ValidationMessage For="@(() => Model.Description)"/>
     </div>
 
     <div class="mb-3">
@@ -85,6 +91,14 @@
         {nameof(Model.StartAt), Guid.NewGuid()},
         {nameof(Model.EndAt), Guid.NewGuid()},
     };
+
+    private void OnAfterSelectedEntry()
+    {
+        if (EntryIds.Any())
+        {
+            Model.EntryId = EntryIds.First();
+        }  
+    }
     
     private async Task HandleReturn()
     {
@@ -115,19 +129,17 @@
     
     private async Task HandleSubmit()
     {
-        if (IsEdit && Store.SelectedItem != null)
+        if (IsEdit)
         {
-            Model.MapTo(Store.SelectedItem);
-            Store.SelectedItem.EntryId = EntryIds.First();
+            Model.MapTo(Store.SelectedItem!);
         }
         else
         {
-            Model.EntryId = EntryIds.First();
             Db.StructureItems.Add(Model);
         }
         
         SyncGroupLifetime();
-    
+        
         await Db.SaveChangesAsync();
         Store.SidebarState = EntryStructureStore.SidebarStateEnum.Default;
         await OnChangeDb.InvokeAsync();
