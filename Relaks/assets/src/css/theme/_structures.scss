@@ -1,19 +1,22 @@
 ﻿.structures-container {
   border: 1px solid var(--bs-border-color);
   border-radius: var(--bs-border-radius);
-  overflow: scroll;
+  overflow: hidden;
   
   // ограничивает выход стрелок за границу контейнера
   clip-path: inset(0 0 0 0);
+
+  position: relative;
+  height: 1000px;
+  cursor: move;
 }
 
 .structures-zone {
   display: flex;
   transform-origin: center;
   gap: 1rem;
-  //width: 100%;
-  //min-width: 100%;
   margin: 1.5rem;
+  position: absolute;
 }
 
 .structure-group {

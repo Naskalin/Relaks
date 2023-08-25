@@ -53,12 +53,20 @@ let storeArrowEls = [];
 window.RemoveStructureArrows = () => {
     storeArrowEls.forEach(arrow => arrow.clear());
 }
+
+function initializeStructureMoveZone() {
+    const containerEl = document.getElementById('js-structures-container');
+    const zoneEl = document.getElementById('js-structures-zone');
+    if (!containerEl || !zoneEl) throw new Error('Move zone not initialized: js-structures-container or js-structures-zone not found.');
+    new Draggable (zoneEl);
+}
+
 // https://github.com/sasza2/arrows
 window.InitializeStructureArrows = () => {
     // очищаем временное хранилище стрелок
     storeArrowEls = [];
     const structureContainerEl = document.getElementById('js-structures-container');
-
+    initializeStructureMoveZone();
     // initialize arrows
     const childEls = document.querySelectorAll('[data-structure-group-arrow-parent-id]')
     childEls.forEach(childEl => {

@@ -24,7 +24,7 @@
 @* <Dump Data="@Model"/> *@
 <EditForm Model="@Model" OnValidSubmit="@HandleSubmit">
     <FluentValidationValidator DisableAssemblyScanning="@true"/>
-        <ValidationSummary/>
+    <ValidationSummary/>
     <div class="row mb-3">
         <div class="col">
             <label for="@_guids()[nameof(Model.StartAt)]" class="form-label">От *</label>
@@ -113,6 +113,7 @@
         if (IsEdit)
         {
             Store.SelectedGroup!.MapTo(Model);
+            Model.Id = Store.SelectedGroup!.Id;
         }
         else
         {

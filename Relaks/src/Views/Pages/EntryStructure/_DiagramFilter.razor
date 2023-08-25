@@ -44,7 +44,7 @@
     @if (Store.DiagramOptions.ShowItemsType.Equals(StructureDiagramOptions.ShowItemsTypeEnum.Some))
     {
         <div class="col">
-            <input type="range" min="1" max="10" step="1" 
+            <input type="range" min="1" max="5" step="1" 
                    value="@Store.DiagramOptions.LimitStructureItems" 
                    @oninput="@HandleChangeLimitStructureItems" 
                    class="form-range"/>
@@ -87,7 +87,7 @@
     </div>   
 }
 
-<div class="text-secondary small mt-5">
+<div class="text-secondary small mt-4">
     <i class="las la-info-circle"></i>
     Предпросмотр объединений и групп при нажатии на них в диаграмме.
 </div>
