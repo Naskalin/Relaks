@@ -7,7 +7,7 @@
 
 <EntryProfileLayout EntryId="@EntryId">
     <EntryProfileTabs EntryId="@EntryId"/>
-    <MyTitle>
+    <MyTitle ShowEndTitle="@true">
         <ChildContent>@Resources.Entity.ResourceManager.GetString($"{Discriminator}_About")</ChildContent>
         <EndTitle>
             <a href="@($"/entries/{EntryId}/eidataset/new")" class="btn btn-primary">

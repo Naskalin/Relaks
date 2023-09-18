@@ -1,5 +1,5 @@
 ﻿<div class="row justify-content-between align-items-center mb-3">
-    @if (BeforeTitle != null)
+    @if (ShowBeforeTitle == true)
     {
         <div class="col-auto">@BeforeTitle</div>
     }
@@ -10,7 +10,7 @@
             <h2 class="subtitle h4 text-muted">@Subtitle</h2>
         }
     </div>
-    @if (EndTitle != null)
+    @if (ShowEndTitle == true)
     {
         <div class="col-auto">@EndTitle</div>
     }
@@ -29,6 +29,12 @@
     
     [Parameter]
     public RenderFragment? EndTitle { get; set; }
+    
+    [Parameter]
+    public bool? ShowEndTitle { get; set; }
+    
+    [Parameter]
+    public bool? ShowBeforeTitle { get; set; }
     
     [Parameter]
     public bool? IsCentered { get; set; }

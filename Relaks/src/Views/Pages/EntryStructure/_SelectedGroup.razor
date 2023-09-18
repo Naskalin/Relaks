@@ -37,16 +37,17 @@
 
 @if (Group.Items.Any())
 {
-    <div class="d-flex flex-column gap-3">
+    <div class="d-flex flex-column gap-4">
         @foreach (var item in Group.Items)
         {
             <div @onclick="@(() => OnItemClick.InvokeAsync(item))">
                 <EntryInlineItem EntryId="@item.EntryId">
                     <AfterBody>
+                        <div class="border-top" style="margin: .25rem 0 .15rem; width: 100%"></div>
+                        <small>@item.StartAt.ToString("dd.MM.yyyy") - @item.EndAt?.ToString("dd.MM.yyyy")</small>
                         @if (!string.IsNullOrEmpty(item.Title))
                         {
-                            <div class="border-top" style="width: 80%; margin: .35rem 0;"></div>
-                            <div class="bg-secondary-subtle p-1 small rounded-1 mt-1">
+                            <div class="small mt-1">
                                 @item.Title
                             </div>
                         }

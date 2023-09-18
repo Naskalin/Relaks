@@ -8,10 +8,10 @@
 @inject IJSRuntime JsRuntime;
 @inject AppDbContext Db;
 
-<MyTitle>
+<MyTitle ShowEndTitle="true">
     <ChildContent>Структура</ChildContent>
     <EndTitle>
-        <button type="button" 
+        <button type="button"
                 @onclick="@(() => Store.SidebarState = EntryStructureStore.SidebarStateEnum.GroupCreate)"
                 disabled="@(Store.SidebarState.Equals(EntryStructureStore.SidebarStateEnum.GroupCreate))"
                 class="btn btn-primary">
@@ -20,6 +20,22 @@
         </button>
     </EndTitle>
 </MyTitle>
+
+@if (Store.BackToConnectionsEntryId.HasValue)
+{
+    <div class="border-dashed border-warning p-2 mb-3">
+        <EntryInlineItem EntryId="@Store.BackToConnectionsEntryId.Value">
+            <AfterBody>
+                <div class="mt-1">
+                    <a href="/entries/@Store.BackToConnectionsEntryId?.ToString()/connections" class="btn btn-secondary btn-sm">
+                        <i class="las la-angle-left me-1"></i>
+                        Вернуться в связи
+                    </a>
+                </div>
+            </AfterBody>
+        </EntryInlineItem>
+    </div>
+}
 
 <div class="row">
     <div class="col-9">
