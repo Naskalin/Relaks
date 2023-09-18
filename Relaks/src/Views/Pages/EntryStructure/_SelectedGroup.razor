@@ -1,4 +1,5 @@
 ﻿@using Relaks.Models.StructureModels
+@using Relaks.Models.Store
 <div class="row align-items-center mb-3 justify-content-between">
     <div class="col-auto">
         <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@(() => OnClickReturn.InvokeAsync())" title="Вернуться">
@@ -40,7 +41,7 @@
     <div class="d-flex flex-column gap-4">
         @foreach (var item in Group.Items)
         {
-            <div @onclick="@(() => OnItemClick.InvokeAsync(item))">
+            <div @onclick="@(() => OnItemClick.InvokeAsync(item))" class="p-2 @(Store.BackToConnectionsStructureItem != null && Store.BackToConnectionsStructureItem.Id.Equals(item.Id) ? "border border-warning bg-warning bg-opacity-10" : "")">
                 <EntryInlineItem EntryId="@item.EntryId">
                     <AfterBody>
                         <div class="border-top" style="margin: .25rem 0 .15rem; width: 100%"></div>
@@ -60,6 +61,8 @@
 
 
 @code {
+    [CascadingParameter]
+    public EntryStructureStore Store { get; set; } = null!;
 
     [Parameter]
     public StructureGroup Group { get; set; } = null!;

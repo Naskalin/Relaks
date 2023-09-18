@@ -62,7 +62,7 @@
     {
         var arr = new List<string>();
         if (Item.Id.Equals(Store.SelectedItem?.Id)) arr.Add("active");
-        if (Store.BackToConnectionsEntryId != null && Item.EntryId.Equals(Store.BackToConnectionsEntryId)) arr.Add("highlight");
+        if (Store.BackToConnectionsStructureItem != null && Item.Id.Equals(Store.BackToConnectionsStructureItem.Id)) arr.Add("highlight");
         
         ElementClasses = string.Join(" ", arr);
     }

@@ -21,13 +21,13 @@
     </EndTitle>
 </MyTitle>
 
-@if (Store.BackToConnectionsEntryId.HasValue)
+@if (Store.BackToConnectionsStructureItem != null)
 {
     <div class="p-2 mb-3 bg-warning bg-opacity-25 rounded" style="">
-        <EntryInlineItem EntryId="@Store.BackToConnectionsEntryId.Value">
+        <EntryInlineItem EntryId="@Store.BackToConnectionsStructureItem.EntryId">
             <AfterBody>
                 <div class="mt-1">
-                    <a href="/entries/@Store.BackToConnectionsEntryId?.ToString()/connections" class="btn btn-secondary btn-sm">
+                    <a href="/entries/@Store.BackToConnectionsStructureItem?.EntryId.ToString()/connections" class="btn btn-secondary btn-sm">
                         <i class="las la-angle-left me-1"></i>
                         Вернуться в связи
                     </a>

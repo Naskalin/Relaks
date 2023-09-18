@@ -3,6 +3,7 @@
 @using Relaks.Database
 @using Relaks.Database.Repositories
 @using Relaks.Models.Store
+@using Microsoft.EntityFrameworkCore
 
 @inject AppDbContext Db;
 
@@ -20,7 +21,7 @@
     
     [SupplyParameterFromQuery]
     [Parameter]
-    public Guid? BackToConnectionsEntryId { get; set; }
+    public Guid? BackToConnectionsStructureItem { get; set; }
 
     private EntryStructureStore Store { get; set; } = null!;
 
@@ -33,10 +34,22 @@
                 EntryId = EntryId,
             },
             Discriminator = Db.BaseEntries.Where(x => x.Id.Equals(EntryId)).Select(x => x.Discriminator).First(),
-            BackToConnectionsEntryId = BackToConnectionsEntryId
         };
-        
+
         Store.FindStructure();
+        
+        if (BackToConnectionsStructureItem != null)
+        {
+            Store.BackToConnectionsStructureItem = Db
+                .StructureItems
+                .Include(x => x.Entry)
+                .Include(structureItem => structureItem.Group)
+                .FirstOrDefault(x => x.Id.Equals(BackToConnectionsStructureItem));
+            if (Store.BackToConnectionsStructureItem != null)
+            {
+                Store.SelectedGroup = Store.BackToConnectionsStructureItem.Group;
+            }
+        }
     }
 
 }

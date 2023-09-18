@@ -6,8 +6,10 @@
     <tbody>
     <tr>
         <td class="text-center align-middle">
-            <a href="/entries/@StructureItem.Group.EntryId.ToString()/structure?@nameof(EntryStructureStore.BackToConnectionsEntryId)=@Store.EntryId.ToString()" 
-               class="btn btn-sm btn-secondary">Перейти <i class="las la-angle-right"></i></a>
+            <a href="/entries/@StructureItem.Group.EntryId.ToString()/structure?@nameof(EntryStructureStore.BackToConnectionsStructureItem)=@StructureItem.Id.ToString()"
+               class="btn btn-sm btn-secondary">
+                Перейти <i class="las la-angle-right"></i>
+            </a>
         </td>
         <td>
             <EntryInlineItem EntryId="@StructureItem.Group.EntryId"/>

@@ -43,7 +43,7 @@ public class EntryStructureStore
     /// Переход на страницу был осуществлён со страницы /connections
     /// Нужно некоторымы способами оповестить об этом
     /// </summary>
-    public Guid? BackToConnectionsEntryId { get; set; }
+    public StructureItem? BackToConnectionsStructureItem { get; set; }
 
     public EntryStructureStore(AppDbContext db)
     {
