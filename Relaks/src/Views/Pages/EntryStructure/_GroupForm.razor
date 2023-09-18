@@ -51,6 +51,7 @@
     <div class="mb-3">
         <label for="@_guids()[nameof(Model.Title)]" class="form-label">Название группы *</label>
         <InputText @bind-Value="@Model.Title" class="form-control" required="required" id="@_guids()[nameof(Model.Title)]" maxlength="150"/>
+        <div class="form-text">Это может быть, например: менеджеры</div>
         <ValidationMessage For="@(() => Model.Title)"/>
     </div>
     

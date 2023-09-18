@@ -9,7 +9,7 @@
 @inject AppDbContext Db;
 
 <MyTitle>
-    <ChildContent>Структура @(Store.Discriminator.Equals(nameof(ECompany)) ? "компании" : "встречи")</ChildContent>
+    <ChildContent>Структура</ChildContent>
     <EndTitle>
         <button type="button" 
                 @onclick="@(() => Store.SidebarState = EntryStructureStore.SidebarStateEnum.GroupCreate)"
@@ -38,9 +38,6 @@
     </div>
     <div class="col-3">
         <div style="position: sticky; top: 100px;">
-            @* <Dump Data="@Store.SidebarState"/> *@
-            @* <Dump Data="@Store.DiagramOptions"/> *@
-            
             @switch (Store.SidebarState)
             {
                 case EntryStructureStore.SidebarStateEnum.Default:
