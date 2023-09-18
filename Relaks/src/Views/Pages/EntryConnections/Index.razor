@@ -1,0 +1,60 @@
+﻿@page "/entries/{entryId:guid}/connections"
+
+@using Relaks.Database
+@using Relaks.Models.Store
+
+@inject AppDbContext Db;
+
+<EntryProfileLayout EntryId="@EntryId">
+    <EntryProfileTabs EntryId="@EntryId"/>
+    
+    <MyTitle>
+        <ChildContent>Связи</ChildContent>
+        @* <EndTitle> *@
+        @*     <button type="button"  *@
+        @*             @onclick="@(() => Store.SidebarState = EntryStructureStore.SidebarStateEnum.GroupCreate)" *@
+        @*             disabled="@(Store.SidebarState.Equals(EntryStructureStore.SidebarStateEnum.GroupCreate))" *@
+        @*             class="btn btn-primary"> *@
+        @*         <i class="las la-plus-circle la-lg me-1"></i> *@
+        @*         @Resources.Action.Add группу *@
+        @*     </button> *@
+        @* </EndTitle> *@
+    </MyTitle>
+    
+    <CascadingValue Value="@Store">
+        <h5 class="mb-4">Связи со структурами</h5>
+        @foreach (var sItem in Store.StructureItems)
+        {
+            <_StructureRelationItem StructureItem="@sItem"/>
+        }
+    </CascadingValue>
+</EntryProfileLayout>
+
+@code {
+    [Parameter]
+    public Guid EntryId { get; set; }
+
+    private EntryConnectionStore Store { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        Store = new EntryConnectionStore(Db)
+        {
+            EntryId = EntryId,
+        };
+        
+        Store.FindStructureItems();
+        Store.FindStructureGroupTitles();
+    // Store = new EntryStructureStore(Db)
+    // {
+    //     Req = new StructureGroupListRequest()
+    //     {
+    //         EntryId = EntryId,
+    //     },
+    //     Discriminator = Db.BaseEntries.Where(x => x.Id.Equals(EntryId)).Select(x => x.Discriminator).First()
+    // };
+    //
+    // Store.FindStructure();
+    }
+
+}

@@ -4,12 +4,9 @@
 <ul class="nav nav-tabs mb-3">
     @foreach (var tab in _tabs)
     {
-        if (tab.Discriminators == null || tab.Discriminators.Contains(Entry.Discriminator))
-        {
-            <li class="nav-item">
-                <NavLink href="@($"/entries/{EntryId}{tab.UrlPart}")" class="nav-link"><b>@tab.Title</b></NavLink>
-            </li>   
-        }
+        <li class="nav-item">
+            <NavLink href="@($"/entries/{EntryId}{tab.UrlPart}")" class="nav-link"><b>@tab.Title</b></NavLink>
+        </li>   
     }
 </ul>
 
@@ -20,15 +17,16 @@
     [CascadingParameter]
     public BaseEntry Entry { get; set; } = null!;
 
-    private List<(string UrlPart, string Title, List<string>? Discriminators)> _tabs = new();
+    private List<(string UrlPart, string Title)> _tabs = new();
 
     protected override void OnParametersSet()
     {
         _tabs = new() 
         {
-            (UrlPart: "/info", Title: Resources.Entity.ResourceManager.GetString($"{Entry.Discriminator}_About") ?? "???", Discriminators: null),
-            (UrlPart: "/structure", Title: "Структура", Discriminators: null),
-            (UrlPart: "/files", Title: "Файлы", Discriminators: null),
+            (UrlPart: "/info", Title: Resources.Entity.ResourceManager.GetString($"{Entry.Discriminator}_About") ?? "???"),
+            (UrlPart: "/connections", Title: "Связи"),
+            (UrlPart: "/structure", Title: "Структура"),
+            (UrlPart: "/files", Title: "Файлы"),
         };
     }
 

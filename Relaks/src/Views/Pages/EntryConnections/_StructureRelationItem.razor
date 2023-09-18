@@ -1,0 +1,129 @@
+﻿@using Relaks.Models.Store
+@using Relaks.Models.StructureModels
+@using LinqKit
+
+<table class="table table-bordered mb-3">
+    <tbody>
+    <tr>
+        <td class="text-center align-middle">
+            <a href="/entries/@StructureItem.Group.EntryId.ToString()/structure?fromEntryId=@Store.EntryId.ToString()" 
+               class="btn btn-sm btn-secondary">Перейти <i class="las la-angle-right"></i></a>
+        </td>
+        <td>
+            <EntryInlineItem EntryId="@StructureItem.Group.EntryId"/>
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 150px">
+            группа
+        </td>
+        <td>
+            @if (BreadCrumbs != StructureItem.Group.Title)
+            {
+                <div class="form-text">@BreadCrumbs</div>
+            }
+            <div class="fw-semibold">@StructureItem.Group.Title</div>
+
+            @if (!string.IsNullOrEmpty(StructureItem.Group.Description))
+            {
+                <div class="form-text">@StructureItem.Group.Description</div>
+            }
+            <div style="font-size: .8rem;">
+                @StructureItem.Group.StartAt.ToString("dd.MM.yyyy") - @StructureItem.Group.EndAt?.ToString("dd.MM.yyyy")
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 150px">
+            должность
+        </td>
+        <td>
+            <div style="font-size: .8rem;">
+                @StructureItem.StartAt.ToString("dd.MM.yyyy") - @StructureItem.EndAt?.ToString("dd.MM.yyyy")
+            </div>
+            @if (!string.IsNullOrEmpty(StructureItem.Title))
+            {
+                <span class="fw-semibold">@StructureItem.Title</span>
+            }
+            @if (!string.IsNullOrEmpty(StructureItem.Description))
+            {
+                <div class="form-text">@StructureItem.Description</div>   
+            }
+        </td>
+    </tr>
+    </tbody>
+</table>
+@* <div class="mb-4"> *@
+@*     $1$ <div class="mb-1"> #1# *@
+@*     $1$     <EntryInlineItem EntryId="@StructureItem.Group.EntryId"/> #1# *@
+@*     $1$ </div> #1# *@
+@*     $1$ <div class="mb-1"> #1# *@
+@*     $1$     <span class="text-muted me-2">Группа</span> #1# *@
+@*     $1$     <span class="fw-semibold" title="@BreadCrumbs">@StructureItem.Group.Title</span> #1# *@
+@*     $1$     <span style="font-size: .8rem;"> #1# *@
+@*     $1$         @StructureItem.Group.StartAt.ToString("dd.MM.yyyy") - @StructureItem.Group.EndAt?.ToString("dd.MM.yyyy") #1# *@
+@*     $1$     </span> #1# *@
+@*     $1$     @if (!string.IsNullOrEmpty(StructureItem.Group.Description)) #1# *@
+@*     $1$     { #1# *@
+@*     $1$         <Popover Content="@StructureItem.Group.Description"> #1# *@
+@*     $1$             <i class="las la-comment la-lg"></i> #1# *@
+@*     $1$         </Popover> #1# *@
+@*     $1$     } #1# *@
+@*     $1$ </div> #1# *@
+@* *@
+@*     <div class="mb-1"> *@
+@*         <span class="text-muted me-2">Должность</span> *@
+@*         <span style="font-size: .8rem;"> *@
+@*             @StructureItem.StartAt.ToString("dd.MM.yyyy") - @StructureItem.EndAt?.ToString("dd.MM.yyyy") *@
+@*         </span> *@
+@*         @if (!string.IsNullOrEmpty(StructureItem.Title)) *@
+@*         { *@
+@*             <span class="fw-semibold">@StructureItem.Title</span> *@
+@*         } *@
+@*         @if (!string.IsNullOrEmpty(StructureItem.Description)) *@
+@*         { *@
+@*             <Popover Content="@StructureItem.Description"> *@
+@*                 <i class="las la-comment la-lg"></i> *@
+@*             </Popover> *@
+@*         } *@
+@*     </div> *@
+@* </div> *@
+
+@code {
+
+    [CascadingParameter]
+    public EntryConnectionStore Store { get; set; } = null!;
+
+    [Parameter]
+    public StructureItem StructureItem { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        BreadCrumbs = GetStructureBreadcrumbs();
+    }
+
+    private string BreadCrumbs { get; set; } = null!;
+
+    private string GetStructureBreadcrumbs()
+    {
+        var treePathTitles = new List<string>();
+
+        StructureItem.Group.TreePath.Split("/").ForEach(x =>
+        {
+            if (Guid.TryParse(x, out var treePathGuid))
+            {
+                if (Store.StructureGroupTitles.ContainsKey(treePathGuid))
+                {
+                    treePathTitles.Add(Store.StructureGroupTitles[treePathGuid]);
+                }
+                else
+                {
+                    treePathTitles.Add("?");
+                }
+            }
+        });
+
+        return string.Join(" / ", treePathTitles);
+    }
+
+}
