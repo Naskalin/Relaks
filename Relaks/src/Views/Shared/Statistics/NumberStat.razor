@@ -1,0 +1,30 @@
+﻿@using LinqKit
+<div @attributes="@InputAttributes.Where(x => !x.Key.Equals("class")).ToDictionary(x => x.Key, x => x.Value)"
+     class="@string.Join(" ", ElClasses)">
+    
+    <div class="h4 border-b">@Label</div>
+    <div class="h3">@Number</div>
+</div>
+
+@code {
+    [Parameter]
+    public string Label { get; set; } = null!;
+    
+    [Parameter]
+    public string Number { get; set; } = null!;
+    
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> InputAttributes { get; set; } = new();
+
+    private List<string?> ElClasses { get; set; } = new() {"p-2", "rounded", "text-center"};
+
+    protected override void OnParametersSet()
+    {
+        InputAttributes.Where(x => x.Key.Equals("class")).ForEach(x =>
+        {
+            ElClasses.Add(x.Value.ToString());
+            
+        });
+    }
+
+}
