@@ -41,8 +41,9 @@
     //font-weight: 500;
     padding: .25rem;
     border-radius: var(--bs-border-radius);
+    background: rgba(var(--bs-secondary-bg-rgb), .8);
     &:hover {
-      background: rgba(var(--bs-secondary-bg-rgb), 1);
+      background: rgba(var(--bs-primary-rgb), .2);
     }
   }
   &__child {
