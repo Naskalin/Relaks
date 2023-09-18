@@ -38,6 +38,12 @@ public class EntryStructureStore
     public List<StructureGroup> StructureGroups { get; set; } = new();
     public StructureGroupListRequest Req { get; set; } = new();
     public SidebarStateEnum SidebarState { get; set; } = SidebarStateEnum.Default;
+    
+    /// <summary>
+    /// Переход на страницу был осуществлён со страницы /connections
+    /// Нужно некоторымы способами оповестить об этом
+    /// </summary>
+    public Guid? BackToConnectionsEntryId { get; set; }
 
     public EntryStructureStore(AppDbContext db)
     {

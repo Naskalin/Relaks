@@ -17,6 +17,10 @@
 @code {
     [Parameter]
     public Guid EntryId { get; set; }
+    
+    [SupplyParameterFromQuery]
+    [Parameter]
+    public Guid? BackToConnectionsEntryId { get; set; }
 
     private EntryStructureStore Store { get; set; } = null!;
 
@@ -28,7 +32,8 @@
             {
                 EntryId = EntryId,
             },
-            Discriminator = Db.BaseEntries.Where(x => x.Id.Equals(EntryId)).Select(x => x.Discriminator).First()
+            Discriminator = Db.BaseEntries.Where(x => x.Id.Equals(EntryId)).Select(x => x.Discriminator).First(),
+            BackToConnectionsEntryId = BackToConnectionsEntryId
         };
         
         Store.FindStructure();

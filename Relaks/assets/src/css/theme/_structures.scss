@@ -92,11 +92,18 @@
     align-items: center;
     border-radius: var(--bs-border-radius);
     border: 1px solid transparent;
+    &.highlight {
+      border: 1px dashed var(--bs-warning);
+      background-color: rgba(var(--bs-warning-rgb), .1);
+    }
     &:hover {
       background: rgba(var(--bs-secondary-bg-rgb), 1);
     }
     &.active {
       border-color: var(--bs-primary);
     }
+  }
+  &__el.highlight>&__title {
+    color: var(--bs-warning);
   }
 }

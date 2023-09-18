@@ -6,7 +6,7 @@
     <tbody>
     <tr>
         <td class="text-center align-middle">
-            <a href="/entries/@StructureItem.Group.EntryId.ToString()/structure?fromEntryId=@Store.EntryId.ToString()" 
+            <a href="/entries/@StructureItem.Group.EntryId.ToString()/structure?@nameof(EntryStructureStore.BackToConnectionsEntryId)=@Store.EntryId.ToString()" 
                class="btn btn-sm btn-secondary">Перейти <i class="las la-angle-right"></i></a>
         </td>
         <td>
@@ -112,14 +112,7 @@
         {
             if (Guid.TryParse(x, out var treePathGuid))
             {
-                if (Store.StructureGroupTitles.ContainsKey(treePathGuid))
-                {
-                    treePathTitles.Add(Store.StructureGroupTitles[treePathGuid]);
-                }
-                else
-                {
-                    treePathTitles.Add("?");
-                }
+                treePathTitles.Add(Store.StructureGroupTitles.TryGetValue(treePathGuid, out var title) ? title : "?");
             }
         });
 

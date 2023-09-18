@@ -1,7 +1,10 @@
 ﻿@using Relaks.Models.StructureModels
 @using Relaks.Models.Store
 
-<div class="structure-items__el @(Item.Id.Equals(Store.SelectedItem?.Id) ? "active": "")" title="@Item.Entry.Name" @onclick="@HandleItemClick">
+<div class="structure-items__el @ElementClasses" 
+     title="@Item.Entry.Name" 
+     @onclick="@HandleItemClick"
+     >
     <div class="avatar-sm avatar-circle">
         @if (!string.IsNullOrEmpty(Item.Entry.Thumbnail))
         {
@@ -52,4 +55,16 @@
     public EventCallback<Tuple<StructureGroup?, StructureItem?>> OnDiagramClick { get; set; }
 
     private Task HandleItemClick() => OnDiagramClick.InvokeAsync(new Tuple<StructureGroup?, StructureItem?>(null, Item));
+
+    private string ElementClasses { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        var arr = new List<string>();
+        if (Item.Id.Equals(Store.SelectedItem?.Id)) arr.Add("active");
+        if (Store.BackToConnectionsEntryId != null && Item.EntryId.Equals(Store.BackToConnectionsEntryId)) arr.Add("highlight");
+        
+        ElementClasses = string.Join(" ", arr);
+    }
+
 }
