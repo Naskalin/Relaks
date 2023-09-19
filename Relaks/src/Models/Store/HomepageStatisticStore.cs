@@ -17,13 +17,14 @@ public class HomepageStatisticStore
 
     public void FindData()
     {
+        EntryCounts["Люди"] = _db.EPersons.Count();
         EntryCounts["Компании"] = _db.ECompanies.Count();
         EntryCounts["Встречи"] = _db.EMeets.Count();
-        EntryCounts["Люди"] = _db.EPersons.Count();
         
         FileCounts["Файлы"] = _db.EntryFiles.Count();
         FileCounts["Метки файлов"] = _db.EntryFileTags.Count();
         FileCounts["Категории файлов"] = _db.EntryFileCategories.Count();
+        FileCounts["Общие файлы"] = _db.BaseFiles.Count(x => x.BaseEntryRelations.Any());
         
         EInfoCounts["Телефоны"] = _db.EiPhones.Count();
         EInfoCounts["Даты"] = _db.EiDates.Count();

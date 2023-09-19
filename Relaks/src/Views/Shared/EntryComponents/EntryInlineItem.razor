@@ -4,7 +4,7 @@
 
 @inject AppDbContext Db;
 
-<div class="d-flex align-items-center gap-2">
+<div class="d-flex align-items-center gap-2" @onclick="@(() => OnClick.InvokeAsync(EntryId))" @attributes=@InputAttributes>
     <div class="avatar-sm">
         @if (!string.IsNullOrEmpty(Entry.Thumbnail))
         {
@@ -36,6 +36,12 @@
 
     [Parameter]
     public Guid EntryId { get; set; }
+    
+    [Parameter]
+    public EventCallback<Guid> OnClick { get; set; }
+    
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> InputAttributes { get; set; } = new();
 
     private BaseEntry Entry { get; set; } = null!;
     

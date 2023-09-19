@@ -2,94 +2,57 @@
 @using Relaks.Models.StructureModels
 @using LinqKit
 
-<table class="table table-bordered mb-3">
-    <tbody>
-    <tr>
-        <td class="text-center align-middle">
+<div class="border p-3 mb-3 rounded">
+    <div class="row align-items-center">
+        <div class="col-auto">
+            <button class="btn btn-circle btn-outline-secondary" @onclick="@(() => IsShowDetails = !IsShowDetails)">
+                <i class="las la-lg @(IsShowDetails ? "la-eye" : "la-low-vision")"></i>
+            </button>
+        </div>
+        <div class="col">
+            <div>
+                <div class="mb-1">
+                    <span class="fw-semibold text-secondary">@StructureItem.Group.Title</span>
+                    @if (!string.IsNullOrEmpty(StructureItem.Group.Description))
+                    {
+                        @* <div class="form-text">@StructureItem.Group.Description</div> *@
+                        <Popover Content="@StructureItem.Group.Description">
+                            <i class="las la-comment-o la-lg"></i>
+                        </Popover>
+                    }
+                    @if (BreadCrumbs != StructureItem.Group.Title)
+                    {
+                        <small class="form-text ms-2">(@BreadCrumbs)</small>   
+                    }
+                </div>
+    
+                <EntryInlineItem EntryId="@StructureItem.Group.EntryId"/>
+            </div>
+        </div>
+        <div class="col-auto">
             <a href="/entries/@StructureItem.Group.EntryId.ToString()/structure?@nameof(EntryStructureStore.BackToConnectionsStructureItem)=@StructureItem.Id.ToString()"
                class="btn btn-sm btn-secondary">
-                Перейти <i class="las la-angle-right"></i>
+                В структуру <i class="las la-angle-right"></i>
             </a>
-        </td>
-        <td>
-            <EntryInlineItem EntryId="@StructureItem.Group.EntryId"/>
-        </td>
-    </tr>
-    <tr>
-        <td style="width: 150px">
-            группа
-        </td>
-        <td>
-            @if (BreadCrumbs != StructureItem.Group.Title)
-            {
-                <div class="form-text">@BreadCrumbs</div>
-            }
-            <div class="fw-semibold">@StructureItem.Group.Title</div>
-
-            @if (!string.IsNullOrEmpty(StructureItem.Group.Description))
-            {
-                <div class="form-text">@StructureItem.Group.Description</div>
-            }
-            <div style="font-size: .8rem;">
-                @StructureItem.Group.StartAt.ToString("dd.MM.yyyy") - @StructureItem.Group.EndAt?.ToString("dd.MM.yyyy")
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td style="width: 150px">
-            должность
-        </td>
-        <td>
-            <div style="font-size: .8rem;">
-                @StructureItem.StartAt.ToString("dd.MM.yyyy") - @StructureItem.EndAt?.ToString("dd.MM.yyyy")
-            </div>
-            @if (!string.IsNullOrEmpty(StructureItem.Title))
-            {
-                <span class="fw-semibold">@StructureItem.Title</span>
-            }
-            @if (!string.IsNullOrEmpty(StructureItem.Description))
-            {
-                <div class="form-text">@StructureItem.Description</div>   
-            }
-        </td>
-    </tr>
-    </tbody>
-</table>
-@* <div class="mb-4"> *@
-@*     $1$ <div class="mb-1"> #1# *@
-@*     $1$     <EntryInlineItem EntryId="@StructureItem.Group.EntryId"/> #1# *@
-@*     $1$ </div> #1# *@
-@*     $1$ <div class="mb-1"> #1# *@
-@*     $1$     <span class="text-muted me-2">Группа</span> #1# *@
-@*     $1$     <span class="fw-semibold" title="@BreadCrumbs">@StructureItem.Group.Title</span> #1# *@
-@*     $1$     <span style="font-size: .8rem;"> #1# *@
-@*     $1$         @StructureItem.Group.StartAt.ToString("dd.MM.yyyy") - @StructureItem.Group.EndAt?.ToString("dd.MM.yyyy") #1# *@
-@*     $1$     </span> #1# *@
-@*     $1$     @if (!string.IsNullOrEmpty(StructureItem.Group.Description)) #1# *@
-@*     $1$     { #1# *@
-@*     $1$         <Popover Content="@StructureItem.Group.Description"> #1# *@
-@*     $1$             <i class="las la-comment la-lg"></i> #1# *@
-@*     $1$         </Popover> #1# *@
-@*     $1$     } #1# *@
-@*     $1$ </div> #1# *@
-@* *@
-@*     <div class="mb-1"> *@
-@*         <span class="text-muted me-2">Должность</span> *@
-@*         <span style="font-size: .8rem;"> *@
-@*             @StructureItem.StartAt.ToString("dd.MM.yyyy") - @StructureItem.EndAt?.ToString("dd.MM.yyyy") *@
-@*         </span> *@
-@*         @if (!string.IsNullOrEmpty(StructureItem.Title)) *@
-@*         { *@
-@*             <span class="fw-semibold">@StructureItem.Title</span> *@
-@*         } *@
-@*         @if (!string.IsNullOrEmpty(StructureItem.Description)) *@
-@*         { *@
-@*             <Popover Content="@StructureItem.Description"> *@
-@*                 <i class="las la-comment la-lg"></i> *@
-@*             </Popover> *@
-@*         } *@
-@*     </div> *@
-@* </div> *@
+        </div>
+    </div>
+    @if (IsShowDetails)
+    {
+        <div class="border-top border-secondary my-3 border-opacity-10"></div>
+        
+        <div style="font-size: .8rem;">
+            @StructureItem.StartAt.ToString("dd.MM.yyyy") - @StructureItem.EndAt?.ToString("dd.MM.yyyy")
+        </div>
+        @if (!string.IsNullOrEmpty(StructureItem.Title))
+        {
+            <span class="fw-semibold">@StructureItem.Title</span>
+        }
+        @if (!string.IsNullOrEmpty(StructureItem.Description))
+        {
+            <div class="form-text">@StructureItem.Description</div>   
+        }
+    }
+</div>
 
 @code {
 
@@ -98,6 +61,8 @@
 
     [Parameter]
     public StructureItem StructureItem { get; set; } = null!;
+
+    private bool IsShowDetails { get; set; } = false;
 
     protected override void OnParametersSet()
     {
