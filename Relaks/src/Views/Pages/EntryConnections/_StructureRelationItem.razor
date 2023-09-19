@@ -15,9 +15,8 @@
                     <span class="fw-semibold text-secondary">@StructureItem.Group.Title</span>
                     @if (!string.IsNullOrEmpty(StructureItem.Group.Description))
                     {
-                        @* <div class="form-text">@StructureItem.Group.Description</div> *@
                         <Popover Content="@StructureItem.Group.Description">
-                            <i class="las la-comment-o la-lg"></i>
+                            <i class="las la-comment la-lg ms-2 text-secondary"></i>
                         </Popover>
                     }
                     @if (BreadCrumbs != StructureItem.Group.Title)
