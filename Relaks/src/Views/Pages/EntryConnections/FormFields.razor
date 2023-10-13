@@ -1,0 +1,90 @@
+﻿@using Relaks.Models.Store
+
+@* <Dump Data="@Req"/> *@
+
+<div class="row gap-5">
+    <div class="col">
+        <div class="mb-3">
+            <SelectEntry EntryIds="@GetEntryIds(true)" EntryIdsChanged="@(entryIds => HandleEntryIdsChanged(true, entryIds))"/>
+            <ValidationMessage For="@(() => Req.FirstId)"/>
+        </div>
+    </div>
+    <div class="col">
+        <div class="mb-3">
+            <SelectEntry EntryIds="@GetEntryIds(false)" EntryIdsChanged="@(entryIds => HandleEntryIdsChanged(false, entryIds))"/>
+            <ValidationMessage For="@(() => Req.SecondId)"/>
+        </div>
+    </div>
+</div>
+
+<div class="row gap-5">
+    <div class="col">
+        <div class="mb-3">
+            <RatingField @bind-Value="@Req.FirstRating"/>
+            <ValidationMessage For="@(() => Req.FirstRating)"/>
+        </div>
+    </div>
+    <div class="col">
+        <div class="mb-3">
+            <RatingField @bind-Value="@Req.SecondRating"/>
+            <ValidationMessage For="@(() => Req.SecondRating)"/>
+        </div>
+    </div>
+</div>
+
+<div class="row gap-5">
+    <div class="col">
+        <div class="mb-3">
+            <label for="FirstDescription" class="form-label">Описание</label>
+            <MyTextarea id="FirstDescription"
+                        @bind-Value="@Req.FirstDescription"
+                        maxlength="1500"/>
+            <ValidationMessage For="@(() => Req.FirstDescription)"/>
+        </div>
+    </div>
+    <div class="col">
+        <div class="mb-3">
+            <label for="SecondDescription" class="form-label">Описание</label>
+            <MyTextarea id="SecondDescription"
+                        @bind-Value="@Req.SecondDescription"
+                        maxlength="1500"/>
+            <ValidationMessage For="@(() => Req.SecondDescription)"/>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public EntryRelationRequest Req { get; set; } = null!;
+
+    private List<Guid> GetEntryIds(bool isFirst)
+    {
+        var entryIds = new List<Guid>();
+        if (isFirst)
+        {
+            if (Req.FirstId.HasValue) entryIds.Add(Req.FirstId.Value);
+        }
+        else
+        {
+            if (Req.SecondId.HasValue) entryIds.Add(Req.SecondId.Value);
+        }
+
+        return entryIds;
+    }
+
+    private async Task HandleEntryIdsChanged(bool isFirst, List<Guid> entryIds)
+    {
+        Guid? entryId = entryIds.Any() ? entryIds.First() : null;
+
+        if (isFirst)
+        {
+            Req.FirstId = entryId;
+        }
+        else
+        {
+            Req.SecondId = entryId;
+        }
+    }
+
+}

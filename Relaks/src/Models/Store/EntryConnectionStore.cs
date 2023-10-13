@@ -1,14 +1,32 @@
 ﻿using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using Relaks.Database;
+using Relaks.Interfaces;
 using Relaks.Models.StructureModels;
 
 namespace Relaks.Models.Store;
 
+public class EntryRelationRequest
+{
+    public Guid? FirstId { get; set; }
+    public Guid? SecondId { get; set; }
+    public int FirstRating { get; set; }
+    public int SecondRating { get; set; }
+    public string? FirstDescription { get; set; }
+    public string? SecondDescription { get; set; }
+}
+
 public class EntryConnectionStore
 {
+    public enum StateEnum
+    {
+        List,
+        NewEntryConnection,
+        EditEntryConnection,
+    }
     public Guid EntryId { get; set; }
     private readonly AppDbContext _db;
+    public StateEnum State { get; set; }
 
     public List<StructureItem> StructureItems { get; set; } = new();
     public Dictionary<Guid, string> StructureGroupTitles { get; set; } = new();
@@ -16,6 +34,7 @@ public class EntryConnectionStore
     public EntryConnectionStore(AppDbContext db)
     {
         _db = db;
+        State = StateEnum.List;
     }
 
     public void FindStructureGroupTitles()

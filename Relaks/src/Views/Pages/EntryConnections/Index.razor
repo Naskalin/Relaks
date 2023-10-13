@@ -7,26 +7,49 @@
 
 <EntryProfileLayout EntryId="@EntryId">
     <EntryProfileTabs EntryId="@EntryId"/>
-    
-    <MyTitle>Связи</MyTitle>
-    
+
     <CascadingValue Value="@Store">
-        <h5 class="mb-4">Структуры других объединений</h5>
-        @if (Store.StructureItems.Any())
+        @switch (Store.State)
         {
-            @foreach (var sItem in Store.StructureItems)
-            {
-                <_StructureRelationItem StructureItem="@sItem"/>
-            }   
-        }
-        else
-        {
-            <p class="text-muted"><i class="las la-info-circle la-lg me-1"></i> Связей не найдено. Объединение должно быть задействовано хотя бы в одной структуре другого объединения для отображения связи.</p>
+            case EntryConnectionStore.StateEnum.List:
+                <MyTitle>Связи</MyTitle>
+                <div class="row mb-4">
+                    <div class="col-auto">
+                        <h5 class="mb-0">Взаимоотношения</h5>
+                    </div>
+                    <div class="col">
+                        <button type="button" @onclick="@(() => Store.State = EntryConnectionStore.StateEnum.NewEntryConnection)" class="btn btn-sm btn-primary">
+                            <i class="las la-plus-circle"></i>
+                            Добавить
+                        </button>
+                    </div>
+                </div>
+
+
+                <h5 class="mb-4">Структуры других объединений</h5>
+                @if (Store.StructureItems.Any())
+                {
+                    @foreach (var sItem in Store.StructureItems)
+                    {
+                        <_StructureRelationItem StructureItem="@sItem"/>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted"><i class="las la-info-circle la-lg me-1"></i> Связей не найдено. Для отображения связи, текущее объединение должно быть задействовано хотя бы в одной структуре другого объединения.</p>
+                }
+                break;
+            case EntryConnectionStore.StateEnum.EditEntryConnection:
+                break;
+            case EntryConnectionStore.StateEnum.NewEntryConnection:
+                <New/>
+                break;
         }
     </CascadingValue>
 </EntryProfileLayout>
 
 @code {
+
     [Parameter]
     public Guid EntryId { get; set; }
 
@@ -38,7 +61,7 @@
         {
             EntryId = EntryId,
         };
-        
+
         Store.FindStructureItems();
         Store.FindStructureGroupTitles();
     // Store = new EntryStructureStore(Db)

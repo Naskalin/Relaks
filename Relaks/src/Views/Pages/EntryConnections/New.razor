@@ -1,0 +1,51 @@
+﻿@using Relaks.Models.Store
+
+<MyTitle ShowBeforeTitle="@true">
+    <BeforeTitle>
+        <button @onclick="@(() => Store.State = EntryConnectionStore.StateEnum.List)" class="btn btn-outline-secondary">
+            <i class="las la-arrow-left la-lg me-1"></i> @Resources.Action.Return
+        </button>
+    </BeforeTitle>
+    <ChildContent>Новое взаимоотношение</ChildContent>
+</MyTitle>
+
+<ul class="ul-info">
+    <li>Взаимоотношение двух объединений</li>
+    <li>Оцените как одно объединение относится к другому</li>
+    <li>Опишите отношение одного к другому</li>
+</ul>
+
+<EditForm Model="@Req" OnSubmit="@OnSubmit">
+    <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
+    <ValidationSummary/>
+    
+    <FormFields Req="@Req"/>
+    
+    <div class="mb-3">
+        <button class="btn btn-primary">
+            <i class="las la-lg me-1 la-plus-circle"></i>
+            @Resources.Action.Add
+        </button>
+    </div>
+</EditForm>
+
+@code {
+    private EntryRelationRequest Req { get; set; } = null!;
+    private FluentValidationValidator Validator { get; set; } = null!;
+    
+    [CascadingParameter]
+    public EntryConnectionStore Store { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        Req = new()
+        {
+            FirstId = Store.EntryId,
+        };
+    }
+
+    private void OnSubmit()
+    {
+        if (!Validator.Validate()) return;
+    }
+}

@@ -1,0 +1,30 @@
+﻿<label for="" class="form-label">
+    @(Label ?? "Рейтинг")
+    <span class="ms-1 fw-semibold">@Value</span>
+</label>
+<div class="d-flex gap-1">
+    @for (int i = 1; i <= 10; i++)
+    {
+        {
+            var currentI = i;
+            var isSelected = Value >= i;
+            <button type="button" onclick="@(() => HandleClick(currentI))" class="btn  btn-circle btn-sm text-secondary border-0">
+                <i class="bi @(isSelected ? "bi-star-fill" : "bi-star")" style="font-size: 1.6rem"></i>
+            </button>   
+        }
+    }
+
+</div>
+@code {
+
+    [Parameter]
+    public string? Label { get; set; }
+    
+    [Parameter]
+    public int Value { get; set; }
+    
+    [Parameter]
+    public EventCallback<int> ValueChanged { get; set; }
+
+    private async Task HandleClick(int i) => await ValueChanged.InvokeAsync(i);
+}

@@ -12,16 +12,16 @@
         <div class="col">
             <div>
                 <div class="mb-1">
+                    @if (BreadCrumbs != StructureItem.Group.Title)
+                    {
+                        <div><small class="form-text">@BreadCrumbs</small></div>
+                    }
                     <span class="fw-semibold text-secondary">@StructureItem.Group.Title</span>
                     @if (!string.IsNullOrEmpty(StructureItem.Group.Description))
                     {
                         <Popover Content="@StructureItem.Group.Description">
                             <i class="las la-comment la-lg ms-2 text-secondary"></i>
                         </Popover>
-                    }
-                    @if (BreadCrumbs != StructureItem.Group.Title)
-                    {
-                        <small class="form-text ms-2">(@BreadCrumbs)</small>   
                     }
                 </div>
     

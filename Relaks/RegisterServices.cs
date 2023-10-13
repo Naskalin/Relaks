@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Relaks.Interfaces;
 using Relaks.Managers;
 using Relaks.Models;
+using Relaks.Models.Store;
 using Relaks.Models.StructureModels;
 using Relaks.Validators;
 using Relaks.Validators.AppFileValidators;
@@ -31,6 +32,7 @@ public static class RegisterServices
         services.AddScoped<IValidator<EPerson>, BaseEntryValidator>();
         services.AddScoped<IValidator<ECompany>, BaseEntryValidator>();
         services.AddScoped<IValidator<EMeet>, BaseEntryValidator>();
+        services.AddScoped<IValidator<EntryRelationRequest>, EntryRelationValidator>();
 
         services.AddScoped<IValidator<EiDate>, EiDateValidator>();
         services.AddScoped<IValidator<EiPhone>, EiPhoneValidator>();
