@@ -5,38 +5,51 @@
 <PageTemplate>
     <MyTitle>Test</MyTitle>
 
-    <button type="button" class="btn btn-primary" @onclick="() => Modal1.Show()">Modal 1</button>
+    <div class="text-success">@SelectedPath</div>
+    
+    <div>
+        <button type="button" class="btn btn-secondary" @onclick="@Back">back</button>
+    </div>
 
-    <Modal @ref="Modal1" IsKeyboard="@true" IsBackdrop="@true">
-        <ModalDialog Title="Modal 1" Size="Size.Small">
-            <BodyTemplate>
-                <h1>Modal 1</h1>
-
-                <button type="button" class="btn btn-success" @onclick="@ShowDynamicModal">Modal 2</button>
-                @* <Modal @ref="Modal2" IsKeyboard="@true" IsBackdrop="@true"> *@
-                @*     <ModalDialog Title="Modal 2" Size="Size.Small"> *@
-                @*         <BodyTemplate> *@
-                @*             <h1>Modal 2</h1> *@
-                @*         </BodyTemplate> *@
-                @*     </ModalDialog> *@
-                @* </Modal> *@
-            </BodyTemplate>
-        </ModalDialog>
-    </Modal>
-
-
+    @foreach (var drive in DriveInfo.GetDrives())
+    {
+        <button type="button" @onclick="@(() => HandleClick(drive.Name))">@drive.Name</button>
+    }
+    
+    <ul>
+        @foreach (var dir in Dirs)
+        {
+            <li><button type="button" @onclick="@(() => HandleClick(dir))">@dir</button></li>    
+        }
+    </ul>
 </PageTemplate>
 
 @code {
-    private Modal Modal1 { get; set; } = new();
-    // private Modal Modal2 { get; set; } = new();
-    private Task ShowDynamicModal()
+    private string SelectedPath { get; set; } = "";
+    private List<string> Dirs { get; set; } = new();
+
+    private void Back()
     {
-        return DialogService.Show(new DialogOption()
-        {
-            Title = "Resize dialog",
-            ShowResize = true,
-            BodyTemplate = builder => builder.AddContent(0, "I am content")
-        });
+        var parent = Directory.GetParent(SelectedPath);
+        if (parent == null) return;
+        
+        SelectedPath = parent.FullName;
+        Dirs = GetDirsFromPath();
+    }
+
+    private void HandleClick(string path)
+    {
+        SelectedPath = path;
+        Dirs = GetDirsFromPath();
+    }
+
+    private List<string> GetDirsFromPath()
+    {
+        return Directory.EnumerateDirectories(SelectedPath)
+            .Select(s => new DirectoryInfo(s))
+            .Where(s => s.Attributes.HasFlag(FileAttributes.Directory))
+            .Where(s => !s.Attributes.HasFlag(FileAttributes.System))
+            .Where(s => !s.Attributes.HasFlag(FileAttributes.Hidden))
+            .Select(s=> s.FullName).ToList();
     }
 }
