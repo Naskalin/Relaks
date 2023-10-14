@@ -7,28 +7,38 @@
 </ul>
 
 <div class="row gap-4 items-center">
-    <div class="col @(IsReverse ? "order-2")">
+    <div class="col @(IsReverse ? "order-2" : "")">
         <div class="mb-3">
             @if (Req.FirstId.Equals(CurrentEntryId))
             {
-                <EntryInlineItem EntryId="@CurrentEntryId"/>
+                <label for="" class="form-label mb-3" style="height: 31px">Текущее объединение</label>
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <EntryInlineItem EntryId="@CurrentEntryId"/>
+                    </div>
+                </div>
             }
             else
             {
-                <SelectEntry EntryIds="@GetEntryIds(true)" ExcludedEntryIds="@(new List<Guid>() {CurrentEntryId})" EntryIdsChanged="@(entryIds => HandleEntryIdsChanged(true, entryIds))"/>
-                <ValidationMessage For="@(() => Req.FirstId)"/>   
+                <SelectEntry Label="Выберите объединение" EntryIds="@GetEntryIds(true)" ExcludedEntryIds="@(new List<Guid>() {CurrentEntryId})" EntryIdsChanged="@(entryIds => HandleEntryIdsChanged(true, entryIds))"/>
+                <ValidationMessage For="@(() => Req.FirstId)"/>
             }
         </div>
     </div>
-    <div class="col @(IsReverse ? "order-1")">
+    <div class="col @(IsReverse ? "order-1" : "")">
         <div class="mb-3">
             @if (Req.SecondId.Equals(CurrentEntryId))
             {
-                <EntryInlineItem EntryId="@CurrentEntryId"/>
+                <label for="" class="form-label mb-3" style="height: 31px">Текущее объединение</label>
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <EntryInlineItem EntryId="@CurrentEntryId"/>
+                    </div>
+                </div>
             }
             else
             {
-                <SelectEntry EntryIds="@GetEntryIds(false)" ExcludedEntryIds="@(new List<Guid>() {CurrentEntryId})" EntryIdsChanged="@(entryIds => HandleEntryIdsChanged(false, entryIds))"/>
+                <SelectEntry Label="Выберите объединение" EntryIds="@GetEntryIds(false)" ExcludedEntryIds="@(new List<Guid>() {CurrentEntryId})" EntryIdsChanged="@(entryIds => HandleEntryIdsChanged(false, entryIds))"/>
                 <ValidationMessage For="@(() => Req.SecondId)"/>   
             }
         </div>
@@ -38,14 +48,14 @@
 @if (Req.FirstId.HasValue && Req.SecondId.HasValue)
 {
     <div class="row gap-4 items-center">
-        <div class="col @(IsReverse ? "order-2")">
+        <div class="col @(IsReverse ? "order-2" : "")">
             <div class="mb-3">
                 <RatingField @bind-Value="@Req.FirstRating"/>
                 <div class="form-text">Оценка этого объединения от противоположного</div>
                 <ValidationMessage For="@(() => Req.FirstRating)"/>
             </div>
         </div>
-        <div class="col @(IsReverse ? "order-1")">
+        <div class="col @(IsReverse ? "order-1" : "")">
             <div class="mb-3">
                 <RatingField @bind-Value="@Req.SecondRating"/>
                 <div class="form-text">Оценка этого объединения от противоположного</div>
