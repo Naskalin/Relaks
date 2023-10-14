@@ -4,6 +4,7 @@
 @using Relaks.Models
 
 @inject AppDbContext Db;
+@inject IJSRuntime JsRuntime;
 
 <div class="row">
     <div class="col-8">
@@ -29,6 +30,13 @@
                 </button>
             </div>
         </EditForm>
+
+        <div class="text-end">
+            <button type="button" class="btn btn-link text-danger" @onclick="@OnDelete">
+                <i class="las la-trash la-lg"></i>
+                @Resources.Action.Delete
+            </button>
+        </div>
     </div>
 </div>
 
@@ -64,6 +72,19 @@
         Req.MapTo(entryRelation);
         Db.SaveChanges();
         Store.FindEntryRelations();
+        HandleBack();
+    }
+    
+    private async Task OnDelete()
+    {
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
+        if (!isConfirmed || Store.EntryRelationEdit == null) return;
+
+        Db.EntryRelations.Remove(Store.EntryRelationEdit);
+        await Db.SaveChangesAsync();
+        
+        Store.FindEntryRelations();
+        
         HandleBack();
     }
 }
