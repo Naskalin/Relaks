@@ -1,6 +1,7 @@
 ﻿@page "/entries/{entryId:guid}/connections"
 
 @using Relaks.Database
+@using Relaks.Models
 @using Relaks.Models.Store
 
 @inject AppDbContext Db;
@@ -29,10 +30,19 @@
                 {
                     <div>
                         @{ var odd = true; }
-                        @foreach (var eRelation in Store.EntryRelations)
+                        @foreach (var entryRelation in Store.EntryRelations)
                         {
-                            <div class="px-2 py-3 @(odd ? "bg-secondary bg-opacity-5": "")">
-                                <_EntryRelationItem EntryRelation="@eRelation"/>
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <div class="px-2 py-3 @(odd ? "bg-secondary bg-opacity-5" : "")">
+                                        <_EntryRelationItem EntryRelation="@entryRelation"/>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@(() => HandleClickEditEntryRelation(entryRelation))">
+                                        <i class="las la-edit la-lg"></i>
+                                    </button>
+                                </div>
                             </div>
                             odd = !odd;
                         }
@@ -58,6 +68,7 @@
                 }
                 break;
             case EntryConnectionStore.StateEnum.EditEntryConnection:
+                <Edit OnStateChanged="@StateHasChanged"/>
                 break;
             case EntryConnectionStore.StateEnum.NewEntryConnection:
                 <New OnStateChanged="@StateHasChanged"/>
@@ -73,6 +84,12 @@
 
     private EntryConnectionStore Store { get; set; } = null!;
 
+    private void HandleClickEditEntryRelation(EntryRelation entryRelation)
+    {
+        Store.EntryRelationEdit = entryRelation;
+        Store.State = EntryConnectionStore.StateEnum.EditEntryConnection;
+    }
+
     protected override void OnParametersSet()
     {
         Store = new EntryConnectionStore(Db)
@@ -83,16 +100,6 @@
         Store.FindEntryRelations();
         Store.FindStructureItems();
         Store.FindStructureGroupTitles();
-    // Store = new EntryStructureStore(Db)
-    // {
-    //     Req = new StructureGroupListRequest()
-    //     {
-    //         EntryId = EntryId,
-    //     },
-    //     Discriminator = Db.BaseEntries.Where(x => x.Id.Equals(EntryId)).Select(x => x.Discriminator).First()
-    // };
-    //
-    // Store.FindStructure();
     }
 
 }

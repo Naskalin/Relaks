@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Relaks.Migrations
 {
     /// <inheritdoc />
-    public partial class CreateEntryRelationsTable : Migration
+    public partial class CreateEntryRelations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,7 +20,9 @@ namespace Relaks.Migrations
                     SecondId = table.Column<Guid>(type: "TEXT", nullable: false),
                     FirstRating = table.Column<int>(type: "INTEGER", nullable: false),
                     SecondRating = table.Column<int>(type: "INTEGER", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: true)
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -49,11 +51,6 @@ namespace Relaks.Migrations
                 name: "IX_EntryRelations_SecondId",
                 table: "EntryRelations",
                 column: "SecondId");
-            
-            migrationBuilder.CreateIndex(
-                name: "IX_EntryRelations_FirstId",
-                table: "EntryRelations",
-                column: "FirstId");
         }
 
         /// <inheritdoc />

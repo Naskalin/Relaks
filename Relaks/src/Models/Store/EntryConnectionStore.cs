@@ -24,6 +24,7 @@ public class EntryConnectionStore
         NewEntryConnection,
         EditEntryConnection,
     }
+    public EntryRelation? EntryRelationEdit { get; set; }
     public Guid EntryId { get; set; }
     private readonly AppDbContext _db;
     public StateEnum State { get; set; }

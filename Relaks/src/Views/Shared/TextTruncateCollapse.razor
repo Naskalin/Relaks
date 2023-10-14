@@ -1,20 +1,22 @@
 ﻿@using Relaks.Utils.Extensions
+@using System.Text.RegularExpressions
+@using System.Web
 @if (!string.IsNullOrEmpty(Text))
 {
     if (Text.Length > MaxLength)
     {
         if (!IsShowFull)
         {
-            <span>@Text.Truncate(MaxLength) <button type="button" class="btn btn-link btn-sm" @onclick="@(() => IsShowFull = true)">Показать полностью</button></span>   
+            <span>@FullText(true) <button type="button" class="btn btn-link btn-sm" @onclick="@(() => IsShowFull = true)">Показать полностью</button></span>   
         }
         else
         {
-            @Text 
+            @FullText(false)
         }
     }
     else
     {
-        @Text
+        @FullText(false)
     }
     
 }
@@ -27,4 +29,13 @@
     public int MaxLength { get; set; } = 300;
     
     private bool IsShowFull { get; set; } = false;
+
+    
+    private RenderFragment<bool> FullText => isTruncate => __builder =>
+    {
+        var text = Text ?? "";
+        if (isTruncate) text = text.Truncate(MaxLength);
+        
+        @((MarkupString)Regex.Replace(HttpUtility.HtmlEncode(text ?? ""), "\r?\n|\r", "<br />"))
+    };
 }

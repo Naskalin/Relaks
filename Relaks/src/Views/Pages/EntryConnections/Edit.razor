@@ -13,7 +13,7 @@
                     <i class="las la-arrow-left la-lg me-1"></i> @Resources.Action.Return
                 </button>
             </BeforeTitle>
-            <ChildContent>Новое взаимоотношение</ChildContent>
+            <ChildContent>Изменение взаимоотношения</ChildContent>
         </MyTitle>
         
         <EditForm Model="@Req" OnSubmit="@OnSubmit" class="mt-4">
@@ -24,8 +24,8 @@
             
             <div class="mb-3">
                 <button class="btn btn-primary">
-                    <i class="las la-lg me-1 la-plus-circle"></i>
-                    @Resources.Action.Add
+                    <i class="las la-lg me-1 la-save"></i>
+                    @Resources.Action.SaveChanges
                 </button>
             </div>
         </EditForm>
@@ -44,10 +44,9 @@
 
     protected override void OnParametersSet()
     {
-        Req = new()
-        {
-            FirstId = Store.EntryId,
-        };
+        ArgumentNullException.ThrowIfNull(Store.EntryRelationEdit);
+        Req = new();
+        Store.EntryRelationEdit.MapTo(Req);
     }
 
     private void HandleBack()
@@ -58,14 +57,13 @@
 
     private void OnSubmit()
     {
+        ArgumentNullException.ThrowIfNull(Store.EntryRelationEdit);
         if (!Validator.Validate()) return;
-        var entryRelation = new EntryRelation();
+        var entryRelation = Store.EntryRelationEdit;
+        entryRelation.UpdatedAt = DateTime.Now;
         Req.MapTo(entryRelation);
-        Db.EntryRelations.Add(entryRelation);
         Db.SaveChanges();
-        
         Store.FindEntryRelations();
-        
         HandleBack();
     }
 }

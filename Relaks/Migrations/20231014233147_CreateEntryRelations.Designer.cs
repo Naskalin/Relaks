@@ -11,8 +11,8 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231014212727_CreateEntryRelationsTable")]
-    partial class CreateEntryRelationsTable
+    [Migration("20231014233147_CreateEntryRelations")]
+    partial class CreateEntryRelations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -344,6 +344,9 @@ namespace Relaks.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
@@ -358,6 +361,9 @@ namespace Relaks.Migrations
 
                     b.Property<int>("SecondRating")
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 

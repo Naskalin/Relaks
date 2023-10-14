@@ -4,7 +4,7 @@ using Relaks.Interfaces;
 namespace Relaks.Models;
 
 [Table("EntryRelations")]
-public class EntryRelation : IEntryRelation
+public class EntryRelation : IEntryRelation, ITimestamped
 {
     public Guid Id { get; set; }
     
@@ -17,6 +17,9 @@ public class EntryRelation : IEntryRelation
     public int FirstRating { get; set; }
     public int SecondRating { get; set; }
     public string? Description { get; set; }
+    
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 
 
     // public string? FirstDescription { get; set; }
@@ -25,5 +28,7 @@ public class EntryRelation : IEntryRelation
     public EntryRelation()
     {
         Id = Guid.NewGuid();
+        CreatedAt = DateTime.Now;
+        UpdatedAt = DateTime.Now;
     }
 }
