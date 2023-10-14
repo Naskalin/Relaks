@@ -10,7 +10,8 @@ public static class EntryRelationMapper
         to.SecondId = from.SecondId;
         to.FirstRating = from.FirstRating;
         to.SecondRating = from.SecondRating;
-        to.FirstDescription = from.FirstDescription;
-        to.SecondDescription = from.SecondDescription;
+        to.Description = from.Description;
+        // to.FirstDescription = from.FirstDescription;
+        // to.SecondDescription = from.SecondDescription;
     }
 }

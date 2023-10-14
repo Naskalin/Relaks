@@ -14,9 +14,11 @@ public class EntryRelation : IEntryRelation
     
     public int FirstRating { get; set; }
     public int SecondRating { get; set; }
-    
-    public string? FirstDescription { get; set; }
-    public string? SecondDescription { get; set; }
+    public string? Description { get; set; }
+
+
+    // public string? FirstDescription { get; set; }
+    // public string? SecondDescription { get; set; }
 
     public EntryRelation()
     {

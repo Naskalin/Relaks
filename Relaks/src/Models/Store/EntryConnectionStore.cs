@@ -1,7 +1,6 @@
 ﻿using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using Relaks.Database;
-using Relaks.Interfaces;
 using Relaks.Models.StructureModels;
 
 namespace Relaks.Models.Store;
@@ -12,8 +11,9 @@ public class EntryRelationRequest
     public Guid? SecondId { get; set; }
     public int FirstRating { get; set; }
     public int SecondRating { get; set; }
-    public string? FirstDescription { get; set; }
-    public string? SecondDescription { get; set; }
+    public string? Description { get; set; }
+    // public string? FirstDescription { get; set; }
+    // public string? SecondDescription { get; set; }
 }
 
 public class EntryConnectionStore

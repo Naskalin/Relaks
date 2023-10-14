@@ -1,62 +1,83 @@
 ﻿@using Relaks.Models.Store
 
-@* <Dump Data="@Req"/> *@
+<ul class="ul-info my-4">
+    <li>Взаимоотношение двух объединений</li>
+    <li>Оцените как одно объединение относится к другому</li>
+    <li>Опишите их взаимоотношения</li>
+</ul>
 
-<div class="row gap-5">
-    <div class="col">
+<div class="row gap-4 items-center">
+    <div class="col @(IsReverse ? "order-2")">
         <div class="mb-3">
-            <SelectEntry EntryIds="@GetEntryIds(true)" EntryIdsChanged="@(entryIds => HandleEntryIdsChanged(true, entryIds))"/>
-            <ValidationMessage For="@(() => Req.FirstId)"/>
+            @if (Req.FirstId.Equals(CurrentEntryId))
+            {
+                <EntryInlineItem EntryId="@CurrentEntryId"/>
+            }
+            else
+            {
+                <SelectEntry EntryIds="@GetEntryIds(true)" ExcludedEntryIds="@(new List<Guid>() {CurrentEntryId})" EntryIdsChanged="@(entryIds => HandleEntryIdsChanged(true, entryIds))"/>
+                <ValidationMessage For="@(() => Req.FirstId)"/>   
+            }
         </div>
     </div>
-    <div class="col">
+    <div class="col @(IsReverse ? "order-1")">
         <div class="mb-3">
-            <SelectEntry EntryIds="@GetEntryIds(false)" EntryIdsChanged="@(entryIds => HandleEntryIdsChanged(false, entryIds))"/>
-            <ValidationMessage For="@(() => Req.SecondId)"/>
+            @if (Req.SecondId.Equals(CurrentEntryId))
+            {
+                <EntryInlineItem EntryId="@CurrentEntryId"/>
+            }
+            else
+            {
+                <SelectEntry EntryIds="@GetEntryIds(false)" ExcludedEntryIds="@(new List<Guid>() {CurrentEntryId})" EntryIdsChanged="@(entryIds => HandleEntryIdsChanged(false, entryIds))"/>
+                <ValidationMessage For="@(() => Req.SecondId)"/>   
+            }
         </div>
     </div>
 </div>
 
-<div class="row gap-5">
-    <div class="col">
-        <div class="mb-3">
-            <RatingField @bind-Value="@Req.FirstRating"/>
-            <ValidationMessage For="@(() => Req.FirstRating)"/>
+@if (Req.FirstId.HasValue && Req.SecondId.HasValue)
+{
+    <div class="row gap-4 items-center">
+        <div class="col @(IsReverse ? "order-2")">
+            <div class="mb-3">
+                <RatingField @bind-Value="@Req.FirstRating"/>
+                <div class="form-text">Оценка этого объединения от противоположного</div>
+                <ValidationMessage For="@(() => Req.FirstRating)"/>
+            </div>
+        </div>
+        <div class="col @(IsReverse ? "order-1")">
+            <div class="mb-3">
+                <RatingField @bind-Value="@Req.SecondRating"/>
+                <div class="form-text">Оценка этого объединения от противоположного</div>
+                <ValidationMessage For="@(() => Req.SecondRating)"/>
+            </div>
         </div>
     </div>
-    <div class="col">
-        <div class="mb-3">
-            <RatingField @bind-Value="@Req.SecondRating"/>
-            <ValidationMessage For="@(() => Req.SecondRating)"/>
-        </div>
-    </div>
-</div>
+    
+    <div class="mb-3">
+        @* <label for="EntryRelationDescription" class="form-label">Описание взаимоотношений</label> *@
+        <MyTextarea @bind-Value="@Req.Description"
+                    maxlength="3000"
+                    placeholder="Описание взаимоотношений"/>
 
-<div class="row gap-5">
-    <div class="col">
-        <div class="mb-3">
-            <label for="FirstDescription" class="form-label">Описание</label>
-            <MyTextarea id="FirstDescription"
-                        @bind-Value="@Req.FirstDescription"
-                        maxlength="1500"/>
-            <ValidationMessage For="@(() => Req.FirstDescription)"/>
-        </div>
+        <ValidationMessage For="@(() => Req.Description)"/>
     </div>
-    <div class="col">
-        <div class="mb-3">
-            <label for="SecondDescription" class="form-label">Описание</label>
-            <MyTextarea id="SecondDescription"
-                        @bind-Value="@Req.SecondDescription"
-                        maxlength="1500"/>
-            <ValidationMessage For="@(() => Req.SecondDescription)"/>
-        </div>
-    </div>
-</div>
+}
 
 @code {
 
     [Parameter]
+    public Guid CurrentEntryId { get; set; } = default!;
+    
+    [Parameter]
     public EntryRelationRequest Req { get; set; } = null!;
+    
+    private bool IsReverse { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        IsReverse = Req.SecondId.Equals(CurrentEntryId);
+    }
 
     private List<Guid> GetEntryIds(bool isFirst)
     {

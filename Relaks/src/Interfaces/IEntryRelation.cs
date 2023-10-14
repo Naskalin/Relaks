@@ -6,6 +6,7 @@ public interface IEntryRelation
     public Guid SecondId { get; set; }
     public int FirstRating { get; set; }
     public int SecondRating { get; set; }
-    public string? FirstDescription { get; set; }
-    public string? SecondDescription { get; set; }
+    // public string? FirstDescription { get; set; }
+    // public string? SecondDescription { get; set; }
+    public string? Description { get; set; }
 }

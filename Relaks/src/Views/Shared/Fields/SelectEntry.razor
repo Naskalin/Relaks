@@ -37,7 +37,10 @@
 
     [Parameter]
     public List<Guid> EntryIds { get; set; } = new();
-    
+
+    [Parameter]
+    public List<Guid> ExcludedEntryIds { get; set; } = new();
+
     [Parameter]
     public EventCallback<List<Guid>> EntryIdsChanged { get; set; }
     
@@ -90,6 +93,7 @@
 
         option.Component = BootstrapDynamicComponent.CreateComponent<EntryList>(new Dictionary<string, object?>()
         {
+            ["ExcludedEntryIds"] = ExcludedEntryIds,
             ["OnRowClicked"] = EventCallback.Factory.Create<Guid>(this, async guid =>
             {
                 await OnEntrySelect(guid);

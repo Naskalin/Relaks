@@ -4,6 +4,7 @@
 @using Relaks.Models.Misc
 @using Relaks.Utils.Extensions
 @using Microsoft.AspNetCore.Http.HttpResults
+@using Console = System.Console
 
 @inject AppDbContext Db;
 
@@ -102,17 +103,16 @@
 
 @code {
     [Parameter]
+    public List<Guid> ExcludedEntryIds { get; set; } = new();
+    
+    [Parameter]
     public EventCallback<Guid> OnRowDoubleClicked { get; set; }
     
     [Parameter]
     public EventCallback<Guid> OnRowClicked { get; set; }
 
-    private EntryFindRequest Req { get; set; } = new()
-    {
-        Page = 1,
-        PerPage = 10,
-    };
-    
+    private EntryFindRequest Req { get; set; } = null!;
+
     private PaginatableResult<EntryFindResult> Result { get; set; } = new();
     
     // private string? Search { get; set; }
@@ -203,6 +203,15 @@
 
     protected override void OnInitialized()
     {
+        Req = new()
+        {
+            Page = 1,
+            PerPage = 10,
+            ExcludedEntryIds = ExcludedEntryIds,
+        };
+        
+        Console.WriteLine($">>>>>>>>>>>>>>>>>>>>>  {ExcludedEntryIds.Count}");
+        
         FindData();
     }
 }

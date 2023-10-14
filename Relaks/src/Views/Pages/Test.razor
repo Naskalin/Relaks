@@ -1,7 +1,5 @@
 ﻿@page "/test"
 
-@inject DialogService DialogService;
-
 <PageTemplate>
     <MyTitle>Test</MyTitle>
 
@@ -10,7 +8,7 @@
     <div>
         <button type="button" class="btn btn-secondary" @onclick="@Back">back</button>
     </div>
-
+    
     @foreach (var drive in DriveInfo.GetDrives())
     {
         <button type="button" @onclick="@(() => HandleClick(drive.Name))">@drive.Name</button>
@@ -19,7 +17,7 @@
     <ul>
         @foreach (var dir in Dirs)
         {
-            <li><button type="button" @onclick="@(() => HandleClick(dir))">@dir</button></li>    
+            <li><button type="button" @onclick="@(() => HandleClick(dir))">@dir</button></li>
         }
     </ul>
 </PageTemplate>
@@ -27,7 +25,7 @@
 @code {
     private string SelectedPath { get; set; } = "";
     private List<string> Dirs { get; set; } = new();
-
+    
     private void Back()
     {
         var parent = Directory.GetParent(SelectedPath);
@@ -36,13 +34,13 @@
         SelectedPath = parent.FullName;
         Dirs = GetDirsFromPath();
     }
-
+    
     private void HandleClick(string path)
     {
         SelectedPath = path;
         Dirs = GetDirsFromPath();
     }
-
+    
     private List<string> GetDirsFromPath()
     {
         return Directory.EnumerateDirectories(SelectedPath)
