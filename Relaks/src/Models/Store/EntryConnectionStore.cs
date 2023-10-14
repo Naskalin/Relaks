@@ -30,11 +30,19 @@ public class EntryConnectionStore
 
     public List<StructureItem> StructureItems { get; set; } = new();
     public Dictionary<Guid, string> StructureGroupTitles { get; set; } = new();
+    public List<EntryRelation> EntryRelations { get; set; } = new();
 
     public EntryConnectionStore(AppDbContext db)
     {
         _db = db;
         State = StateEnum.List;
+    }
+
+    public void FindEntryRelations()
+    {
+        EntryRelations = _db.EntryRelations
+            .Where(x => x.FirstId.Equals(EntryId) || x.SecondId.Equals(EntryId))
+            .ToList();
     }
 
     public void FindStructureGroupTitles()

@@ -45,34 +45,31 @@
     </div>
 </div>
 
-@if (Req.FirstId.HasValue && Req.SecondId.HasValue)
-{
-    <div class="row gap-4 items-center">
-        <div class="col @(IsReverse ? "order-2" : "")">
-            <div class="mb-3">
-                <RatingField @bind-Value="@Req.FirstRating"/>
-                <div class="form-text">Оценка этого объединения от противоположного</div>
-                <ValidationMessage For="@(() => Req.FirstRating)"/>
-            </div>
-        </div>
-        <div class="col @(IsReverse ? "order-1" : "")">
-            <div class="mb-3">
-                <RatingField @bind-Value="@Req.SecondRating"/>
-                <div class="form-text">Оценка этого объединения от противоположного</div>
-                <ValidationMessage For="@(() => Req.SecondRating)"/>
-            </div>
+<div class="row gap-4 items-center">
+    <div class="col @(IsReverse ? "order-2" : "")">
+        <div class="mb-3">
+            <RatingField @bind-Value="@Req.FirstRating"/>
+            <div class="form-text">Оценка этого объединения от противоположного</div>
+            <ValidationMessage For="@(() => Req.FirstRating)"/>
         </div>
     </div>
+    <div class="col @(IsReverse ? "order-1" : "")">
+        <div class="mb-3">
+            <RatingField @bind-Value="@Req.SecondRating"/>
+            <div class="form-text">Оценка этого объединения от противоположного</div>
+            <ValidationMessage For="@(() => Req.SecondRating)"/>
+        </div>
+    </div>
+</div>
     
-    <div class="mb-3">
-        @* <label for="EntryRelationDescription" class="form-label">Описание взаимоотношений</label> *@
-        <MyTextarea @bind-Value="@Req.Description"
-                    maxlength="3000"
-                    placeholder="Описание взаимоотношений"/>
+<div class="mb-3">
+    <MyTextarea @bind-Value="@Req.Description"
+                maxlength="3000"
+                rows="2"
+                placeholder="Описание взаимоотношений"/>
 
-        <ValidationMessage For="@(() => Req.Description)"/>
-    </div>
-}
+    <ValidationMessage For="@(() => Req.Description)"/>
+</div>
 
 @code {
 
@@ -104,7 +101,7 @@
         return entryIds;
     }
 
-    private async Task HandleEntryIdsChanged(bool isFirst, List<Guid> entryIds)
+    private void HandleEntryIdsChanged(bool isFirst, List<Guid> entryIds)
     {
         Guid? entryId = entryIds.Any() ? entryIds.First() : null;
 

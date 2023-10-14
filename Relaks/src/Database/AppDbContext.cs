@@ -14,6 +14,7 @@ public sealed class AppDbContext : DbContext
     public DbSet<EPerson> EPersons { get; set; } = null!;
     public DbSet<EMeet> EMeets { get; set; } = null!;
     public DbSet<Country> Countries { get; set; } = null!;
+    public DbSet<EntryRelation> EntryRelations { get; set; } = null!;
 
     public DbSet<BaseEntryInfo> BaseEntryInfos { get; set; } = null!;
     public DbSet<EiPhone> EiPhones { get; set; } = null!;
@@ -56,6 +57,7 @@ public sealed class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new FileCategoryConfiguration());
         modelBuilder.ApplyConfiguration(new EntryFileConfiguration());
         modelBuilder.ApplyConfiguration(new StructureGroupConfiguration());
+        modelBuilder.ApplyConfiguration(new EntryRelationConfiguration());
 
         // DateTime Always UTC
         // https://stackoverflow.com/a/61243301/5638975

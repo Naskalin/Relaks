@@ -1,7 +1,9 @@
-﻿using Relaks.Interfaces;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Relaks.Interfaces;
 
 namespace Relaks.Models;
 
+[Table("EntryRelations")]
 public class EntryRelation : IEntryRelation
 {
     public Guid Id { get; set; }

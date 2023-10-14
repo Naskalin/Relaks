@@ -24,8 +24,26 @@
                         </button>
                     </div>
                 </div>
-
-
+                
+                if (Store.EntryRelations.Any())
+                {
+                    <div>
+                        @{ var odd = true; }
+                        @foreach (var eRelation in Store.EntryRelations)
+                        {
+                            <div class="px-2 py-3 @(odd ? "bg-secondary bg-opacity-5": "")">
+                                <_EntryRelationItem EntryRelation="@eRelation"/>
+                            </div>
+                            odd = !odd;
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted"><i class="las la-info-circle la-lg me-1"></i> Взаимоотношений не найдено.</p>
+                }
+                
+                <br>
                 <h5 class="mb-4">Структуры других объединений</h5>
                 @if (Store.StructureItems.Any())
                 {
@@ -36,13 +54,13 @@
                 }
                 else
                 {
-                    <p class="text-muted"><i class="las la-info-circle la-lg me-1"></i> Связей не найдено. Для отображения связи, текущее объединение должно быть задействовано хотя бы в одной структуре другого объединения.</p>
+                    <p class="text-muted"><i class="las la-info-circle la-lg me-1"></i> Связей со структурами не найдено. Для отображения связи, текущее объединение должно быть задействовано хотя бы в одной структуре другого объединения.</p>
                 }
                 break;
             case EntryConnectionStore.StateEnum.EditEntryConnection:
                 break;
             case EntryConnectionStore.StateEnum.NewEntryConnection:
-                <New/>
+                <New OnStateChanged="@StateHasChanged"/>
                 break;
         }
     </CascadingValue>
@@ -62,6 +80,7 @@
             EntryId = EntryId,
         };
 
+        Store.FindEntryRelations();
         Store.FindStructureItems();
         Store.FindStructureGroupTitles();
     // Store = new EntryStructureStore(Db)

@@ -4,7 +4,7 @@
     <div class="col-8">
         <MyTitle ShowBeforeTitle="@true">
             <BeforeTitle>
-                <button @onclick="@(() => Store.State = EntryConnectionStore.StateEnum.List)" class="btn btn-outline-secondary">
+                <button @onclick="@HandleBack" class="btn btn-outline-secondary">
                     <i class="las la-arrow-left la-lg me-1"></i> @Resources.Action.Return
                 </button>
             </BeforeTitle>
@@ -33,6 +33,9 @@
     
     [CascadingParameter]
     public EntryConnectionStore Store { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -40,6 +43,12 @@
         {
             FirstId = Store.EntryId,
         };
+    }
+
+    private async Task HandleBack()
+    {
+        Store.State = EntryConnectionStore.StateEnum.List;
+        await OnStateChanged.InvokeAsync();
     }
 
     private void OnSubmit()
