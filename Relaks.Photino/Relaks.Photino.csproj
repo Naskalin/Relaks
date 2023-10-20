@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <ApplicationIcon>favicon.ico</ApplicationIcon>
+        <AssemblyName>Relaks</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
