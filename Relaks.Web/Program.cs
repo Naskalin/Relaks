@@ -1,5 +1,6 @@
 using Microsoft.Extensions.FileProviders;
 using Relaks;
+using Relaks.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,3 +29,9 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/Index");
 
 app.Run();
+
+var appOperation = new AppOperation();
+appOperation.OnRestart += () =>
+{
+    Console.WriteLine(@">>> ok reload app");
+};

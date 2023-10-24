@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -5,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Photino.Blazor;
 using PhotinoNET;
 using Relaks;
+using Relaks.Utils;
 
 if (OperatingSystem.IsWindows())
 {
@@ -31,12 +33,26 @@ mainWindow
     .SetHeight(768)
     .SetIconFile("favicon.ico")
     .SetTitle("Relaks beta")
-    .SetDevToolsEnabled(false)
+    .SetDevToolsEnabled(true)
     ;
 mainWindow.Centered = true;
 
 var windowManager = app.Services.GetRequiredService<PhotinoWebViewManager>();
 mainWindow.RegisterCustomSchemeHandler(PhotinoWebViewManager.BlazorAppScheme, windowManager.HandleWebRequest);
+
+var appOperation = app.Services.GetRequiredService<AppOperation>();
+appOperation.OnRestart += RestartApp;
+
+void RestartApp()
+{
+    var fileName = Process.GetCurrentProcess().MainModule?.FileName;
+    
+    // close window = stop process
+    mainWindow.Close();
+    
+    // open new window
+    if (!string.IsNullOrEmpty(fileName)) Process.Start(Path.GetFullPath(fileName));
+}
 
 AppDomain.CurrentDomain.UnhandledException += (sender, error) =>
 {

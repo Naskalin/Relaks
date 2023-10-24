@@ -1,12 +1,25 @@
 ﻿@page "/test"
+@using Relaks.Utils
+@using Console = System.Console
+@inject AppOperation AppOperation;
 
 <PageTemplate>
     <MyTitle>Test</MyTitle>
 
-    @Dir
-    <DirectoryField @bind-Value="@Dir"/>
+    <button @onclick="@Restart">Restart</button>
 </PageTemplate>
 
 @code {
-    private string? Dir { get; set; }
+    private void Restart()
+    {
+        AppOperation.Restart();
+    }
+
+    protected override void OnParametersSet()
+    {
+        AppOperation.OnRestart += () =>
+        {
+            Console.WriteLine(@">>> ok test reload");
+        };
+    }
 }

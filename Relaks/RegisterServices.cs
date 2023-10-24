@@ -8,6 +8,7 @@ using Relaks.Managers;
 using Relaks.Models;
 using Relaks.Models.Store;
 using Relaks.Models.StructureModels;
+using Relaks.Utils;
 using Relaks.Validators;
 using Relaks.Validators.AppFileValidators;
 using Relaks.Validators.EntryInfoValidators;
@@ -48,6 +49,7 @@ public static class RegisterServices
         
         services.AddScoped<IValidator<StructureItem>, StructureItemValidator>();
         services.AddScoped<IValidator<StructureGroup>, StructureGroupValidator>();
+        services.AddSingleton<AppOperation>();
 
         // services.AddScoped<IValidator<EntryInfoCreateRequest>, EntryInfoCreateRequestValidator>();
     }
