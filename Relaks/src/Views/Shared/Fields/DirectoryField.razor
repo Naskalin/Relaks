@@ -118,7 +118,7 @@
             new DirectoryInfo(ModalSelectedPath).GetFiles();
         } catch (UnauthorizedAccessException ex)
         {
-            Errors.Add("Ошибка. Не достаточно прав для чтения или записи, пожалуйста, выберите другую директорию.");
+            Errors.Add("Ошибка. Не достаточно прав для чтения или записи. Пожалуйста, выберите другую директорию.");
             return new List<string>();
         }
         

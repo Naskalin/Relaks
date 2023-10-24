@@ -7,6 +7,10 @@ namespace Relaks.Models.Store;
 
 public class EntryRelationRequest
 {
+    /// <summary>
+    /// Заполнено при изменении
+    /// </summary>
+    public Guid? Id { get; set; }
     public Guid? FirstId { get; set; }
     public Guid? SecondId { get; set; }
     public int FirstRating { get; set; }

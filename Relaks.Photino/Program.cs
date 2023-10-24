@@ -31,7 +31,7 @@ mainWindow
     .SetHeight(768)
     .SetIconFile("favicon.ico")
     .SetTitle("Relaks beta")
-    .SetDevToolsEnabled(true)
+    .SetDevToolsEnabled(false)
     ;
 mainWindow.Centered = true;
 

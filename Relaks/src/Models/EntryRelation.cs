@@ -4,7 +4,7 @@ using Relaks.Interfaces;
 namespace Relaks.Models;
 
 [Table("EntryRelations")]
-public class EntryRelation : IEntryRelation, ITimestamped
+public class EntryRelation : ITimestamped
 {
     public Guid Id { get; set; }
     

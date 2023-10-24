@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using BootstrapBlazor.Components;
+using FluentValidation;
 using Relaks.Database;
 using Relaks.Interfaces;
 using Relaks.Models.Store;
@@ -21,15 +22,17 @@ public class EntryRelationValidator : AbstractValidator<EntryRelationRequest>
 
         When(x => x.FirstId.HasValue && x.SecondId.HasValue, () =>
         {
-            RuleFor(x => x).Must(x => !IsDuplicate(x.FirstId!.Value, x.SecondId!.Value)).WithMessage("Ошибка дублирования. Такое взаимоотношение уже присутствует.");
+            RuleFor(x => x).Must(x => !IsDuplicate(x)).WithMessage("Ошибка дублирования. Такое взаимоотношение уже присутствует.");
         });
     }
 
-    private bool IsDuplicate(Guid firstId, Guid secondId)
+    private bool IsDuplicate(EntryRelationRequest req)
     {
-        return _db.EntryRelations.Any(x => 
-            x.FirstId.Equals(firstId) && x.SecondId.Equals(secondId)
-            || x.FirstId.Equals(secondId) && x.SecondId.Equals(firstId)
+        return _db.EntryRelations
+            .Where(x => !x.Id.Equals(req.Id))
+            .Any(x => 
+            x.FirstId.Equals(req.FirstId) && x.SecondId.Equals(req.SecondId)
+            || x.FirstId.Equals(req.SecondId) && x.SecondId.Equals(req.FirstId)
         );
     }
 }
