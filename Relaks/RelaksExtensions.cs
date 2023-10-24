@@ -8,12 +8,14 @@ using Relaks.Managers;
 
 namespace Relaks;
 
-public static class RelaksExtensions 
+public static class RelaksExtensions
 {
+    private static string ProjectDir { get; set; } = "";
+    
     public static void AddRelaks(this IServiceCollection services)
     {
-        var projectDir = AppDomain.CurrentDomain.BaseDirectory;
-        var relaksConfig = RelaksConfigManager.GetOrCreateConfig(projectDir);
+        ProjectDir = AppDomain.CurrentDomain.BaseDirectory;
+        var relaksConfig = RelaksConfigManager.GetOrCreateConfig(ProjectDir);
         services.AddSingleton(relaksConfig);
 
         services.AddDbContext<AppDbContext>(o =>
@@ -44,6 +46,6 @@ public static class RelaksExtensions
     {
         var projectDir = AppDomain.CurrentDomain.BaseDirectory;
         var relaksConfig = RelaksConfigManager.GetOrCreateConfig(projectDir);
-        return new PhysicalFileProvider(relaksConfig.FilesDirPath);
+        return new PhysicalFileProvider(relaksConfig.FilesDirPath());
     }
 }

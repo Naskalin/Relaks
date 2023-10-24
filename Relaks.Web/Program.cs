@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.Extensions.FileProviders;
 using Relaks;
 using Relaks.Utils;
@@ -20,7 +21,6 @@ builder.Services.PostConfigure<StaticFileOptions>(o =>
 var app = builder.Build();
 app.UseRelaks();
 
-// app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.MapRazorPages();
@@ -28,10 +28,12 @@ app.MapRazorPages();
 app.MapBlazorHub();
 app.MapFallbackToPage("/Index");
 
-app.Run();
+var appOperation = app.Services.GetRequiredService<AppOperation>();
+appOperation.OnRestart += RestartApp;
 
-var appOperation = new AppOperation();
-appOperation.OnRestart += () =>
+void RestartApp()
 {
-    Console.WriteLine(@">>> ok reload app");
-};
+    app.StopAsync().ContinueWith(_ => app.Start());
+}
+
+app.Run();

@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Relaks.Interfaces;
 using Relaks.Managers;
 using Relaks.Models;
+using Relaks.Models.Misc;
 using Relaks.Models.Store;
 using Relaks.Models.StructureModels;
 using Relaks.Utils;
@@ -22,6 +23,8 @@ public static class RegisterServices
     public static void RegisterManagers(this IServiceCollection services)
     {
         // services.AddSingleton<RelaksConfigManager>();
+        services.AddSingleton<AppOperation>();
+        
         services.AddScoped<EntryManager>();
         services.AddScoped<AppFileManager>();
         services.AddSignalR(e => e.MaximumReceiveMessageSize = null);
@@ -49,7 +52,8 @@ public static class RegisterServices
         
         services.AddScoped<IValidator<StructureItem>, StructureItemValidator>();
         services.AddScoped<IValidator<StructureGroup>, StructureGroupValidator>();
-        services.AddSingleton<AppOperation>();
+        
+        services.AddScoped<IValidator<AppFirstRunRequest>, AppFirstRunRequestValidator>();
 
         // services.AddScoped<IValidator<EntryInfoCreateRequest>, EntryInfoCreateRequestValidator>();
     }

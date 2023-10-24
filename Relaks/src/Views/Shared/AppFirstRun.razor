@@ -1,0 +1,57 @@
+﻿@using Relaks.Managers
+@using Relaks.Models.Misc
+@using Relaks.Utils
+@using Console = System.Console
+
+@inject RelaksConfig RelaksConfig;
+@inject AppOperation AppOperation;
+
+<div class="row justify-content-center align-items-center" style="height: 100vh">
+    <div class="col-6">
+        <h2 class="mb-4">Relaks, первый запуск</h2>
+        
+        <ul class="ul-info mb-4">
+            <li>Добро пожаловать, осталось только указать путь к хранилищу и нажать продолжить.</li>
+            <li>Все данные, внесённые в Relaks, хранятся в директории хранилища.</li>
+            <li>Укажите путь к директории, если хранилище уже существует.</li>
+        </ul>
+        
+        <EditForm Model="@Req" OnSubmit="@OnSubmit">
+            <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
+            <ValidationSummary/>
+            
+            <div class="mb-3">
+                <DirectoryField @bind-Value="@Req.StoreDirPath" Label="Директория хранилища"/>
+                <ValidationMessage For="@(() => Req.StoreDirPath)"/>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg">
+                Продолжить <i class="las la-angle-right la-lg ms-1"></i>
+            </button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private AppFirstRunRequest Req { get; set; } = new();
+    private FluentValidationValidator Validator { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        Req.StoreDirPath = RelaksConfig.StoreDirPath;
+    }
+
+    private void OnSubmit()
+    {
+        if (!Validator.Validate()) return;
+
+        var config = RelaksConfig;
+        
+        config.StoreDirPath = Req.StoreDirPath;
+        config.IsFirstRun = false;
+        
+        RelaksConfigManager.SaveConfigFile(config);
+        
+        AppOperation.Restart();
+    }
+}

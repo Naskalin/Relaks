@@ -18,7 +18,7 @@ public class AppFileManager
 
     public string ToFullPath(IAppFile appFile)
     {
-        return Path.Combine(_relaksConfig.FilesDirPath, appFile.FilePath());
+        return Path.Combine(_relaksConfig.FilesDirPath(), appFile.FilePath());
     }
     
     public async Task UploadAsync(BaseFile appFile, IBrowserFile file)

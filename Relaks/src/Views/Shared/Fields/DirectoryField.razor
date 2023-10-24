@@ -1,7 +1,7 @@
 ﻿<label for="@Id" class="form-label">@(Label)</label>
 
 <div class="input-group">
-    <button class="btn btn-outline-secondary" type="button" @onclick="@(() => Modal.Show())">Выбрать</button>
+    <button class="btn btn-outline-secondary" type="button" @onclick="@HandleShowDirectoryModal">Выбрать</button>
     <input type="text" value="@Value" @onchange="@(e => ValueChanged.InvokeAsync(e.Value?.ToString()))" class="form-control" id="@Id" placeholder="Путь к директории...">
 </div>
 @if (!string.IsNullOrEmpty(HelpText))
@@ -21,6 +21,14 @@
                     }
                 </ul>   
             }
+            <div class="d-flex gap-2 mb-3 align-items-center">
+                <div class="text-muted">Выберите диск</div>
+                @foreach (var drive in DriveInfo.GetDrives())
+                {
+                    <button type="button" class="btn btn-secondary" @onclick="@(() => HandleClickDirectory(drive.Name))">@drive.Name</button>
+                }
+            </div>
+            
             @if (!string.IsNullOrEmpty(ModalSelectedPath))
             {
                 <div class="mb-3">
@@ -39,22 +47,7 @@
                     }
                 </ul>
             }
-            else
-            {
-                <div class="d-flex gap-2 mb-3 align-items-center">
-                    <div class="text-muted">Выберите диск</div>
-                    @foreach (var drive in DriveInfo.GetDrives())
-                    {
-                        <button type="button" class="btn btn-secondary" @onclick="@(() => HandleClickDirectory(drive.Name))">@drive.Name</button>
-                    }
-                </div>
-            }
-            @if (!string.IsNullOrEmpty(ModalSelectedPath))
-            {
-                <div class="mt-3">
-                    <code class="fw-semibold text-primary">@ModalSelectedPath</code>
-                </div>
-            }
+       
         </BodyTemplate>
         <FooterTemplate>
             <button type="button" class="btn btn-primary" @onclick="@HandleModalPrimaryClick">
@@ -129,6 +122,11 @@
             .Where(s => !s.Attributes.HasFlag(FileAttributes.Hidden))
             .Where(s => !s.Attributes.HasFlag(FileAttributes.ReadOnly))
             .Select(s => s.FullName).ToList();
+    }
+
+    private void HandleShowDirectoryModal()
+    {
+        Modal.Show();
     }
 
     private Task HandleModalPrimaryClick()

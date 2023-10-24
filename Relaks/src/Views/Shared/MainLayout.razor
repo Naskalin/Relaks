@@ -1,6 +1,15 @@
 ﻿@inherits LayoutComponentBase
 
-<nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary">
+@using Relaks.Managers
+@inject RelaksConfig RelaksConfig;
+
+@if (RelaksConfig.IsFirstRun)
+{
+    <AppFirstRun/>
+}
+else
+{
+ <nav class="navbar sticky-top navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">
       Relaks <small><span class="badge text-bg-secondary ms-2">beta</span></small>
@@ -22,7 +31,7 @@
             <small class="text-muted">линия времени</small>
           </a>
         </li>
-        
+
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <div>Общие данные</div>
@@ -64,4 +73,5 @@
   </div>
 </nav>
 
-@Body
+@Body   
+}

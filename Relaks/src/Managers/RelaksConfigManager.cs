@@ -1,16 +1,19 @@
-﻿using Relaks.Interfaces;
-using YamlDotNet.Serialization;
+﻿using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
 namespace Relaks.Managers;
 
-public class RelaksConfig : IRelaksConfig
+public class RelaksConfig
 {
+    public bool IsFirstRun { get; set; }
     public string ProjectDir { get; set; } = null!;
-    public string SqliteFilePath { get; set; } = null!;
-    public string FilesDirPath { get; set; } = null!;
+    public string StoreDirPath { get; set; } = null!;
 
-    public string SqliteConnectionString() => "Data Source=" + SqliteFilePath;
+    public bool IsValid() => Directory.Exists(StoreDirPath);
+
+    public string FilesDirPath() => Path.Combine(StoreDirPath, "files");
+    public string SqliteFilePath() => Path.Combine(StoreDirPath, "relaks.db");
+    public string SqliteConnectionString() => "Data Source=" + SqliteFilePath();
 }
 
 public static class RelaksConfigManager
@@ -19,6 +22,7 @@ public static class RelaksConfigManager
     private const string StoreDirName = "relaks_store";
 
     private static string RelaksConfigPath(string projectDir) => Path.Combine(projectDir, RelaksConfigName);
+    private static bool HasConfigFile(string projectDir) => File.Exists(RelaksConfigPath(projectDir));
 
     /// <summary>
     /// Parent of projectDir
@@ -32,7 +36,7 @@ public static class RelaksConfigManager
         if (string.IsNullOrEmpty(parentDir)) throw new ArgumentException("[parentDir] is null");
 
         return Path.Combine(parentDir, StoreDirName);
-    } 
+    }
 
     /// <summary>
     /// Создаём конфигурацию по умолчанию
@@ -45,20 +49,25 @@ public static class RelaksConfigManager
         
         var model = new RelaksConfig()
         {
+            IsFirstRun = true,
             ProjectDir = projectDir,
-            FilesDirPath = Path.Combine(storeDir, "files"),
-            SqliteFilePath = Path.Combine(storeDir, "relaks.db"),
+            StoreDirPath = storeDir,
         };
+        SaveConfigFile(model);
+
+        return model;
+    }
+
+    public static void SaveConfigFile(RelaksConfig config)
+    {
         var serializer = new SerializerBuilder()
             .WithNamingConvention(CamelCaseNamingConvention.Instance)
             .Build();
-        var yaml = serializer.Serialize(model);
-        File.WriteAllText(RelaksConfigPath(projectDir), yaml);
+        var yaml = serializer.Serialize(config);
+        File.WriteAllText(RelaksConfigPath(config.ProjectDir), yaml);
 
-        Directory.CreateDirectory(model.FilesDirPath);
-        Directory.CreateDirectory(Path.GetDirectoryName(model.SqliteFilePath)!);
-
-        return model;
+        Directory.CreateDirectory(config.FilesDirPath());
+        Directory.CreateDirectory(Path.GetDirectoryName(config.SqliteFilePath())!);
     }
 
     /// <summary>
@@ -71,7 +80,7 @@ public static class RelaksConfigManager
         var relaksConfigPath = RelaksConfigPath(projectDir);
         RelaksConfig config;
         
-        if (!File.Exists(relaksConfigPath))
+        if (!HasConfigFile(projectDir))
         {
             config = CreateDefaultConfig(projectDir);
         }
@@ -84,10 +93,10 @@ public static class RelaksConfigManager
                 .Build();
         
             config = deserializer.Deserialize<RelaksConfig>(yamlString);
-            if (string.IsNullOrEmpty(config.SqliteFilePath) || string.IsNullOrEmpty(config.FilesDirPath))
+            if (!config.IsValid())
             {
                 config = CreateDefaultConfig(projectDir);
-            }   
+            }
         }
 
         return config;
