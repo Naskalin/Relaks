@@ -18,7 +18,7 @@ public class BaseEntryValidator : AbstractValidator<BaseEntry>
 
     private bool IsValidDiscriminator(string disc)
     {
-        return new List<string>() {nameof(EPerson), nameof(EMeet), nameof(ECompany)}.Contains(disc);
+        return new List<string>() {nameof(EPerson), nameof(EProject), nameof(ECompany)}.Contains(disc);
     }
 }
 

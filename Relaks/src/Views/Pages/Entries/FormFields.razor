@@ -63,7 +63,7 @@
     [Parameter]
     public List<Guid> ProfessionIds { get; set; } = new();
 
-    private bool IsMeet() => nameof(EMeet).Equals(Entry.Discriminator);
+    private bool IsMeet() => nameof(EProject).Equals(Entry.Discriminator);
     
     
 

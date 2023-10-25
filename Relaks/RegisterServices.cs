@@ -35,7 +35,7 @@ public static class RegisterServices
         ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
         services.AddScoped<IValidator<EPerson>, BaseEntryValidator>();
         services.AddScoped<IValidator<ECompany>, BaseEntryValidator>();
-        services.AddScoped<IValidator<EMeet>, BaseEntryValidator>();
+        services.AddScoped<IValidator<EProject>, BaseEntryValidator>();
         services.AddScoped<IValidator<EntryRelationRequest>, EntryRelationValidator>();
 
         services.AddScoped<IValidator<EiDate>, EiDateValidator>();

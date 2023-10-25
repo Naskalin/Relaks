@@ -73,7 +73,7 @@
         {
             nameof(EPerson) => new EPerson(),
             nameof(ECompany) => new ECompany(),
-            nameof(EMeet) => new EMeet(),
+            nameof(EProject) => new EProject(),
             _ => throw new ArgumentException($"Error: discriminator {Entry.Discriminator} is not supported")
             };
         

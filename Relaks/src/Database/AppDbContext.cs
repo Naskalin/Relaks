@@ -12,7 +12,7 @@ public sealed class AppDbContext : DbContext
     public DbSet<BaseEntry> BaseEntries { get; set; } = null!;
     public DbSet<ECompany> ECompanies { get; set; } = null!;
     public DbSet<EPerson> EPersons { get; set; } = null!;
-    public DbSet<EMeet> EMeets { get; set; } = null!;
+    public DbSet<EProject> EProjects { get; set; } = null!;
     public DbSet<Country> Countries { get; set; } = null!;
     public DbSet<EntryRelation> EntryRelations { get; set; } = null!;
 

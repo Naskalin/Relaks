@@ -7,7 +7,7 @@ public static partial class DataHelper
     private static Dictionary<string, string> IconsByEntityNames => new()
     {
         {nameof(EPerson), "las la-user"},
-        {nameof(EMeet), "las la-handshake"},
+        {nameof(EProject), "las la-project-diagram"},
         {nameof(ECompany), "las la-building"},
         
         {nameof(EiDate), "las la-calendar"},

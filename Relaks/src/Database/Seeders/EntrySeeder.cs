@@ -30,13 +30,13 @@ public partial class DatabaseSeeder
                     Db.ECompanies.Add(eCompany);
                     break;
                 case 3:
-                    var eMeet = new EMeet()
+                    var eProject = new EProject()
                     {
                         Name = Faker.Company.CompanyName(),
                         Description = Faker.Random.ArrayElement(new[] {Faker.Company.CatchPhrase(), ""}),
                     };
-                    FakeEntry(eMeet);
-                    Db.EMeets.Add(eMeet);
+                    FakeEntry(eProject);
+                    Db.EProjects.Add(eProject);
                     break;
             }
         }

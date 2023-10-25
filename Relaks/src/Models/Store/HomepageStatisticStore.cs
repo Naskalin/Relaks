@@ -19,7 +19,7 @@ public class HomepageStatisticStore
     {
         EntryCounts["Люди"] = _db.EPersons.Count();
         EntryCounts["Компании"] = _db.ECompanies.Count();
-        EntryCounts["Встречи"] = _db.EMeets.Count();
+        EntryCounts["Проекты"] = _db.EProjects.Count();
         
         FileCounts["Файлы"] = _db.EntryFiles.Count();
         FileCounts["Метки файлов"] = _db.EntryFileTags.Count();

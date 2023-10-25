@@ -36,8 +36,8 @@
     <data name="ECompany" xml:space="preserve">
         <value>Компания</value>
     </data>
-    <data name="EMeet" xml:space="preserve">
-        <value>Встреча</value>
+    <data name="EProject" xml:space="preserve">
+        <value>Проект</value>
     </data>
     <data name="BaseEntry" xml:space="preserve">
         <value>Объединение</value>
@@ -48,14 +48,14 @@
     <data name="EPerson_EndAt" xml:space="preserve">
         <value>Дата смерти</value>
     </data>
-    <data name="EMeet_StartAt" xml:space="preserve">
-        <value>Начало встречи</value>
+    <data name="EProject_StartAt" xml:space="preserve">
+        <value>Начало проекта</value>
     </data>
     <data name="ECompany_StartAt" xml:space="preserve">
         <value>Регистрация компании</value>
     </data>
-    <data name="EMeet_EndAt" xml:space="preserve">
-        <value>Окончание встречи</value>
+    <data name="EProject_EndAt" xml:space="preserve">
+        <value>Окончание проекта</value>
     </data>
     <data name="ECompany_EndAt" xml:space="preserve">
         <value>Ликвидация компании</value>
@@ -63,8 +63,8 @@
     <data name="EPerson_Name" xml:space="preserve">
         <value>ФИО</value>
     </data>
-    <data name="EMeet_Name" xml:space="preserve">
-        <value>Название встречи</value>
+    <data name="EProject_Name" xml:space="preserve">
+        <value>Название проекта</value>
     </data>
     <data name="ECompany_Name" xml:space="preserve">
         <value>Название компании</value>
@@ -75,8 +75,8 @@
     <data name="EPerson_About" xml:space="preserve">
         <value>О человеке</value>
     </data>
-    <data name="EMeet_About" xml:space="preserve">
-        <value>О встрече</value>
+    <data name="EProject_About" xml:space="preserve">
+        <value>О проекте</value>
     </data>
     <data name="ECompany_About" xml:space="preserve">
         <value>О компании</value>

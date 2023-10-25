@@ -59,10 +59,7 @@
     <data name="Files" xml:space="preserve">
         <value>Files</value>
     </data>
-    <data name="Test" xml:space="preserve">
-        <value>Test en</value>
-    </data>
     <data name="Email" xml:space="preserve">
-        <value>E-mail</value>
+        <value>Email</value>
     </data>
 </root>

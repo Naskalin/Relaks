@@ -6,7 +6,7 @@ public static partial class DataHelper
 {
     public static readonly List<string> EntryDiscriminators = new()
     {
-        nameof(EPerson), nameof(ECompany), nameof(EMeet)
+        nameof(EPerson), nameof(ECompany), nameof(EProject)
     };
 
     public static readonly List<string> EntryInfoContactDiscriminators = new()

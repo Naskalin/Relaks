@@ -52,7 +52,7 @@ public class ECompany : BaseEntry
     
 }
 
-public class EMeet : BaseEntry
+public class EProject : BaseEntry
 {
     
 }
