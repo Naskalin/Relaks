@@ -30,6 +30,7 @@ public abstract class BaseEntry : IEntry, ITimestamped, ISoftDeletedReason
     
     public List<BaseEntryInfo> EntryInfos { get; set; } = new();
     public List<Profession> Professions { get; set; } = new();
+    public List<EntryTag> Tags { get; set; } = new();
     
     /// <summary>
     /// Файлы объединения

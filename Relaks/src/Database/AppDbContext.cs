@@ -35,6 +35,10 @@ public sealed class AppDbContext : DbContext
 
     public DbSet<Profession> Professions { get; set; } = null!;
     public DbSet<ProfessionCategory> ProfessionCategories { get; set; } = null!;
+    
+    public DbSet<EntryTag> EntryTags { get; set; } = null!;
+    public DbSet<EntryTagTitle> EntryTagTitles { get; set; } = null!;
+    public DbSet<EntryTagCategory> EntryTagCategories { get; set; } = null!;
 
     public DbSet<StructureGroup> StructureGroups { get; set; } = null!;
     public DbSet<StructureItem> StructureItems { get; set; } = null!;
@@ -58,6 +62,7 @@ public sealed class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new EntryFileConfiguration());
         modelBuilder.ApplyConfiguration(new StructureGroupConfiguration());
         modelBuilder.ApplyConfiguration(new EntryRelationConfiguration());
+        modelBuilder.ApplyConfiguration(new EntryTagCategoryConfiguration());
 
         // DateTime Always UTC
         // https://stackoverflow.com/a/61243301/5638975
