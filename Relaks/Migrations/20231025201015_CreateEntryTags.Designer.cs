@@ -11,7 +11,7 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231025150211_CreateEntryTags")]
+    [Migration("20231025201015_CreateEntryTags")]
     partial class CreateEntryTags
     {
         /// <inheritdoc />
@@ -434,9 +434,15 @@ namespace Relaks.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

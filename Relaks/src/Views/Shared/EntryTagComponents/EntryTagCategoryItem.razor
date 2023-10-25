@@ -1,0 +1,57 @@
+﻿@using Relaks.Views.Shared.EntryTagComponents
+@using Relaks.Models
+
+<li>
+    <button class="btn btn-link @(Store.Req.CategoryId.Equals(Category.Id) ? "active" : "") @(Category.ParentId == null ? "fw-bold" : "")" type="button" @onclick="@OnClickAsync">
+        <i class="las la-angle-right"></i>
+        @Category.Title
+    </button>
+    
+    @if (IsOpen() && Category.Children.Any())
+    {
+        <ul class="my-tree">
+            @foreach (var child in Category.Children)
+            {
+                <EntryTagCategoryItem Category="@child" OnStateChanged="@(() => OnStateChanged.InvokeAsync())"/>
+            }
+        </ul>
+    }
+</li>
+
+@code {
+
+    [Parameter]
+    public EntryTagCategory Category { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+
+    private bool IsRoot() => Category.ParentId == null;
+
+    private bool IsOpen() => !IsRoot() || IsRoot()
+                             && Store.SelectedCategoryIdRoot.HasValue
+                             && Store.SelectedCategoryIdRoot.Value.Equals(Category.Id); 
+
+    [CascadingParameter]
+    public EntryTagListStore Store { get; set; } = null!;
+    
+    private async Task OnClickAsync()
+    {
+        Store.Req.CategoryId = Category.Id;
+        
+        if (IsOpen() && Store.SidebarState == EntryTagListStore.SidebarStateEnum.EditCategoryEmpty)
+        {
+            Store.SidebarState = EntryTagListStore.SidebarStateEnum.EditCategory;
+            await OnStateChanged.InvokeAsync();
+            return;
+        }
+        
+        if (IsRoot())
+        {
+            Store.SelectedCategoryIdRoot = Category.Id.Equals(Store.SelectedCategoryIdRoot) ? null : Category.Id;
+        }
+        
+        await OnStateChanged.InvokeAsync();
+    }
+
+}

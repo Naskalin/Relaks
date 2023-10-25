@@ -1,0 +1,63 @@
+﻿<div class="row align-items-center justify-content-between mb-3 g-2">
+    @if (WithBackLink == true)
+    {
+        <div class="col-auto">
+            <button class="btn btn-outline-secondary btn-circle btn-sm" type="button" @onclick="@(() => OnBackLink.InvokeAsync())">
+                <i class="las la-arrow-left la-lg"></i>
+            </button>
+        </div>
+    }
+    <div class="col">
+        <span class="h6">@Title</span>
+    </div>
+    @if (WithEdit == true)
+    {
+        <div class="col-auto">
+            <Tooltip Title="@($"{Resources.Action.Edit}")" Trigger="hover">
+                <button type="button" class="btn bg-secondary bg-opacity-10 btn-sm btn-circle @(IsEditEmptyId == true ? "active" : "")" @onclick="@(() => OnEdit.InvokeAsync())">
+                    <i class="las la-edit la-lg"></i>
+                </button>
+            </Tooltip>
+        </div>
+        <div class="col-auto">
+            <Tooltip Title="@($"{Resources.Action.Add}")" Trigger="hover">
+                <button type="button" class="btn bg-secondary bg-opacity-10 btn-sm btn-circle" @onclick="@(() => OnAdd.InvokeAsync())">
+                    <i class="las la-plus la-lg"></i>
+                </button>
+            </Tooltip>
+        </div>
+    }
+</div>
+
+@if (IsEditEmptyId == true)
+{
+    <p class="text-center text-muted small"><i class="las la-info-circle la-lg me-1"></i> @(EditEmptyIdText ?? "???")</p>
+}
+
+@code {
+
+    [Parameter]
+    public string Title { get; set; } = null!;
+    
+    [Parameter]
+    public string? EditEmptyIdText { get; set; }
+    
+    [Parameter]
+    public bool? IsEditEmptyId { get; set; }
+
+    [Parameter]
+    public EventCallback OnAdd { get; set; }
+    
+    [Parameter]
+    public EventCallback OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback OnBackLink { get; set; }
+    
+    [Parameter]
+    public bool? WithEdit { get; set; }
+
+    [Parameter]
+    public bool? WithBackLink { get; set; }
+
+}

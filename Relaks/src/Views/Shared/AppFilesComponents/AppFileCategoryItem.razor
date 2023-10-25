@@ -4,6 +4,7 @@
 
 <li>
     <button class="btn btn-link @(Store.Req.CategoryId.Equals(Category.Id) ? "active" : "")" type="button" @onclick="@OnClickAsync">
+        <i class="las la-angle-right"></i>
         @Category.Title
     </button>
 

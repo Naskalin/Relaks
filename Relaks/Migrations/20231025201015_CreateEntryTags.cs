@@ -36,6 +36,8 @@ namespace Relaks.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Title = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     CategoryId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
@@ -97,14 +99,21 @@ namespace Relaks.Migrations
                 column: "CategoryId");
             
             // создаём категорию профессии
-            migrationBuilder.Sql(@"insert into EntryTagCategories (Id, TreePath, Title)
-            VALUES ('D0CF02D6-426D-465B-bD25-9DE46E4D0764', '/D0CF02D6-426D-465B-bD25-9DE46E4D0764', 'Профессии');");
-
+            var professionCategoryId = Guid.NewGuid().ToString();
+            migrationBuilder.Sql(@$"INSERT INTO EntryTagCategories (Id, TreePath, Title)
+            VALUES ('{professionCategoryId.ToUpper()}', '/{professionCategoryId.ToLower()}', 'Профессии');");
+            
             // заполняем дочернии категории для профессий
-            migrationBuilder.Sql(@"insert into EntryTagCategories (Id, ParentId, TreePath, Title)
-            SELECT Id, 'D0CF02D6-426D-465B-bD25-9DE46E4D0764', '/D0CF02D6-426D-465B-bD25-9DE46E4D0764/' || Id, Title FROM ProfessionCategories;");
+            migrationBuilder.Sql($@"INSERT INTO EntryTagCategories (Id, ParentId, TreePath, Title)
+            SELECT Id, '{professionCategoryId.ToUpper()}', '/{professionCategoryId.ToUpper()}/' || LOWER(Id), Title FROM ProfessionCategories;");
             
             // заполняем профессии
+            migrationBuilder.Sql(@"INSERT INTO EntryTagTitles (Id, Title, CategoryId, CreatedAt, UpdatedAt)
+            SELECT Id, Title, CategoryId, datetime('now'), datetime('now') FROM Professions;");
+            
+            // переносим связи
+            migrationBuilder.Sql(@"INSERT INTO EntryTags (Id, EntryId, TagId)
+            SELECT hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(randomblob(2)),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(hex(randomblob(2)),2) || '-' || hex(randomblob(6)), EntriesId, ProfessionsId FROM BaseEntryProfession;");
         }
 
         /// <inheritdoc />
