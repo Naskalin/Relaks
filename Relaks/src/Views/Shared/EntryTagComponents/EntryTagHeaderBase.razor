@@ -13,7 +13,7 @@
     @if (WithEdit == true)
     {
         <div class="col-auto">
-            <button type="button" class="btn btn-outline-secondary" @onclick="@(() => OnAdd.InvokeAsync())">
+            <button type="button" class="btn btn-outline-primary" @onclick="@(() => OnAdd.InvokeAsync())">
                 @(AddText ?? Resources.Action.Add)
                 <i class="las la-plus-circle la-lg ms-1"></i>
             </button>
