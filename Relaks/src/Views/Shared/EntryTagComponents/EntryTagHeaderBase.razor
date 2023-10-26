@@ -1,0 +1,44 @@
+﻿<div class="row align-items-center justify-content-between mb-3 g-3">
+    @if (WithBackLink == true)
+    {
+        <div class="col-auto">
+            <button class="btn btn-outline-secondary btn-circle" type="button" @onclick="@(() => OnBackLink.InvokeAsync())">
+                <i class="las la-arrow-left la-lg"></i>
+            </button>
+        </div>
+    }
+    <div class="col">
+        <span class="h5">@Title</span>
+    </div>
+    @if (WithEdit == true)
+    {
+        <div class="col-auto">
+            <button type="button" class="btn btn-outline-secondary" @onclick="@(() => OnAdd.InvokeAsync())">
+                @(AddText ?? Resources.Action.Add)
+                <i class="las la-plus-circle la-lg ms-1"></i>
+            </button>
+        </div>
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public string Title { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback OnAdd { get; set; }
+    
+    [Parameter]
+    public string? AddText { get; set; }
+
+    [Parameter]
+    public EventCallback OnBackLink { get; set; }
+    
+    [Parameter]
+    public bool? WithEdit { get; set; }
+
+    [Parameter]
+    public bool? WithBackLink { get; set; }
+
+}

@@ -13,6 +13,7 @@ using Relaks.Utils;
 using Relaks.Validators;
 using Relaks.Validators.AppFileValidators;
 using Relaks.Validators.EntryInfoValidators;
+using Relaks.Validators.EntryTagValidators;
 using Relaks.Validators.EntryValidators;
 using Relaks.Validators.StructureValidators;
 
@@ -54,6 +55,10 @@ public static class RegisterServices
         services.AddScoped<IValidator<StructureGroup>, StructureGroupValidator>();
         
         services.AddScoped<IValidator<AppFirstRunRequest>, AppFirstRunRequestValidator>();
+        
+        services.AddScoped<IValidator<EntryTag>, EntryTagValidator>();
+        services.AddScoped<IValidator<EntryTagCategory>, EntryTagCategoryValidator>();
+        services.AddScoped<IValidator<EntryTagTitle>, EntryTagTitleValidator>();
 
         // services.AddScoped<IValidator<EntryInfoCreateRequest>, EntryInfoCreateRequestValidator>();
     }

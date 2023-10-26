@@ -16,14 +16,23 @@ public class EntryTagListStore
     {
         Default,
         EditCategory,
-        EditCategoryEmpty,
         NewCategory,
+    }
+    
+    public enum TagsStateEnum
+    {
+        Default,
+        EditTag,
+        NewTag,
     }
     
     private readonly AppDbContext _db;
     public EntryTagListRequest Req { get; set; } = new();
     public Guid? SelectedCategoryIdRoot { get; set; }
-    public SidebarStateEnum SidebarState { get; set; } = SidebarStateEnum.Default;
+    public SidebarStateEnum SidebarState { get; set; }
+    public TagsStateEnum TagsState { get; set; }
+    public Guid? EditCategoryId { get; set; }
+    public Guid? EditTagId { get; set; }
 
     public EntryTagListStore(AppDbContext db)
     {
@@ -35,21 +44,22 @@ public class EntryTagListStore
 
     public void Initialize()
     {
-        Categories = _db.EntryTagCategories
-            .ToBaseTree();
+        SidebarState = SidebarStateEnum.Default;
+        TagsState = TagsStateEnum.Default;
+        Categories = _db.EntryTagCategories.ToBaseTree();
         Tags = _db.EntryTagTitles.OrderByDescending(x => x.UpdatedAt).Take(20).ToList();
         Req = new EntryTagListRequest();
     }
 
     public void FindByRequest()
     {
-        var q = _db.EntryTagTitles.AsQueryable();
-        if (!string.IsNullOrEmpty(Req.Search))
-            q = q.Where(x => x.Title.ToLower().Contains(Req.Search.ToLower()));
-
-        if (Req.CategoryId.HasValue)
-            q = q.Where(x => x.CategoryId.Equals(Req.CategoryId.Value));
-
-        Tags = q.ToList();
+        // var q = _db.EntryTagTitles.AsQueryable();
+        // if (!string.IsNullOrEmpty(Req.Search))
+        //     q = q.Where(x => x.Title.ToLower().Contains(Req.Search.ToLower()));
+        //
+        // if (Req.CategoryId.HasValue)
+        //     q = q.Where(x => x.CategoryId.Equals(Req.CategoryId.Value));
+        //
+        // Tags = q.ToList();
     }
 }

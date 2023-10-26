@@ -8,6 +8,10 @@
                 @onclick="HandleTitleClick">
             <i class="las la-angle-right"></i>
             @Category.Title
+            @if (Category.Children.Any())
+            {
+                <small class="ms-1 fw-normal">(@Category.Children.Count)</small>   
+            }
         </button>
         @if (WithEdit)
         {
@@ -52,30 +56,22 @@
     [CascadingParameter]
     public EntryTagListStore Store { get; set; } = null!;
     
-    private Task HandleTitleClick()
+    private async Task HandleTitleClick()
     {
         Store.Req.CategoryId = Category.Id;
-        
-        // if (IsOpen() && Store.SidebarState == EntryTagListStore.SidebarStateEnum.EditCategoryEmpty)
-        // {
-        //     Store.SidebarState = EntryTagListStore.SidebarStateEnum.EditCategory;
-        //     await OnStateChanged.InvokeAsync();
-        //     return;
-        // }
-        
         if (IsRoot())
         {
             Store.SelectedCategoryIdRoot = Category.Id.Equals(Store.SelectedCategoryIdRoot) ? null : Category.Id;
         }
         
-        return OnStateChanged.InvokeAsync();
+        await OnStateChanged.InvokeAsync();
     }
 
-    private Task HandleEditBtnClick()
+    private async Task HandleEditBtnClick()
     {
-        Store.Req.CategoryId = Category.Id;
+        Store.EditCategoryId = Category.Id;
         Store.SidebarState = EntryTagListStore.SidebarStateEnum.EditCategory;
-        return OnStateChanged.InvokeAsync();
+        await OnStateChanged.InvokeAsync();
     }
 
 }

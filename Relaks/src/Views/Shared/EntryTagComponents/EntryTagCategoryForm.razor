@@ -1,0 +1,79 @@
+﻿@using Relaks.Models
+@using Relaks.Views.Shared.EntryTagComponents
+@using Relaks.Managers
+@using Relaks.Database
+@using Relaks.Mappers
+
+@inject AppDbContext Db;
+
+<EditForm Model="@Model" OnSubmit="@OnSubmit">
+    <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
+    <ValidationSummary/>
+    <div class="mb-3">
+        <label for="" class="form-label">@Resources.Action.Title *</label>
+        <input type="text" @bind-value="@Model.Title" class="form-control">
+        <ValidationMessage For="@(() => Model.Title)"/>
+    </div>
+    
+    <div class="mb-3">
+        <label for="" class="form-label">Родительская категория</label>
+        <InputSelect @bind-Value="Model.ParentId" class="form-select">
+            <option value="">(Без родителя)</option>
+            @foreach (var item in Store.Categories.ToTreeSelect())
+            {
+                <option value="@item.Value">@item.Title</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => Model.ParentId)"/>
+    </div>
+    
+    <div class="mb-3">
+        <button class="btn btn-primary">
+            <i class="las la-lg me-1 @(Store.SidebarState.Equals(EntryTagListStore.SidebarStateEnum.EditCategory) ? "la-edit" : "la-plus-circle")"></i>
+            @(Store.SidebarState.Equals(EntryTagListStore.SidebarStateEnum.EditCategory) ? Resources.Action.SaveChanges : Resources.Action.Add)
+        </button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public EntryTagCategory Model { get; set; } = new();
+    
+    [CascadingParameter]
+    public EntryTagListStore Store { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+    
+    private FluentValidationValidator Validator { get; set; } = null!;
+    private EntryTagCategory? EditingCategory { get; set; } = null;
+
+    protected override void OnParametersSet()
+    {
+        if (Store is not {SidebarState: EntryTagListStore.SidebarStateEnum.EditCategory,EditCategoryId: not null}) return;
+        EditingCategory = Db.EntryTagCategories.First(x => x.Id.Equals(Store.EditCategoryId.Value));
+        EditingCategory.MapTo(Model);
+    }
+    
+    private async Task OnSubmit()
+    {
+        if (!await Validator.ValidateAsync()) return;
+        
+        if (EditingCategory != null)
+        {
+            Model.MapTo(EditingCategory);
+        }
+        else
+        {
+            TreeManager.UpdateTreePath(Model);
+            Db.EntryTagCategories.Add(Model);
+        }
+        
+        await Db.SaveChangesAsync();
+        TreeManager.SyncTreePaths(Db.EntryTagCategories, Model.Id, Model);
+        await Db.SaveChangesAsync();
+        Store.Initialize();
+        Store.SidebarState = EntryTagListStore.SidebarStateEnum.Default;
+        await OnStateChanged.InvokeAsync();
+    }
+}

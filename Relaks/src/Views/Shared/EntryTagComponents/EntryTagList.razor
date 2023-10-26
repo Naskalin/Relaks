@@ -5,32 +5,18 @@
 @inject AppDbContext Db;
 
 <CascadingValue Value="@Store">
-    <div class="row">
-        <div class="col-4">
+    <Dump Data="@Store.SidebarState"/>
+    <Dump Data="@Store.EditCategoryId"/>
+    <div class="row g-5">
+        <div class="col-6">
             <div style="position: sticky; top: @StickyTopOffset;">
-                @* <div class="mb-3 input-group"> *@
-                @*     <input @bind-value="@Search" @oninput="@OnValueChanged" class="form-control" placeholder="Поиск профессий..."/> *@
-                @*     <button class="btn btn-outline-secondary" type="button" @onclick="@OnSearchClear"> *@
-                @*         <i class="las la-times la-lg"></i> *@
-                @*     </button> *@
-                @* </div> *@
-                @* *@
-                      @* EditEmptyIdText="Выберите категорию для изменения" *@
-                      @* IsEditEmptyId="@Store.SidebarState.Equals(EntryTagListStore.SidebarStateEnum.EditCategoryEmpty)" *@
-                      @* OnEdit="@OnEditCategories" *@
-                <EntryTagHeader Title="@SidebarDefaultTitle("Категории")"
-                      WithBackLink="@(!IsSidebarWithEdit())"
-                      WithEdit="@IsSidebarWithEdit()"
-                      OnBackLink="@(() => Store.SidebarState = EntryTagListStore.SidebarStateEnum.Default)"
-                      OnAdd="@(() => { Store.SidebarState = EntryTagListStore.SidebarStateEnum.NewCategory; StateHasChanged();})"/>
-                
+                <EntryTagCategoriesHeader WithEdit="@WithEdit" OnStateChanged="@StateHasChanged"/>
+
                 @switch (Store.SidebarState)
                 {
                     case EntryTagListStore.SidebarStateEnum.NewCategory:
-                        <div>new category</div>    
-                        break;
                     case EntryTagListStore.SidebarStateEnum.EditCategory:
-                        <div>edit category @Store.Req.CategoryId.ToString()</div>    
+                        <EntryTagCategoryForm OnStateChanged="@StateHasChanged"/>
                         break;
                     default:
                         <div class="mb-3">
@@ -43,9 +29,29 @@
                         </div>
                         break;
                 }
+                @* <EntryTagCategories WithEdit="@WithEdit"/> *@
+                @* <div class="mb-3 input-group"> *@
+                @*     <input @bind-value="@Search" @oninput="@OnValueChanged" class="form-control" placeholder="Поиск профессий..."/> *@
+                @*     <button class="btn btn-outline-secondary" type="button" @onclick="@OnSearchClear"> *@
+                @*         <i class="las la-times la-lg"></i> *@
+                @*     </button> *@
+                @* </div> *@
+                @* *@
+                @* EditEmptyIdText="Выберите категорию для изменения" *@
+                @* IsEditEmptyId="@Store.SidebarState.Equals(EntryTagListStore.SidebarStateEnum.EditCategoryEmpty)" *@
+                @* OnEdit="@OnEditCategories" *@
+
             </div>
         </div>
-        <div class="col-8">
+        <div class="col-6">
+            <EntryTagHeader WithEdit="@WithEdit" OnStateChanged="@StateHasChanged"/>
+            @* <EntryTagHeader Title="@TagsDefaultTitle()" *@
+            @*                 WithBackLink="@(!IsSidebarWithEdit())" *@
+            @*                 WithEdit="@IsSidebarWithEdit()" *@
+            @*                 AddText="Добавить метку" *@
+            @*                 OnBackLink="@(() => Store.SidebarState = EntryTagListStore.SidebarStateEnum.Default)" *@
+            @*                 OnAdd="@(() => { Store.SidebarState = EntryTagListStore.SidebarStateEnum.NewCategory; StateHasChanged();})"/> *@
+
             @* @foreach (var category in FilteredCategories) *@
             @* { *@
             @*     <div class="list-group mb-3"> *@
@@ -87,44 +93,25 @@
 
     private EntryTagListStore Store { get; set; } = null!;
 
-    private string SidebarDefaultTitle(string title)
-    {
-        return Store.SidebarState switch
-        {
-            EntryTagListStore.SidebarStateEnum.EditCategory => "Изменение",
-            EntryTagListStore.SidebarStateEnum.NewCategory => "Добавление",
-            _ => title
-            };
-    }
 
-    private bool IsSidebarWithEdit()
-    {
-        var arr = new List<EntryTagListStore.SidebarStateEnum>()
-        {
-            EntryTagListStore.SidebarStateEnum.Default,
-            EntryTagListStore.SidebarStateEnum.EditCategoryEmpty
-        };
-        return arr.Contains(Store.SidebarState) && WithEdit;
-    }
-
-    private void OnEditCategories()
-    {
-        if (Store.Req.CategoryId.HasValue && Store.SidebarState.Equals(EntryTagListStore.SidebarStateEnum.Default))
-        {
-            Store.SidebarState = EntryTagListStore.SidebarStateEnum.EditCategory;
-        }
-        else
-        {
-            Store.SidebarState = Store.SidebarState.Equals(EntryTagListStore.SidebarStateEnum.EditCategoryEmpty)
-                ? EntryTagListStore.SidebarStateEnum.Default
-                : EntryTagListStore.SidebarStateEnum.EditCategoryEmpty
-                ;   
-        }
-
-        StateHasChanged();
-        // OnStateChanged.InvokeAsync();
-        // return Task.CompletedTask;
-    }
+    // private void OnEditCategories()
+    // {
+    //     if (Store.Req.CategoryId.HasValue && Store.SidebarState.Equals(EntryTagListStore.SidebarStateEnum.Default))
+    //     {
+    //         Store.SidebarState = EntryTagListStore.SidebarStateEnum.EditCategory;
+    //     }
+    //     else
+    //     {
+    //         Store.SidebarState = Store.SidebarState.Equals(EntryTagListStore.SidebarStateEnum.EditCategoryEmpty)
+    //             ? EntryTagListStore.SidebarStateEnum.Default
+    //             : EntryTagListStore.SidebarStateEnum.EditCategoryEmpty
+    //             ;   
+    //     }
+    //
+    //     StateHasChanged();
+    //     // OnStateChanged.InvokeAsync();
+    //     // return Task.CompletedTask;
+    // }
 
     // private List<ProfessionCategory> Categories { get; set; } = new();
     // private List<Profession> Professions { get; set; } = new();
@@ -201,6 +188,7 @@
     //     FindByCategoryId();
     // }
 
+    
     protected override void OnParametersSet()
     {
         Store = new EntryTagListStore(Db);
