@@ -3,7 +3,19 @@ $my-tree-arrow-offset: 14px;
 .my-tree {
   margin: 0;
   padding: 0;
-  button {
+  &__el {
+    
+  }
+  &__el:hover {
+    background-color: rgba(var(--bs-secondary-rgb), .1);
+  }
+  &__el:hover &__hover-btn {
+    opacity: 1;
+  } 
+  &__hover-btn {
+    opacity: 0;
+  }
+  &__title {
     text-decoration: none !important;
     color: var(--bs-body-color);
     width: 100%;
@@ -18,9 +30,10 @@ $my-tree-arrow-offset: 14px;
     }
     &.active {
       background-color: rgba(var(--bs-secondary-rgb), .1);
+      border-color: rgba(var(--bs-secondary-rgb), .3);
     }
     &:hover {
-      border-color: var(--bs-secondary);
+      //background-color: rgba(var(--bs-secondary-rgb), .1);
     }
   }
 

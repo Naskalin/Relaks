@@ -35,7 +35,8 @@ public class EntryTagListStore
 
     public void Initialize()
     {
-        Categories = _db.EntryTagCategories.ToBaseTree();
+        Categories = _db.EntryTagCategories
+            .ToBaseTree();
         Tags = _db.EntryTagTitles.OrderByDescending(x => x.UpdatedAt).Take(20).ToList();
         Req = new EntryTagListRequest();
     }

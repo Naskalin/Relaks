@@ -12,13 +12,13 @@
     </div>
     @if (WithEdit == true)
     {
-        <div class="col-auto">
-            <Tooltip Title="@($"{Resources.Action.Edit}")" Trigger="hover">
-                <button type="button" class="btn bg-secondary bg-opacity-10 btn-sm btn-circle @(IsEditEmptyId == true ? "active" : "")" @onclick="@(() => OnEdit.InvokeAsync())">
-                    <i class="las la-edit la-lg"></i>
-                </button>
-            </Tooltip>
-        </div>
+        @* <div class="col-auto"> *@
+        @*     <Tooltip Title="@($"{Resources.Action.Edit}")" Trigger="hover"> *@
+        @*         <button type="button" class="btn bg-secondary bg-opacity-10 btn-sm btn-circle @(IsEditEmptyId == true ? "active" : "")" @onclick="@(() => OnEdit.InvokeAsync())"> *@
+        @*             <i class="las la-edit la-lg"></i> *@
+        @*         </button> *@
+        @*     </Tooltip> *@
+        @* </div> *@
         <div class="col-auto">
             <Tooltip Title="@($"{Resources.Action.Add}")" Trigger="hover">
                 <button type="button" class="btn bg-secondary bg-opacity-10 btn-sm btn-circle" @onclick="@(() => OnAdd.InvokeAsync())">
@@ -29,27 +29,27 @@
     }
 </div>
 
-@if (IsEditEmptyId == true)
-{
-    <p class="text-center text-muted small"><i class="las la-info-circle la-lg me-1"></i> @(EditEmptyIdText ?? "???")</p>
-}
+@* @if (IsEditEmptyId == true) *@
+@* { *@
+@*     <p class="text-center text-muted small"><i class="las la-info-circle la-lg me-1"></i> @(EditEmptyIdText ?? "???")</p> *@
+@* } *@
 
 @code {
 
     [Parameter]
     public string Title { get; set; } = null!;
     
-    [Parameter]
-    public string? EditEmptyIdText { get; set; }
-    
-    [Parameter]
-    public bool? IsEditEmptyId { get; set; }
+    // [Parameter]
+    // public string? EditEmptyIdText { get; set; }
+    //
+    // [Parameter]
+    // public bool? IsEditEmptyId { get; set; }
 
     [Parameter]
     public EventCallback OnAdd { get; set; }
     
-    [Parameter]
-    public EventCallback OnEdit { get; set; }
+    // [Parameter]
+    // public EventCallback OnEdit { get; set; }
 
     [Parameter]
     public EventCallback OnBackLink { get; set; }

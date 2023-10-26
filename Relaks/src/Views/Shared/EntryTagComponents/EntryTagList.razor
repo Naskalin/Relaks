@@ -15,13 +15,13 @@
                 @*     </button> *@
                 @* </div> *@
                 @* *@
+                      @* EditEmptyIdText="Выберите категорию для изменения" *@
+                      @* IsEditEmptyId="@Store.SidebarState.Equals(EntryTagListStore.SidebarStateEnum.EditCategoryEmpty)" *@
+                      @* OnEdit="@OnEditCategories" *@
                 <EntryTagHeader Title="@SidebarDefaultTitle("Категории")"
                       WithBackLink="@(!IsSidebarWithEdit())"
                       WithEdit="@IsSidebarWithEdit()"
-                      EditEmptyIdText="Выберите категорию для изменения"
-                      IsEditEmptyId="@Store.SidebarState.Equals(EntryTagListStore.SidebarStateEnum.EditCategoryEmpty)"
                       OnBackLink="@(() => Store.SidebarState = EntryTagListStore.SidebarStateEnum.Default)"
-                      OnEdit="@OnEditCategories"
                       OnAdd="@(() => { Store.SidebarState = EntryTagListStore.SidebarStateEnum.NewCategory; StateHasChanged();})"/>
                 
                 @switch (Store.SidebarState)
@@ -37,7 +37,7 @@
                             <ul class="my-tree">
                                 @foreach (var category in Store.Categories)
                                 {
-                                    <EntryTagCategoryItem Category="@category" OnStateChanged="@StateHasChanged"/>
+                                    <EntryTagCategoryItem WithEdit="@WithEdit" Category="@category" OnStateChanged="@StateHasChanged"/>
                                 }
                             </ul>
                         </div>

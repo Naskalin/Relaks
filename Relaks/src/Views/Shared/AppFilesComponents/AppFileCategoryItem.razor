@@ -3,10 +3,12 @@
 @using Relaks.Models.Store
 
 <li>
-    <button class="btn btn-link @(Store.Req.CategoryId.Equals(Category.Id) ? "active" : "")" type="button" @onclick="@OnClickAsync">
-        <i class="las la-angle-right"></i>
-        @Category.Title
-    </button>
+    <div class="my-tree__el">
+        <button class="btn my-tree__title btn-link @(Store.Req.CategoryId.Equals(Category.Id) ? "active" : "")" type="button" @onclick="@OnClickAsync">
+            <i class="las la-angle-right"></i>
+            @Category.Title
+        </button>
+    </div>
 
     @if (Category.Children.Any())
     {

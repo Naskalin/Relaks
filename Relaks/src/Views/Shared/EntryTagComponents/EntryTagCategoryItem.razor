@@ -2,17 +2,31 @@
 @using Relaks.Models
 
 <li>
-    <button class="btn btn-link @(Store.Req.CategoryId.Equals(Category.Id) ? "active" : "") @(Category.ParentId == null ? "fw-bold" : "")" type="button" @onclick="@OnClickAsync">
-        <i class="las la-angle-right"></i>
-        @Category.Title
-    </button>
-    
+    <div class="d-flex align-items-center gap-2 my-tree__el">
+        <button class="btn my-tree__title btn-link @(Store.Req.CategoryId.Equals(Category.Id) ? "active" : "") @(Category.ParentId == null ? "fw-bold" : "")" 
+                type="button" 
+                @onclick="HandleTitleClick">
+            <i class="las la-angle-right"></i>
+            @Category.Title
+        </button>
+        @if (WithEdit)
+        {
+            <div class="my-tree__hover-btn">
+                <Tooltip Title="Изменить" Placement="Placement.Right">
+                    <button class="btn btn-outline-secondary btn-circle btn-sm" @onclick="HandleEditBtnClick">
+                        <i class="las la-edit"></i>
+                    </button>
+                </Tooltip>
+            </div>   
+        }
+    </div>
+
     @if (IsOpen() && Category.Children.Any())
     {
         <ul class="my-tree">
             @foreach (var child in Category.Children)
             {
-                <EntryTagCategoryItem Category="@child" OnStateChanged="@(() => OnStateChanged.InvokeAsync())"/>
+                <EntryTagCategoryItem WithEdit="@WithEdit" Category="@child" OnStateChanged="@(() => OnStateChanged.InvokeAsync())"/>
             }
         </ul>
     }
@@ -20,6 +34,9 @@
 
 @code {
 
+    [Parameter]
+    public bool WithEdit { get; set; }
+    
     [Parameter]
     public EntryTagCategory Category { get; set; } = null!;
 
@@ -35,23 +52,30 @@
     [CascadingParameter]
     public EntryTagListStore Store { get; set; } = null!;
     
-    private async Task OnClickAsync()
+    private Task HandleTitleClick()
     {
         Store.Req.CategoryId = Category.Id;
         
-        if (IsOpen() && Store.SidebarState == EntryTagListStore.SidebarStateEnum.EditCategoryEmpty)
-        {
-            Store.SidebarState = EntryTagListStore.SidebarStateEnum.EditCategory;
-            await OnStateChanged.InvokeAsync();
-            return;
-        }
+        // if (IsOpen() && Store.SidebarState == EntryTagListStore.SidebarStateEnum.EditCategoryEmpty)
+        // {
+        //     Store.SidebarState = EntryTagListStore.SidebarStateEnum.EditCategory;
+        //     await OnStateChanged.InvokeAsync();
+        //     return;
+        // }
         
         if (IsRoot())
         {
             Store.SelectedCategoryIdRoot = Category.Id.Equals(Store.SelectedCategoryIdRoot) ? null : Category.Id;
         }
         
-        await OnStateChanged.InvokeAsync();
+        return OnStateChanged.InvokeAsync();
+    }
+
+    private Task HandleEditBtnClick()
+    {
+        Store.Req.CategoryId = Category.Id;
+        Store.SidebarState = EntryTagListStore.SidebarStateEnum.EditCategory;
+        return OnStateChanged.InvokeAsync();
     }
 
 }
