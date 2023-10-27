@@ -70,7 +70,7 @@
         Store.Req.CategoryId = Store.Req.CategoryId.Equals(Category.Id) ? null : Category.Id;
         if (IsRoot())
         {
-            Store.SelectedCategoryIdRoot = Category.Id;
+            Store.SelectedCategoryIdRoot = Store.SelectedCategoryIdRoot.Equals(Category.Id) ? null : Category.Id;
         }
         Store.FindTags();
         

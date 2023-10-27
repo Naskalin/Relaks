@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Relaks.Database;
 using Relaks.Database.Repositories;
+using Relaks.Interfaces;
 using Relaks.Models;
+using Relaks.Utils.Extensions;
 
 namespace Relaks.Views.Shared.EntryTagComponents;
 
@@ -65,6 +67,12 @@ public class EntryTagListStore
             .Where(x => x.Tags.Any())
             .ToDictionary(x => x.Id, x => x.Tags.Count);
     }
+    
+    private class OrderableReq : IOrderable
+    {
+        public string? OrderBy { get; set; }
+        public bool? IsOrderByDesc { get; set; }
+    }
 
     public void FindTags()
     {
@@ -75,7 +83,7 @@ public class EntryTagListStore
             {
                 q = q.Where(x => x.Title.Contains(Req.Search));
             }
-
+        
             if (Req.CategoryId.HasValue)
             {
                 q = q.Include(x => x.Category);
@@ -89,6 +97,6 @@ public class EntryTagListStore
             q = _db.EntryTagTitles.OrderByDescending(x => x.UpdatedAt);
         }
         
-        Tags = q.Distinct().Take(100).ToList();
+        Tags = q.Take(100).ToList();
     }
 }

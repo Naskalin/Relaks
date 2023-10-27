@@ -57,7 +57,7 @@ public static class TreeManager
     public static void UpdateTreePath<TEntity>(ITree<TEntity> child, ITree<TEntity>? parentNode = null) where TEntity : class, ITree<TEntity>
     {
         string pathParentNode = parentNode?.TreePath ?? "";
-        child.TreePath = $"{pathParentNode}/{child.Id}";
+        child.TreePath = $"{pathParentNode.ToLower()}/{child.Id.ToString().ToLower()}";
     }
     
     public static List<(string Title, Guid Value, int Level)> ToTreeSelect<TEntity>(this List<TEntity> tree, List<(string Title, Guid Value, int Level)>? result = null, int? level = null) where TEntity : class, ITree<TEntity>

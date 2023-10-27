@@ -105,7 +105,7 @@ namespace Relaks.Migrations
             
             // заполняем дочернии категории для профессий
             migrationBuilder.Sql($@"INSERT INTO EntryTagCategories (Id, ParentId, TreePath, Title)
-            SELECT Id, '{professionCategoryId.ToUpper()}', '/{professionCategoryId.ToUpper()}/' || LOWER(Id), Title FROM ProfessionCategories;");
+            SELECT Id, '{professionCategoryId.ToUpper()}', '/{professionCategoryId.ToLower()}/' || LOWER(Id), Title FROM ProfessionCategories;");
             
             // заполняем профессии
             migrationBuilder.Sql(@"INSERT INTO EntryTagTitles (Id, Title, CategoryId, CreatedAt, UpdatedAt)

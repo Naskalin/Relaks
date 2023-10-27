@@ -10,7 +10,7 @@ public static class TreeRepository
         var all = q
             .Include(x => x.Children.OrderBy(child => child.Title))
             .AsEnumerable()
-            .OrderBy(x => x.Title, StringComparer.OrdinalIgnoreCase)
+            .OrderBy(x => x.Title)
             .ToList();
     
         return all.Where(c => c.ParentId.Equals(null)).ToList();
