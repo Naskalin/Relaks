@@ -25,28 +25,6 @@
     </div>
 }
 
-@* <Modal @ref="Modal" IsKeyboard="@true" IsBackdrop="@true"> *@
-@*     <ModalDialog Title="Выберите профессии" *@
-@*                  IsScrolling="true" *@
-@*                  CloseButtonText="Закрыть" *@
-@*                  Size="Size.ExtraLarge" *@
-@*                  SaveButtonText="Выбрать профессии" *@
-@*                  OnSaveAsync="@OnModalSelectAsync" *@
-@*                  Id="" *@
-@*                  ShowSaveButton="@true"> *@
-@*         <BodyTemplate> *@
-@*             <ProfessionList OnProfessionClick="@HandleProfessionClick" ListGroupClasses="p-0"> *@
-@*                 <CustomProfessionTitle> *@
-@*                     <div class="d-flex align-items-center gap-3 p-2 @(CurrentSelectedIds.Contains(context.Id) ? "text-success bg-secondary bg-opacity-10": "")"> *@
-@*                         <i class="las la-check-square la-lg"></i> *@
-@*                         <span>@context.Title</span> *@
-@*                     </div> *@
-@*                 </CustomProfessionTitle> *@
-@*             </ProfessionList> *@
-@*         </BodyTemplate> *@
-@*     </ModalDialog> *@
-@* </Modal> *@
-
 @code {
     // private Modal Modal { get; set; } = new();
     

@@ -71,21 +71,24 @@ public class EntryTagListStore
         var q = _db.EntryTagTitles.AsQueryable();
         if (Req.CategoryId.HasValue || !string.IsNullOrEmpty(Req.Search))
         {
-            q = !string.IsNullOrEmpty(Req.Search) 
-                ? q.Where(x => x.Title.Contains(Req.Search)) 
-                : q.OrderBy(x => x.Title);
+            if (!string.IsNullOrEmpty(Req.Search))
+            {
+                q = q.Where(x => x.Title.Contains(Req.Search));
+            }
 
             if (Req.CategoryId.HasValue)
             {
                 q = q.Include(x => x.Category);
                 q = q.Where(x => x.CategoryId.Equals(Req.CategoryId.Value) || x.Category.TreePath.Contains(Req.CategoryId.Value.ToString()));
             }
+            
+            q = q.OrderBy(x => x.Title);
         }
         else
         {
             q = _db.EntryTagTitles.OrderByDescending(x => x.UpdatedAt);
         }
         
-        Tags = q.Distinct().Take(150).ToList();
+        Tags = q.Distinct().Take(100).ToList();
     }
 }
