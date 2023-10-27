@@ -10,8 +10,8 @@
             @Category.Title
             @if (IsRoot() && Category.Children.Any())
             {
-                <div class="ms-2" style="position: relative; top: 2px;">
-                    <i class="las la-arrow-alt-circle-down la-lg text-muted" style="font-size: 1.4rem;"></i>
+                <div class="ms-2" style="position: relative; top: 2px; opacity: .6">
+                    <i class="las la-chevron-circle-down la-lg" style="font-size: 1.4rem;"></i>
                 </div>   
             }
             @if (Store.CategoryTagsCount.TryGetValue(Category.Id, out var tagsCount))

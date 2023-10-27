@@ -19,7 +19,6 @@
     <div class="mb-3">
         <label for="" class="form-label">Категория</label>
         <InputSelect @bind-Value="Model.CategoryId" class="form-select">
-            <option value="">(Без родителя)</option>
             @foreach (var item in Store.Categories.ToTreeSelect())
             {
                 <option value="@item.Value">@item.Title</option>
@@ -30,8 +29,8 @@
     
     <div class="mb-3">
         <button class="btn btn-primary">
-            <i class="las la-lg me-1 @(Store.SidebarState.Equals(EntryTagListStore.SidebarStateEnum.EditCategory) ? "la-edit" : "la-plus-circle")"></i>
-            @(Store.SidebarState.Equals(EntryTagListStore.SidebarStateEnum.EditCategory) ? Resources.Action.SaveChanges : Resources.Action.Add)
+            <i class="las la-lg me-1 @(IsEdit() ? "la-edit" : "la-plus-circle")"></i>
+            @(IsEdit() ? Resources.Action.SaveChanges : Resources.Action.Add)
         </button>
     </div>
     

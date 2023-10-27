@@ -1,7 +1,7 @@
 ﻿@using Relaks.Models
 @using Relaks.Views.Shared.EntryTagComponents
 
-<div class="list-group-item">
+<div class="list-group-item bg-secondary bg-opacity-5">
     <div class="d-flex align-items-center gap-3 justify-content-between">
         <div>
             @EntryTagTitle.Title <small class="ms-1" style="opacity: .6">(@EntryTagTitle.Category.Title)</small>   
@@ -9,7 +9,7 @@
         @if (WithEdit)
         {
             <div>
-                <Tooltip Title="Изменить" Placement="Placement.Right">
+                <Tooltip Title="Изменить" Placement="Placement.Left">
                     <button class="btn btn-outline-secondary btn-circle btn-sm" @onclick="HandleEditBtnClick">
                         <i class="las la-edit"></i>
                     </button>
