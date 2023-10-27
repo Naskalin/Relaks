@@ -36,7 +36,7 @@
                 {
                     case EntryTagListStore.TagsStateEnum.EditTag:
                     case EntryTagListStore.TagsStateEnum.NewTag:
-                        <div>form</div>
+                        <EntryTagTitleForm OnStateChanged="@StateHasChanged"/>
                         break;
                     default:
                         <EntryTagFilter OnStateChanged="@StateHasChanged"/>

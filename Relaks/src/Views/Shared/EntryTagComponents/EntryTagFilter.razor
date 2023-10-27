@@ -10,7 +10,7 @@
 {
     <div class="mb-3">
         <ol class="breadcrumb mb-0">
-            @{var last = BreadcrumbCategories().Last();}
+            @{ var last = BreadcrumbCategories().Last(); }
             @foreach (var c in BreadcrumbCategories())
             {
                 if (last.Equals(c))
@@ -29,14 +29,18 @@
         </ol>
     </div>
 }
-<div class="mb-3">
+<div class="input-group mb-3">
     <input value="@Store.Req.Search" @oninput="HandleInputSearch" class="form-control" placeholder="Поиск меток..."/>
+    <button class="btn btn-outline-secondary" type="button" @onclick="@HandleClearSearch">
+        <i class="las la-times"></i>
+    </button>
 </div>
 
 @code {
+
     [Parameter]
     public EventCallback OnStateChanged { get; set; }
-    
+
     [CascadingParameter]
     public EntryTagListStore Store { get; set; } = null!;
 
@@ -51,8 +55,8 @@
             .Where(chunk => !string.IsNullOrEmpty(chunk))
             .Select(Guid.Parse)
             .ToList()
-        ;
-        
+            ;
+
         var categoriesById = Db.EntryTagCategories.Where(x => categoryIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);
 
         return categoryIds.Select(id => categoriesById[id]).ToList();
@@ -71,4 +75,12 @@
         Store.FindTags();
         await OnStateChanged.InvokeAsync();
     }
+
+    private async Task HandleClearSearch()
+    {
+        Store.Req.Search = null;
+        Store.FindTags();
+        await OnStateChanged.InvokeAsync();
+    }
+
 }

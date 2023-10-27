@@ -5,6 +5,7 @@
 @using Relaks.Mappers
 
 @inject AppDbContext Db;
+@inject IJSRuntime JsRuntime;
 
 <EditForm Model="@Model" OnSubmit="@OnSubmit">
     <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
@@ -33,6 +34,16 @@
             @(Store.SidebarState.Equals(EntryTagListStore.SidebarStateEnum.EditCategory) ? Resources.Action.SaveChanges : Resources.Action.Add)
         </button>
     </div>
+    
+    @if (IsEdit())
+    {
+        <div class="text-end">
+            <button type="button" class="btn btn-link text-danger" @onclick="@OnDelete">
+                <i class="las la-trash la-lg"></i>
+                @Resources.Action.Delete
+            </button>
+        </div>
+    }
 </EditForm>
 
 @code {
@@ -47,12 +58,14 @@
     
     private FluentValidationValidator Validator { get; set; } = null!;
     private EntryTagTitle? EditingEntity { get; set; } = null;
+
+    private bool IsEdit() => Store is {TagsState: EntryTagListStore.TagsStateEnum.EditTag,EditTagTitleId: not null};
     
     protected override void OnParametersSet()
     {
-        if (Store is {TagsState: EntryTagListStore.TagsStateEnum.EditTag,EditTagTitleId: not null})
+        if (IsEdit())
         {
-            EditingEntity = Db.EntryTagTitles.First(x => x.Id.Equals(Store.EditTagTitleId.Value));
+            EditingEntity = Db.EntryTagTitles.First(x => x.Id.Equals(Store.EditTagTitleId!.Value));
             EditingEntity.MapTo(Model);  
         }
         
@@ -74,6 +87,22 @@
         
         await Db.SaveChangesAsync();
         Store.FindTags();
+        Store.FindTagsCategoriesCount();
+        Store.TagsState = EntryTagListStore.TagsStateEnum.Default;
+        await OnStateChanged.InvokeAsync();
+    }
+    
+    private async Task OnDelete()
+    {
+        if (!IsEdit() || EditingEntity == null) return;
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
+        if (!isConfirmed) return;
+        
+        Db.EntryTagTitles.Remove(EditingEntity);
+        await Db.SaveChangesAsync();
+        
+        Store.FindTags();
+        Store.FindTagsCategoriesCount();
         Store.TagsState = EntryTagListStore.TagsStateEnum.Default;
         await OnStateChanged.InvokeAsync();
     }

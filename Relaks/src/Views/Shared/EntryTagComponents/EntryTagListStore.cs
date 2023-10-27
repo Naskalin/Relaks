@@ -49,16 +49,21 @@ public class EntryTagListStore
 
         SidebarState = SidebarStateEnum.Default;
         TagsState = TagsStateEnum.Default;
-        CategoryTagsCount = _db
-            .EntryTagCategories
-            .Include(x => x.Tags)
-            .Where(x => x.Tags.Any())
-            .ToDictionary(x => x.Id, x => x.Tags.Count);
+        FindTagsCategoriesCount();
         Categories = _db.EntryTagCategories
             .Include(x => x.Tags)
             .ToBaseTree();
         Req = new EntryTagListRequest();
         FindTags();
+    }
+
+    public void FindTagsCategoriesCount()
+    {
+        CategoryTagsCount = _db
+            .EntryTagCategories
+            .Include(x => x.Tags)
+            .Where(x => x.Tags.Any())
+            .ToDictionary(x => x.Id, x => x.Tags.Count);
     }
 
     public void FindTags()
