@@ -8,9 +8,18 @@
                 @onclick="HandleTitleClick">
             <i class="las la-angle-right"></i>
             @Category.Title
-            @if (Category.Children.Any())
+            @if (IsRoot() && Category.Children.Any())
             {
-                <small class="ms-1 fw-normal">(@Category.Children.Count)</small>   
+                <div class="ms-2" style="position: relative; top: 2px;">
+                    <i class="las la-arrow-alt-circle-down la-lg text-muted" style="font-size: 1.4rem;"></i>
+                </div>   
+            }
+            @if (Store.CategoryTagsCount.TryGetValue(Category.Id, out var tagsCount))
+            {
+                <div class="ms-2" style="position: relative; top: 2px;">
+                    <i class="las la-tags la-lg text-muted" style="font-size: 1.4rem;"></i>
+                    <small class="fw-normal text-muted" style="position: relative; top: -2px">(@tagsCount)</small>
+                </div>
             }
         </button>
         @if (WithEdit)
@@ -46,23 +55,24 @@
 
     [Parameter]
     public EventCallback OnStateChanged { get; set; }
+    
+    [CascadingParameter]
+    public EntryTagListStore Store { get; set; } = null!;
 
     private bool IsRoot() => Category.ParentId == null;
 
     private bool IsOpen() => !IsRoot() || IsRoot()
                              && Store.SelectedCategoryIdRoot.HasValue
                              && Store.SelectedCategoryIdRoot.Value.Equals(Category.Id); 
-
-    [CascadingParameter]
-    public EntryTagListStore Store { get; set; } = null!;
     
     private async Task HandleTitleClick()
     {
-        Store.Req.CategoryId = Category.Id;
+        Store.Req.CategoryId = Store.Req.CategoryId.Equals(Category.Id) ? null : Category.Id;
         if (IsRoot())
         {
-            Store.SelectedCategoryIdRoot = Category.Id.Equals(Store.SelectedCategoryIdRoot) ? null : Category.Id;
+            Store.SelectedCategoryIdRoot = Category.Id;
         }
+        Store.FindTags();
         
         await OnStateChanged.InvokeAsync();
     }

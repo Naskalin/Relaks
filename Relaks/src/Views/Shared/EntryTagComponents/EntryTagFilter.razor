@@ -1,0 +1,74 @@
+﻿@using Relaks.Views.Shared.EntryTagComponents
+@using Relaks.Models
+@using Relaks.Database
+@using LinqKit
+@using Console = System.Console
+
+@inject AppDbContext Db;
+
+@if (Store.Req.CategoryId.HasValue)
+{
+    <div class="mb-3">
+        <ol class="breadcrumb mb-0">
+            @{var last = BreadcrumbCategories().Last();}
+            @foreach (var c in BreadcrumbCategories())
+            {
+                if (last.Equals(c))
+                {
+                    <li class="breadcrumb-item active" aria-current="page">@c.Title</li>
+                }
+                else
+                {
+                    <li class="breadcrumb-item">
+                        <button type="button" style="position: relative; top: -2px;" class="btn btn-link p-0" @onclick="@(() => HandleClickBreadCrumb(c.Id))">
+                            @c.Title
+                        </button>
+                    </li>
+                }
+            }
+        </ol>
+    </div>
+}
+<div class="mb-3">
+    <input value="@Store.Req.Search" @oninput="HandleInputSearch" class="form-control" placeholder="Поиск меток..."/>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+    
+    [CascadingParameter]
+    public EntryTagListStore Store { get; set; } = null!;
+
+    private List<EntryTagCategory> BreadcrumbCategories()
+    {
+        if (!Store.Req.CategoryId.HasValue) return new List<EntryTagCategory>();
+        var categoryIds = Db.EntryTagCategories
+            .Where(x => x.Id.Equals(Store.Req.CategoryId.Value))
+            .Select(x => x.TreePath)
+            .First()
+            .Split("/")
+            .Where(chunk => !string.IsNullOrEmpty(chunk))
+            .Select(Guid.Parse)
+            .ToList()
+        ;
+        
+        var categoriesById = Db.EntryTagCategories.Where(x => categoryIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);
+
+        return categoryIds.Select(id => categoriesById[id]).ToList();
+    }
+
+    private async Task HandleInputSearch(ChangeEventArgs e)
+    {
+        Store.Req.Search = e.Value?.ToString() ?? "";
+        Store.FindTags();
+        await OnStateChanged.InvokeAsync();
+    }
+
+    private async Task HandleClickBreadCrumb(Guid categoryId)
+    {
+        Store.Req.CategoryId = categoryId;
+        Store.FindTags();
+        await OnStateChanged.InvokeAsync();
+    }
+}

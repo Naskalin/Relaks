@@ -16,15 +16,15 @@
     </div>
     
     <div class="mb-3">
-        <label for="" class="form-label">Родительская категория</label>
-        <InputSelect @bind-Value="Model.ParentId" class="form-select">
+        <label for="" class="form-label">Категория</label>
+        <InputSelect @bind-Value="Model.CategoryId" class="form-select">
             <option value="">(Без родителя)</option>
             @foreach (var item in Store.Categories.ToTreeSelect())
             {
                 <option value="@item.Value">@item.Title</option>
             }
         </InputSelect>
-        <ValidationMessage For="@(() => Model.ParentId)"/>
+        <ValidationMessage For="@(() => Model.CategoryId)"/>
     </div>
     
     <div class="mb-3">
@@ -37,7 +37,7 @@
 
 @code {
     [Parameter]
-    public EntryTagCategory Model { get; set; } = new();
+    public EntryTagTitle Model { get; set; } = new();
     
     [CascadingParameter]
     public EntryTagListStore Store { get; set; } = null!;
@@ -46,34 +46,35 @@
     public EventCallback OnStateChanged { get; set; }
     
     private FluentValidationValidator Validator { get; set; } = null!;
-    private EntryTagCategory? EditingEntity { get; set; } = null;
-
+    private EntryTagTitle? EditingEntity { get; set; } = null;
+    
     protected override void OnParametersSet()
     {
-        if (Store is not {SidebarState: EntryTagListStore.SidebarStateEnum.EditCategory,EditCategoryId: not null}) return;
-        EditingEntity = Db.EntryTagCategories.First(x => x.Id.Equals(Store.EditCategoryId.Value));
-        EditingEntity.MapTo(Model);
+        if (Store is {TagsState: EntryTagListStore.TagsStateEnum.EditTag,EditTagTitleId: not null})
+        {
+            EditingEntity = Db.EntryTagTitles.First(x => x.Id.Equals(Store.EditTagTitleId.Value));
+            EditingEntity.MapTo(Model);  
+        }
+        
+        if (Store.Req.CategoryId.HasValue) Model.CategoryId = Store.Req.CategoryId.Value;
     }
     
     private async Task OnSubmit()
     {
         if (!await Validator.ValidateAsync()) return;
-        
         if (EditingEntity != null)
         {
+            Model.UpdatedAt = DateTime.Now;
             Model.MapTo(EditingEntity);
         }
         else
         {
-            TreeManager.UpdateTreePath(Model);
-            Db.EntryTagCategories.Add(Model);
+            Db.EntryTagTitles.Add(Model);
         }
         
         await Db.SaveChangesAsync();
-        TreeManager.SyncTreePaths(Db.EntryTagCategories, Model.Id, Model);
-        await Db.SaveChangesAsync();
-        Store.Initialize();
-        Store.SidebarState = EntryTagListStore.SidebarStateEnum.Default;
+        Store.FindTags();
+        Store.TagsState = EntryTagListStore.TagsStateEnum.Default;
         await OnStateChanged.InvokeAsync();
     }
 }

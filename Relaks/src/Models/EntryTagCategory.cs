@@ -16,3 +16,14 @@ public class EntryTagCategory : ITree<EntryTagCategory>
 
     public List<EntryTagTitle> Tags { get; set; } = new();
 }
+
+public class EntryTagCategoryDto : ITree<EntryTagCategoryDto>
+{
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public List<EntryTagCategoryDto> Children { get; set; } = new();
+    public Guid? ParentId { get; set; }
+    public EntryTagCategoryDto? Parent { get; set; }
+    public string TreePath { get; set; } = null!;
+    public string Title { get; set; } = null!;
+    public int TagsCount { get; set; }
+}

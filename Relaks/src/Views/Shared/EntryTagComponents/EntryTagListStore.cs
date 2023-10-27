@@ -1,4 +1,5 @@
-﻿using Relaks.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using Relaks.Database;
 using Relaks.Database.Repositories;
 using Relaks.Models;
 
@@ -32,34 +33,54 @@ public class EntryTagListStore
     public SidebarStateEnum SidebarState { get; set; }
     public TagsStateEnum TagsState { get; set; }
     public Guid? EditCategoryId { get; set; }
-    public Guid? EditTagId { get; set; }
+    public Guid? EditTagTitleId { get; set; }
 
     public EntryTagListStore(AppDbContext db)
     {
         _db = db;
     }
 
+    public Dictionary<Guid, int> CategoryTagsCount { get; set; } = new();
     public List<EntryTagCategory> Categories { get; set; } = new();
     public List<EntryTagTitle> Tags { get; set; } = new();
 
     public void Initialize()
     {
+
         SidebarState = SidebarStateEnum.Default;
         TagsState = TagsStateEnum.Default;
-        Categories = _db.EntryTagCategories.ToBaseTree();
-        Tags = _db.EntryTagTitles.OrderByDescending(x => x.UpdatedAt).Take(20).ToList();
+        CategoryTagsCount = _db
+            .EntryTagCategories
+            .Include(x => x.Tags)
+            .Where(x => x.Tags.Any())
+            .ToDictionary(x => x.Id, x => x.Tags.Count);
+        Categories = _db.EntryTagCategories
+            .Include(x => x.Tags)
+            .ToBaseTree();
         Req = new EntryTagListRequest();
+        FindTags();
     }
 
-    public void FindByRequest()
+    public void FindTags()
     {
-        // var q = _db.EntryTagTitles.AsQueryable();
-        // if (!string.IsNullOrEmpty(Req.Search))
-        //     q = q.Where(x => x.Title.ToLower().Contains(Req.Search.ToLower()));
-        //
-        // if (Req.CategoryId.HasValue)
-        //     q = q.Where(x => x.CategoryId.Equals(Req.CategoryId.Value));
-        //
-        // Tags = q.ToList();
+        var q = _db.EntryTagTitles.AsQueryable();
+        if (Req.CategoryId.HasValue || !string.IsNullOrEmpty(Req.Search))
+        {
+            q = !string.IsNullOrEmpty(Req.Search) 
+                ? q.Where(x => x.Title.Contains(Req.Search)) 
+                : q.OrderBy(x => x.Title);
+
+            if (Req.CategoryId.HasValue)
+            {
+                q = q.Include(x => x.Category);
+                q = q.Where(x => x.CategoryId.Equals(Req.CategoryId.Value) || x.Category.TreePath.Contains(Req.CategoryId.Value.ToString()));
+            }
+        }
+        else
+        {
+            q = _db.EntryTagTitles.OrderByDescending(x => x.UpdatedAt);
+        }
+        
+        Tags = q.Distinct().Take(150).ToList();
     }
 }

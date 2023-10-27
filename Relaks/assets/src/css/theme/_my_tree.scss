@@ -37,6 +37,7 @@ $my-tree-arrow-offset: 14px;
     }
   }
 
+
   li {
     list-style: none;
     position: relative;
@@ -55,6 +56,9 @@ $my-tree-arrow-offset: 14px;
     //  width: 12px;
     //  background-color: $secondary;
     //}
+  }
+  &>li {
+    padding-left: 0;
   }
   & ul li {
     margin-left: $my-tree-arrow-offset;

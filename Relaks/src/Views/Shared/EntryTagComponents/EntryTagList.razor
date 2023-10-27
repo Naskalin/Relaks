@@ -5,11 +5,9 @@
 @inject AppDbContext Db;
 
 <CascadingValue Value="@Store">
-    <Dump Data="@Store.SidebarState"/>
-    <Dump Data="@Store.EditCategoryId"/>
-    <div class="row g-5">
+    <div class="row">
         <div class="col-6">
-            <div style="position: sticky; top: @StickyTopOffset;">
+            <div style="position: sticky; top: @StickyTopOffset; overflow-y: scroll; height: 85vh" class="pe-2">
                 <EntryTagCategoriesHeader WithEdit="@WithEdit" OnStateChanged="@StateHasChanged"/>
 
                 @switch (Store.SidebarState)
@@ -29,48 +27,35 @@
                         </div>
                         break;
                 }
-                @* <EntryTagCategories WithEdit="@WithEdit"/> *@
-                @* <div class="mb-3 input-group"> *@
-                @*     <input @bind-value="@Search" @oninput="@OnValueChanged" class="form-control" placeholder="Поиск профессий..."/> *@
-                @*     <button class="btn btn-outline-secondary" type="button" @onclick="@OnSearchClear"> *@
-                @*         <i class="las la-times la-lg"></i> *@
-                @*     </button> *@
-                @* </div> *@
-                @* *@
-                @* EditEmptyIdText="Выберите категорию для изменения" *@
-                @* IsEditEmptyId="@Store.SidebarState.Equals(EntryTagListStore.SidebarStateEnum.EditCategoryEmpty)" *@
-                @* OnEdit="@OnEditCategories" *@
-
             </div>
         </div>
         <div class="col-6">
-            <EntryTagHeader WithEdit="@WithEdit" OnStateChanged="@StateHasChanged"/>
-            @* <EntryTagHeader Title="@TagsDefaultTitle()" *@
-            @*                 WithBackLink="@(!IsSidebarWithEdit())" *@
-            @*                 WithEdit="@IsSidebarWithEdit()" *@
-            @*                 AddText="Добавить метку" *@
-            @*                 OnBackLink="@(() => Store.SidebarState = EntryTagListStore.SidebarStateEnum.Default)" *@
-            @*                 OnAdd="@(() => { Store.SidebarState = EntryTagListStore.SidebarStateEnum.NewCategory; StateHasChanged();})"/> *@
-
-            @* @foreach (var category in FilteredCategories) *@
-            @* { *@
-            @*     <div class="list-group mb-3"> *@
-            @*         <div class="list-group-item fw-semibold text-muted">@category.Title</div> *@
-            @*         @foreach (var profession in FilteredProfessions.Where(x => x.CategoryId.Equals(category.Id))) *@
-            @*         { *@
-            @*             <div class="list-group-item cursor-pointer @ListGroupClasses" @onclick="@(() => OnProfessionClick.InvokeAsync(profession.Id))"> *@
-            @*                 @if (CustomTagTitle != null) *@
-            @*                 { *@
-            @*                     @CustomTagTitle(profession) *@
-            @*                 } *@
-            @*                 else *@
-            @*                 { *@
-            @*                     @profession.Title *@
-            @*                 } *@
-            @*             </div> *@
-            @*         } *@
-            @*     </div> *@
-            @* } *@
+            <div class="ms-3">
+                <EntryTagHeader WithEdit="@WithEdit" OnStateChanged="@StateHasChanged"/>
+                @switch (Store.TagsState)
+                {
+                    case EntryTagListStore.TagsStateEnum.EditTag:
+                    case EntryTagListStore.TagsStateEnum.NewTag:
+                        <div>form</div>
+                        break;
+                    default:
+                        <EntryTagFilter OnStateChanged="@StateHasChanged"/>
+                        @if (Store.Tags.Any())
+                        {
+                            <div class="list-group">
+                                @foreach (var tag in Store.Tags)
+                                {
+                                    <EntryTagTitleItem WithEdit="@WithEdit" EntryTagTitle="@tag" OnStateChanged="@StateHasChanged"/>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted"><i class="las la-info-circle la-lg me-1"></i> Метки не найдены.</p>
+                        }
+                        break;
+                }
+            </div>
         </div>
     </div>
 </CascadingValue>
@@ -92,102 +77,6 @@
     public RenderFragment<EntryTagTitle>? CustomTagTitle { get; set; }
 
     private EntryTagListStore Store { get; set; } = null!;
-
-
-    // private void OnEditCategories()
-    // {
-    //     if (Store.Req.CategoryId.HasValue && Store.SidebarState.Equals(EntryTagListStore.SidebarStateEnum.Default))
-    //     {
-    //         Store.SidebarState = EntryTagListStore.SidebarStateEnum.EditCategory;
-    //     }
-    //     else
-    //     {
-    //         Store.SidebarState = Store.SidebarState.Equals(EntryTagListStore.SidebarStateEnum.EditCategoryEmpty)
-    //             ? EntryTagListStore.SidebarStateEnum.Default
-    //             : EntryTagListStore.SidebarStateEnum.EditCategoryEmpty
-    //             ;   
-    //     }
-    //
-    //     StateHasChanged();
-    //     // OnStateChanged.InvokeAsync();
-    //     // return Task.CompletedTask;
-    // }
-
-    // private List<ProfessionCategory> Categories { get; set; } = new();
-    // private List<Profession> Professions { get; set; } = new();
-    // private List<ProfessionCategory> FilteredCategories { get; set; } = new();
-    // private List<Profession> FilteredProfessions { get; set; } = new();
-    // private Guid? SelectedCategoryId { get; set; }
-    // private string? Search { get; set; }
-    //
-    // private void OnValueChanged(ChangeEventArgs e)
-    // {
-    //     SelectedCategoryId = null;
-    //     var str = e.Value?.ToString();
-    //     if (string.IsNullOrEmpty(str))
-    //     {
-    //         FindByCategoryId();
-    //     }
-    //     else
-    //     {
-    //         str = str.ToLower();
-    //         FilteredProfessions = Professions.Where(x => x.Title.ToLower().Contains(str)).ToList();
-    //         var categoryIds = FilteredProfessions.Select(x => x.CategoryId);
-    //         FilteredCategories = Categories.Where(x => categoryIds.Contains(x.Id)).ToList();
-    //     }
-    // }
-    //
-    // private void OnSearchClear()
-    // {
-    //     SelectedCategoryId = null;
-    //     Search = "";
-    //     FindByCategoryId();
-    // }
-    //
-    // private void SwitchFindCategory(Guid categoryId)
-    // {
-    //     Search = "";
-    //     if (SelectedCategoryId.HasValue)
-    //     {
-    //         if (SelectedCategoryId.Value.Equals(categoryId))
-    //         {
-    //             SelectedCategoryId = null;
-    //             FindByCategoryId();
-    //         }
-    //         else
-    //         {
-    //             SelectedCategoryId = categoryId;
-    //             FindByCategoryId(categoryId);
-    //         }
-    //     }
-    //     else
-    //     {
-    //         SelectedCategoryId = categoryId;
-    //         FindByCategoryId(categoryId);
-    //     }
-    // }
-    //
-    // private void FindByCategoryId(Guid? categoryId = null)
-    // {
-    //     if (categoryId.HasValue)
-    //     {
-    //         FilteredCategories = Categories.Where(x => x.Id.Equals(categoryId)).ToList();
-    //         FilteredProfessions = Professions.Where(x => x.CategoryId.Equals(categoryId)).ToList();
-    //     }
-    //     else
-    //     {
-    //         FilteredCategories = Categories;
-    //         FilteredProfessions = Professions;
-    //     }
-    // }
-    //
-    // protected override void OnInitialized()
-    // {
-    //     Categories = Db.ProfessionCategories.OrderBy(x => x.Title).ToList();
-    //     Professions = Db.Professions.OrderBy(x => x.Title).ToList();
-    //     FindByCategoryId();
-    // }
-
     
     protected override void OnParametersSet()
     {
