@@ -3,8 +3,10 @@
 
 <div class="list-group-item bg-secondary bg-opacity-5">
     <div class="d-flex align-items-center gap-3 justify-content-between">
-        <div>
-            @EntryTagTitle.Title <small class="ms-1" style="opacity: .6">(@EntryTagTitle.Category.Title)</small>   
+        <div @onclick="@(() => OnEntryTagTitleClick.InvokeAsync(EntryTagTitle.Id))">
+            <div>
+                @EntryTagTitle.Title <small class="ms-1" style="opacity: .6">(@EntryTagTitle.Category.Title)</small>
+            </div>
         </div>
         @if (WithEdit)
         {
@@ -22,10 +24,16 @@
 @code {
     [Parameter]
     public EntryTagTitle EntryTagTitle { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback<Guid> OnEntryTagTitleClick { get; set; }
+    
     [Parameter]
     public EventCallback OnStateChanged { get; set; }
+    
     [Parameter]
     public bool WithEdit { get; set; }
+    
     [CascadingParameter]
     public EntryTagListStore Store { get; set; } = null!;
     

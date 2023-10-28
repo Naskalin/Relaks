@@ -1,7 +1,7 @@
 ﻿@using Relaks.Views.Shared.EntryTagComponents
 
 <EntryTagHeaderBase Title="@TagsDefaultTitle()"
-                    WithBackLink="@(!IsWithEdit())"
+                    WithBackLink="@WithBackLink()"
                     WithEdit="@IsWithEdit()"
                     AddText="Добавить метку"
                     OnBackLink="@(() => { Store.TagsState = EntryTagListStore.TagsStateEnum.Default; OnStateChanged.InvokeAsync();})"
@@ -16,6 +16,8 @@
     
     [Parameter]
     public bool WithEdit { get; set; }
+    
+    private bool WithBackLink() => Store.TagsState is EntryTagListStore.TagsStateEnum.EditTag or EntryTagListStore.TagsStateEnum.NewTag;
     
     private string TagsDefaultTitle()
     {

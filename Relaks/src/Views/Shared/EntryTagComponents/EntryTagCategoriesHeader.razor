@@ -1,7 +1,7 @@
 ﻿@using Relaks.Views.Shared.EntryTagComponents
 
 <EntryTagHeaderBase Title="@SidebarDefaultTitle()"
-                WithBackLink="@(!IsSidebarWithEdit())"
+                WithBackLink="@WithBackLink()"
                 WithEdit="@IsSidebarWithEdit()"
                 AddText="Добавить категорию"
                 OnBackLink="@(() => { Store.SidebarState = EntryTagListStore.SidebarStateEnum.Default; OnStateChanged.InvokeAsync();})"
@@ -28,6 +28,8 @@
     }
 
     private bool IsSidebarWithEdit() => EntryTagListStore.SidebarStateEnum.Default.Equals(Store.SidebarState) && WithEdit;
+
+    private bool WithBackLink() => Store.SidebarState is EntryTagListStore.SidebarStateEnum.EditCategory or EntryTagListStore.SidebarStateEnum.NewCategory;
 
     private async Task HandleOnAdd()
     {

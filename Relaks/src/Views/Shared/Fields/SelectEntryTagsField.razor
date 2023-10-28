@@ -1,0 +1,117 @@
+﻿@using Relaks.Models
+@using Relaks.Database
+@using Microsoft.EntityFrameworkCore
+
+@inject DialogService DialogService;
+@inject AppDbContext Db;
+
+<div class="d-flex align-items-center gap-3 mb-2">
+    <label for="" class="form-label mb-0">Метки</label>
+    <button type="button" class="btn btn-sm btn-outline-secondary" @onclick="@ShowModal">
+        Выбрать метки <i class="las la-check-square la-lg ms-1"></i>
+    </button>
+</div>
+
+@if (EntryTags.Any())
+{
+    <div class="d-flex flex-wrap gap-2">
+        @foreach (var entryTag in EntryTags)
+        {
+            <div class="badge bg-secondary text-body bg-opacity-10 d-flex align-items-center gap-1">
+                @entryTag.Tag.Title
+                <button type="button" class="btn-close" @onclick="@(() => OnTagDeleteAsync(entryTag.Id))"></button>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter]
+    public List<Guid> EntryTagIds { get; set; } = new();
+    
+    [Parameter]
+    public EventCallback<List<Guid>> EntryTagIdsChanged { get; set; }
+    
+    [Parameter]
+    public EventCallback<Guid> OnTagDelete { get; set; }
+
+    private List<EntryTag> EntryTags { get; set; } = new();
+
+    private List<Guid> CurrentSelectedIds { get; set; } = new();
+    
+    protected override void OnParametersSet()
+    {
+        CurrentSelectedIds = EntryTagIds;
+        FindTags();
+    }
+    
+    private void FindTags()
+    {
+        EntryTags = Db.EntryTags
+            .Include(x => x.Tag).ThenInclude(x => x.Category)
+            .Where(x => EntryTagIds.Contains(x.Id))
+            .ToList();
+    }
+    
+    private async Task<bool> OnModalSelectAsync()
+    {
+        await EntryTagIdsChanged.InvokeAsync(CurrentSelectedIds);
+        FindTags();
+        return await Task.FromResult(true);
+    }
+    
+    private async Task OnTagDeleteAsync(Guid tagId)
+    {
+        if (CurrentSelectedIds.Contains(tagId))
+        {
+            CurrentSelectedIds.Remove(tagId);
+            await EntryTagIdsChanged.InvokeAsync(CurrentSelectedIds);   
+        }
+    }
+    
+    private void HandleEntryTagTitleClick(Guid entryTagId)
+    {
+        if (CurrentSelectedIds.Contains(entryTagId))
+        {
+            CurrentSelectedIds.Remove(entryTagId);
+        }
+        else
+        {
+            CurrentSelectedIds.Add(entryTagId);
+        }
+    }
+    
+    private RenderFragment<EntryTag> CustomEntryTagTitle => entryTag => __builder =>
+    {
+        <div class="d-flex align-items-center gap-3 p-2 @(CurrentSelectedIds.Contains(entryTag.Id) ? "text-success bg-secondary bg-opacity-10" : "")">
+            <i class="las la-check-square la-lg"></i>
+            <span>@entryTag.Tag.Title</span>
+        </div>
+    };
+
+    
+    private Task ShowModal()
+    {
+        return DialogService.Show(new DialogOption()
+        {
+            IsKeyboard = true,
+            IsBackdrop = true,
+            
+            Title = "Выбор меток",
+            IsScrolling = true,
+            CloseButtonText = "Закрыть",
+            Size = Size.ExtraLarge,
+            SaveButtonText = "Выбрать метки",
+            OnSaveAsync = OnModalSelectAsync,
+            ShowSaveButton = true,
+            Component = BootstrapDynamicComponent.CreateComponent<EntryTagList>(new Dictionary<string, object?>()
+            {
+                // ["ListGroupClasses"] = "p-0",
+                ["OnEntryTagTitleClick"] = EventCallback.Factory.Create<Guid>(this, HandleEntryTagTitleClick),
+                ["WithEdit"] = false,
+                // ["CustomTagTitle"] = CustomEntryTagTitle,
+                ["StickyTopOffset"] = "0",
+            })
+        });
+    }
+}

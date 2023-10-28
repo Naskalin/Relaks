@@ -45,7 +45,7 @@
                             <div class="list-group">
                                 @foreach (var tag in Store.Tags)
                                 {
-                                    <EntryTagTitleItem WithEdit="@WithEdit" EntryTagTitle="@tag" OnStateChanged="@StateHasChanged"/>
+                                    <EntryTagTitleItem WithEdit="@WithEdit" OnEntryTagTitleClick="@OnEntryTagTitleClick" EntryTagTitle="@tag" OnStateChanged="@StateHasChanged"/>
                                 }
                             </div>
                         }
@@ -62,10 +62,10 @@
 
 @code {
     [Parameter]
-    public EventCallback<Guid> OnProfessionClick { get; set; }
+    public EventCallback<Guid> OnEntryTagTitleClick { get; set; }
 
-    [Parameter]
-    public string ListGroupClasses { get; set; } = "";
+    // [Parameter]
+    // public string ListGroupClasses { get; set; } = "";
 
     [Parameter]
     public string StickyTopOffset { get; set; } = "100px";
