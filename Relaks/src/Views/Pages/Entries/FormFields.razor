@@ -23,7 +23,7 @@
 </div>
 
 <div class="mb-3">
-    <SelectEntryTagsField @bind-EntryTagIds="@Test"/>
+    <SelectEntryTagsField EntryTagIds="@EntryTagTitleIds" EntryTagIdsChanged="@HandleEntryTagIdsChanged"/>
 </div>
 
 <div class="row">
@@ -68,9 +68,19 @@
 
     [Parameter]
     public List<Guid> ProfessionIds { get; set; } = new();
-
-    private bool IsMeet() => nameof(EProject).Equals(Entry.Discriminator);
     
-    
+    [Parameter]
+    public List<EntryTag> EntryTags { get; set; } = new();
 
+    private List<Guid> EntryTagTitleIds { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        EntryTags.ForEach(x => EntryTagTitleIds.Add(x.TagId));
+    }
+
+    private void HandleEntryTagIdsChanged(List<Guid> entryTagTitleIds)
+    {
+        EntryTagTitleIds = entryTagTitleIds;
+    }
 }

@@ -32,9 +32,6 @@
     [Parameter]
     public EventCallback<List<Guid>> EntryTagIdsChanged { get; set; }
     
-    [Parameter]
-    public EventCallback<Guid> OnTagDelete { get; set; }
-
     private List<EntryTag> EntryTags { get; set; } = new();
 
     private List<Guid> CurrentSelectedIds { get; set; } = new();
@@ -81,11 +78,11 @@
         }
     }
     
-    private RenderFragment<EntryTag> CustomEntryTagTitle => entryTag => __builder =>
+    private RenderFragment<EntryTagTitle> CustomEntryTagTitle => entryTagTitle => __builder =>
     {
-        <div class="d-flex align-items-center gap-3 p-2 @(CurrentSelectedIds.Contains(entryTag.Id) ? "text-success bg-secondary bg-opacity-10" : "")">
+        <div class="d-flex align-items-center gap-3 p-2 @(CurrentSelectedIds.Contains(entryTagTitle.Id) ? "text-success bg-secondary bg-opacity-10" : "")">
             <i class="las la-check-square la-lg"></i>
-            <span>@entryTag.Tag.Title</span>
+            @entryTagTitle.Title <small style="opacity: .6">(@entryTagTitle.Category.Title)</small>
         </div>
     };
 
@@ -106,10 +103,10 @@
             ShowSaveButton = true,
             Component = BootstrapDynamicComponent.CreateComponent<EntryTagList>(new Dictionary<string, object?>()
             {
-                // ["ListGroupClasses"] = "p-0",
                 ["OnEntryTagTitleClick"] = EventCallback.Factory.Create<Guid>(this, HandleEntryTagTitleClick),
                 ["WithEdit"] = false,
-                // ["CustomTagTitle"] = CustomEntryTagTitle,
+                ["CustomEntryTagTitle"] = CustomEntryTagTitle,
+                ["CustomEntryTagTitleClasses"] = "p-0",
                 ["StickyTopOffset"] = "0",
             })
         });

@@ -45,7 +45,7 @@
                             <div class="list-group">
                                 @foreach (var tag in Store.Tags)
                                 {
-                                    <EntryTagTitleItem WithEdit="@WithEdit" OnEntryTagTitleClick="@OnEntryTagTitleClick" EntryTagTitle="@tag" OnStateChanged="@StateHasChanged"/>
+                                    <EntryTagTitleItem CustomEntryTagTitleClasses="@CustomEntryTagTitleClasses" WithEdit="@WithEdit" CustomEntryTagTitle="@CustomEntryTagTitle" OnEntryTagTitleClick="@OnEntryTagTitleClick" EntryTagTitle="@tag" OnStateChanged="@StateHasChanged"/>
                                 }
                             </div>
                         }
@@ -72,9 +72,12 @@
     
     [Parameter]
     public bool WithEdit { get; set; }
-
+    
     [Parameter]
-    public RenderFragment<EntryTagTitle>? CustomTagTitle { get; set; }
+    public RenderFragment<EntryTagTitle>? CustomEntryTagTitle { get; set; }
+    
+    [Parameter]
+    public string? CustomEntryTagTitleClasses { get; set; }
 
     private EntryTagListStore Store { get; set; } = null!;
     
