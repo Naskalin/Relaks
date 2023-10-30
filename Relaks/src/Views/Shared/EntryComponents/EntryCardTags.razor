@@ -1,0 +1,100 @@
+﻿@using Relaks.Models
+@using Relaks.Database
+@using System.Text
+
+@inject AppDbContext Db;
+
+
+@foreach (var rootCategoryIdTagId in RootCategoryIdTagIds)
+{
+    <div>
+        <div class="fw-semibold text-center mb-2" style="opacity: .5">@CategoryIdTitle[rootCategoryIdTagId.Key]</div>
+        <div class="mb-3 d-flex gap-1 flex-wrap justify-content-center">
+            @foreach (var tagId in rootCategoryIdTagId.Value)
+            {
+                <Popover Content="@RenderTagPopover(tagId).ToString()" IsHtml="@true">
+                @* <Popover Content="@GetTagHelp(tagId)" IsHtml="@true"> *@
+                    <div class="badge bg-success bg-opacity-25 fw-medium text-body" title="">
+                        @TagsById[tagId].Item1
+                        @if (!string.IsNullOrEmpty(TagsById[tagId].Item2))
+                        {
+                            <i class="las la-comment la-lg ms-1 text-primary"></i>
+                        }
+                    </div>
+                </Popover>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public List<EntryTag> Tags { get; set; } = new();
+
+    private Dictionary<Guid, Tuple<string, string?>> TagsById { get; set; } = new();
+    private Dictionary<Guid, string> CategoryIdTitle { get; set; } = new();
+    private Dictionary<Guid, List<Guid>> TagIdCategoryPathIds { get; set; } = new();
+    private Dictionary<Guid, List<Guid>> RootCategoryIdTagIds { get; set; } = new();
+
+    private string GetTagHelp(Guid tagId)
+    {
+        var categoryIds = TagIdCategoryPathIds[tagId];
+        var titles = new List<string>();
+        categoryIds.ForEach(id => titles.Add(CategoryIdTitle[id]));
+        var result = new StringBuilder(string.Join(" > ", titles));
+        if (!string.IsNullOrEmpty(TagsById[tagId].Item2))
+        {
+            result.AppendLine(TagsById[tagId].Item2);
+        }
+        return result.ToString();
+    }
+
+    private string RenderTagPopover(Guid tagId)
+    {
+        var categoryIds = TagIdCategoryPathIds[tagId];
+        var titles = new List<string>();
+        categoryIds.ForEach(id => titles.Add(CategoryIdTitle[id]));
+        var result = new StringBuilder($"<div class='fw-semibold'>{string.Join(" > ", titles)}</div>");
+        if (!string.IsNullOrEmpty(TagsById[tagId].Item2))
+        {
+            result.AppendLine($"<div class='mt-2'><i class='las la-comment la-lg'></i> {TagsById[tagId].Item2}</div>");
+        }
+        
+        return result.ToString();
+    }
+
+    protected override void OnParametersSet()
+    {
+        var allCategoryIds = new List<Guid>();
+        foreach (var eTag in Tags)
+        {
+            // list of related category ids
+            var categoryIds = eTag
+                .Tag
+                .Category
+                .TreePath
+                .Split("/")
+                .Where(str => !string.IsNullOrEmpty(str))
+                .Select(Guid.Parse)
+                .ToList()
+            ;
+            allCategoryIds.AddRange(categoryIds);
+            TagIdCategoryPathIds[eTag.Id] = categoryIds;
+            var rootId = categoryIds.First();
+            if (!RootCategoryIdTagIds.ContainsKey(rootId))
+            {
+                RootCategoryIdTagIds[rootId] = new List<Guid>();      
+            }
+            RootCategoryIdTagIds[rootId].Add(eTag.Id);
+            TagsById[eTag.Id] = new Tuple<string, string?>(eTag.Tag.Title, eTag.Description);
+        }
+
+        // initialize all categoryTitles
+        allCategoryIds = allCategoryIds.Distinct().ToList();
+        CategoryIdTitle = Db
+            .EntryTagCategories
+            .Where(x => allCategoryIds.Contains(x.Id))
+            .ToDictionary(x => x.Id, x => x.Title);
+    }
+
+}

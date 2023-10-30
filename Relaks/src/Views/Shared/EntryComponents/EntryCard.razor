@@ -46,6 +46,10 @@
                     <p class="card-text text-center">@Entry.Description</p>
                 }
                 
+                @if (Entry.Tags.Any())
+                {
+                    <EntryCardTags Tags="@Entry.Tags"/>
+                }
                 @if (Entry.Professions.Any())
                 {
                     <div class="mb-3 d-flex gap-1 flex-wrap justify-content-center">
@@ -112,6 +116,7 @@
     protected override void OnParametersSet()
     {
         Entry = Db.BaseEntries
+            .Include(x => x.Tags).ThenInclude(x => x.Tag).ThenInclude(x => x.Category)
             .Include(x => x.EntryInfos)
             .Include(x => x.Professions).ThenInclude(x => x.Category)
             .First(x => x.Id.Equals(EntryId))
