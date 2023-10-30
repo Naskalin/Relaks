@@ -26,6 +26,10 @@
 </div>
 
 <div class="mb-3">
+    <SelectEntryTagTitlesField EntryTagTitleIds="@Req.EntryTagTitleIds" EntryTagTitleIdsChanged="@HandleEntryTagTitleIdsChanged"/>
+</div>
+
+<div class="mb-3">
     <div class="form-check">
         <input class="form-check-input" type="checkbox" id="entry-search-archive-checkbox" @oninput="@OnChangeIsDeleted">
         <label class="form-check-label" for="entry-search-archive-checkbox">
@@ -193,6 +197,12 @@
     private void OnProfessionsChanged(List<Guid> professionIds)
     {
         Req.ProfessionIds = professionIds;
+        Result = Db.FindEntries(Req);
+    }
+
+    private void HandleEntryTagTitleIdsChanged(List<Guid> entryTagTitleIds)
+    {
+        Req.EntryTagTitleIds = entryTagTitleIds;
         Result = Db.FindEntries(Req);
     }
 
