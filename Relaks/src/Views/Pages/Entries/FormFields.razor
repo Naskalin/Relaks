@@ -42,7 +42,7 @@
                         @entryTag.Tag.Title
                     </div>
                     <div class="col-5">
-                        <MyTextarea @bind-Value="@entryTag.Description" Placeholder="Комментарий" rows="2"/>
+                        <InputText @bind-Value="@entryTag.Description" Placeholder="Комментарий" class="form-control"/>
                     </div>
                     <div class="col-auto">
                         <button type="button"
@@ -101,6 +101,9 @@
     
     [Parameter]
     public List<EntryTag> EntryTags { get; set; } = new();
+    
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
 
     private List<Guid> EntryTagTitleIds { get; set; } = new();
 
@@ -109,7 +112,7 @@
         EntryTagTitleIds = EntryTags.Select(x => x.TagId).ToList();
     }
 
-    private void HandleEntryTagTitleIdsChanged(List<Guid> changedTagTitleIds)
+    private async Task HandleEntryTagTitleIdsChanged(List<Guid> changedTagTitleIds)
     {
         EntryTagTitleIds = changedTagTitleIds;
         var entryTagsDict = EntryTags.ToDictionary(x => x.TagId, x => x);
@@ -135,12 +138,15 @@
                 TagId = newTagTitle.Id
             });
         }
+
+        await OnStateChanged.InvokeAsync();
     }
 
-    private void HandleDeleteEntryTag(EntryTag entryTag)
+    private async Task HandleDeleteEntryTag(EntryTag entryTag)
     {
         EntryTags.Remove(entryTag);
         EntryTagTitleIds = EntryTags.Select(x => x.TagId).ToList();
-        StateHasChanged();
+        
+        await OnStateChanged.InvokeAsync();
     }
 }

@@ -19,10 +19,12 @@
             <ChildContent>@Resources.Action.Edit @Resources.Entity.BaseEntry.ToLower()</ChildContent>
         </MyTitle>
 
+        <p>Entry.Tags.Count : @Entry.Tags.Count</p>
+        <p>EntryTags.Count : @EntryTags.Count</p>
         <EditForm Model="@Entry" OnSubmit="@OnSubmit">
             <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
             <ValidationSummary/>
-            <FormFields Entry="@Entry" ProfessionIds="@ProfessionIds"/>
+            <FormFields Entry="@Entry" EntryTags="@EntryTags" OnStateChanged="@StateHasChanged" ProfessionIds="@ProfessionIds"/>
             <SoftDeletedReasonField SoftDeletedReason="@Entry"/>
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">
@@ -50,6 +52,7 @@
     public Guid EntryId { get; set; }
 
     private BaseEntry Entry { get; set; } = null!;
+    private List<EntryTag> EntryTags { get; set; } = new();
     private List<Guid> ProfessionIds { get; set; } = new();
     private FluentValidationValidator Validator { get; set; } = null!;
 
@@ -57,10 +60,16 @@
     {
         base.OnParametersSet();
         Entry = Db.BaseEntries
+            .Include(x => x.Tags)
             .Include(x => x.Professions)
             .First(x => x.Id.Equals(EntryId))
         ;
         ProfessionIds = Entry.Professions.Select(x => x.Id).ToList();
+        EntryTags = Db.EntryTags
+            .Where(x => x.EntryId.Equals(EntryId))
+            .Include(eTag => eTag.Tag).ThenInclude(tagTitle => tagTitle.Category)
+            .ToList()
+        ;
     }
     
     private void OnSubmit()
@@ -70,6 +79,7 @@
         Entry.UpdatedAt = DateTime.Now;
         Entry.MapTo(Entry);
         MapProfessions();
+        MapTags();
         
         Db.SaveChanges();
         NavigationManager.NavigateTo($"/entries/{EntryId}/info");
@@ -82,6 +92,14 @@
         var deleteIds = currentIds.Except(ProfessionIds).ToList();
         Entry.Professions.AddRange(Db.Professions.Where(x => newIds.Contains(x.Id)));
         Entry.Professions.RemoveAll(x => deleteIds.Contains(x.Id));
+    }
+
+    private void MapTags()
+    {
+        var currentIds = Entry.Tags.Select(x => x.Id).ToList();
+        Db.EntryTags.AddRange(EntryTags.Where(x => !currentIds.Contains(x.Id)));
+        var deleteTagIds = currentIds.Except(EntryTags.Select(x => x.Id)).ToList();
+        Entry.Tags.RemoveAll(x => deleteTagIds.Contains(x.Id));
     }
     
     private async Task OnDelete()
