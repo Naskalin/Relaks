@@ -81,6 +81,7 @@
         Entry.MapTo(entry);
         var professions = Db.Professions.Where(x => ProfessionIds.Contains(x.Id));
         entry.Professions.AddRange(professions);
+        entry.Tags.AddRange(EntryTags);
         
         Db.BaseEntries.Add(entry);
         Db.SaveChanges();

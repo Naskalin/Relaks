@@ -12,13 +12,13 @@
     </button>
 </div>
 
-@if (EntryTags.Any())
+@if (!IsHideSelectedTags && EntryTagTitles.Any())
 {
     <div class="d-flex flex-wrap gap-2">
-        @foreach (var entryTag in EntryTags)
+        @foreach (var entryTag in EntryTagTitles)
         {
             <div class="badge bg-secondary text-body bg-opacity-10 d-flex align-items-center gap-1">
-                @entryTag.Tag.Title
+                @entryTag.Title
                 <button type="button" class="btn-close" @onclick="@(() => OnTagDeleteAsync(entryTag.Id))"></button>
             </div>
         }
@@ -27,32 +27,35 @@
 
 @code {
     [Parameter]
-    public List<Guid> EntryTagIds { get; set; } = new();
+    public List<Guid> EntryTagTitleIds { get; set; } = new();
     
     [Parameter]
-    public EventCallback<List<Guid>> EntryTagIdsChanged { get; set; }
+    public EventCallback<List<Guid>> EntryTagTitleIdsChanged { get; set; }
+
+    [Parameter]
+    public bool IsHideSelectedTags { get; set; } = false;
     
-    private List<EntryTag> EntryTags { get; set; } = new();
+    private List<EntryTagTitle> EntryTagTitles { get; set; } = new();
 
     private List<Guid> CurrentSelectedIds { get; set; } = new();
     
     protected override void OnParametersSet()
     {
-        CurrentSelectedIds = EntryTagIds;
+        CurrentSelectedIds = EntryTagTitleIds;
         FindTags();
     }
     
     private void FindTags()
     {
-        EntryTags = Db.EntryTags
-            .Include(x => x.Tag).ThenInclude(x => x.Category)
-            .Where(x => EntryTagIds.Contains(x.Id))
+        EntryTagTitles = Db.EntryTagTitles
+            .Include(x => x.Category)
+            .Where(x => EntryTagTitleIds.Contains(x.Id))
             .ToList();
     }
     
     private async Task<bool> OnModalSelectAsync()
     {
-        await EntryTagIdsChanged.InvokeAsync(CurrentSelectedIds);
+        await EntryTagTitleIdsChanged.InvokeAsync(CurrentSelectedIds);
         FindTags();
         return await Task.FromResult(true);
     }
@@ -62,7 +65,7 @@
         if (CurrentSelectedIds.Contains(tagId))
         {
             CurrentSelectedIds.Remove(tagId);
-            await EntryTagIdsChanged.InvokeAsync(CurrentSelectedIds);   
+            await EntryTagTitleIdsChanged.InvokeAsync(CurrentSelectedIds);   
         }
     }
     
@@ -80,7 +83,7 @@
     
     private RenderFragment<EntryTagTitle> CustomEntryTagTitle => entryTagTitle => __builder =>
     {
-        <div class="d-flex align-items-center gap-3 p-2 @(CurrentSelectedIds.Contains(entryTagTitle.Id) ? "text-success bg-secondary bg-opacity-10" : "")">
+        <div class="d-flex cursor-pointer align-items-center gap-3 p-2 @(CurrentSelectedIds.Contains(entryTagTitle.Id) ? "text-success bg-secondary bg-opacity-10" : "")">
             <i class="las la-check-square la-lg"></i>
             @entryTagTitle.Title <small style="opacity: .6">(@entryTagTitle.Category.Title)</small>
         </div>

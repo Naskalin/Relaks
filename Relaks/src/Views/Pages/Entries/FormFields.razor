@@ -1,4 +1,8 @@
 ﻿@using Relaks.Models
+@using Relaks.Database
+@using Microsoft.EntityFrameworkCore
+
+@inject AppDbContext Db;
 
 <div class="mb-3 input-lg">
     <label for="" class="form-label form-label-lg">@Resources.Entity.ResourceManager.GetString(string.Format(Entry.Discriminator+"_Name")) *</label>
@@ -23,7 +27,34 @@
 </div>
 
 <div class="mb-3">
-    <SelectEntryTagsField EntryTagIds="@EntryTagTitleIds" EntryTagIdsChanged="@HandleEntryTagIdsChanged"/>
+    <SelectEntryTagTitlesField EntryTagTitleIds="@EntryTagTitleIds"
+                               EntryTagTitleIdsChanged="@HandleEntryTagTitleIdsChanged"
+                               IsHideSelectedTags="@true"
+    />
+    
+    <div class="list-group">
+        @foreach (var entryTag in EntryTags)
+        {
+            <div class="list-group-item">
+                <div class="d-flex gap-3 align-items-center">
+                    <div class="col">
+                        <div><small style="opacity: .6">(@entryTag.Tag.Category.Title)</small></div>
+                        @entryTag.Tag.Title
+                    </div>
+                    <div class="col-5">
+                        <MyTextarea @bind-Value="@entryTag.Description" Placeholder="Комментарий" rows="2"/>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button"
+                                onclick="@(() => HandleDeleteEntryTag(entryTag))"
+                                class="btn btn-circle btn-sm text-danger btn-outline-secondary">
+                            <i class="las la-times la-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
 
 <div class="row">
@@ -60,7 +91,6 @@
 </div>
 
 @code {
-
     private List<Guid> Test { get; set; } = new();
     
     [Parameter]
@@ -76,11 +106,41 @@
 
     protected override void OnParametersSet()
     {
-        EntryTags.ForEach(x => EntryTagTitleIds.Add(x.TagId));
+        EntryTagTitleIds = EntryTags.Select(x => x.TagId).ToList();
     }
 
-    private void HandleEntryTagIdsChanged(List<Guid> entryTagTitleIds)
+    private void HandleEntryTagTitleIdsChanged(List<Guid> changedTagTitleIds)
     {
-        EntryTagTitleIds = entryTagTitleIds;
+        EntryTagTitleIds = changedTagTitleIds;
+        var entryTagsDict = EntryTags.ToDictionary(x => x.TagId, x => x);
+        var currentTagTitleIds = entryTagsDict.Keys.ToList();
+        var newTagTitleIds = changedTagTitleIds.Except(currentTagTitleIds).ToList();
+        var newTagTitles = Db.EntryTagTitles
+            .Include(x => x.Category)
+            .Where(x => newTagTitleIds.Contains(x.Id))
+            .ToList();
+
+        foreach (var entryTag in EntryTags.Where(entryTag => !changedTagTitleIds.Contains(entryTag.TagId)))
+        {
+            EntryTags.Remove(entryTag);
+        }
+        
+        foreach (var newTagTitle in newTagTitles)
+        {
+            EntryTags.Add(new EntryTag()
+            {
+                Entry = Entry,
+                EntryId = Entry.Id,
+                Tag = newTagTitle,
+                TagId = newTagTitle.Id
+            });
+        }
+    }
+
+    private void HandleDeleteEntryTag(EntryTag entryTag)
+    {
+        EntryTags.Remove(entryTag);
+        EntryTagTitleIds = EntryTags.Select(x => x.TagId).ToList();
+        StateHasChanged();
     }
 }
