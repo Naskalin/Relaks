@@ -31,4 +31,8 @@
         <Content Remove="src\Database\**" />
         <Content Remove="assets\**" />
     </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="src\Views\Shared\ProfessionComponents\ProfessionList.razor" />
+    </ItemGroup>
 </Project>

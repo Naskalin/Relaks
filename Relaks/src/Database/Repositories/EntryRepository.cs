@@ -16,7 +16,6 @@ public class EntryFindRequest : IPaginatable, IOrderable
     public bool? IsDeleted { get; set; }
     public string? Search { get; set; }
     public List<Guid> ExcludedEntryIds { get; set; } = new();
-    public List<Guid> ProfessionIds { get; set; } = new();
     public List<Guid> EntryTagTitleIds { get; set; } = new();
 }
 
@@ -42,7 +41,6 @@ public static class EntryRepository
 
         var q = db.BaseEntries
             .Include(x => x.Tags)
-            .Include(x => x.Professions)
             .AsQueryable();
         
         q = req.IsDeleted == true ? q.Where(x => x.DeletedAt != null) : q.Where(x => x.DeletedAt == null);
@@ -56,11 +54,6 @@ public static class EntryRepository
         {
             var entryIds = db.EntryTags.Where(x => req.EntryTagTitleIds.Contains(x.TagId)).Select(x => x.EntryId);
             q = q.Where(x => entryIds.Contains(x.Id));
-        }
-        
-        if (req.ProfessionIds.Any())
-        {
-            q = q.Where(x => x.Professions.Any(prof => req.ProfessionIds.Contains(prof.Id)));
         }
 
         if (!string.IsNullOrEmpty(req.Discriminator))

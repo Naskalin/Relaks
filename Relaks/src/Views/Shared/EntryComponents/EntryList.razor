@@ -22,10 +22,6 @@
 </div>
 
 <div class="mb-3">
-    <SelectProfession ProfessionIds="@Req.ProfessionIds" ProfessionIdsChanged="@OnProfessionsChanged"/>
-</div>
-
-<div class="mb-3">
     <SelectEntryTagTitlesField EntryTagTitleIds="@Req.EntryTagTitleIds" EntryTagTitleIdsChanged="@HandleEntryTagTitleIdsChanged"/>
 </div>
 
@@ -192,12 +188,6 @@
         Req.Search = e.Value?.ToString();
         Req.Page = 1;
         FindData();
-    }
-
-    private void OnProfessionsChanged(List<Guid> professionIds)
-    {
-        Req.ProfessionIds = professionIds;
-        Result = Db.FindEntries(Req);
     }
 
     private void HandleEntryTagTitleIdsChanged(List<Guid> entryTagTitleIds)

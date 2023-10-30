@@ -23,10 +23,6 @@
 </div>
 
 <div class="mb-3">
-    <SelectProfession @bind-ProfessionIds="@ProfessionIds"/>
-</div>
-
-<div class="mb-3">
     <SelectEntryTagTitlesField EntryTagTitleIds="@EntryTagTitleIds"
                                EntryTagTitleIdsChanged="@HandleEntryTagTitleIdsChanged"
                                IsHideSelectedTags="@true"
@@ -96,9 +92,6 @@
     [Parameter]
     public BaseEntry Entry { get; set; } = null!;
 
-    [Parameter]
-    public List<Guid> ProfessionIds { get; set; } = new();
-    
     [Parameter]
     public List<EntryTag> EntryTags { get; set; } = new();
     

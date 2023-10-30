@@ -33,9 +33,6 @@ public sealed class AppDbContext : DbContext
     public DbSet<BaseFileTag> BaseFileTags { get; set; } = null!;
     public DbSet<EntryFileTag> EntryFileTags { get; set; } = null!;
 
-    public DbSet<Profession> Professions { get; set; } = null!;
-    public DbSet<ProfessionCategory> ProfessionCategories { get; set; } = null!;
-    
     public DbSet<EntryTag> EntryTags { get; set; } = null!;
     public DbSet<EntryTagTitle> EntryTagTitles { get; set; } = null!;
     public DbSet<EntryTagCategory> EntryTagCategories { get; set; } = null!;

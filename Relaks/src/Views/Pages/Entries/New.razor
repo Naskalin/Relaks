@@ -39,7 +39,7 @@
                 <ValidationMessage For="@(() => Entry.Discriminator)"/>
             </div>
             
-            <FormFields Entry="@Entry" EntryTags="@EntryTags" OnStateChanged="@StateHasChanged" ProfessionIds="@ProfessionIds"/>
+            <FormFields Entry="@Entry" EntryTags="@EntryTags" OnStateChanged="@StateHasChanged"/>
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">
                     <i class="las la-plus-circle la-lg me-1"></i>
@@ -53,7 +53,6 @@
 @code {
 
     private BaseEntry Entry { get; set; } = null!;
-    private List<Guid> ProfessionIds { get; set; } = new();
     private List<EntryTag> EntryTags { get; set; } = new();
     private FluentValidationValidator Validator { get; set; } = null!;
 
@@ -79,8 +78,6 @@
             };
         
         Entry.MapTo(entry);
-        var professions = Db.Professions.Where(x => ProfessionIds.Contains(x.Id));
-        entry.Professions.AddRange(professions);
         entry.Tags.AddRange(EntryTags);
         
         Db.BaseEntries.Add(entry);
