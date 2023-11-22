@@ -1,4 +1,5 @@
-﻿@inject IJSRuntime Js;
+﻿@* @rendermode @(new InteractiveServerRenderMode(prerender: false)) *@
+@inject IJSRuntime Js;
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage;
 
 <button class="btn btn-sm btn-outline-secondary" @onclick="@(() => SetDarkMode(IsDark = !IsDark))" disabled="@IsLoading">
@@ -36,8 +37,8 @@
 
     private async Task<string> GetFromLs() => await LocalStorage.GetItemAsync<string>("r-theme-color-mode");
     private async Task SetToLs(string mode) => await LocalStorage.SetItemAsync("r-theme-color-mode", mode);
-
-    protected override async Task OnInitializedAsync()
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         var mode = await GetFromLs();
         if (!string.IsNullOrEmpty(mode))
@@ -49,5 +50,18 @@
             await SetDarkMode(false);
         }
     }
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     var mode = await GetFromLs();
+    //     if (!string.IsNullOrEmpty(mode))
+    //     {
+    //         await SetDarkMode(mode.Equals(Dark));
+    //     }
+    //     else
+    //     {
+    //         await SetDarkMode(false);
+    //     }
+    // }
 
 }

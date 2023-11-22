@@ -5,7 +5,6 @@ using Relaks.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddRazorPages();
 builder.Services.AddRelaks();
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.PostConfigure<StaticFileOptions>(o =>
