@@ -24,9 +24,10 @@ builder.Services.AddSingleton<IFileProvider>(new CompositeFileProvider(
 var app = builder.Build();
 app.UseRelaks();
 
-var rootComponents = app.Services.GetRequiredService<BlazorWindowRootComponents>();
-rootComponents.Add(typeof(App), "#app");
-rootComponents.Add(typeof(HeadOutlet), "head::after");
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+// var rootComponents = app.Services.GetRequiredService<BlazorWindowRootComponents>();
+// rootComponents.Add(typeof(App), "#app");
+// rootComponents.Add(typeof(HeadOutlet), "head::after");
 var mainWindow = app.Services.GetRequiredService<PhotinoWindow>();
 mainWindow
     .SetWidth(1024)

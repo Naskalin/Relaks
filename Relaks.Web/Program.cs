@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
 builder.Services.AddRelaks();
-builder.Services.AddServerSideBlazor();
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.PostConfigure<StaticFileOptions>(o =>
 {
     if (o.FileProvider is CompositeFileProvider compositeFileProvider)
@@ -22,11 +22,8 @@ var app = builder.Build();
 app.UseRelaks();
 
 app.UseStaticFiles();
-
-app.MapRazorPages();
-
-app.MapBlazorHub();
-app.MapFallbackToPage("/Index");
+app.UseAntiforgery();
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 var appOperation = app.Services.GetRequiredService<AppOperation>();
 appOperation.OnRestart += RestartApp;

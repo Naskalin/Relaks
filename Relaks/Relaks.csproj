@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
@@ -8,23 +8,23 @@
 
     <ItemGroup>
         <PackageReference Include="Blazored.FluentValidation" Version="2.1.0" />
-        <PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
+        <PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
         <PackageReference Include="Bogus" Version="34.0.2" />
-        <PackageReference Include="BootstrapBlazor" Version="7.9.1" />
-        <PackageReference Include="BootstrapBlazor.FontAwesome" Version="7.4.2" />
+        <PackageReference Include="BootstrapBlazor" Version="8.0.2" />
+        <PackageReference Include="BootstrapBlazor.FontAwesome" Version="8.0.0" />
         <PackageReference Include="ColorHashSharp" Version="1.0.0" />
-        <PackageReference Include="libphonenumber-csharp" Version="8.13.9" />
-        <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="7.1.4" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
+        <PackageReference Include="libphonenumber-csharp" Version="8.13.25" />
+        <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="8.1.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.10" />
-        <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.0" />
         <PackageReference Include="MimeTypeMapOfficial" Version="1.0.17" />
         <PackageReference Include="SixLabors.ImageSharp.Web" Version="3.0.1" />
-        <PackageReference Include="YamlDotNet" Version="13.1.1" />
+        <PackageReference Include="YamlDotNet" Version="13.7.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -33,6 +33,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="src\Views\Shared\ProfessionComponents\ProfessionList.razor" />
+      <UpToDateCheckInput Remove="Pages\Shared\_Layout.cshtml" />
     </ItemGroup>
 </Project>

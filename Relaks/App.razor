@@ -1,22 +1,25 @@
-<PageTitle>Relaks</PageTitle>
-<HeadContent>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-</HeadContent>
+<!DOCTYPE html>
+<html lang="ru" data-bs-theme="light">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <base href="/"/>
+    <link href="_content/BootstrapBlazor.FontAwesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="_content/Relaks/libs/flag-icons-main/css/flag-icons.min.css" rel="stylesheet"/>
+    <link href="_content/Relaks/assets/libs.css" rel="stylesheet"/>
+    <link href="_content/Relaks/assets/app.css" rel="stylesheet"/>
+    <HeadOutlet/>
+</head>
+<body>
+<Routes @rendermode="InteractiveServer"/>
+<script src="_framework/blazor.web.js"></script>
+<script src="_content/BootstrapBlazor/js/bootstrap.blazor.bundle.min.js"></script>
+<script src="_content/Relaks/libs/bcherny_draggable.min.js"></script>
+<script src="_content/Relaks/assets/app.js"></script>
+</body>
+</html>
 
-<BootstrapBlazorRoot>
-    <Router AppAssembly="@typeof(App).Assembly">
-        <Found Context="routeData">
-            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
-        </Found>
-        <NotFound>
-            <PageTitle>Not found</PageTitle>
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
-            </LayoutView>
-        </NotFound>
-    </Router>
-</BootstrapBlazorRoot>
-
-@code{
-
+@code
+{
+    
 }

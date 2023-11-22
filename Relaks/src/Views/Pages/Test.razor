@@ -12,14 +12,6 @@
 @code {
     private void Restart()
     {
-        AppOperation.Restart();
-    }
-
-    protected override void OnParametersSet()
-    {
-        AppOperation.OnRestart += () =>
-        {
-            Console.WriteLine(@">>> ok test reload");
-        };
+        Console.WriteLine(@">>>>>>>>>>>>>>>>>>>>>> ok test reload");
     }
 }
