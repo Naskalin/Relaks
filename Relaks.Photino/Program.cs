@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -16,7 +15,6 @@ if (OperatingSystem.IsWindows())
 }
 
 var builder = Host.CreateApplicationBuilder(args);
-// var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddBlazorDesktop();
 builder.Services.AddRelaks();
 builder.Services.AddSingleton<IFileProvider>(new CompositeFileProvider(
@@ -26,9 +24,8 @@ builder.Services.AddSingleton<IFileProvider>(new CompositeFileProvider(
 var app = builder.Build();
 app.UseRelaks();
 
-builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 var rootComponents = app.Services.GetRequiredService<BlazorWindowRootComponents>();
-rootComponents.Add(typeof(App), "#app");
+rootComponents.Add(typeof(Routes), "#app");
 rootComponents.Add(typeof(HeadOutlet), "head::after");
 var mainWindow = app.Services.GetRequiredService<PhotinoWindow>();
 mainWindow

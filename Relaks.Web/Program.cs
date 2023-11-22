@@ -1,12 +1,10 @@
-using System.Diagnostics;
 using Microsoft.Extensions.FileProviders;
 using Relaks;
 using Relaks.Utils;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateSlimBuilder(args);
 
 builder.Services.AddRelaks();
-builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.PostConfigure<StaticFileOptions>(o =>
 {
     if (o.FileProvider is CompositeFileProvider compositeFileProvider)
@@ -22,7 +20,6 @@ app.UseRelaks();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
-app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 var appOperation = app.Services.GetRequiredService<AppOperation>();
 appOperation.OnRestart += RestartApp;
