@@ -24,9 +24,9 @@ app.UseAntiforgery();
 var appOperation = app.Services.GetRequiredService<AppOperation>();
 appOperation.OnRestart += RestartApp;
 
+app.Run();
+
 void RestartApp()
 {
     app.StopAsync().ContinueWith(_ => app.Start());
 }
-
-app.Run();

@@ -1,4 +1,7 @@
-﻿body {
+﻿html, body, #app {
+  height: 100%;
+}
+body {
   overflow-y: scroll;
 }
 // убриаем эффекты рамок при наведении на инпуты

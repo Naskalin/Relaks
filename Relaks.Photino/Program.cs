@@ -33,7 +33,7 @@ mainWindow
     .SetHeight(768)
     .SetIconFile("favicon.ico")
     .SetTitle("Relaks beta")
-    .SetDevToolsEnabled(true)
+    .SetDevToolsEnabled(false)
     ;
 mainWindow.Centered = true;
 
@@ -58,9 +58,6 @@ AppDomain.CurrentDomain.UnhandledException += (sender, error) =>
 {
     mainWindow.ShowMessage("Fatal exception", error.ExceptionObject.ToString());
 };
-
-// app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
-// app.UseAntiforgery();
 
 await app.StartAsync();
 windowManager.Navigate("/");
