@@ -3,7 +3,6 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     </PropertyGroup>
 
     <ItemGroup>
@@ -30,9 +29,5 @@
     <ItemGroup>
         <Content Remove="src\Database\**" />
         <Content Remove="assets\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <UpToDateCheckInput Remove="Pages\Shared\_Layout.cshtml" />
     </ItemGroup>
 </Project>

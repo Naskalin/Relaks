@@ -2,24 +2,20 @@ using Microsoft.Extensions.FileProviders;
 using Relaks;
 using Relaks.Utils;
 
-var builder = WebApplication.CreateSlimBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRelaks();
-builder.Services.PostConfigure<StaticFileOptions>(o =>
-{
-    if (o.FileProvider is CompositeFileProvider compositeFileProvider)
-    {
-        var providers = compositeFileProvider.FileProviders.ToList();
-        providers.Add(RelaksExtensions.FilesProvider());
-        o.FileProvider = new CompositeFileProvider(providers);
-    }
-});
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
 var app = builder.Build();
 app.UseRelaks();
-
-app.UseStaticFiles();
-app.UseAntiforgery();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new CompositeFileProvider(RelaksExtensions.FilesProvider(), app.Environment.WebRootFileProvider)
+});
+app.MapRazorComponents<Relaks.Index>()
+    .DisableAntiforgery()
+    .AddInteractiveServerRenderMode();
 
 var appOperation = app.Services.GetRequiredService<AppOperation>();
 appOperation.OnRestart += RestartApp;
