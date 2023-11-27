@@ -2,7 +2,7 @@
 
 namespace Relaks.Models.FinancialModels;
 
-public class Currency
+public class FinancialCurrency
 {
     /// <summary>
     /// Трёх буквенный код валюты по ISO 4217

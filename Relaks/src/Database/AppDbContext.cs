@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Relaks.Database.Configurations;
 using Relaks.Database.Events;
 using Relaks.Models;
+using Relaks.Models.FinancialModels;
 using Relaks.Models.StructureModels;
 
 namespace Relaks.Database;
@@ -39,6 +40,13 @@ public sealed class AppDbContext : DbContext
 
     public DbSet<StructureGroup> StructureGroups { get; set; } = null!;
     public DbSet<StructureItem> StructureItems { get; set; } = null!;
+    
+    public DbSet<FinancialCurrency> FinancialCurrencies { get; set; } = null!;
+    public DbSet<FinancialAccount> FinancialAccounts { get; set; } = null!;
+    public DbSet<FinancialAccountCategory> FinancialAccountCategories { get; set; } = null!;
+    public DbSet<FinancialTransaction> FinancialTransactions { get; set; } = null!;
+    public DbSet<FinancialTransactionItem> FinancialTransactionItems { get; set; } = null!;
+    public DbSet<FinancialTransactionCategory> FinancialTransactionCategories { get; set; } = null!;
     
     [DbFunction]
     public string Snippet(string match, string column, string open, string close, string ellips, int count)

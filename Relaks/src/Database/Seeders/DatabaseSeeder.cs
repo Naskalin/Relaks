@@ -39,5 +39,6 @@ public partial class DatabaseSeeder
         // SeedStructures();
         // // SeedInfoTemplate();
         // SeedEntryRelations();
+        SeedFinancials();
     }
 }
