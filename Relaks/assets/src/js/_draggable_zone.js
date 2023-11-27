@@ -1,4 +1,5 @@
 ﻿import 'arrows-svg'
+import {Draggable} from "./libs/bcherny_draggable.js";
 
 // check overflow
 // https://github.com/anseki/leader-line/issues/252
