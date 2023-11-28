@@ -2,6 +2,6 @@
 
 public class FinancialAccountCategory
 {
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid Id { get; set; }
     public required string Title { get; set; }
 }

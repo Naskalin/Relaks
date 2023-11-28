@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using BootstrapBlazor.Components;
 using Relaks.Managers;
 using Relaks.Models;
 using Relaks.Models.FinancialModels;
@@ -15,18 +16,87 @@ public partial class DatabaseSeeder
     private void SeedFinancials()
     {
         var entry = Db.BaseEntries.First(x => x.Id.Equals(Guid.Parse("01FBDDDD-1D69-4757-A8D2-5050A1AED4D4")));
+        if (!Db.FinancialAccountCategories.Any()) CreateFinancialAccountCategories();
         if (!Db.FinancialCurrencies.Any()) CreateCurrencies();
         if (!Db.FinancialAccounts.Any()) CreateFinancialAccounts(entry);
-        if (!Db.FinancialTransactionCategories.Any()) CreateFinancialTransactionCategories();
+        // if (!Db.FinancialTransactionCategories.Any()) CreateFinancialTransactionCategories();
+        // if (!Db.FinancialTransactions.Any()) CreateFinancialTransactions();
+    }
+
+    private void CreateFinancialAccountCategories()
+    {
+        Db.FinancialAccountCategories.Add(new()
+        {
+            Title = "Наличные"
+        });
+        Db.SaveChanges();
+    }
+
+    private void CreateFinancialTransactions()
+    {
+        var accountId = Db.FinancialAccounts.Where(x => x.FinancialCurrencyId.Equals("RUB")).Select(x => x.Id).First();
+        var entryId = Guid.Parse("01B137DA-A3CF-4C08-AC3E-752B3F156ED4");
+        var categories = Db.FinancialTransactionCategories.ToDictionary(x => x.Title, x => x.Id);
+        var transactions = new List<FinancialTransaction>()
+        {
+            new()
+            {
+                AccountId = accountId,
+                EntryId = entryId,
+                Description = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null}),
+                IsPlus = false,
+                Items = new List<FinancialTransactionItem>()
+                {
+                    new() {CategoryId = categories["Чипсы"], Quantity = Faker.Random.Int(1, 3), Amount = Faker.Random.Decimal(300, 600)},
+                    new() {CategoryId = categories["Сигареты"], Quantity = Faker.Random.Int(1, 3), Amount = Faker.Random.Decimal(200, 800)},
+                    new() {CategoryId = categories["Мясо"], Quantity = Faker.Random.Int(1), Amount = Faker.Random.Decimal(800, 1500)},
+                }
+            },
+            new()
+            {
+                AccountId = accountId,
+                EntryId = entryId,
+                Description = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null}),
+                IsPlus = false,
+                Items = new List<FinancialTransactionItem>()
+                {
+                    new() {CategoryId = categories["Молоко"], Quantity = 2, Amount = Faker.Random.Decimal(250, 400)},
+                }
+            }
+        };
+        
+        Db.FinancialTransactions.AddRange(transactions);
+        Db.SaveChanges();
     }
 
     private void CreateFinancialTransactionCategories()
     {
-        var parent1 = new FinancialTransactionCategory
+        var parent1 = new FinancialTransactionCategory {Title = "Дом"};
+        var parent2 = new FinancialTransactionCategory {Title = "Покупки"};
+            var child21 = new FinancialTransactionCategory {Title = "Питание", Parent = parent2};
+                var child211 = new FinancialTransactionCategory {Title = "Продукты", Parent = child21};
+                    var child2111 = new FinancialTransactionCategory {Title = "Молоко", Parent = child211};
+                    var child2112 = new FinancialTransactionCategory {Title = "Мясо", Parent = child211};
+                var child212 = new FinancialTransactionCategory {Title = "Вредности", Parent = child21};
+                    var child2121 = new FinancialTransactionCategory {Title = "Сигареты", Parent = child212};
+                    var child2122 = new FinancialTransactionCategory {Title = "Чипсы", Parent = child212};
+        var categories = new List<FinancialTransactionCategory>()
         {
-            Title = "Дом"
+            parent1,
+            new() {Title = "Ремонт", Parent = parent1},
+            new() {Title = "Обслуживание", Parent = parent1},
+            parent2,
+            child21,
+            child211,
+            child212,
+            child2111,
+            child2112,
+            child2121,
+            child2122
         };
-        TreeManager.UpdateTreePath(parent1);
+        categories.ForEach(x => TreeManager.UpdateTreePath(x, x.Parent));
+        Db.FinancialTransactionCategories.AddRange(categories);
+        Db.SaveChanges();
     }
 
     private void CreateFinancialAccounts(BaseEntry entry)
@@ -43,12 +113,19 @@ public partial class DatabaseSeeder
                 Description = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null}),
                 Title = Faker.Random.Words(Faker.Random.Int(5, 20)),
                 FinancialCurrencyId = currency.Id,
-                StartAt = default,
+                StartAt = DateTime.Now,
             };
+            
             if (Faker.Random.Int(1, 4) >= 2)
             {
                 item.EndAt = Faker.Date.Soon(365, item.StartAt);
             }
+
+            if (currency.Id.Equals("RUB"))
+            {
+                item.CategoryId = Db.FinancialAccountCategories.Select(x => x.Id).First();
+            }
+            
             accounts.Add(item);
         }
         
@@ -59,11 +136,7 @@ public partial class DatabaseSeeder
     
     private void CreateCurrencies()
     {
-        var projectDir = AppDomain.CurrentDomain.BaseDirectory;
-        using StreamReader r
-            = new StreamReader(Path.Combine(projectDir, "src", "Database", "Seeders", "currencies.json"));
-        string json = r.ReadToEnd();
-        var jsonCurrencies = JsonSerializer.Deserialize<Dictionary<string, JsonCountry>>(json, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        var jsonCurrencies = JsonSerializer.Deserialize<Dictionary<string, JsonCountry>>(CurrenciesJson, new JsonSerializerOptions(JsonSerializerDefaults.Web));
         if (jsonCurrencies == null) return;
         
         var currencies = new List<FinancialCurrency>();
@@ -80,4 +153,627 @@ public partial class DatabaseSeeder
         Db.FinancialCurrencies.AddRange(currencies);
         Db.SaveChanges();
     }
+
+    private static readonly string CurrenciesJson = @"{
+  ""AUD"": {
+    ""title"": ""Доллар (австралийский доллар)"",
+    ""symbol"": ""$""
+  },
+  ""EUR"": {
+    ""title"": ""Евро"",
+    ""symbol"": ""€""
+  },
+  ""AZN"": {
+    ""title"": ""Манат (азербайджанский манат)"",
+    ""symbol"": ""₼""
+  },
+  ""ALL"": {
+    ""title"": ""Лек"",
+    ""symbol"": ""L""
+  },
+  ""DZD"": {
+    ""title"": ""Динар (алжирский динар)"",
+    ""symbol"": "".د.ج • DA""
+  },
+  ""USD"": {
+    ""title"": ""Доллар (доллар США)"",
+    ""symbol"": ""$""
+  },
+  ""XCD"": {
+    ""title"": ""Доллар (восточно-карибский доллар)"",
+    ""symbol"": ""$""
+  },
+  ""AOA"": {
+    ""title"": ""Кванза"",
+    ""symbol"": ""Kz""
+  },
+  ""ARS"": {
+    ""title"": ""Песо (аргентинское песо)"",
+    ""symbol"": ""$""
+  },
+  ""AMD"": {
+    ""title"": ""Драм (армянский драм)"",
+    ""symbol"": ""֏""
+  },
+  ""AWG"": {
+    ""title"": ""Флорин (арубанский флорин)"",
+    ""symbol"": ""ƒ""
+  },
+  ""AFN"": {
+    ""title"": ""Афгани"",
+    ""symbol"": ""؋ • Af""
+  },
+  ""BSD"": {
+    ""title"": ""Доллар (багамский доллар)"",
+    ""symbol"": ""$""
+  },
+  ""BDT"": {
+    ""title"": ""Така"",
+    ""symbol"": ""৳""
+  },
+  ""BBD"": {
+    ""title"": ""Доллар (барбадосский доллар)"",
+    ""symbol"": ""$""
+  },
+  ""BHD"": {
+    ""title"": ""Динар (бахрейнский динар)"",
+    ""symbol"": "".د.ب • BD""
+  },
+  ""BZD"": {
+    ""title"": ""Доллар (белизский доллар)"",
+    ""symbol"": ""$""
+  },
+  ""BYN"": {
+    ""title"": ""Рубль (белорусский рубль)"",
+    ""symbol"": ""Br""
+  },
+  ""XOF"": {
+    ""title"": ""Франк (франк КФА BCEAO)"",
+    ""symbol"": ""₣""
+  },
+  ""BMD"": {
+    ""title"": ""Доллар (бермудский доллар)"",
+    ""symbol"": ""$""
+  },
+  ""BGN"": {
+    ""title"": ""Лев (болгарский лев)"",
+    ""symbol"": ""лв""
+  },
+  ""BOB"": {
+    ""title"": ""Боливиано"",
+    ""symbol"": ""$""
+  },
+  ""BAM"": {
+    ""title"": ""Марка (конвертируемая марка)"",
+    ""symbol"": ""KM""
+  },
+  ""BWP"": {
+    ""title"": ""Пула"",
+    ""symbol"": ""P""
+  },
+  ""BRL"": {
+    ""title"": ""Реал (бразильский реал)"",
+    ""symbol"": ""$""
+  },
+  ""BND"": {
+    ""title"": ""Доллар (брунейский доллар)"",
+    ""symbol"": ""$""
+  },
+  ""BIF"": {
+    ""title"": ""Франк (бурундийский франк)"",
+    ""symbol"": ""₣""
+  },
+  ""BTN"": {
+    ""title"": ""Нгултрум[13]"",
+    ""symbol"": ""Nu""
+  },
+  ""VUV"": {
+    ""title"": ""Вату"",
+    ""symbol"": ""Vt""
+  },
+  ""GBP"": {
+    ""title"": ""Фунт (фунт стерлингов)"",
+    ""symbol"": ""£""
+  },
+  ""HUF"": {
+    ""title"": ""Форинт"",
+    ""symbol"": ""Ft""
+  },
+  ""VES"": {
+    ""title"": ""Суверенный боливар"",
+    ""symbol"": ""Bs. S.""
+  },
+  ""VND"": {
+    ""title"": ""Донг"",
+    ""symbol"": ""₫""
+  },
+  ""XAF"": {
+    ""title"": ""Франк (франк КФА BEAC)"",
+    ""symbol"": ""₣""
+  },
+  ""HTG"": {
+    ""title"": ""Гурд[14]"",
+    ""symbol"": ""G""
+  },
+  ""GYD"": {
+    ""title"": ""Доллар (гайанский доллар)"",
+    ""symbol"": ""$""
+  },
+  ""GMD"": {
+    ""title"": ""Даласи"",
+    ""symbol"": ""D""
+  },
+  ""GHS"": {
+    ""title"": ""Седи (ганский седи)"",
+    ""symbol"": ""₵""
+  },
+  ""GTQ"": {
+    ""title"": ""Кетсаль"",
+    ""symbol"": ""Q""
+  },
+  ""GNF"": {
+    ""title"": ""Франк (гвинейский франк)"",
+    ""symbol"": ""₣""
+  },
+  ""GIP"": {
+    ""title"": ""Фунт (гибралтарский фунт)"",
+    ""symbol"": ""£""
+  },
+  ""HNL"": {
+    ""title"": ""Лемпира"",
+    ""symbol"": ""L""
+  },
+  ""HKD"": {
+    ""title"": ""Доллар (гонконгский доллар)"",
+    ""symbol"": ""$""
+  },
+  ""DKK"": {
+    ""title"": ""Крона (датская крона)"",
+    ""symbol"": ""kr""
+  },
+  ""GEL"": {
+    ""title"": ""Лари"",
+    ""symbol"": ""₾""
+  },
+  ""DJF"": {
+    ""title"": ""Франк (франк Джибути)"",
+    ""symbol"": ""₣""
+  },
+  ""DOP"": {
+    ""title"": ""Песо (доминиканское песо)"",
+    ""symbol"": ""$""
+  },
+  ""EGP"": {
+    ""title"": ""Фунт (египетский фунт)"",
+    ""symbol"": "".ج.م • LE""
+  },
+  ""ZMW"": {
+    ""title"": ""Квача (замбийская квача)"",
+    ""symbol"": ""K""
+  },
+  ""MAD"": {
+    ""title"": ""Дирхам (марокканский дирхам)"",
+    ""symbol"": "".د.م • Dh""
+  },
+  ""ZWL"": {
+    ""title"": ""Доллар (доллар Зимбабве)"",
+    ""symbol"": ""Z$""
+  },
+  ""ILS"": {
+    ""title"": ""Шекель (новый израильский шекель)"",
+    ""symbol"": ""₪""
+  },
+  ""INR"": {
+    ""title"": ""Рупия (индийская рупия)"",
+    ""symbol"": ""₹""
+  },
+  ""IDR"": {
+    ""title"": ""Рупия (индонезийская рупия)"",
+    ""symbol"": ""Rp""
+  },
+  ""JOD"": {
+    ""title"": ""Динар (иорданский динар)"",
+    ""symbol"": "".د.إ • JD""
+  },
+  ""IQD"": {
+    ""title"": ""Динар (иракский динар)"",
+    ""symbol"": "".د.ع • ID""
+  },
+  ""IRR"": {
+    ""title"": ""Риал (иранский риал)"",
+    ""symbol"": ""﷼ • IR""
+  },
+  ""ISK"": {
+    ""title"": ""Крона (исландская крона)"",
+    ""symbol"": ""kr""
+  },
+  ""YER"": {
+    ""title"": ""Риал (йеменский риал)"",
+    ""symbol"": ""﷼ • YR""
+  },
+  ""CVE"": {
+    ""title"": ""Эскудо (эскудо Кабо-Верде)"",
+    ""symbol"": ""$""
+  },
+  ""KZT"": {
+    ""title"": ""Тенге"",
+    ""symbol"": ""₸""
+  },
+  ""KYD"": {
+    ""title"": ""Доллар (доллар Островов Кайман)"",
+    ""symbol"": ""$""
+  },
+  ""KHR"": {
+    ""title"": ""Риель"",
+    ""symbol"": ""៛""
+  },
+  ""CAD"": {
+    ""title"": ""Доллар (канадский доллар)"",
+    ""symbol"": ""$""
+  },
+  ""QAR"": {
+    ""title"": ""Риал (катарский риал)"",
+    ""symbol"": ""﷼ • QR""
+  },
+  ""KES"": {
+    ""title"": ""Шиллинг (кенийский шиллинг)"",
+    ""symbol"": ""KSh""
+  },
+  ""KGS"": {
+    ""title"": ""Сом"",
+    ""symbol"": ""с""
+  },
+  ""CNY"": {
+    ""title"": ""Юань"",
+    ""symbol"": ""¥""
+  },
+  ""COP"": {
+    ""title"": ""Песо (колумбийское песо)"",
+    ""symbol"": ""$""
+  },
+  ""KMF"": {
+    ""title"": ""Франк (франк Комор)"",
+    ""symbol"": ""₣""
+  },
+  ""CDF"": {
+    ""title"": ""Франк (конголезский франк)"",
+    ""symbol"": ""₣""
+  },
+  ""KPW"": {
+    ""title"": ""Вона (северокорейская вона)"",
+    ""symbol"": ""원""
+  },
+  ""KRW"": {
+    ""title"": ""Вона (южнокорейская вона)"",
+    ""symbol"": ""₩""
+  },
+  ""CRC"": {
+    ""title"": ""Колон (коста-риканский колон)"",
+    ""symbol"": ""₡""
+  },
+  ""CUP"": {
+    ""title"": ""Песо (кубинское песо)"",
+    ""symbol"": ""$""
+  },
+  ""KWD"": {
+    ""title"": ""Динар (кувейтский динар)"",
+    ""symbol"": "".د.ك • KD""
+  },
+  ""ANG"": {
+    ""title"": ""Гульден (нидерландский антильский гульден)"",
+    ""symbol"": ""ƒ""
+  },
+  ""LAK"": {
+    ""title"": ""Кип"",
+    ""symbol"": ""₭""
+  },
+  ""LSL"": {
+    ""title"": ""Лоти (мн. Малоти)"",
+    ""symbol"": ""L""
+  },
+  ""LRD"": {
+    ""title"": ""Доллар (либерийский доллар)"",
+    ""symbol"": ""$""
+  },
+  ""LBP"": {
+    ""title"": ""Фунт (ливанский фунт)"",
+    ""symbol"": "".ل.ل""
+  },
+  ""LYD"": {
+    ""title"": ""Динар (ливийский динар)"",
+    ""symbol"": "".د.ل • LD""
+  },
+  ""CHF"": {
+    ""title"": ""Франк (швейцарский франк)"",
+    ""symbol"": ""₣""
+  },
+  ""MUR"": {
+    ""title"": ""Рупия (маврикийская рупия)"",
+    ""symbol"": ""Re (мн. Rs)""
+  },
+  ""MRU"": {
+    ""title"": ""Угия"",
+    ""symbol"": ""UM""
+  },
+  ""MGA"": {
+    ""title"": ""Ариари (малагасийский ариари)"",
+    ""symbol"": ""Ar.""
+  },
+  ""MOP"": {
+    ""title"": ""Патака"",
+    ""symbol"": ""$""
+  },
+  ""MKD"": {
+    ""title"": ""Денар"",
+    ""symbol"": ""ден.""
+  },
+  ""MWK"": {
+    ""title"": ""Квача"",
+    ""symbol"": ""K""
+  },
+  ""MYR"": {
+    ""title"": ""Ринггит (малайзийский ринггит)"",
+    ""symbol"": ""RM""
+  },
+  ""MVR"": {
+    ""title"": ""Руфия"",
+    ""symbol"": "".ރ • Rf""
+  },
+  ""MXN"": {
+    ""title"": ""Песо (мексиканское песо)"",
+    ""symbol"": ""$""
+  },
+  ""MZN"": {
+    ""title"": ""Метикал (мозамбикский метикал)"",
+    ""symbol"": ""MT""
+  },
+  ""MDL"": {
+    ""title"": ""Лей (молдавский лей)"",
+    ""symbol"": ""L""
+  },
+  ""MNT"": {
+    ""title"": ""Тугрик"",
+    ""symbol"": ""₮""
+  },
+  ""MMK"": {
+    ""title"": ""Кьят[24]"",
+    ""symbol"": ""K""
+  },
+  ""NAD"": {
+    ""title"": ""Доллар (доллар Намибии)"",
+    ""symbol"": ""N$""
+  },
+  ""NPR"": {
+    ""title"": ""Рупия (непальская рупия)"",
+    ""symbol"": ""Re (мн. Rs)""
+  },
+  ""NGN"": {
+    ""title"": ""Найра"",
+    ""symbol"": ""₦""
+  },
+  ""NIO"": {
+    ""title"": ""Кордоба (золотая кордоба)"",
+    ""symbol"": ""$""
+  },
+  ""NZD"": {
+    ""title"": ""Доллар (новозеландский доллар)"",
+    ""symbol"": ""$""
+  },
+  ""XPF"": {
+    ""title"": ""Франк (франк КФП)"",
+    ""symbol"": ""₣""
+  },
+  ""NOK"": {
+    ""title"": ""Крона (норвежская крона)"",
+    ""symbol"": ""kr""
+  },
+  ""AED"": {
+    ""title"": ""Дирхам (дирхам ОАЭ)"",
+    ""symbol"": "".د.إ • Dh""
+  },
+  ""OMR"": {
+    ""title"": ""Риал (оманский риал)"",
+    ""symbol"": ""﷼ • RO""
+  },
+  ""PKR"": {
+    ""title"": ""Рупия (пакистанская рупия)"",
+    ""symbol"": ""Re (мн. Rs)""
+  },
+  ""PAB"": {
+    ""title"": ""Бальбоа[14]"",
+    ""symbol"": ""B/.""
+  },
+  ""PGK"": {
+    ""title"": ""Кина"",
+    ""symbol"": ""K""
+  },
+  ""PYG"": {
+    ""title"": ""Гуарани"",
+    ""symbol"": ""₲""
+  },
+  ""PEN"": {
+    ""title"": ""Соль (новый соль)"",
+    ""symbol"": ""S/""
+  },
+  ""PLN"": {
+    ""title"": ""Злотый"",
+    ""symbol"": ""zł""
+  },
+  ""RUB"": {
+    ""title"": ""Рубль (российский рубль)"",
+    ""symbol"": ""₽""
+  },
+  ""RWF"": {
+    ""title"": ""Франк (франк Руанды)"",
+    ""symbol"": ""₣""
+  },
+  ""RON"": {
+    ""title"": ""Лей (румынский лей)"",
+    ""symbol"": ""L""
+  },
+  ""SVC"": {
+    ""title"": ""Колон (сальвадорский колон)"",
+    ""symbol"": ""₡""
+  },
+  ""WST"": {
+    ""title"": ""Тала"",
+    ""symbol"": ""$""
+  },
+  ""STN"": {
+    ""title"": ""Добра"",
+    ""symbol"": ""Db""
+  },
+  ""SAR"": {
+    ""title"": ""Риял (саудовский риял)"",
+    ""symbol"": ""﷼ • SR""
+  },
+  ""SHP"": {
+    ""title"": ""Фунт (фунт Святой Елены)"",
+    ""symbol"": ""£""
+  },
+  ""SCR"": {
+    ""title"": ""Рупия (сейшельская рупия)"",
+    ""symbol"": ""Re (мн. Rs)""
+  },
+  ""RSD"": {
+    ""title"": ""Динар (сербский динар)"",
+    ""symbol"": ""din. • дин.""
+  },
+  ""SGD"": {
+    ""title"": ""Доллар (сингапурский доллар)"",
+    ""symbol"": ""$""
+  },
+  ""SYP"": {
+    ""title"": ""Фунт (сирийский фунт)"",
+    ""symbol"": "".ل.س • S£""
+  },
+  ""SBD"": {
+    ""title"": ""Доллар (доллар Соломоновых Островов)"",
+    ""symbol"": ""$""
+  },
+  ""SOS"": {
+    ""title"": ""Шиллинг (сомалийский шиллинг)"",
+    ""symbol"": ""S""
+  },
+  ""SDG"": {
+    ""title"": ""Фунт (суданский фунт)"",
+    ""symbol"": ""£""
+  },
+  ""SRD"": {
+    ""title"": ""Доллар (суринамский доллар)"",
+    ""symbol"": ""$""
+  },
+  ""SLL"": {
+    ""title"": ""Леоне"",
+    ""symbol"": ""Le""
+  },
+  ""TJS"": {
+    ""title"": ""Сомони"",
+    ""symbol"": ""с.""
+  },
+  ""THB"": {
+    ""title"": ""Бат"",
+    ""symbol"": ""฿""
+  },
+  ""TWD"": {
+    ""title"": ""Доллар (новый тайваньский доллар)"",
+    ""symbol"": ""NT$""
+  },
+  ""TZS"": {
+    ""title"": ""Шиллинг (танзанийский шиллинг)"",
+    ""symbol"": ""TSh""
+  },
+  ""TOP"": {
+    ""title"": ""Паанга[30]"",
+    ""symbol"": ""$""
+  },
+  ""TTD"": {
+    ""title"": ""Доллар (доллар Тринидада и Тобаго)"",
+    ""symbol"": ""$""
+  },
+  ""TND"": {
+    ""title"": ""Динар (тунисский динар)"",
+    ""symbol"": "".د.ت • TD""
+  },
+  ""TMT"": {
+    ""title"": ""Манат (новый туркменский манат)"",
+    ""symbol"": ""m""
+  },
+  ""TRY"": {
+    ""title"": ""Лира (турецкая лира)"",
+    ""symbol"": ""₺""
+  },
+  ""UGX"": {
+    ""title"": ""Шиллинг (угандийский шиллинг)"",
+    ""symbol"": ""USh""
+  },
+  ""UZS"": {
+    ""title"": ""Сум (узбекский сум)"",
+    ""symbol"": ""so’m • сўм""
+  },
+  ""UAH"": {
+    ""title"": ""Гривна"",
+    ""symbol"": ""₴""
+  },
+  ""UYU"": {
+    ""title"": ""Песо (уругвайское песо)"",
+    ""symbol"": ""$""
+  },
+  ""FJD"": {
+    ""title"": ""Доллар (доллар Фиджи)"",
+    ""symbol"": ""$""
+  },
+  ""PHP"": {
+    ""title"": ""Песо (филиппинское песо)"",
+    ""symbol"": ""₱""
+  },
+  ""FKP"": {
+    ""title"": ""Фунт (фунт Фолклендских островов)"",
+    ""symbol"": ""£""
+  },
+  ""CZK"": {
+    ""title"": ""Крона (чешская крона)"",
+    ""symbol"": ""Kč""
+  },
+  ""CLP"": {
+    ""title"": ""Песо (чилийское песо)"",
+    ""symbol"": ""$""
+  },
+  ""SEK"": {
+    ""title"": ""Крона (шведская крона)"",
+    ""symbol"": ""kr""
+  },
+  ""LKR"": {
+    ""title"": ""Рупия (шри-ланкийская рупия)"",
+    ""symbol"": ""Re (мн. Rs)""
+  },
+  ""ERN"": {
+    ""title"": ""Накфа"",
+    ""symbol"": ""Nfk""
+  },
+  ""SZL"": {
+    ""title"": ""Лилангени (мн. Эмалангени)"",
+    ""symbol"": ""L""
+  },
+  ""ETB"": {
+    ""title"": ""Быр (эфиопский быр)"",
+    ""symbol"": ""Br""
+  },
+  ""ZAR"": {
+    ""title"": ""Рэнд"",
+    ""symbol"": ""R""
+  },
+  ""SSP"": {
+    ""title"": ""Фунт (южносуданский фунт)"",
+    ""symbol"": ""SSP""
+  },
+  ""JMD"": {
+    ""title"": ""Доллар (ямайский доллар)"",
+    ""symbol"": ""$""
+  },
+  ""JPY"": {
+    ""title"": ""Иена"",
+    ""symbol"": ""¥""
+  }
+}";
 }

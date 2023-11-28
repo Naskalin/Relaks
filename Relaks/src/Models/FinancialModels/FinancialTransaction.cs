@@ -2,7 +2,7 @@
 
 public class FinancialTransaction
 {
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid Id { get; set; }
     
     /// <summary>
     /// true Пополнение, false списание
@@ -15,12 +15,12 @@ public class FinancialTransaction
     /// Описание операции
     /// </summary>
     public string? Description { get; set; }
+
+    public Guid AccountId { get; set; } = default!;
+    public FinancialAccount Account { get; set; } = null!;
     
-    public required Guid AccountId { get; set; }
-    public required FinancialAccount Account { get; set; }
-    
-    public required Guid EntryId { get; set; }
-    public required BaseEntry Entry { get; set; }
+    public Guid EntryId { get; set; } = default!;
+    public BaseEntry Entry { get; set; } = null!;
 
     public List<FinancialTransactionItem> Items { get; set; } = new();
 }

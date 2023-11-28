@@ -17,7 +17,7 @@ namespace Relaks.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .UseCollation("NOCASE")
-                .HasAnnotation("ProductVersion", "7.0.10");
+                .HasAnnotation("ProductVersion", "8.0.0");
 
             modelBuilder.Entity("BaseEntryBaseFile", b =>
                 {
@@ -122,6 +122,7 @@ namespace Relaks.Migrations
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
+                        .HasMaxLength(13)
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("EntryId")
@@ -167,6 +168,7 @@ namespace Relaks.Migrations
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
+                        .HasMaxLength(13)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DisplayName")
@@ -203,6 +205,7 @@ namespace Relaks.Migrations
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
+                        .HasMaxLength(21)
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("ParentId")
@@ -235,6 +238,7 @@ namespace Relaks.Migrations
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
+                        .HasMaxLength(13)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
@@ -432,6 +436,163 @@ namespace Relaks.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("EntryTagTitles");
+                });
+
+            modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialAccount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("EndAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("EntryId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FinancialCurrencyId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("StartAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("EntryId");
+
+                    b.HasIndex("FinancialCurrencyId");
+
+                    b.ToTable("FinancialAccounts");
+                });
+
+            modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialAccountCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FinancialAccountCategories");
+                });
+
+            modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialCurrency", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Symbol")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FinancialCurrencies");
+                });
+
+            modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialTransaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("EntryId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsPlus")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("EntryId");
+
+                    b.ToTable("FinancialTransactions");
+                });
+
+            modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialTransactionCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TreePath")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("FinancialTransactionCategories");
+                });
+
+            modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialTransactionItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("money");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("TransactionId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("TransactionId");
+
+                    b.ToTable("FinancialTransactionItems");
                 });
 
             modelBuilder.Entity("Relaks.Models.FtsEntry", b =>
@@ -890,6 +1051,78 @@ namespace Relaks.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialAccount", b =>
+                {
+                    b.HasOne("Relaks.Models.FinancialModels.FinancialAccountCategory", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("Relaks.Models.BaseEntry", "Entry")
+                        .WithMany()
+                        .HasForeignKey("EntryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Relaks.Models.FinancialModels.FinancialCurrency", "FinancialCurrency")
+                        .WithMany()
+                        .HasForeignKey("FinancialCurrencyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Entry");
+
+                    b.Navigation("FinancialCurrency");
+                });
+
+            modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialTransaction", b =>
+                {
+                    b.HasOne("Relaks.Models.FinancialModels.FinancialAccount", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Relaks.Models.BaseEntry", "Entry")
+                        .WithMany()
+                        .HasForeignKey("EntryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Entry");
+                });
+
+            modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialTransactionCategory", b =>
+                {
+                    b.HasOne("Relaks.Models.FinancialModels.FinancialTransactionCategory", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialTransactionItem", b =>
+                {
+                    b.HasOne("Relaks.Models.FinancialModels.FinancialTransactionCategory", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Relaks.Models.FinancialModels.FinancialTransaction", "Transaction")
+                        .WithMany("Items")
+                        .HasForeignKey("TransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Transaction");
+                });
+
             modelBuilder.Entity("Relaks.Models.StructureModels.StructureGroup", b =>
                 {
                     b.HasOne("Relaks.Models.BaseEntry", "Entry")
@@ -979,6 +1212,16 @@ namespace Relaks.Migrations
                     b.Navigation("Children");
 
                     b.Navigation("Tags");
+                });
+
+            modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialTransaction", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialTransactionCategory", b =>
+                {
+                    b.Navigation("Children");
                 });
 
             modelBuilder.Entity("Relaks.Models.StructureModels.StructureGroup", b =>

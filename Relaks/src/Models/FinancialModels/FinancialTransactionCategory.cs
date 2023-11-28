@@ -4,7 +4,7 @@ namespace Relaks.Models.FinancialModels;
 
 public class FinancialTransactionCategory : ITree<FinancialTransactionCategory>
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; }
     public List<FinancialTransactionCategory> Children { get; set; } = new();
     public Guid? ParentId { get; set; }
     public FinancialTransactionCategory? Parent { get; set; }

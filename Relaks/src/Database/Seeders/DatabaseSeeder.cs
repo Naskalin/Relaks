@@ -18,6 +18,13 @@ public partial class DatabaseSeeder
     public void SeedAll()
     {
         // clear fts
+        Db.Database.ExecuteSqlRaw("DELETE FROM FinancialTransactionItems;");
+        Db.Database.ExecuteSqlRaw("DELETE FROM FinancialTransactions;");
+        Db.Database.ExecuteSqlRaw("DELETE FROM FinancialTransactionCategories;");
+        Db.Database.ExecuteSqlRaw("DELETE FROM FinancialAccounts;");
+        Db.Database.ExecuteSqlRaw("DELETE FROM FinancialAccountCategories;");
+        
+        
         // Db.Database.ExecuteSqlRaw("DELETE FROM FtsEntryInfos;");
         // Db.Database.ExecuteSqlRaw("DELETE FROM FtsEntries;");
         //
@@ -30,6 +37,8 @@ public partial class DatabaseSeeder
 
         // Db.Database.ExecuteSqlRaw("delete from BaseEntryProfession;");
         // Db.Database.ExecuteSqlRaw("delete from Professions;");
+        // Db.Database.ExecuteSqlRaw("delete from ProfessionCategories;");
+        
         // Db.Database.ExecuteSqlRaw("delete from ProfessionCategories;");
         
 

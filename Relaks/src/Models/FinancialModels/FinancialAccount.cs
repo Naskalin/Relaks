@@ -2,7 +2,7 @@
 
 public class FinancialAccount
 {
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid Id { get; set; }
     public required string Title { get; set; }
     public string? Description { get; set; }
     
@@ -15,7 +15,7 @@ public class FinancialAccount
     /// <summary>
     /// Дата открытия счёта
     /// </summary>
-    public required DateTime StartAt { get; set; } = DateTime.Now;
+    public required DateTime StartAt { get; set; }
     
     /// <summary>
     /// Дата закрытия счёта
@@ -25,6 +25,6 @@ public class FinancialAccount
     /// <summary>
     /// Владелец счёта
     /// </summary>
-    public required Guid EntryId { get; set; }
+    public Guid EntryId { get; set; }
     public BaseEntry Entry { get; set; } = null!;
 }
