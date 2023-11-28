@@ -27,10 +27,21 @@ public class FinancialsStore
     public Guid? SidebarEditAccountCategoryId { get; set; }
     public Guid? SidebarEditAccountId { get; set; }
     public List<FinancialAccountCategory> AccountCategories { get; set; } = new();
+    public List<FinancialCurrency> Currencies { get; set; } = new();
 
     public void Initialize()
     {
         FindAccountCategories();
+        FindCurrencies();
+    }
+
+    private void FindCurrencies()
+    {
+        Currencies = _db.FinancialCurrencies
+            .OrderByDescending(x => x.Id.Equals("RUB"))
+            .ThenByDescending(x => x.Id.Equals("USD"))
+            .ThenByDescending(x => x.Id.Equals("EUR"))
+            .ToList();
     }
     
     public void FindAccountCategories()
@@ -48,10 +59,15 @@ public class FinancialsStore
         {
             foreach (var account in category.Accounts)
             {
-                items.Add(new(account.Id.ToString(), account.Title) {GroupName = category.Title});
+                items.Add(new SelectedItem(account.Id.ToString(), account.TitleWithCurrency()) {GroupName = category.Title});
             }
         });
         
         return items;
     }
+
+    public List<SelectedItem> CurrenciesSelectOptions() =>
+        Currencies
+            .Select(x => new SelectedItem(x.Id, x.ToString()))
+            .ToList();
 }

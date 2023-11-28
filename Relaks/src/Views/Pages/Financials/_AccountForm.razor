@@ -5,6 +5,7 @@
 
 @inject AppDbContext Db;
 
+<Dump Data="@Req"/>
 <div class="row align-items-center mb-3">
     <div class="col-auto">
         <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@HandleReturn" title="Вернуться">
@@ -21,20 +22,55 @@
     <ValidationSummary/>
     
     <div class="mb-3">
-        <label for="financial-title" class="form-label">Название</label>
+        <SelectEntry EntryIds="@EntryIds" EntryIdsChanged="@HandleEntryChanged" IsMultiple="@false" Label="Счёт для объединения *"/>
+        <ValidationMessage For="@(() => Req.EntryId)"/>
+    </div>
+    
+    <div class="mb-3">
+        <label for="financial-title" class="form-label">Название *</label>
         <InputText id="financial-title" @bind-Value="@Req.Title" required="required" class="form-control" maxlength="255"/>
         <ValidationMessage For="@(() => Req.Title)"/>
+    </div>
+    
+    <div class="mb-3">
+        <label for="financial-category" class="form-label">Категория счёта *</label>
+        <Select id="financial-category" @bind-Value="@Req.CategoryId" Items="@Store.AccountCategoriesSelectOptions()" ShowSearch="true"></Select>
+        <ValidationMessage For="@(() => Req.CategoryId)"/>
+    </div>
+
+    <div class="mb-3">
+        <label for="financial-currency" class="form-label">Валюта *</label>
+        <Select id="financial-currency" @bind-Value="@Req.FinancialCurrencyId" Items="@Store.CurrenciesSelectOptions()" ShowSearch="true"></Select>
+        <ValidationMessage For="@(() => Req.FinancialCurrencyId)"/>
+    </div>
+    
+    <div class="row">
+        <div class="col">
+                <div class="mb-3">
+                    <label for="financial-startAt" class="form-label">Открытие счёта *</label>
+                    <InputDate Type="@InputDateType.Date"
+                               @bind-Value="@Req.StartAt"
+                               id="financial-startAt"
+                               class="form-control"/>
+                    <ValidationMessage For="@(() => Req.StartAt)"/>
+                </div>
+        </div>
+        <div class="col">
+                            <div class="mb-3">
+                                <label for="financial-endAt" class="form-label">Закрытие счёта *</label>
+                                <InputDate Type="@InputDateType.Date"
+                                           @bind-Value="@Req.EndAt"
+                                           id="financial-endAt"
+                                           class="form-control"/>
+                                <ValidationMessage For="@(() => Req.EndAt)"/>
+                            </div>
+        </div>
     </div>
     
     <div class="mb-3">
         <label for="financial-desc" class="form-label">Описание</label>
         <MyTextarea bind-Value="@Req.Description" id="financial-desc" maxlength="500"/>
         <ValidationMessage For="@(() => Req.Description)"/>
-    </div>
-    
-    <div class="mb-3">
-        <label for="financial-category" class="form-label">Категория счёта</label>
-        <Select id="financial-category" @bind-Value="@Req.CategoryId" Items="@Store.AccountCategoriesSelectOptions()" ShowSearch="true"></Select>
     </div>
 
     <div class="mb-3">
@@ -53,6 +89,7 @@
     [Parameter]
     public EventCallback OnStateChanged { get; set; }
     private FinancialAccount? Account { get; set; }
+    private List<Guid> EntryIds { get; set; } = new();
 
     protected override void OnParametersSet()
     {
@@ -60,11 +97,18 @@
         if (!IsEdit) return;
         Account = Db.FinancialAccounts.First(x => x.Id.Equals(Store.SidebarEditAccountId));
         Account.MapTo(Req);
+        EntryIds = new List<Guid>() {Account.EntryId};
     }
 
     private bool IsEdit { get; set; }
 
     private FinancialAccountRequest Req { get; set; } = new();
+
+    private void HandleEntryChanged(List<Guid> entryIds)
+    {
+        EntryIds = entryIds;
+        Req.EntryId = entryIds.FirstOrDefault();
+    }
 
     private async Task HandleReturn()
     {

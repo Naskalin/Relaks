@@ -16,6 +16,6 @@ public class FinancialAccountRequestValidator : AbstractValidator<FinancialAccou
         });
         RuleFor(x => x.CategoryId).NotEmpty();
         RuleFor(x => x.FinancialCurrencyId).NotEmpty();
-        RuleFor(x => x.EntryId).NotEmpty();
+        RuleFor(x => x.EntryId).Must(entryId => entryId.HasValue && entryId.Value != default);
     }
 }

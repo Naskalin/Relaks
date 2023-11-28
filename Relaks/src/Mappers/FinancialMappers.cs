@@ -34,6 +34,8 @@ public static class FinancialMappers
         account.CategoryId = req.CategoryId;
         account.StartAt = req.StartAt;
         account.EndAt = req.EndAt;
-        account.EntryId = req.EntryId;
+        
+        ArgumentNullException.ThrowIfNull(req.EntryId);
+        account.EntryId = req.EntryId.Value;
     }
 }

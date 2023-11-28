@@ -19,4 +19,6 @@ public class FinancialCurrency
     /// Символ валюты
     /// </summary>
     public required string Symbol { get; set; }
+
+    public override string ToString() => $"{Id} - {Title}, {Symbol}";
 }

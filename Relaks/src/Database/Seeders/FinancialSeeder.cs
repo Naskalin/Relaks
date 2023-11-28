@@ -105,13 +105,14 @@ public partial class DatabaseSeeder
 
         var categoryIds = Db.FinancialAccountCategories.Select(x => x.Id).ToList();
         var accounts = new List<FinancialAccount>();
+        var i = 0;
         foreach (var currency in new [] {rub, usd})
         {
             var item = new FinancialAccount
             {
                 EntryId = entry.Id,
                 Description = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null}),
-                Title = Faker.Random.Words(Faker.Random.Int(5, 20)),
+                Title = $"Наличные {i}",
                 FinancialCurrencyId = currency.Id,
                 StartAt = DateTime.Now,
             };
@@ -128,6 +129,7 @@ public partial class DatabaseSeeder
             }
             
             accounts.Add(item);
+            i++;
         }
         
         

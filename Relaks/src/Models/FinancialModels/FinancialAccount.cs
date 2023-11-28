@@ -27,4 +27,6 @@ public class FinancialAccount
     /// </summary>
     public Guid EntryId { get; set; }
     public BaseEntry Entry { get; set; } = null!;
+
+    public string TitleWithCurrency() => $"{Title} ({FinancialCurrencyId})";
 }
