@@ -1,4 +1,3 @@
-$my-tree-arrow-offset: 14px;
 
 .my-tree {
   margin: 0;
@@ -61,6 +60,6 @@ $my-tree-arrow-offset: 14px;
     padding-left: 0;
   }
   & ul li {
-    margin-left: $my-tree-arrow-offset;
+    margin-left: 14px;
   }
 }
