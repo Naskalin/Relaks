@@ -3,19 +3,19 @@
 public class FinancialAccount
 {
     public Guid Id { get; set; }
-    public required string Title { get; set; }
+    public string Title { get; set; } = null!;
     public string? Description { get; set; }
-    
-    public required string FinancialCurrencyId { get; set; }
+
+    public string FinancialCurrencyId { get; set; } = null!;
     public FinancialCurrency FinancialCurrency { get; set; } = null!;
-    
-    public Guid? CategoryId { get; set; }
-    public FinancialAccountCategory? Category { get; set; }
+
+    public Guid CategoryId { get; set; }
+    public FinancialAccountCategory Category { get; set; } = null!;
 
     /// <summary>
     /// Дата открытия счёта
     /// </summary>
-    public required DateTime StartAt { get; set; }
+    public DateTime StartAt { get; set; }
     
     /// <summary>
     /// Дата закрытия счёта

@@ -1,10 +1,13 @@
 ﻿<div class="d-flex gap-3 align-items-center">
-    <Pagination PageCount="@TotalPages"
-                PageIndex="@ActivePage"
-                OnPageLinkClick="OnPageLinkClick"
-    />
+    <div>
+        <Pagination PageCount="@TotalPages"
+                        PageIndex="@ActivePage"
+                        Alignment="Alignment.Left"
+                        OnPageLinkClick="OnPageLinkClick"
+            />
+    </div>
 
-    <div class="mb-3">Всего найдено: @TotalItems</div>
+    <div>Всего найдено: @TotalItems</div>
 </div>
 
 @code {

@@ -34,8 +34,9 @@
 </EditForm>
 
 @code {
+
     [CascadingParameter]
-    public FinancialsStore Store { get; set; } = new();
+    public FinancialsStore Store { get; set; } = null!;
     
     [Parameter]
     public EventCallback OnStateChanged { get; set; }
@@ -44,11 +45,9 @@
     protected override void OnParametersSet()
     {
         IsEdit = Store is {SidebarState: FinancialsStore.SidebarEnum.EditAccountCategory,SidebarEditAccountCategoryId: not null};
-        if (IsEdit)
-        {
-            Category = Db.FinancialAccountCategories.First(x => x.Id.Equals(Store.SidebarEditAccountCategoryId));
-            Category.MapTo(Req);
-        }
+        if (!IsEdit) return;
+        Category = Db.FinancialAccountCategories.First(x => x.Id.Equals(Store.SidebarEditAccountCategoryId));
+        Category.MapTo(Req);
     }
 
     private bool IsEdit { get; set; }

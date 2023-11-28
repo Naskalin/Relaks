@@ -63,6 +63,7 @@ public static class RegisterServices
         services.AddScoped<IValidator<EntryTagTitle>, EntryTagTitleValidator>();
         
         services.AddScoped<IValidator<FinancialAccountCategoryRequest>, FinancialAccountCategoryRequestValidator>();
+        services.AddScoped<IValidator<FinancialAccountRequest>, FinancialAccountRequestValidator>();
 
         // services.AddScoped<IValidator<EntryInfoCreateRequest>, EntryInfoCreateRequestValidator>();
     }

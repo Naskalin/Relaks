@@ -24,10 +24,8 @@ public partial class DatabaseSeeder
 
     private void CreateFinancialAccountCategories()
     {
-        Db.FinancialAccountCategories.Add(new()
-        {
-            Title = "Наличные"
-        });
+        Db.FinancialAccountCategories.Add(new() {Title = "Наличные"});
+        Db.FinancialAccountCategories.Add(new() {Title = "Кредитные карты"});
         Db.SaveChanges();
     }
 
@@ -105,6 +103,7 @@ public partial class DatabaseSeeder
         var rub = Db.FinancialCurrencies.First(x => x.Id.Equals("RUB"));
         var usd = Db.FinancialCurrencies.First(x => x.Id.Equals("USD"));
 
+        var categoryIds = Db.FinancialAccountCategories.Select(x => x.Id).ToList();
         var accounts = new List<FinancialAccount>();
         foreach (var currency in new [] {rub, usd})
         {
@@ -121,10 +120,11 @@ public partial class DatabaseSeeder
             {
                 item.EndAt = Faker.Date.Soon(365, item.StartAt);
             }
-
+            
+            item.CategoryId = categoryIds.Last();
             if (currency.Id.Equals("RUB"))
             {
-                item.CategoryId = Db.FinancialAccountCategories.Select(x => x.Id).First();
+                item.CategoryId = categoryIds.First();
             }
             
             accounts.Add(item);

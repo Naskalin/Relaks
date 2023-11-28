@@ -45,11 +45,13 @@
     }
 </div>
 
-<MyPagination ActivePage="@Req.Page"
-              OnPageChanged="@OnPageChanged"
-              TotalItems="@Result.Total"
-              TotalPages="@Result.PageCount"
-/>   
+<div class="mb-3">
+    <MyPagination ActivePage="@Req.Page"
+                  OnPageChanged="@OnPageChanged"
+                  TotalItems="@Result.Total"
+                  TotalPages="@Result.PageCount"
+    />  
+</div> 
 
 <table class="table table-bordered table-hover align-middle">
     <thead>
@@ -95,11 +97,13 @@
     </tbody>
 </table>
 
-<MyPagination ActivePage="@Req.Page"
-              OnPageChanged="@OnPageChanged"
-              TotalItems="@Result.Total"
-              TotalPages="@Result.PageCount"
-/>
+<div class="mt-3">
+    <MyPagination ActivePage="@Req.Page"
+                  OnPageChanged="@OnPageChanged"
+                  TotalItems="@Result.Total"
+                  TotalPages="@Result.PageCount"
+    />
+</div>
 
 @code {
     [Parameter]

@@ -1,5 +1,8 @@
 ﻿@page "/financials"
 @using Relaks.Views.Pages.Financials.ViewModels
+@using Relaks.Database
+
+@inject AppDbContext Db;
 
 <PageTemplate>
     <MyTitle>Финансы</MyTitle>
@@ -9,13 +12,18 @@
             <div class="col-3">
                 @switch (Store.SidebarState)
                 {
-                    case FinancialsStore.SidebarEnum.Default:
+                    case FinancialsStore.SidebarEnum.EditAccountCategory:
+                    case FinancialsStore.SidebarEnum.AddAccountCategory:
+                        <_AccountCategoryForm OnStateChanged="@StateHasChanged"/>
+                        break;
+                    case FinancialsStore.SidebarEnum.EditAccount:
+                    case FinancialsStore.SidebarEnum.AddAccount:
+                        <_AccountForm OnStateChanged="@StateHasChanged"/>
+                        break;
+                    default:
                         <_SidebarHeader OnStateChanged="@StateHasChanged"/>
                         <p>Категории кошельков</p>
                         <p>Кошельки</p>
-                        break;
-                    case FinancialsStore.SidebarEnum.AddAccountCategory:
-                        <_AccountCategoryForm OnStateChanged="@StateHasChanged"/>
                         break;
                 }
             </div>
@@ -30,5 +38,12 @@
 </PageTemplate>
 
 @code {
-    private FinancialsStore Store { get; set; } = new();
+    private FinancialsStore Store { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        Store = new(Db);
+        Store.Initialize();
+    }
+
 }

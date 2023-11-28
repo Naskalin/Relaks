@@ -21,7 +21,7 @@
 @code {
 
     [CascadingParameter]
-    public FinancialsStore Store { get; set; } = new();
+    public FinancialsStore Store { get; set; } = null!;
 
     [Parameter]
     public EventCallback OnStateChanged { get; set; }

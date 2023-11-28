@@ -444,7 +444,7 @@ namespace Relaks.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("CategoryId")
+                    b.Property<Guid>("CategoryId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
@@ -1056,7 +1056,9 @@ namespace Relaks.Migrations
                 {
                     b.HasOne("Relaks.Models.FinancialModels.FinancialAccountCategory", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Relaks.Models.BaseEntry", "Entry")
                         .WithMany()
