@@ -1,0 +1,34 @@
+﻿@page "/financials"
+@using Relaks.Views.Pages.Financials.ViewModels
+
+<PageTemplate>
+    <MyTitle>Финансы</MyTitle>
+
+    <CascadingValue Value="@Store">
+        <div class="row">
+            <div class="col-3">
+                @switch (Store.SidebarState)
+                {
+                    case FinancialsStore.SidebarEnum.Default:
+                        <_SidebarHeader OnStateChanged="@StateHasChanged"/>
+                        <p>Категории кошельков</p>
+                        <p>Кошельки</p>
+                        break;
+                    case FinancialsStore.SidebarEnum.AddAccountCategory:
+                        <_AccountCategoryForm OnStateChanged="@StateHasChanged"/>
+                        break;
+                }
+            </div>
+            <div class="col-9">
+                        <p>Валюты</p>
+                        <p>Транзакции</p>
+                        <p>Категории транзакций</p>
+            </div>
+        </div>
+        
+    </CascadingValue>
+</PageTemplate>
+
+@code {
+    private FinancialsStore Store { get; set; } = new();
+}

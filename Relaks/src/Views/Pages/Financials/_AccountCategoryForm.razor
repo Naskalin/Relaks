@@ -1,0 +1,82 @@
+﻿@using Relaks.Views.Pages.Financials.ViewModels
+@using Relaks.Database
+@using Relaks.Mappers
+@using Relaks.Models.FinancialModels
+
+@inject AppDbContext Db;
+
+<div class="row align-items-center mb-3">
+    <div class="col-auto">
+        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@HandleReturn" title="Вернуться">
+            <i class="las la-arrow-left la-lg"></i>
+        </button>
+    </div>
+    <div class="col">
+        <h5 class="mb-0">@(IsEdit ? "Изменить категорию" : "Добавить категорию")</h5>
+    </div>
+</div>
+
+<EditForm Model="@Req" OnValidSubmit="@HandleSubmit">
+    <FluentValidationValidator DisableAssemblyScanning="@true"/>
+    <ValidationSummary/>
+    <div class="mb-3">
+        <label for="financialCategoryTitle" class="form-label">Название</label>
+        <InputText id="financialCategoryTitle" @bind-Value="@Req.Title" required="required" class="form-control"/>
+        <ValidationMessage For="@(() => Req.Title)"/>
+    </div>
+
+    <div class="mb-3">
+        <button class="btn btn-primary">
+            <i class="las la-lg me-1 @(IsEdit ? "la-edit" : "la-plus-circle")"></i>
+            @(IsEdit ? Resources.Action.SaveChanges : Resources.Action.Add)
+        </button>
+    </div>
+</EditForm>
+
+@code {
+    [CascadingParameter]
+    public FinancialsStore Store { get; set; } = new();
+    
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+    private FinancialAccountCategory? Category { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        IsEdit = Store is {SidebarState: FinancialsStore.SidebarEnum.EditAccountCategory,SidebarEditAccountCategoryId: not null};
+        if (IsEdit)
+        {
+            Category = Db.FinancialAccountCategories.First(x => x.Id.Equals(Store.SidebarEditAccountCategoryId));
+            Category.MapTo(Req);
+        }
+    }
+
+    private bool IsEdit { get; set; }
+
+    private FinancialAccountCategoryRequest Req { get; set; } = new();
+
+    private async Task HandleReturn()
+    {
+        Store.SidebarState = FinancialsStore.SidebarEnum.Default;
+        await OnStateChanged.InvokeAsync();
+    }
+
+    private Task HandleSubmit()
+    {
+        if (IsEdit && Category != null)
+        {
+            Req.MapTo(Category);
+        }
+        else
+        {
+            var category = new FinancialAccountCategory();
+            Req.MapTo(category);
+            Db.FinancialAccountCategories.Add(category);
+        }
+        
+        Db.SaveChanges();
+
+        Store.SidebarState = FinancialsStore.SidebarEnum.Default;
+        return OnStateChanged.InvokeAsync();
+    }
+}

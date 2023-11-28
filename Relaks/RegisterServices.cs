@@ -15,7 +15,9 @@ using Relaks.Validators.AppFileValidators;
 using Relaks.Validators.EntryInfoValidators;
 using Relaks.Validators.EntryTagValidators;
 using Relaks.Validators.EntryValidators;
+using Relaks.Validators.FinancialValidators;
 using Relaks.Validators.StructureValidators;
+using Relaks.Views.Pages.Financials.ViewModels;
 
 namespace Relaks;
 
@@ -59,6 +61,8 @@ public static class RegisterServices
         services.AddScoped<IValidator<EntryTag>, EntryTagValidator>();
         services.AddScoped<IValidator<EntryTagCategory>, EntryTagCategoryValidator>();
         services.AddScoped<IValidator<EntryTagTitle>, EntryTagTitleValidator>();
+        
+        services.AddScoped<IValidator<FinancialAccountCategoryRequest>, FinancialAccountCategoryRequestValidator>();
 
         // services.AddScoped<IValidator<EntryInfoCreateRequest>, EntryInfoCreateRequestValidator>();
     }
