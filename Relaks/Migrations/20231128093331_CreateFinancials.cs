@@ -24,19 +24,6 @@ namespace Relaks.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FinancialCurrencies",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "TEXT", nullable: false),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
-                    Symbol = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FinancialCurrencies", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "FinancialTransactionCategories",
                 columns: table => new
                 {
@@ -126,7 +113,7 @@ namespace Relaks.Migrations
                     TransactionId = table.Column<Guid>(type: "TEXT", nullable: false),
                     CategoryId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Quantity = table.Column<int>(type: "INTEGER", nullable: false),
-                    Amount = table.Column<decimal>(type: "money", nullable: false),
+                    Amount = table.Column<decimal>(type: "TEXT", precision: 19, scale: 4, nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -204,9 +191,6 @@ namespace Relaks.Migrations
 
             migrationBuilder.DropTable(
                 name: "FinancialAccountCategories");
-
-            migrationBuilder.DropTable(
-                name: "FinancialCurrencies");
         }
     }
 }

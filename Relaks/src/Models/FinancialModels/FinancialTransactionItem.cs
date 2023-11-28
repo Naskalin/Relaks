@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Relaks.Models.FinancialModels;
 
@@ -17,7 +18,7 @@ public class FinancialTransactionItem
     /// <summary>
     /// Общая сумма за всё, за единицу высчитывается динамически
     /// </summary>
-    [Column(TypeName = "money")]
+    [Precision(19, 4)]
     public decimal Amount { get; set; }
     
     public string? Description { get; set; }

@@ -11,7 +11,7 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231128054318_CreateFinancials")]
+    [Migration("20231128093331_CreateFinancials")]
     partial class CreateFinancials
     {
         /// <inheritdoc />
@@ -575,7 +575,8 @@ namespace Relaks.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("money");
+                        .HasPrecision(19, 4)
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("TEXT");

@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using BootstrapBlazor.Components;
 using Relaks.Managers;
 using Relaks.Models;
 using Relaks.Models.FinancialModels;
@@ -19,8 +18,8 @@ public partial class DatabaseSeeder
         if (!Db.FinancialAccountCategories.Any()) CreateFinancialAccountCategories();
         if (!Db.FinancialCurrencies.Any()) CreateCurrencies();
         if (!Db.FinancialAccounts.Any()) CreateFinancialAccounts(entry);
-        // if (!Db.FinancialTransactionCategories.Any()) CreateFinancialTransactionCategories();
-        // if (!Db.FinancialTransactions.Any()) CreateFinancialTransactions();
+        if (!Db.FinancialTransactionCategories.Any()) CreateFinancialTransactionCategories();
+        if (!Db.FinancialTransactions.Any()) CreateFinancialTransactions();
     }
 
     private void CreateFinancialAccountCategories()
@@ -49,7 +48,7 @@ public partial class DatabaseSeeder
                 {
                     new() {CategoryId = categories["Чипсы"], Quantity = Faker.Random.Int(1, 3), Amount = Faker.Random.Decimal(300, 600)},
                     new() {CategoryId = categories["Сигареты"], Quantity = Faker.Random.Int(1, 3), Amount = Faker.Random.Decimal(200, 800)},
-                    new() {CategoryId = categories["Мясо"], Quantity = Faker.Random.Int(1), Amount = Faker.Random.Decimal(800, 1500)},
+                    new() {CategoryId = categories["Мясо"], Quantity = 1, Amount = Faker.Random.Decimal(800, 1500)},
                 }
             },
             new()
@@ -94,8 +93,10 @@ public partial class DatabaseSeeder
             child2121,
             child2122
         };
-        categories.ForEach(x => TreeManager.UpdateTreePath(x, x.Parent));
+        categories.ForEach(x => x.TreePath = "");
         Db.FinancialTransactionCategories.AddRange(categories);
+        Db.SaveChanges();
+        categories.ForEach(x => TreeManager.UpdateTreePath(x, x.Parent));
         Db.SaveChanges();
     }
 
