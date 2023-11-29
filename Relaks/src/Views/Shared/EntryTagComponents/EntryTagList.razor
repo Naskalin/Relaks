@@ -42,7 +42,7 @@
                         <EntryTagFilter OnStateChanged="@StateHasChanged"/>
                         @if (Store.Tags.Any())
                         {
-                            <div class="list-group">
+                            <div class="list-group border-0">
                                 @foreach (var tag in Store.Tags)
                                 {
                                     <EntryTagTitleItem CustomEntryTagTitleClasses="@CustomEntryTagTitleClasses" WithEdit="@WithEdit" CustomEntryTagTitle="@CustomEntryTagTitle" OnEntryTagTitleClick="@OnEntryTagTitleClick" EntryTagTitle="@tag" OnStateChanged="@StateHasChanged"/>

@@ -22,14 +22,14 @@
     <ValidationSummary/>
     
     <div class="mb-3">
-        <SelectEntry EntryIds="@EntryIds" EntryIdsChanged="@HandleEntryChanged" IsMultiple="@false" Label="Счёт для объединения *"/>
-        <ValidationMessage For="@(() => Req.EntryId)"/>
-    </div>
-    
-    <div class="mb-3">
         <label for="financial-title" class="form-label">Название *</label>
         <InputText id="financial-title" @bind-Value="@Req.Title" required="required" class="form-control" maxlength="255"/>
         <ValidationMessage For="@(() => Req.Title)"/>
+    </div>
+    
+    <div class="mb-3">
+        <SelectEntry EntryIds="@EntryIds" EntryIdsChanged="@HandleEntryChanged" IsMultiple="@false" Label="Счёт для объединения *"/>
+        <ValidationMessage For="@(() => Req.EntryId)"/>
     </div>
     
     <div class="mb-3">
@@ -57,7 +57,7 @@
         </div>
         <div class="col">
                             <div class="mb-3">
-                                <label for="financial-endAt" class="form-label">Закрытие счёта *</label>
+                                <label for="financial-endAt" class="form-label">Закрытие счёта</label>
                                 <InputDate Type="@InputDateType.Date"
                                            @bind-Value="@Req.EndAt"
                                            id="financial-endAt"

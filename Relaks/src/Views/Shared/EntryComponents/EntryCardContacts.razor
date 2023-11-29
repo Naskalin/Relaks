@@ -16,19 +16,19 @@
 
 @if (FilteredItems.Any())
 {
-    <ul class="list-group list-group-flush mt-2">
+    <ul class="list-group list-group-flush mt-2 border-0">
         @foreach (var eInfo in FilteredItems)
         {
-            <li class="list-group-item gx-0 px-0 @(eInfo.Id.Equals(EntryInfoId) ? "border-dashed border-2 border-warning" : "") d-flex align-items-center justify-content-between"
+            <li class="list-group-item group-show gx-0 px-0 @(eInfo.Id.Equals(EntryInfoId) ? "border-dashed border-2 border-warning" : "") d-flex align-items-center justify-content-between"
                 @key="@eInfo.Id">
                 <EntryInfoContact EntryInfo="@eInfo" EntryInfoId="EntryInfoId"/>
                 @if (ViewMode.Equals(EntryCard.ViewModeEnum.WithEdit))
                 {
                     <Tooltip Title="@($"Изменить {Resources.Entity.ResourceManager.GetString(eInfo.Discriminator)?.ToLower()}")" Trigger="hover" Placement="Placement.Right">
-                        <NavLink href="@($"/entries/{eInfo.EntryId}/{eInfo.Discriminator}/{eInfo.Id}/edit")" class="btn bg-secondary bg-opacity-10 btn-sm btn-circle">
+                        <NavLink href="@($"/entries/{eInfo.EntryId}/{eInfo.Discriminator}/{eInfo.Id}/edit")" class="btn bg-secondary group-show__item bg-opacity-10 btn-sm btn-circle">
                             <i class="las la-lg la-edit"></i>
                         </NavLink>
-                    </Tooltip>   
+                    </Tooltip>
                 }
             </li>
         }

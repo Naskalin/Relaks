@@ -1,9 +1,11 @@
 ﻿html, body, #app {
   height: 100%;
 }
+
 body {
   overflow-y: scroll;
 }
+
 // убриаем эффекты рамок при наведении на инпуты
 .form-control {
   &, &:active, &:focus {
@@ -11,6 +13,7 @@ body {
     box-shadow: none !important;
   }
 }
+
 //@mixin text-nowrap-hidden {
 //  white-space: nowrap;
 //  overflow: hidden;
@@ -22,15 +25,18 @@ body {
 .cursor-pointer {
   cursor: pointer;
 }
+
 .cursor-not-allowed {
   cursor: not-allowed;
 }
+
 .fts-result {
   b {
     font-weight: 500;
     color: var(--bs-orange)
   }
 }
+
 .btn-circle {
   display: flex;
   align-items: center;
@@ -39,11 +45,13 @@ body {
   height: 40px;
   padding: 0;
   border-radius: 50%;
+
   &.btn-sm {
     width: 32px;
     height: 32px;
   }
 }
+
 .btn-square {
   width: 40px;
   height: 40px;
@@ -52,14 +60,17 @@ body {
   align-items: center;
   justify-content: center;
 }
+
 .ul-warning,
 .ul-info {
   padding-left: 1rem;
+
   li {
     list-style: none;
     position: relative;
     padding-left: 1rem;
     margin-bottom: .4rem;
+
     &::before {
       content: '';
       display: block;
@@ -73,26 +84,42 @@ body {
     }
   }
 }
+
 .ul-warning li::before {
   background: var(--bs-warning);
 }
+
 .ul-info li::before {
   background: var(--bs-info);
 }
+
 .border-dashed {
   border: var(--bs-border-width) dashed var(--bs-border-color);
 }
+
 textarea {
   resize: none !important;
 }
+
 .header-navbar-menu {
   a {
     line-height: 1.25rem;
   }
 }
+
 .text-decoration-none {
   text-decoration: none !important;
 }
+
 .bg-opacity-5 {
   --bs-bg-opacity: .05;
+}
+
+.group-show {
+  &__item {
+    opacity: 0;
+  }
+  &:hover &__item {
+    opacity: 1;
+  }
 }

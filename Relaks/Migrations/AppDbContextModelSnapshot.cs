@@ -31,7 +31,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("BaseFileRelationsId");
 
-                    b.ToTable("BaseEntryBaseFile");
+                    b.ToTable("BaseEntryBaseFile", (string)null);
                 });
 
             modelBuilder.Entity("BaseFileBaseFileTag", b =>
@@ -46,7 +46,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("TagsId");
 
-                    b.ToTable("BaseFileBaseFileTag");
+                    b.ToTable("BaseFileBaseFileTag", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.BaseEntry", b =>
@@ -98,7 +98,7 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Entries");
+                    b.ToTable("Entries", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseEntry");
 
@@ -141,7 +141,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseEntryInfo");
 
@@ -190,7 +190,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Files");
+                    b.ToTable("Files", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseFile");
 
@@ -223,7 +223,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("FileCategories");
+                    b.ToTable("FileCategories", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseFileCategory");
 
@@ -247,7 +247,7 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FileTags");
+                    b.ToTable("FileTags", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseFileTag");
 
@@ -302,7 +302,7 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.DatasetTemplate", b =>
@@ -321,7 +321,7 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DatasetTemplates");
+                    b.ToTable("DatasetTemplates", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.EntryRelation", b =>
@@ -358,7 +358,7 @@ namespace Relaks.Migrations
                     b.HasIndex("FirstId", "SecondId")
                         .IsUnique();
 
-                    b.ToTable("EntryRelations");
+                    b.ToTable("EntryRelations", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.EntryTag", b =>
@@ -383,7 +383,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.ToTable("EntryTags");
+                    b.ToTable("EntryTags", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.EntryTagCategory", b =>
@@ -408,7 +408,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("EntryTagCategories");
+                    b.ToTable("EntryTagCategories", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.EntryTagTitle", b =>
@@ -435,7 +435,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("EntryTagTitles");
+                    b.ToTable("EntryTagTitles", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialAccount", b =>
@@ -475,7 +475,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("FinancialCurrencyId");
 
-                    b.ToTable("FinancialAccounts");
+                    b.ToTable("FinancialAccounts", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialAccountCategory", b =>
@@ -490,7 +490,7 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FinancialAccountCategories");
+                    b.ToTable("FinancialAccountCategories", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialCurrency", b =>
@@ -508,7 +508,7 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FinancialCurrencies");
+                    b.ToTable("FinancialCurrencies", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialTransaction", b =>
@@ -538,7 +538,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.ToTable("FinancialTransactions");
+                    b.ToTable("FinancialTransactions", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialTransactionCategory", b =>
@@ -562,7 +562,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("FinancialTransactionCategories");
+                    b.ToTable("FinancialTransactionCategories", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialTransactionItem", b =>
@@ -593,7 +593,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("TransactionId");
 
-                    b.ToTable("FinancialTransactionItems");
+                    b.ToTable("FinancialTransactionItems", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.FtsEntry", b =>
@@ -757,7 +757,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("StructureGroups");
+                    b.ToTable("StructureGroups", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.StructureModels.StructureItem", b =>
@@ -790,14 +790,14 @@ namespace Relaks.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("StructureItems");
+                    b.ToTable("StructureItems", (string)null);
                 });
 
             modelBuilder.Entity("Relaks.Models.ECompany", b =>
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
 
-                    b.ToTable("Entries");
+                    b.ToTable("Entries", (string)null);
 
                     b.HasDiscriminator().HasValue("ECompany");
                 });
@@ -806,7 +806,7 @@ namespace Relaks.Migrations
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
 
-                    b.ToTable("Entries");
+                    b.ToTable("Entries", (string)null);
 
                     b.HasDiscriminator().HasValue("EPerson");
                 });
@@ -815,7 +815,7 @@ namespace Relaks.Migrations
                 {
                     b.HasBaseType("Relaks.Models.BaseEntry");
 
-                    b.ToTable("Entries");
+                    b.ToTable("Entries", (string)null);
 
                     b.HasDiscriminator().HasValue("EProject");
                 });
@@ -828,7 +828,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator().HasValue("EiDataset");
                 });
@@ -843,7 +843,7 @@ namespace Relaks.Migrations
                     b.Property<bool>("WithTime")
                         .HasColumnType("INTEGER");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator().HasValue("EiDate");
                 });
@@ -856,7 +856,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator().HasValue("EiEmail");
                 });
@@ -873,7 +873,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator().HasValue("EiPhone");
                 });
@@ -886,7 +886,7 @@ namespace Relaks.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.ToTable("EntryInfos");
+                    b.ToTable("EntryInfos", (string)null);
 
                     b.HasDiscriminator().HasValue("EiUrl");
                 });
@@ -900,7 +900,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.ToTable("Files");
+                    b.ToTable("Files", (string)null);
 
                     b.HasDiscriminator().HasValue("EntryFile");
                 });
@@ -914,7 +914,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.ToTable("FileCategories");
+                    b.ToTable("FileCategories", (string)null);
 
                     b.HasDiscriminator().HasValue("EntryFileCategory");
                 });
@@ -928,7 +928,7 @@ namespace Relaks.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.ToTable("FileTags");
+                    b.ToTable("FileTags", (string)null);
 
                     b.HasDiscriminator().HasValue("EntryFileTag");
                 });

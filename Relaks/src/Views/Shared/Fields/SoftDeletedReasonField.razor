@@ -1,14 +1,11 @@
 ﻿@using Relaks.Interfaces
 
 <div class="mb-3">
-    <div class="form-check form-switch">
-        <input class="form-check-input"
-               type="checkbox"
-               checked="@IsSoftDeleted"
-               @oninput="OnChangeIsSoftDeleted"
-               id="is-show-soft-deleted"/>
-        <label class="form-check-label" for="is-show-soft-deleted">@Resources.SoftDelete.MoveToArchive</label>
-    </div>
+    <Checkbox TValue="bool"
+              @bind-Value="@IsSoftDeleted"
+              OnStateChanged="@OnChangeIsSoftDeleted"
+              ShowAfterLabel="true"
+              DisplayText="@Resources.SoftDelete.MoveToArchive" />
 </div>
     @if (IsSoftDeleted)
     {
@@ -30,9 +27,9 @@
 
     private bool IsSoftDeleted { get; set; }
 
-    private void OnChangeIsSoftDeleted(ChangeEventArgs e)
+    private Task OnChangeIsSoftDeleted(CheckboxState state, bool value)
     {
-        IsSoftDeleted = (bool) (e.Value ?? false);
+        IsSoftDeleted = value;
 
         SoftDeletedReason.DeletedAt = IsSoftDeleted ? DateTime.Now : null;
         SoftDeletedReason.DeletedReason = SoftDeletedReason.DeletedAt == null ? null : SoftDeletedReason.DeletedReason?.Trim();
@@ -41,6 +38,8 @@
         {
             SoftDeletedReason.DeletedReason = null;
         }
+
+        return Task.CompletedTask;
     }
 
     protected override void OnParametersSet()

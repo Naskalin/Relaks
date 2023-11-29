@@ -19,8 +19,6 @@
             <ChildContent>@Resources.Action.Edit @Resources.Entity.BaseEntry.ToLower()</ChildContent>
         </MyTitle>
 
-        <p>Entry.Tags.Count : @Entry.Tags.Count</p>
-        <p>EntryTags.Count : @EntryTags.Count</p>
         <EditForm Model="@Entry" OnSubmit="@OnSubmit">
             <FluentValidationValidator @ref="Validator" DisableAssemblyScanning="@true"/>
             <ValidationSummary/>

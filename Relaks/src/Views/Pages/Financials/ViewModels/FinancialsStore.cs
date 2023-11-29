@@ -52,7 +52,7 @@ public class FinancialsStore
             .ToList();
     }
 
-    public List<SelectedItem> AccountCategoriesSelectOptions()
+    public List<SelectedItem> AccountSelectOptions()
     {
         var items = new List<SelectedItem>();
         AccountCategories.ForEach(category =>
@@ -65,6 +65,10 @@ public class FinancialsStore
         
         return items;
     }
+
+    public List<SelectedItem> AccountCategoriesSelectOptions() =>  AccountCategories
+        .Select(x => new SelectedItem(x.Id.ToString(), x.Title))
+        .ToList();
 
     public List<SelectedItem> CurrenciesSelectOptions() =>
         Currencies

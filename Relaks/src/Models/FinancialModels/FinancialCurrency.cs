@@ -8,17 +8,17 @@ public class FinancialCurrency
     /// Трёх буквенный код валюты по ISO 4217
     /// </summary>
     [Key]
-    public required string Id { get; set; }
-    
+    public string Id { get; set; } = null!;
+
     /// <summary>
     /// Название валюты
     /// </summary>
-    public required string Title { get; set; }
-    
+    public string Title { get; set; } = null!;
+
     /// <summary>
     /// Символ валюты
     /// </summary>
-    public required string Symbol { get; set; }
+    public string Symbol { get; set; } = null!;
 
     public override string ToString() => $"{Id} - {Title}, {Symbol}";
 }

@@ -10,22 +10,22 @@
     <CascadingValue Value="@Store">
         <div class="row">
             <div class="col-3">
-                @switch (Store.SidebarState)
-                {
-                    case FinancialsStore.SidebarEnum.EditAccountCategory:
-                    case FinancialsStore.SidebarEnum.AddAccountCategory:
-                        <_AccountCategoryForm OnStateChanged="@StateHasChanged"/>
-                        break;
-                    case FinancialsStore.SidebarEnum.EditAccount:
-                    case FinancialsStore.SidebarEnum.AddAccount:
-                        <_AccountForm OnStateChanged="@StateHasChanged"/>
-                        break;
-                    default:
-                        <_SidebarHeader OnStateChanged="@StateHasChanged"/>
-                        <p>Категории кошельков</p>
-                        <p>Кошельки</p>
-                        break;
-                }
+                <div>
+                   @switch (Store.SidebarState)
+                    {
+                        case FinancialsStore.SidebarEnum.EditAccountCategory:
+                        case FinancialsStore.SidebarEnum.AddAccountCategory:
+                            <_AccountCategoryForm OnStateChanged="@StateHasChanged"/>
+                            break;
+                        case FinancialsStore.SidebarEnum.EditAccount:
+                        case FinancialsStore.SidebarEnum.AddAccount:
+                            <_AccountForm OnStateChanged="@StateHasChanged"/>
+                            break;
+                        default:
+                            <_SidebarDefault OnStateChanged="@StateHasChanged"/>
+                            break;
+                    }
+                </div>
             </div>
             <div class="col-9">
                         <p>Валюты</p>

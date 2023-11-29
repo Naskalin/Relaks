@@ -1,7 +1,7 @@
 ﻿@using Relaks.Models
 @using Relaks.Views.Shared.EntryTagComponents
 
-<div class="list-group-item bg-secondary bg-opacity-5 @CustomEntryTagTitleClasses">
+<div class="list-group-item group-show bg-secondary bg-opacity-5 @CustomEntryTagTitleClasses">
     <div class="d-flex align-items-center gap-3 justify-content-between">
         <div class="col" @onclick="@(() => OnEntryTagTitleClick.InvokeAsync(EntryTagTitle.Id))">
             @if (CustomEntryTagTitle != null)
@@ -15,7 +15,7 @@
         </div>
             @if (WithEdit)
             {
-                <div class="col-auto">
+                <div class="col-auto group-show__item">
                     <Tooltip Title="Изменить" Placement="Placement.Left">
                         <button class="btn btn-outline-secondary btn-circle btn-sm" @onclick="HandleEditBtnClick">
                             <i class="las la-edit"></i>
