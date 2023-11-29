@@ -2,9 +2,18 @@
 @using Relaks.Models.FinancialModels
 
 <div class="list-group border-0">
-        <div class="list-group-item d-flex justify-content-between align-items-center gap-2 bg-secondary bg-opacity-25">
-            <div class="fw-medium">@Category.Title</div>
-            <span class="badge bg-secondary bg-opacity-75 rounded-pill text-white">@Category.Accounts.Count</span>
+        <div class="list-group-item group-show d-flex justify-content-between align-items-center gap-2 bg-secondary bg-opacity-25">
+            <div class="d-flex col align-items-center gap-2">
+                <span class="badge bg-secondary bg-opacity-75 rounded-pill text-white">@Category.Accounts.Count</span>
+                <div class="fw-medium">@Category.Title</div>
+            </div>
+            <div class="group-show__item">
+                <button type="button"
+                        @onclick="@(() => HandleClickEditCategory(Category.Id))"
+                        class="btn btn-circle btn-sm btn-outline-secondary" title="Изменить">
+                    <i class="las la-edit la-lg"></i>
+                </button>
+            </div>
         </div>
         @foreach (var account in Category.Accounts)
         {
@@ -13,11 +22,11 @@
                     @account.TitleWithCurrency()
                 </div>
                 <div class="group-show__item">
-                    <Tooltip Title="Изменить" Placement="Placement.Right">
-                        <button type="button" class="btn btn-circle btn-sm btn-outline-secondary">
-                                                <i class="las la-edit la-lg"></i>
-                                            </button>
-                    </Tooltip>
+                    <button type="button"
+                            @onclick="@(() => HandleClickEditAccount(account.Id))"
+                            class="btn btn-circle btn-sm btn-outline-secondary" title="Изменить">
+                        <i class="las la-edit la-lg"></i>
+                    </button>
                 </div>
             </div>
         }
@@ -34,4 +43,17 @@
     [Parameter]
     public required FinancialAccountCategory Category { get; set; }
 
+    private Task HandleClickEditAccount(Guid accountId)
+    {
+        Store.SidebarEditAccountId = accountId;
+        Store.SidebarState = FinancialsStore.SidebarEnum.EditAccount;
+        return OnStateChanged.InvokeAsync();
+    }
+    
+    private Task HandleClickEditCategory(Guid categoryId)
+    {
+        Store.SidebarEditAccountCategoryId = categoryId;
+        Store.SidebarState = FinancialsStore.SidebarEnum.EditAccountCategory;
+        return OnStateChanged.InvokeAsync();
+    }
 }

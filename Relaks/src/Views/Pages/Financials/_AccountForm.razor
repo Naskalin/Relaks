@@ -5,7 +5,6 @@
 
 @inject AppDbContext Db;
 
-<Dump Data="@Req"/>
 <div class="row align-items-center mb-3">
     <div class="col-auto">
         <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@HandleReturn" title="Вернуться">
@@ -69,7 +68,7 @@
     
     <div class="mb-3">
         <label for="financial-desc" class="form-label">Описание</label>
-        <MyTextarea bind-Value="@Req.Description" id="financial-desc" maxlength="500"/>
+        <MyTextarea @bind-Value="@Req.Description" id="financial-desc" maxlength="500"/>
         <ValidationMessage For="@(() => Req.Description)"/>
     </div>
 
