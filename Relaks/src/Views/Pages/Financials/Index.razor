@@ -28,9 +28,17 @@
                 </div>
             </div>
             <div class="col-9 ps-4">
-                        <p>Валюты</p>
-                        <p>Транзакции</p>
-                        <p>Категории транзакций</p>
+                @switch (Store.BodyState)
+                {
+                    case FinancialsStore.BodyEnum.EditTransaction:
+                    case FinancialsStore.BodyEnum.AddTransaction:
+                        <_TransactionForm OnStateChanged="@StateHasChanged"/>
+                        break;
+                    default:
+                        <_BodyDefault OnStateChanged="@StateHasChanged"/>
+                        break;
+                }
+                
             </div>
         </div>
         

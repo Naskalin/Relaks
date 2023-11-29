@@ -1,0 +1,10 @@
+﻿namespace Relaks.Views.Pages.Financials.ViewModels;
+
+public class FinancialTransactionItemRequest
+{
+    public Guid? Id { get; set; }
+    public Guid CategoryId { get; set; } = default!;
+    public int Quantity { get; set; } = 1;
+    public decimal Amount { get; set; }
+    public string? Description { get; set; }
+}

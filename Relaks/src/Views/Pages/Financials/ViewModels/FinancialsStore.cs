@@ -5,15 +5,8 @@ using Relaks.Models.FinancialModels;
 
 namespace Relaks.Views.Pages.Financials.ViewModels;
 
-public class FinancialsStore
+public class FinancialsStore(AppDbContext db)
 {
-    private readonly AppDbContext _db;
-
-    public FinancialsStore(AppDbContext db)
-    {
-        _db = db;
-    }
-
     public enum SidebarEnum
     {
         Default,
@@ -23,30 +16,50 @@ public class FinancialsStore
         EditAccountCategory,
     }
 
+    public enum BodyEnum
+    {
+        Default,
+        AddTransactionCategory,
+        EditTransactionCategory,
+        AddTransaction,
+        EditTransaction,
+    }
+
+    public BodyEnum BodyState { get; set; } = BodyEnum.Default;
     public SidebarEnum SidebarState { get; set; } = SidebarEnum.Default;
+    public Guid? BodyEditTransactionId { get; set; }
     public Guid? SidebarEditAccountCategoryId { get; set; }
     public Guid? SidebarEditAccountId { get; set; }
     public List<FinancialAccountCategory> AccountCategories { get; set; } = new();
-    public List<FinancialCurrency> Currencies { get; set; } = new();
+    public List<FinancialTransactionCategory> TransactionCategories { get; set; } = new();
+    private List<FinancialCurrency> Currencies { get; set; } = new();
 
     public void Initialize()
     {
         FindAccountCategories();
         FindCurrencies();
+        FindTransactionCategories();
+    }
+
+    public void FindTransactionCategories()
+    {
+        TransactionCategories = db.FinancialTransactionCategories
+            .OrderBy(x => x.Title)
+            .ToList();
     }
 
     private void FindCurrencies()
     {
-        Currencies = _db.FinancialCurrencies
+        Currencies = db.FinancialCurrencies
             .OrderByDescending(x => x.Id.Equals("RUB"))
             .ThenByDescending(x => x.Id.Equals("USD"))
             .ThenByDescending(x => x.Id.Equals("EUR"))
             .ToList();
     }
     
-    public void FindAccountCategories()
+    private void FindAccountCategories()
     {
-        AccountCategories = _db.FinancialAccountCategories
+        AccountCategories = db.FinancialAccountCategories
             .OrderBy(x => x.Title)
             .Include(x => x.Accounts.OrderBy(a => a.Title))
             .ToList();

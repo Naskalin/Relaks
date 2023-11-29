@@ -21,13 +21,13 @@
     <ValidationSummary/>
     
     <div class="mb-3">
-        <label for="financial-title" class="form-label">Название *</label>
+        <label for="financial-title" class="form-label">Название счёта *</label>
         <InputText id="financial-title" @bind-Value="@Req.Title" required="required" class="form-control" maxlength="255"/>
         <ValidationMessage For="@(() => Req.Title)"/>
     </div>
     
     <div class="mb-3">
-        <SelectEntry EntryIds="@EntryIds" EntryIdsChanged="@HandleEntryChanged" IsMultiple="@false" Label="Счёт для объединения *"/>
+        <SelectEntry EntryIds="@EntryIds" EntryIdsChanged="@HandleEntryChanged" IsMultiple="@false" Label="Объединение *"/>
         <ValidationMessage For="@(() => Req.EntryId)"/>
     </div>
     

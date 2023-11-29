@@ -1,0 +1,46 @@
+﻿@using Relaks.Views.Pages.Financials.ViewModels
+
+<div class="d-flex align-items-center justify-content-between mb-3 gap-2">
+    <div class="col">
+        <span class="h5">???</span>
+    </div>
+    @if (Store.AccountSelectOptions().Any() && Store.TransactionCategories.Any())
+    {
+        <div class="col-auto">
+            <button type="button" class="btn btn-outline-primary btn-sm" @onclick="@HandleAddTransaction">
+                Транзакция
+                <i class="las la-plus-circle la-lg ms-1"></i>
+            </button>
+        </div>
+    }
+    <div class="col-auto">
+        <button type="button" class="btn btn-outline-primary btn-sm" @onclick="@HandleAddCategory">
+            Категория транзакции
+            <i class="las la-plus-circle la-lg ms-1"></i>
+        </button>
+    </div>
+</div>
+
+<p>Валюты</p>
+<p>Транзакции</p>
+<p>Категории транзакций</p>
+
+@code {
+    [CascadingParameter]
+    public FinancialsStore Store { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+
+    private Task HandleAddCategory()
+    {
+        Store.BodyState = FinancialsStore.BodyEnum.AddTransactionCategory;
+        return OnStateChanged.InvokeAsync();
+    }
+    
+    private Task HandleAddTransaction()
+    {
+        Store.BodyState = FinancialsStore.BodyEnum.AddTransaction;
+        return OnStateChanged.InvokeAsync();
+    }
+}
