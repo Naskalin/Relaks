@@ -1,0 +1,31 @@
+﻿@using Relaks.Views.Pages.Financials.ViewModels
+
+CategoryId
+<div class="d-flex">
+    <div>
+        <label for="transaction-item-quantity-@FieldId" class="form-label">Количество</label>
+        <BootstrapInputNumber @bind-Value="Req.Quantity" IsSelectAllTextOnFocus="true" Id="@($"transaction-item-quantity-{FieldId}")" Min="1"/>
+        <ValidationMessage For="@(() => Req.Quantity)"/>
+    </div>
+    <div>
+        <label for="transaction-item-amount-@FieldId" class="form-label">Сумма</label>
+        <BootstrapInputNumber @bind-Value="Req.Amount" IsSelectAllTextOnFocus="true" Step="0.01" Id="@($"transaction-item-amount-{FieldId}")"/>
+        <ValidationMessage For="@(() => Req.Amount)"/>
+    </div>
+</div>
+
+@code {
+    // public Guid CategoryId { get; set; } = default!;
+    // public decimal Amount { get; set; }
+    // public string? Description { get; set; }
+    
+    // [CascadingParameter]
+    // public FinancialsStore Store { get; set; } = null!;
+    private string FieldId { get; set; } = Guid.NewGuid().ToString();
+
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+    
+    [Parameter]
+    public FinancialTransactionItemRequest Req { get; set; } = new();
+}

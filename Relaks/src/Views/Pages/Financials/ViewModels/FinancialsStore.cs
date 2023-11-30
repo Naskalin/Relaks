@@ -39,6 +39,7 @@ public class FinancialsStore(AppDbContext db)
         FindAccountCategories();
         FindCurrencies();
         FindTransactionCategories();
+        BodyState = BodyEnum.AddTransaction;
     }
 
     public void FindTransactionCategories()

@@ -45,24 +45,24 @@
     
     <div class="row">
         <div class="col">
-                <div class="mb-3">
-                    <label for="financial-startAt" class="form-label">Открытие счёта *</label>
-                    <InputDate Type="@InputDateType.Date"
-                               @bind-Value="@Req.StartAt"
-                               id="financial-startAt"
-                               class="form-control"/>
-                    <ValidationMessage For="@(() => Req.StartAt)"/>
-                </div>
+            <div class="mb-3">
+                <label for="financial-startAt" class="form-label">Открытие счёта *</label>
+                <InputDate Type="@InputDateType.Date"
+                           @bind-Value="@Req.StartAt"
+                           id="financial-startAt"
+                           class="form-control"/>
+                <ValidationMessage For="@(() => Req.StartAt)"/>
+            </div>
         </div>
         <div class="col">
-                            <div class="mb-3">
-                                <label for="financial-endAt" class="form-label">Закрытие счёта</label>
-                                <InputDate Type="@InputDateType.Date"
-                                           @bind-Value="@Req.EndAt"
-                                           id="financial-endAt"
-                                           class="form-control"/>
-                                <ValidationMessage For="@(() => Req.EndAt)"/>
-                            </div>
+            <div class="mb-3">
+                <label for="financial-endAt" class="form-label">Закрытие счёта</label>
+                <InputDate Type="@InputDateType.Date"
+                           @bind-Value="@Req.EndAt"
+                           id="financial-endAt"
+                           class="form-control"/>
+                <ValidationMessage For="@(() => Req.EndAt)"/>
+            </div>
         </div>
     </div>
     

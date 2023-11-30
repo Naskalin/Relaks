@@ -19,17 +19,66 @@
 <EditForm Model="@Req" OnValidSubmit="@HandleSubmit">
     <FluentValidationValidator DisableAssemblyScanning="@true"/>
     <ValidationSummary/>
-    @* <div class="mb-3"> *@
-    @*     <label for="financialCategoryTitle" class="form-label">Название</label> *@
-    @*     <InputText id="financialCategoryTitle" @bind-Value="@Req.Title" required="required" class="form-control"/> *@
-    @*     <ValidationMessage For="@(() => Req.Title)"/> *@
-    @* </div> *@
 
-    <div class="mb-3">
-        <button class="btn btn-primary">
-            <i class="las la-lg me-1 @(IsEdit ? "la-edit" : "la-plus-circle")"></i>
-            @(IsEdit ? Resources.Action.SaveChanges : Resources.Action.Add)
-        </button>
+    <div class="row">
+        <div class="col-5">
+            <Divider Text="Описание транзакции"/>
+            <div class="mb-3">
+                <label for="financial-transaction-accountId" class="form-label">Счёт *</label>
+                <Select id="financial-transaction-accountId" @bind-Value="@Req.AccountId" Items="@Store.AccountSelectOptions()" ShowSearch="true"></Select>
+                <ValidationMessage For="@(() => Req.AccountId)"/>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Тип *</label>
+                <div class="btn-group w-100">
+                    @foreach (var t in TransactionTypes)
+                    {
+                        <button type="button"
+                                @onclick="@(() => Req.IsPlus = t.Val)"
+                                class="btn @(Req.IsPlus.HasValue && Req.IsPlus.Value == t.Val ? $"btn-{t.Color}" : "btn-outline-secondary")">
+                            <i class="@t.Icon la-lg me-2"></i>
+                            @t.Name
+                        </button>
+                    }
+                </div>
+                <ValidationMessage For="@(() => Req.IsPlus)"/>
+            </div>
+
+            <div class="mb-3">
+                <SelectEntry EntryIds="@EntryIds" EntryIdsChanged="@HandleEntryChanged" IsMultiple="@false" Label="Объединение *"/>
+                <ValidationMessage For="@(() => Req.EntryId)"/>
+            </div>
+
+            <div class="mb-3">
+                <label for="financial-transaction-createdAt" class="form-label">Дата и время *</label>
+                <InputDate Type="InputDateType.DateTimeLocal"
+                           @bind-Value="@Req.CreatedAt"
+                           id="financial-transaction-createdAt"
+                           class="form-control"/>
+                <ValidationMessage For="@(() => Req.CreatedAt)"/>
+            </div>
+
+            <div class="mb-3">
+                <label for="financial-transaction-desc" class="form-label">Описание</label>
+                <MyTextarea @bind-Value="@Req.Description" id="financial-transaction-desc" maxlength="500"/>
+                <ValidationMessage For="@(() => Req.Description)"/>
+            </div>
+
+            <div class="mb-3">
+                <button class="btn btn-primary">
+                    <i class="las la-lg me-1 @(IsEdit ? "la-edit" : "la-plus-circle")"></i>
+                    @(IsEdit ? Resources.Action.SaveChanges : Resources.Action.Add) транзакцию
+                </button>
+            </div>
+        </div>
+        <div class="col-7 ps-4">
+            <Divider Text="Состав транзакции"/>
+            @foreach (var itemReq in Req.Items)
+            {
+                <_TransactionItemFormFields Req="@itemReq" OnStateChanged="@(() => OnStateChanged.InvokeAsync())"/>
+            }
+        </div>
     </div>
 </EditForm>
 
@@ -37,22 +86,42 @@
 
     [CascadingParameter]
     public FinancialsStore Store { get; set; } = null!;
-    
+
     [Parameter]
     public EventCallback OnStateChanged { get; set; }
+
     private FinancialTransaction? EditingTransaction { get; set; }
+    private List<Guid> EntryIds { get; set; } = new();
+
+    private List<(string Name, bool Val, string Icon, string Color)> TransactionTypes { get; set; } = new()
+    {
+        ("Пополнение", true, "las la-plus-circle", "success"),
+        ("Списание", false, "las la-minus-circle", "danger"),
+    };
 
     protected override void OnParametersSet()
     {
         IsEdit = Store is {BodyState: FinancialsStore.BodyEnum.EditTransaction,BodyEditTransactionId: not null};
-        if (!IsEdit) return;
-        EditingTransaction = Db.FinancialTransactions.First(x => x.Id.Equals(Store.BodyEditTransactionId));
-        // Transaction.MapTo(Req);
+        if (IsEdit)
+        {
+            EditingTransaction = Db.FinancialTransactions.First(x => x.Id.Equals(Store.BodyEditTransactionId));
+            EntryIds = new List<Guid>() {EditingTransaction.EntryId};   
+        }
+        else
+        {
+            Req.Items = new() {new()};
+        }
     }
 
     private bool IsEdit { get; set; }
 
     private FinancialTransactionRequest Req { get; set; } = new();
+
+    private void HandleEntryChanged(List<Guid> entryIds)
+    {
+        EntryIds = entryIds;
+        Req.EntryId = entryIds.FirstOrDefault();
+    }
 
     private async Task HandleReturn()
     {
@@ -64,17 +133,18 @@
     {
         if (IsEdit && EditingTransaction != null)
         {
-            // Req.MapTo(EditingTransaction);
+    // Req.MapTo(EditingTransaction);
         }
         else
         {
             var transaction = new FinancialTransaction();
-            // Req.MapTo(transaction);
+    // Req.MapTo(transaction);
             Db.FinancialTransactions.Add(transaction);
         }
-        
+
         Db.SaveChanges();
 
         return HandleReturn();
     }
+
 }
