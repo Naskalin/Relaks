@@ -1,8 +1,6 @@
 ﻿@using Relaks.Models.Store
 @using Relaks.Database.Repositories
 
-@* <Dump Data="@Store.Req"/> *@
-
 <div class="mb-3">
     <div class="input-group">
         <input type="text" class="form-control" @bind="@Store.Req.Search" @oninput="@OnInputSearch" placeholder="Поиск...">

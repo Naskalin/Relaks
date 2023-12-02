@@ -2,6 +2,7 @@
 @using Relaks.Database
 @using Relaks.Mappers
 @using Relaks.Models.FinancialModels
+@using Console = System.Console
 
 @inject AppDbContext Db;
 
@@ -16,16 +17,21 @@
     </div>
 </div>
 
+<Dump Data="@Req"/>
 <EditForm Model="@Req" OnValidSubmit="@HandleSubmit">
     <FluentValidationValidator DisableAssemblyScanning="@true"/>
     <ValidationSummary/>
 
     <div class="row">
-        <div class="col-5">
+        <div class="col-4">
             <Divider Text="Описание транзакции"/>
             <div class="mb-3">
                 <label for="financial-transaction-accountId" class="form-label">Счёт *</label>
-                <Select id="financial-transaction-accountId" @bind-Value="@Req.AccountId" Items="@Store.AccountSelectOptions()" ShowSearch="true"></Select>
+                <Select id="financial-transaction-accountId"
+                        @bind-Value="@Req.AccountId"
+                        Items="@Store.AccountSelectOptions()"
+                        OnSelectedItemChanged="@HandleAccountIdChanged"
+                        ShowSearch="true"></Select>
                 <ValidationMessage For="@(() => Req.AccountId)"/>
             </div>
 
@@ -72,12 +78,22 @@
                 </button>
             </div>
         </div>
-        <div class="col-7 ps-4">
+        <div class="col-8 ps-4">
             <Divider Text="Состав транзакции"/>
-            @foreach (var itemReq in Req.Items)
-            {
-                <_TransactionItemFormFields Req="@itemReq" OnStateChanged="@(() => OnStateChanged.InvokeAsync())"/>
-            }
+            <div class="mb-3">
+                @foreach (var itemReq in Req.Items)
+                            {
+                                <_TransactionItemFormFields Req="@itemReq" 
+                                                            Currency="@Currency"
+                                                            OnStateChanged="@(() => OnStateChanged.InvokeAsync())"
+                                                            CanDelete="@(Req.Items.Count > 1)"
+                                                            OnDelete="@HandleDeleteItem"
+                                                            />
+                            }
+            </div>
+            <button type="button" class="btn btn-outline-dark btn-sm" @onclick="@HandleAddItem">
+                Добавить ещё <i class="las la-plus ms-1 la-lg"></i>
+            </button>
         </div>
     </div>
 </EditForm>
@@ -89,7 +105,8 @@
 
     [Parameter]
     public EventCallback OnStateChanged { get; set; }
-
+    
+    private FinancialCurrency? Currency { get; set; } = null!;
     private FinancialTransaction? EditingTransaction { get; set; }
     private List<Guid> EntryIds { get; set; } = new();
 
@@ -113,9 +130,26 @@
         }
     }
 
+    private void HandleAddItem()
+    {
+        Req.Items.Add(new());
+    }
+
+    private Task HandleAccountIdChanged(SelectedItem item)
+    {
+        var currencyId = Store.Accounts.Where(x => x.Id.Equals(Req.AccountId)).Select(x => x.FinancialCurrencyId).Single();
+        Currency = Store.Currencies.Single(x => x.Id.Equals(currencyId));
+        return Task.CompletedTask;
+    }
+
     private bool IsEdit { get; set; }
 
     private FinancialTransactionRequest Req { get; set; } = new();
+
+    private void HandleDeleteItem(FinancialTransactionItemRequest item)
+    {
+        if (Req.Items.Count > 1) Req.Items.Remove(item);
+    }
 
     private void HandleEntryChanged(List<Guid> entryIds)
     {
@@ -133,12 +167,18 @@
     {
         if (IsEdit && EditingTransaction != null)
         {
-    // Req.MapTo(EditingTransaction);
+            Req.MapTo(EditingTransaction);
         }
         else
         {
             var transaction = new FinancialTransaction();
-    // Req.MapTo(transaction);
+            Req.MapTo(transaction);
+            transaction.Items = Req.Items.Select(x =>
+            {
+                var item = new FinancialTransactionItem();
+                x.MapTo(item);
+                return item;
+            }).ToList();
             Db.FinancialTransactions.Add(transaction);
         }
 

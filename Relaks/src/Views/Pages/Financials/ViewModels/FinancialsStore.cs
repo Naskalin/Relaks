@@ -1,6 +1,8 @@
 ﻿using BootstrapBlazor.Components;
 using Microsoft.EntityFrameworkCore;
 using Relaks.Database;
+using Relaks.Database.Repositories;
+using Relaks.Managers;
 using Relaks.Models.FinancialModels;
 
 namespace Relaks.Views.Pages.Financials.ViewModels;
@@ -31,8 +33,9 @@ public class FinancialsStore(AppDbContext db)
     public Guid? SidebarEditAccountCategoryId { get; set; }
     public Guid? SidebarEditAccountId { get; set; }
     public List<FinancialAccountCategory> AccountCategories { get; set; } = new();
+    public List<FinancialAccount> Accounts { get; set; } = new();
     public List<FinancialTransactionCategory> TransactionCategories { get; set; } = new();
-    private List<FinancialCurrency> Currencies { get; set; } = new();
+    public List<FinancialCurrency> Currencies { get; set; } = new();
 
     public void Initialize()
     {
@@ -44,9 +47,7 @@ public class FinancialsStore(AppDbContext db)
 
     public void FindTransactionCategories()
     {
-        TransactionCategories = db.FinancialTransactionCategories
-            .OrderBy(x => x.Title)
-            .ToList();
+        TransactionCategories = db.FinancialTransactionCategories.ToBaseTree();
     }
 
     private void FindCurrencies()
@@ -64,7 +65,12 @@ public class FinancialsStore(AppDbContext db)
             .OrderBy(x => x.Title)
             .Include(x => x.Accounts.OrderBy(a => a.Title))
             .ToList();
+        
+        AccountCategories.ForEach(category => Accounts.AddRange(category.Accounts));
     }
+
+    public List<SelectedItem> FindTransactionCategoriesSelectOptions() =>
+        TransactionCategories.ToTreeSelect().Select(x => new SelectedItem(x.Value.ToString(), x.Title)).ToList();
 
     public List<SelectedItem> AccountSelectOptions()
     {
