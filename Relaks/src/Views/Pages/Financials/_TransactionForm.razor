@@ -95,6 +95,10 @@
             <button type="button" class="btn btn-outline-dark btn-sm" @onclick="@HandleAddItem">
                 Добавить ещё <i class="las la-plus ms-1 la-lg"></i>
             </button>
+            
+            <div class="h3 mt-5 text-secondary">
+                <span class="border-top border-secondary border-4 pt-2 px-4" style="--bs-border-opacity: .4;">Итого: @Total() @(Currency?.Symbol)</span>
+            </div>
         </div>
     </div>
 </EditForm>
@@ -107,7 +111,7 @@
     [Parameter]
     public EventCallback OnStateChanged { get; set; }
     
-    private FinancialCurrency? Currency { get; set; } = null!;
+    private FinancialCurrency? Currency { get; set; }
     private FinancialTransaction? EditingTransaction { get; set; }
     private List<Guid> EntryIds { get; set; } = new();
 
@@ -210,6 +214,8 @@
             }
         });
     }
+
+    private decimal Total() => Req.Items.Sum(x => x.Amount);
 
     private Task HandleSubmit()
     {
