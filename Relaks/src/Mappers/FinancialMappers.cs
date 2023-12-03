@@ -50,6 +50,15 @@ public static class FinancialMappers
         transaction.AccountId = req.AccountId;
         transaction.EntryId = req.EntryId.Value;
     }
+    
+    public static void MapTo(this FinancialTransaction transaction, FinancialTransactionRequest req)
+    {
+        req.IsPlus = transaction.IsPlus;
+        req.CreatedAt = transaction.CreatedAt;
+        req.Description = transaction.Description;
+        req.AccountId = transaction.AccountId;
+        req.EntryId = transaction.EntryId;
+    }
 
     public static void MapTo(this FinancialTransactionItemRequest req, FinancialTransactionItem item)
     {
@@ -57,5 +66,13 @@ public static class FinancialMappers
         item.Quantity = req.Quantity;
         item.Amount = req.Amount;
         item.Description = req.Description;
+    }
+    
+    public static void MapTo(this FinancialTransactionItem item, FinancialTransactionItemRequest req)
+    {
+        req.CategoryId = item.CategoryId;
+        req.Quantity = item.Quantity;
+        req.Amount = item.Amount;
+        req.Description = item.Description;
     }
 }

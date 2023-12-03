@@ -3,6 +3,7 @@
 @using Relaks.Mappers
 @using Relaks.Models.FinancialModels
 @using Console = System.Console
+@using Microsoft.EntityFrameworkCore
 
 @inject AppDbContext Db;
 
@@ -24,7 +25,7 @@
 
     <div class="row">
         <div class="col-4">
-            <Divider Text="Описание транзакции"/>
+            <Divider Text="Описание транзакции" class="mb-4"/>
             <div class="mb-3">
                 <label for="financial-transaction-accountId" class="form-label">Счёт *</label>
                 <Select id="financial-transaction-accountId"
@@ -79,7 +80,7 @@
             </div>
         </div>
         <div class="col-8 ps-4">
-            <Divider Text="Состав транзакции"/>
+            <Divider Text="Состав транзакции" class="mb-4"/>
             <div class="mb-3">
                 @foreach (var itemReq in Req.Items)
                             {
@@ -121,8 +122,19 @@
         IsEdit = Store is {BodyState: FinancialsStore.BodyEnum.EditTransaction,BodyEditTransactionId: not null};
         if (IsEdit)
         {
-            EditingTransaction = Db.FinancialTransactions.First(x => x.Id.Equals(Store.BodyEditTransactionId));
-            EntryIds = new List<Guid>() {EditingTransaction.EntryId};   
+            EditingTransaction = Db
+                .FinancialTransactions
+                .Include(x => x.Items)
+                .First(x => x.Id.Equals(Store.BodyEditTransactionId));
+            EntryIds = new List<Guid>() {EditingTransaction.EntryId};
+            
+            EditingTransaction.MapTo(Req);
+            Req.Items = EditingTransaction.Items.Select(x =>
+            {
+                var itemReq = new FinancialTransactionItemRequest();
+                x.MapTo(itemReq);
+                return itemReq;
+            }).ToList();
         }
         else
         {
@@ -163,22 +175,57 @@
         await OnStateChanged.InvokeAsync();
     }
 
-    private Task HandleSubmit()
+    private void CreateItemsForTransaction(FinancialTransaction transaction)
     {
-        if (IsEdit && EditingTransaction != null)
-        {
-            Req.MapTo(EditingTransaction);
-        }
-        else
-        {
-            var transaction = new FinancialTransaction();
-            Req.MapTo(transaction);
-            transaction.Items = Req.Items.Select(x =>
+        var newItems = Req
+            .Items
+            .Where(x => !x.Id.HasValue) // new items has no id
+            .Select(x =>
             {
                 var item = new FinancialTransactionItem();
                 x.MapTo(item);
                 return item;
             }).ToList();
+        
+        transaction.Items.AddRange(newItems);
+    }
+    
+    private void UpdateItemsForTransaction(FinancialTransaction transaction)
+    {
+        Req.Items.Where(x => x.Id.HasValue).ToList().ForEach(x =>
+        {
+            var item = transaction.Items.First(i => i.Id.Equals(x.Id));
+            x.MapTo(item);
+        });
+    }
+    
+    private void DeleteItemsForTransaction(FinancialTransaction transaction)
+    {
+        var reqIds = Req.Items.Where(x => x.Id.HasValue).Select(x => x.Id!.Value).ToList();
+        transaction.Items.ForEach(x =>
+        {
+            if (!reqIds.Contains(x.Id))
+            {
+                transaction.Items.Remove(x);
+            }
+        });
+    }
+
+    private Task HandleSubmit()
+    {
+        if (IsEdit && EditingTransaction != null)
+        {
+            Req.MapTo(EditingTransaction);
+            DeleteItemsForTransaction(EditingTransaction);
+            UpdateItemsForTransaction(EditingTransaction);
+            CreateItemsForTransaction(EditingTransaction);
+            
+        }
+        else
+        {
+            var transaction = new FinancialTransaction();
+            Req.MapTo(transaction);
+            CreateItemsForTransaction(transaction);
             Db.FinancialTransactions.Add(transaction);
         }
 
