@@ -17,7 +17,11 @@
             <div class="col-3">
                 <label for="transaction-item-amount-@FieldId" class="form-label">Сумма</label>
                 <BootstrapInputGroup>
-                    <BootstrapInputNumber @bind-Value="Req.Amount" IsSelectAllTextOnFocus="true" Step="0.01" Id="@($"transaction-item-amount-{FieldId}")"/>
+                    <BootstrapInputNumber @bind-Value="Req.Amount"
+                                          IsSelectAllTextOnFocus="true" 
+                                          Step="0.01" 
+                                          Id="@($"transaction-item-amount-{FieldId}")"
+                                          OnValueChanged="@(_ => OnStateChanged.InvokeAsync())"/>
                     <BootstrapInputGroupLabel DisplayText="@Currency?.Symbol"/>
                 </BootstrapInputGroup>
                 <ValidationMessage For="@(() => Req.Amount)"/>

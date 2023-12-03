@@ -9,4 +9,5 @@ public class FinancialAccountRequest
     public DateTime StartAt { get; set; } = DateTime.Now;
     public DateTime? EndAt { get; set; }
     public Guid? EntryId { get; set; }
+    public decimal? InitialBalance { get; set; }
 }

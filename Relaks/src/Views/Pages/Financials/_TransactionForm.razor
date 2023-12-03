@@ -86,7 +86,7 @@
                             {
                                 <_TransactionItemFormFields Req="@itemReq" 
                                                             Currency="@Currency"
-                                                            OnStateChanged="@(() => OnStateChanged.InvokeAsync())"
+                                                            OnStateChanged="@(StateHasChanged)"
                                                             CanDelete="@(Req.Items.Count > 1)"
                                                             OnDelete="@HandleDeleteItem"
                                                             />
@@ -149,6 +149,7 @@
     private void HandleAddItem()
     {
         Req.Items.Add(new());
+        StateHasChanged();
     }
 
     private Task HandleAccountIdChanged(SelectedItem item)
@@ -217,6 +218,23 @@
 
     private decimal Total() => Req.Items.Sum(x => x.Amount);
 
+    private void UpdateBalance()
+    {
+        // clean initial account balance
+        var account = Store.Accounts.First(x => x.Id.Equals(Req.AccountId));
+        account.InitialBalance = null;
+
+        var lastTransaction = Db
+            .FinancialTransactions
+            .Where(x => x.AccountId.Equals(Req.AccountId))
+            .OrderByDescending(x => x.CreatedAt)
+            .FirstOrDefault();
+        if (lastTransaction != null)
+        {
+            
+        }
+    }
+
     private Task HandleSubmit()
     {
         if (IsEdit && EditingTransaction != null)
@@ -225,7 +243,6 @@
             DeleteItemsForTransaction(EditingTransaction);
             UpdateItemsForTransaction(EditingTransaction);
             CreateItemsForTransaction(EditingTransaction);
-            
         }
         else
         {
@@ -234,6 +251,8 @@
             CreateItemsForTransaction(transaction);
             Db.FinancialTransactions.Add(transaction);
         }
+        
+        
 
         Db.SaveChanges();
 

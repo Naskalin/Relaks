@@ -1,4 +1,6 @@
-﻿namespace Relaks.Models.FinancialModels;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Relaks.Models.FinancialModels;
 
 public class FinancialAccount
 {
@@ -29,4 +31,10 @@ public class FinancialAccount
     public BaseEntry Entry { get; set; } = null!;
 
     public string TitleWithCurrency() => $"{Title} ({FinancialCurrencyId})";
+    
+    /// <summary>
+    /// Начальный баланс
+    /// </summary>
+    [Precision(19, 4)]
+    public decimal? InitialBalance { get; set; }
 }
