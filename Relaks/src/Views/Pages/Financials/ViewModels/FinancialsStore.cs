@@ -45,14 +45,14 @@ public class FinancialsStore(AppDbContext db)
         FindAccountCategories();
         FindCurrencies();
         FindTransactionCategories();
-        BodyState = BodyEnum.AddTransaction;
+        // BodyState = BodyEnum.AddTransaction;
     }
 
     public void FindTransactionCategories()
     {
         TransactionCategories = db.FinancialTransactionCategories.ToBaseTree();
     }
-
+    
     private void FindCurrencies()
     {
         Currencies = db.FinancialCurrencies

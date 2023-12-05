@@ -28,15 +28,15 @@
     <div class="row">
         <div class="col-4">
             <Divider Text="Описание транзакции" class="mb-4"/>
-            <div class="mb-3">
-                <label for="financial-transaction-accountId" class="form-label">Счёт *</label>
-                <Select id="financial-transaction-accountId"
-                        @bind-Value="@Req.AccountId"
-                        Items="@Store.AccountSelectOptions()"
-                        OnSelectedItemChanged="@HandleAccountIdChanged"
-                        ShowSearch="true"></Select>
-                <ValidationMessage For="@(() => Req.AccountId)"/>
-            </div>
+            @* <div class="mb-3"> *@
+            @*     <label for="financial-transaction-accountId" class="form-label">Счёт *</label> *@
+            @*     <Select id="financial-transaction-accountId" *@
+            @*             @bind-Value="@Req.AccountId" *@
+            @*             Items="@Store.AccountSelectOptions()" *@
+            @*             OnSelectedItemChanged="@HandleAccountIdChanged" *@
+            @*             ShowSearch="true"></Select> *@
+            @*     <ValidationMessage For="@(() => Req.AccountId)"/> *@
+            @* </div> *@
 
             <div class="mb-3">
                 <label class="form-label">Тип *</label>
@@ -87,7 +87,7 @@
                 @foreach (var itemReq in Req.Items)
                             {
                                 <_TransactionItemFormFields Req="@itemReq" 
-                                                            Currency="@Currency"
+                                                            Currency="@Account.FinancialCurrency"
                                                             OnStateChanged="@(StateHasChanged)"
                                                             CanDelete="@(Req.Items.Count > 1)"
                                                             OnDelete="@HandleDeleteItem"
@@ -99,7 +99,7 @@
             </button>
             
             <div class="h3 mt-5 text-secondary">
-                <span class="border-top border-secondary border-4 pt-2 px-4" style="--bs-border-opacity: .4;">Итого: @Total() @(Currency?.Symbol)</span>
+                <span class="border-top border-secondary border-4 pt-2 px-4" style="--bs-border-opacity: .4;">Итого: @Total() @(Account.FinancialCurrency.Symbol)</span>
             </div>
         </div>
     </div>
@@ -113,7 +113,9 @@
     [Parameter]
     public EventCallback OnStateChanged { get; set; }
     
-    private FinancialCurrency? Currency { get; set; }
+    private bool IsEdit { get; set; }
+    private FinancialTransactionRequest Req { get; set; } = new();
+    private FinancialAccount Account { get; set; } = null!;
     private FinancialTransaction? EditingTransaction { get; set; }
     private List<Guid> EntryIds { get; set; } = new();
 
@@ -145,7 +147,20 @@
         else
         {
             Req.Items = new() {new()};
+            if (Store.AccountId.HasValue)
+            {
+                Req.AccountId = Store.AccountId.Value;
+            }
         }
+        
+        // var currencyId = Store.Accounts.Where(x => x.Id.Equals(Req.AccountId)).Select(x => x.FinancialCurrencyId).Single();
+        
+        Account = Db.FinancialAccounts
+            .Include(x => x.FinancialCurrency)
+            .Include(x => x.Entry)
+            .Include(x => x.Category)
+            .First(x => x.Id.Equals(Req.AccountId));
+        
     }
 
     private void HandleAddItem()
@@ -153,17 +168,6 @@
         Req.Items.Add(new());
         StateHasChanged();
     }
-
-    private Task HandleAccountIdChanged(SelectedItem item)
-    {
-        var currencyId = Store.Accounts.Where(x => x.Id.Equals(Req.AccountId)).Select(x => x.FinancialCurrencyId).Single();
-        Currency = Store.Currencies.Single(x => x.Id.Equals(currencyId));
-        return Task.CompletedTask;
-    }
-
-    private bool IsEdit { get; set; }
-
-    private FinancialTransactionRequest Req { get; set; } = new();
 
     private void HandleDeleteItem(FinancialTransactionItemRequest item)
     {
@@ -198,7 +202,7 @@
         else
         {
             //new
-            var transaction = new FinancialTransaction() {};
+            var transaction = new FinancialTransaction();
             Req.MapTo(transaction);
             FinManager.CreateItemsForTransaction(transaction, Req);
             FinManager.UpdateBalanceForTransaction(transaction);

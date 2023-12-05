@@ -1,6 +1,8 @@
 ﻿@using Relaks.Views.Pages.Financials.ViewModels
 @using Relaks.Models.FinancialModels
 
+@inject NavigationManager Navigation;
+
 <div class="list-group border-0">
         <div class="list-group-item group-show d-flex justify-content-between align-items-center gap-2 bg-secondary bg-opacity-25">
             <div class="d-flex col align-items-center gap-2">
@@ -17,9 +19,9 @@
         </div>
         @foreach (var account in Category.Accounts)
         {
-            <div class="list-group-item list-group-item-action cursor-pointer d-flex justify-content-between align-items-center gap-2 group-show">
-                <div>
-                    @account.TitleWithCurrency()
+            <div class="list-group-item p-0 cursor-pointer d-flex justify-content-between align-items-center gap-2 group-show">
+                <div class="p-3 col" @onclick="@(() => HandleClickAccount(account.Id))">
+                    <span class="@(account.Id.Equals(Store.AccountId) ? "text-primary": "")">@account.TitleWithCurrency()</span>
                     @if (!string.IsNullOrEmpty(account.Description))
                     {
                         <Popover Content="@account.Description">
@@ -27,7 +29,7 @@
                         </Popover>      
                     }
                 </div>
-                <div class="group-show__item">
+                <div class="group-show__item px-3 col-auto">
                     <button type="button"
                             @onclick="@(() => HandleClickEditAccount(account.Id))"
                             class="btn btn-circle btn-sm btn-outline-secondary" title="Изменить">
@@ -48,6 +50,12 @@
 
     [Parameter]
     public required FinancialAccountCategory Category { get; set; }
+
+    private Task HandleClickAccount(Guid accountId)
+    {
+        Navigation.NavigateTo($"/financials/{accountId.ToString()}");
+        return OnStateChanged.InvokeAsync();
+    }
 
     private Task HandleClickEditAccount(Guid accountId)
     {
