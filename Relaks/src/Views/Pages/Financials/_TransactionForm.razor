@@ -193,6 +193,7 @@
             FinManager.DeleteItemsForTransaction(EditingTransaction, Req);
             FinManager.UpdateItemsForTransaction(EditingTransaction, Req);
             FinManager.CreateItemsForTransaction(EditingTransaction, Req);
+            FinManager.UpdateBalanceForTransaction(EditingTransaction);
         }
         else
         {
@@ -200,6 +201,7 @@
             var transaction = new FinancialTransaction() {};
             Req.MapTo(transaction);
             FinManager.CreateItemsForTransaction(transaction, Req);
+            FinManager.UpdateBalanceForTransaction(transaction);
             Db.FinancialTransactions.Add(transaction);
         }
         

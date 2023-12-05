@@ -48,8 +48,8 @@ public class FinancialManager(AppDbContext db)
     /// <summary>
     /// Отсортированные транзакции
     /// </summary>
-    /// <param name="orderedTransactions"></param>
-    /// <param name="fromBalance"></param>
+    /// <param name="orderedTransactions">Отсортированные транзакции в порядке возрастания</param>
+    /// <param name="fromBalance">Начальный баланс для первой транзакции</param>
     private void UpdateBalanceForTransactions(List<FinancialTransaction> orderedTransactions, decimal fromBalance)
     {
         PreviousTransaction = null;
@@ -110,21 +110,21 @@ public class FinancialManager(AppDbContext db)
             var earlierTransaction = transactionsQuery.FirstOrDefault(x => x.CreatedAt < newTransaction.CreatedAt);
             
             // Остальные транзакции, пойдут после текущей в порядке возрастания по дате
-            var othersTransactions = transactionsQuery
+            var otherTransactions = transactionsQuery
                 .Where(x => x.CreatedAt >= newTransaction.CreatedAt)
                 .OrderBy(x => x.CreatedAt)
                 .ToList();
             if (earlierTransaction == null)
             {
                 // Если не найдена такая траназкция
-                if (othersTransactions.Any())
+                if (otherTransactions.Any())
                 {
                     // Если есть другие транзакции, идущие после новой
                     // Начальный баланс берём из самой первой транзакции, которая идёт сразу после новой
                     // Т.е. мы как бы переносим этот начальный баланс в эту транзакцию
-                    newTransaction.UpdateBalance(othersTransactions.First().Balance);
-                    UpdateBalanceForTransactions(othersTransactions, newTransaction.Balance);
-                    account.Balance = othersTransactions.Last().Balance;
+                    newTransaction.UpdateBalance(otherTransactions.First().Balance);
+                    UpdateBalanceForTransactions(otherTransactions, newTransaction.Balance);
+                    account.Balance = otherTransactions.Last().Balance;
                     return;
                 }
                 
@@ -139,13 +139,13 @@ public class FinancialManager(AppDbContext db)
             
             // Если найдена такая транзакция
             newTransaction.UpdateBalance(earlierTransaction.Balance);
-            if (othersTransactions.Any())
+            if (otherTransactions.Any())
             {
                 // Обновляем балансы последующих транзакций
                 // Начальный баланс берём из новой транзакции, которая "встанет между ними" по времени
-                UpdateBalanceForTransactions(othersTransactions, newTransaction.Balance);
+                UpdateBalanceForTransactions(otherTransactions, newTransaction.Balance);
                 // Баланс для счёта берём из последней транзакции
-                account.Balance = othersTransactions.Last().Balance;
+                account.Balance = otherTransactions.Last().Balance;
                 return;
             }
             
@@ -155,26 +155,125 @@ public class FinancialManager(AppDbContext db)
         }
         
         {
-            // Транзакция есть в бд, это изменение существующей транзакции
-            // Получаем все последующие транзакции после существующей, исключая её саму
-            var othersTransactions = transactionsQuery
-                .Where(x => x.CreatedAt >= existTransaction.CreatedAt)
-                .Where(x => x.Id.Equals(existTransaction.Id))
-                .OrderBy(x => x.CreatedAt)
-                .ToList();
-
-            newTransaction.UpdateBalance(existTransaction.FromBalance());
-            if (othersTransactions.Any())
+            if (existTransaction.CreatedAt.Equals(newTransaction.CreatedAt))
             {
-                // Если есть другие транзакции, идущие после текущей, то обновляем их балансы
-                UpdateBalanceForTransactions(othersTransactions, newTransaction.Balance);
-                account.Balance = othersTransactions.Last().Balance;
+                // Время транзакции не изменено
+                // Транзакция есть в бд, это изменение существующей транзакции
+                // Получаем все последующие транзакции после существующей, исключая её саму
+                var otherTransactions = transactionsQuery
+                    .Where(x => x.CreatedAt >= existTransaction.CreatedAt)
+                    .Where(x => !x.Id.Equals(existTransaction.Id))
+                    .OrderBy(x => x.CreatedAt)
+                    .ToList();
+
+                newTransaction.UpdateBalance(existTransaction.FromBalance());
+                if (otherTransactions.Any())
+                {
+                    // Если есть другие транзакции, идущие после текущей, то обновляем их балансы
+                    UpdateBalanceForTransactions(otherTransactions, newTransaction.Balance);
+                    account.Balance = otherTransactions.Last().Balance;
+                    return;
+                }
+
+                // Если нет других транзакций, идущих после текущей, то просто обновляем баланс на счёте
+                // Получается это изменение единственной транзакции
+                account.Balance = newTransaction.Balance;
                 return;
             }
+            
+            // Время транзакции было изменено
+            // 9:45---10:00(Было)---10:15---10:30(Стало)--10:45
+            if (newTransaction.CreatedAt > existTransaction.CreatedAt)
+            {
+                // Промежуточные транзакции
+                // 10:00(Было) <= others && others < 10:30(Стало)
+                var betweenTransactions = transactionsQuery
+                    .Where(x => existTransaction.CreatedAt <= x.CreatedAt && x.CreatedAt < newTransaction.CreatedAt)
+                    .Where(x => !x.Id.Equals(existTransaction.Id))
+                    .OrderBy(x => x.CreatedAt)
+                    .ToList();
+                if (betweenTransactions.Any())
+                {
+                    // Если есть, обновляем их, начальный баланс берём из существующей в бд транзакции
+                    UpdateBalanceForTransactions(betweenTransactions, existTransaction.FromBalance());
+                    // обновляем баланс текущей транзакции, начальный баланс берём из последней обновлённой транзакции
+                    newTransaction.UpdateBalance(betweenTransactions.Last().Balance);
+                }
+                else
+                {
+                    // Если нет, то обновляем баланс текущей по её же начальному балансу из бд
+                    newTransaction.UpdateBalance(existTransaction.FromBalance());
+                }
+                
+                // Последующие транзакции
+                // others >= 10:30(Стало)
+                var otherTransactions = transactionsQuery
+                    .Where(x => x.CreatedAt >= newTransaction.CreatedAt)
+                    .Where(x => !x.Id.Equals(existTransaction.Id))
+                    .OrderBy(x => x.CreatedAt)
+                    .ToList();
+                if (otherTransactions.Any())
+                {
+                    // если есть последующие, то обновляем их балансы
+                    UpdateBalanceForTransactions(otherTransactions, newTransaction.Balance);
+                    // и задаём баланс счёта из последней транзакции
+                    account.Balance = otherTransactions.Last().Balance;
+                    return;
+                }
 
-            // Если нет других транзакций, идущих после текущей, то просто обновляем баланс на счёте
-            // Получается это изменение единственной транзакции
-            account.Balance = newTransaction.Balance;
+                // если нет последующих транзакций, то текущая транзакция стала последней
+                // берём баланс из неё
+                account.Balance = newTransaction.Balance;
+            }
+            else
+            {
+                // 9:45---10:00(Стало)---10:15---10:30(Было)--10:45
+                // others >= 10:00(Стало)
+                var otherTransactions = transactionsQuery
+                    .Where(x => x.CreatedAt >= newTransaction.CreatedAt)
+                    .Where(x => !x.Id.Equals(existTransaction.Id))
+                    .OrderBy(x => x.CreatedAt)
+                    .ToList();
+                
+                // получаем предыдущую транзакцию от текущей
+                var earlierTransaction = transactionsQuery.FirstOrDefault(x => x.CreatedAt < newTransaction.CreatedAt);
+                if (earlierTransaction == null)
+                {
+                    // Если не найдена такая траназкция
+                    if (otherTransactions.Any())
+                    {
+                        // Если есть другие транзакции, идущие после новой
+                        // Начальный баланс берём из самой первой транзакции, которая идёт сразу после новой
+                        // Т.е. мы как бы переносим этот начальный баланс в эту транзакцию
+                        newTransaction.UpdateBalance(otherTransactions.First().Balance);
+                        UpdateBalanceForTransactions(otherTransactions, newTransaction.Balance);
+                        account.Balance = otherTransactions.Last().Balance;
+                        return;
+                    }
+                    
+                    // Получается, что это самая первая транзакция, у неё же было изменено время
+                    // Нет ранней транзакции и нет поздних транзакций
+                    // Начальный баланс переносим из начального баланса существующей транзакции
+                    newTransaction.UpdateBalance(existTransaction.FromBalance());
+                    account.Balance = newTransaction.Balance;
+                    return;
+                }
+                
+                // Если найдена такая транзакция
+                newTransaction.UpdateBalance(earlierTransaction.Balance);
+                if (otherTransactions.Any())
+                {
+                    // Обновляем балансы последующих транзакций
+                    // Начальный баланс берём из новой транзакции, которая "встанет между ними" по времени
+                    UpdateBalanceForTransactions(otherTransactions, newTransaction.Balance);
+                    // Баланс для счёта берём из последней транзакции
+                    account.Balance = otherTransactions.Last().Balance;
+                    return;
+                }
+                
+                // Последующих транзакций не найдено, баланс для счёта берём из новой транзакции
+                account.Balance = newTransaction.Balance;
+            }
         }
     }
 }
