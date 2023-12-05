@@ -11,7 +11,7 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231128113041_CreateFinancials")]
+    [Migration("20231205142630_CreateFinancials")]
     partial class CreateFinancials
     {
         /// <inheritdoc />
@@ -447,6 +447,10 @@ namespace Relaks.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<decimal>("Balance")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("TEXT");
 
@@ -521,6 +525,10 @@ namespace Relaks.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("AccountId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Balance")
+                        .HasPrecision(19, 4)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
@@ -1058,7 +1066,7 @@ namespace Relaks.Migrations
             modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialAccount", b =>
                 {
                     b.HasOne("Relaks.Models.FinancialModels.FinancialAccountCategory", "Category")
-                        .WithMany()
+                        .WithMany("Accounts")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1218,6 +1226,11 @@ namespace Relaks.Migrations
                     b.Navigation("Children");
 
                     b.Navigation("Tags");
+                });
+
+            modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialAccountCategory", b =>
+                {
+                    b.Navigation("Accounts");
                 });
 
             modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialTransaction", b =>

@@ -29,19 +29,21 @@ public partial class DatabaseSeeder
         Db.SaveChanges();
     }
 
+    private FinancialTransaction? PreviousTransaction { get; set; }
     private void CreateFinancialTransactions()
     {
-        var accountId = Db.FinancialAccounts.Where(x => x.FinancialCurrencyId.Equals("RUB")).Select(x => x.Id).First();
+        var account = Db.FinancialAccounts.First(x => x.FinancialCurrencyId.Equals("RUB"));
         var entryId = Guid.Parse("01B137DA-A3CF-4C08-AC3E-752B3F156ED4");
         var categories = Db.FinancialTransactionCategories.ToDictionary(x => x.Title, x => x.Id);
         var transactions = new List<FinancialTransaction>()
         {
             new()
             {
-                AccountId = accountId,
+                AccountId = account.Id,
                 EntryId = entryId,
                 Description = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null}),
                 IsPlus = false,
+                CreatedAt = DateTime.Now,
                 Items = new List<FinancialTransactionItem>()
                 {
                     new() {CategoryId = categories["Чипсы"], Quantity = Faker.Random.Int(1, 3), Amount = Faker.Random.Decimal(300, 600)},
@@ -51,7 +53,8 @@ public partial class DatabaseSeeder
             },
             new()
             {
-                AccountId = accountId,
+                CreatedAt = DateTime.Now.Subtract(TimeSpan.FromDays(1)),
+                AccountId = account.Id,
                 EntryId = entryId,
                 Description = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null}),
                 IsPlus = false,
@@ -62,6 +65,12 @@ public partial class DatabaseSeeder
             }
         };
         
+        foreach (var transaction in transactions)
+        {
+          transaction.UpdateBalance(PreviousTransaction?.Balance ?? account.Balance);
+          PreviousTransaction = transaction;
+        }
+        account.Balance = transactions.Last().Balance;
         Db.FinancialTransactions.AddRange(transactions);
         Db.SaveChanges();
     }
@@ -115,6 +124,7 @@ public partial class DatabaseSeeder
                 Title = $"Наличные {i}",
                 FinancialCurrencyId = currency.Id,
                 StartAt = DateTime.Now,
+                Balance = 10000
             };
             
             if (Faker.Random.Int(1, 4) >= 2)
