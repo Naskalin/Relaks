@@ -154,7 +154,27 @@ public class FinancialManager(AppDbContext db)
             return;
         }
         
-        // Транзакции есть в бд, это изменение существующей транзакции
-        
+        {
+            // Транзакция есть в бд, это изменение существующей транзакции
+            // Получаем все последующие транзакции после существующей, исключая её саму
+            var othersTransactions = transactionsQuery
+                .Where(x => x.CreatedAt >= existTransaction.CreatedAt)
+                .Where(x => x.Id.Equals(existTransaction.Id))
+                .OrderBy(x => x.CreatedAt)
+                .ToList();
+
+            newTransaction.UpdateBalance(existTransaction.FromBalance());
+            if (othersTransactions.Any())
+            {
+                // Если есть другие транзакции, идущие после текущей, то обновляем их балансы
+                UpdateBalanceForTransactions(othersTransactions, newTransaction.Balance);
+                account.Balance = othersTransactions.Last().Balance;
+                return;
+            }
+
+            // Если нет других транзакций, идущих после текущей, то просто обновляем баланс на счёте
+            // Получается это изменение единственной транзакции
+            account.Balance = newTransaction.Balance;
+        }
     }
 }
