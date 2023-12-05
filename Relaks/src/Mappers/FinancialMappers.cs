@@ -24,7 +24,6 @@ public static class FinancialMappers
         req.StartAt = account.StartAt;
         req.EndAt = account.EndAt;
         req.EntryId = account.EntryId;
-        req.InitialBalance = account.InitialBalance;
     }
     
     public static void MapTo(this FinancialAccountRequest req, FinancialAccount account)
@@ -35,7 +34,6 @@ public static class FinancialMappers
         account.CategoryId = req.CategoryId;
         account.StartAt = req.StartAt;
         account.EndAt = req.EndAt;
-        account.InitialBalance = req.InitialBalance;
         
         ArgumentNullException.ThrowIfNull(req.EntryId);
         account.EntryId = req.EntryId.Value;

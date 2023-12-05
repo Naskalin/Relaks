@@ -4,8 +4,10 @@
 @using Relaks.Models.FinancialModels
 @using Console = System.Console
 @using Microsoft.EntityFrameworkCore
+@using Relaks.Managers
 
 @inject AppDbContext Db;
+@inject FinancialManager FinManager;
 
 <div class="row align-items-center mb-3">
     <div class="col-auto">
@@ -180,80 +182,27 @@
         await OnStateChanged.InvokeAsync();
     }
 
-    private void CreateItemsForTransaction(FinancialTransaction transaction)
-    {
-        var newItems = Req
-            .Items
-            .Where(x => !x.Id.HasValue) // new items has no id
-            .Select(x =>
-            {
-                var item = new FinancialTransactionItem();
-                x.MapTo(item);
-                return item;
-            }).ToList();
-        
-        transaction.Items.AddRange(newItems);
-    }
-    
-    private void UpdateItemsForTransaction(FinancialTransaction transaction)
-    {
-        Req.Items.Where(x => x.Id.HasValue).ToList().ForEach(x =>
-        {
-            var item = transaction.Items.First(i => i.Id.Equals(x.Id));
-            x.MapTo(item);
-        });
-    }
-    
-    private void DeleteItemsForTransaction(FinancialTransaction transaction)
-    {
-        var reqIds = Req.Items.Where(x => x.Id.HasValue).Select(x => x.Id!.Value).ToList();
-        transaction.Items.ForEach(x =>
-        {
-            if (!reqIds.Contains(x.Id))
-            {
-                transaction.Items.Remove(x);
-            }
-        });
-    }
-
     private decimal Total() => Req.Items.Sum(x => x.Amount);
-
-    private void UpdateBalance()
-    {
-        // clean initial account balance
-        var account = Store.Accounts.First(x => x.Id.Equals(Req.AccountId));
-        account.InitialBalance = null;
-
-        var lastTransaction = Db
-            .FinancialTransactions
-            .Where(x => x.AccountId.Equals(Req.AccountId))
-            .OrderByDescending(x => x.CreatedAt)
-            .FirstOrDefault();
-        if (lastTransaction != null)
-        {
-            
-        }
-    }
 
     private Task HandleSubmit()
     {
         if (IsEdit && EditingTransaction != null)
         {
+            //edit
             Req.MapTo(EditingTransaction);
-            DeleteItemsForTransaction(EditingTransaction);
-            UpdateItemsForTransaction(EditingTransaction);
-            CreateItemsForTransaction(EditingTransaction);
+            FinManager.DeleteItemsForTransaction(EditingTransaction, Req);
+            FinManager.UpdateItemsForTransaction(EditingTransaction, Req);
+            FinManager.CreateItemsForTransaction(EditingTransaction, Req);
         }
         else
         {
-            var transaction = new FinancialTransaction();
+            //new
+            var transaction = new FinancialTransaction() {};
             Req.MapTo(transaction);
-            CreateItemsForTransaction(transaction);
+            FinManager.CreateItemsForTransaction(transaction, Req);
             Db.FinancialTransactions.Add(transaction);
         }
         
-        
-
         Db.SaveChanges();
 
         return HandleReturn();

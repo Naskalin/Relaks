@@ -1,4 +1,6 @@
 ﻿@page "/financials"
+@page "/financials/{accountId:guid}"
+
 @using Relaks.Views.Pages.Financials.ViewModels
 @using Relaks.Database
 
@@ -47,10 +49,24 @@
 
 @code {
     private FinancialsStore Store { get; set; } = null!;
+    
+    [SupplyParameterFromQuery]
+    public Guid? AccountId { get; set; }
+
+    private void MapQueryParameters()
+    {
+        Store.AccountId = AccountId;
+    }
+
+    protected override void OnParametersSet()
+    {
+        MapQueryParameters();
+    }
 
     protected override void OnInitialized()
     {
         Store = new(Db);
+        MapQueryParameters();
         Store.Initialize();
     }
 

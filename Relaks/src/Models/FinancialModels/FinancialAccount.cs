@@ -36,5 +36,5 @@ public class FinancialAccount
     /// Начальный баланс
     /// </summary>
     [Precision(19, 4)]
-    public decimal? InitialBalance { get; set; }
+    public decimal Balance { get; set; }
 }

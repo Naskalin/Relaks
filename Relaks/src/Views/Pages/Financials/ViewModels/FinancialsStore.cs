@@ -36,6 +36,9 @@ public class FinancialsStore(AppDbContext db)
     public List<FinancialAccount> Accounts { get; set; } = new();
     public List<FinancialTransactionCategory> TransactionCategories { get; set; } = new();
     public List<FinancialCurrency> Currencies { get; set; } = new();
+    public Guid? AccountId { get; set; }
+    
+    public FinancialAccount? SelectedAccount() => Accounts.FirstOrDefault(x => x.Id.Equals(AccountId));
 
     public void Initialize()
     {
