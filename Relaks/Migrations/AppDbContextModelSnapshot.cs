@@ -444,10 +444,6 @@ namespace Relaks.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Balance")
-                        .HasPrecision(19, 4)
-                        .HasColumnType("TEXT");
-
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("TEXT");
 
@@ -462,6 +458,10 @@ namespace Relaks.Migrations
 
                     b.Property<string>("FinancialCurrencyId")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("InitialBalance")
+                        .HasPrecision(19, 4)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartAt")
@@ -524,10 +524,6 @@ namespace Relaks.Migrations
                     b.Property<Guid>("AccountId")
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Balance")
-                        .HasPrecision(19, 4)
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
@@ -539,6 +535,10 @@ namespace Relaks.Migrations
 
                     b.Property<bool>("IsPlus")
                         .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 

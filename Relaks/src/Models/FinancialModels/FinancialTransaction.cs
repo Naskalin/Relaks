@@ -27,24 +27,32 @@ public class FinancialTransaction
     public List<FinancialTransactionItem> Items { get; set; } = new();
     
     /// <summary>
-    /// Баланс после транзакции
+    /// Сумма FinancialTransactionItem
     /// </summary>
     [Precision(19, 4)]
-    public decimal Balance { get; set; }
+    public decimal Total { get; set; }
 
-    public void UpdateBalance(decimal fromBalance)
-    {
-        var itemsTotal = Items.Sum(x => x.Amount);
-        Balance = IsPlus ? fromBalance + itemsTotal : fromBalance - itemsTotal;
-    }
+    public void UpdateTotal() => Total = Items.Sum(x => x.Amount);
 
-    /// <summary>
-    /// Баланс до транзакции
-    /// </summary>
-    /// <returns></returns>
-    public decimal FromBalance()
-    {
-        var itemsTotal = Items.Sum(x => x.Amount);
-        return IsPlus ? Balance - itemsTotal : Balance + itemsTotal;
-    }
+    // /// <summary>
+    // /// Баланс после транзакции
+    // /// </summary>
+    // [Precision(19, 4)]
+    // public decimal Balance { get; set; }
+    //
+    // public void UpdateBalance(decimal fromBalance)
+    // {
+    //     var itemsTotal = Items.Sum(x => x.Amount);
+    //     Balance = IsPlus ? fromBalance + itemsTotal : fromBalance - itemsTotal;
+    // }
+    //
+    // /// <summary>
+    // /// Баланс до транзакции
+    // /// </summary>
+    // /// <returns></returns>
+    // public decimal FromBalance()
+    // {
+    //     var itemsTotal = Items.Sum(x => x.Amount);
+    //     return IsPlus ? Balance - itemsTotal : Balance + itemsTotal;
+    // }
 }

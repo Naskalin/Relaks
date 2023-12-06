@@ -54,7 +54,7 @@ namespace Relaks.Migrations
                     StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndAt = table.Column<DateTime>(type: "TEXT", nullable: true),
                     EntryId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Balance = table.Column<decimal>(type: "TEXT", precision: 19, scale: 4, nullable: false)
+                    InitialBalance = table.Column<decimal>(type: "TEXT", precision: 19, scale: 4, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,7 +89,7 @@ namespace Relaks.Migrations
                     Description = table.Column<string>(type: "TEXT", nullable: true),
                     AccountId = table.Column<Guid>(type: "TEXT", nullable: false),
                     EntryId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Balance = table.Column<decimal>(type: "TEXT", precision: 19, scale: 4, nullable: false)
+                    Total = table.Column<decimal>(type: "TEXT", precision: 19, scale: 4, nullable: false)
                 },
                 constraints: table =>
                 {

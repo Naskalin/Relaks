@@ -2,8 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Relaks.Database;
 using Relaks.Database.Repositories;
+using Relaks.Interfaces;
 using Relaks.Managers;
 using Relaks.Models.FinancialModels;
+using Relaks.Models.Misc;
 
 namespace Relaks.Views.Pages.Financials.ViewModels;
 
@@ -36,7 +38,9 @@ public class FinancialsStore(AppDbContext db)
     public List<FinancialAccount> Accounts { get; set; } = new();
     public List<FinancialTransactionCategory> TransactionCategories { get; set; } = new();
     public List<FinancialCurrency> Currencies { get; set; } = new();
+    // public PaginatableResult<FinancialTransaction> Transactions { get; set; } = new();
     public Guid? AccountId { get; set; }
+    public FinancialTransactionListRequest TransactionListRequest { get; set; } = new() {Page = 1, PerPage = 10};
     
     public FinancialAccount? SelectedAccount() => Accounts.FirstOrDefault(x => x.Id.Equals(AccountId));
 
@@ -45,8 +49,16 @@ public class FinancialsStore(AppDbContext db)
         FindAccountCategories();
         FindCurrencies();
         FindTransactionCategories();
-        // BodyState = BodyEnum.AddTransaction;
+        // FindTransactions();
     }
+
+    // public void FindTransactions()
+    // {
+    //     var q = db.FinancialTransactions.OrderByDescending(x => x.CreatedAt);
+    //     Transactions = AccountId.HasValue 
+    //         ? q.Where(x => x.AccountId.Equals(AccountId.Value)).ToPaginatedResult(TransactionListRequest) 
+    //         : q.ToPaginatedResult(TransactionListRequest);
+    // }
 
     public void FindTransactionCategories()
     {

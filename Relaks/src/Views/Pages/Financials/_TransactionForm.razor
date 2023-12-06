@@ -7,7 +7,6 @@
 @using Relaks.Managers
 
 @inject AppDbContext Db;
-@inject FinancialManager FinManager;
 
 <div class="row align-items-center mb-3">
     <div class="col-auto">
@@ -153,8 +152,6 @@
             }
         }
         
-        // var currencyId = Store.Accounts.Where(x => x.Id.Equals(Req.AccountId)).Select(x => x.FinancialCurrencyId).Single();
-        
         Account = Db.FinancialAccounts
             .Include(x => x.FinancialCurrency)
             .Include(x => x.Entry)
@@ -194,18 +191,18 @@
         {
             //edit
             Req.MapTo(EditingTransaction);
-            FinManager.DeleteItemsForTransaction(EditingTransaction, Req);
-            FinManager.UpdateItemsForTransaction(EditingTransaction, Req);
-            FinManager.CreateItemsForTransaction(EditingTransaction, Req);
-            FinManager.UpdateBalanceForTransaction(EditingTransaction);
+            FinancialManager.DeleteItemsForTransaction(EditingTransaction, Req);
+            FinancialManager.UpdateItemsForTransaction(EditingTransaction, Req);
+            FinancialManager.CreateItemsForTransaction(EditingTransaction, Req);
+            EditingTransaction.UpdateTotal();
         }
         else
         {
             //new
             var transaction = new FinancialTransaction();
             Req.MapTo(transaction);
-            FinManager.CreateItemsForTransaction(transaction, Req);
-            FinManager.UpdateBalanceForTransaction(transaction);
+            FinancialManager.CreateItemsForTransaction(transaction, Req);
+            transaction.UpdateTotal();
             Db.FinancialTransactions.Add(transaction);
         }
         

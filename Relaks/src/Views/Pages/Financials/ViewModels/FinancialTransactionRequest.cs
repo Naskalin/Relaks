@@ -1,4 +1,12 @@
-﻿namespace Relaks.Views.Pages.Financials.ViewModels;
+﻿using Relaks.Interfaces;
+
+namespace Relaks.Views.Pages.Financials.ViewModels;
+
+public class FinancialTransactionListRequest : IPaginatable
+{
+    public int Page { get; set; }
+    public int PerPage { get; set; }
+}
 
 public class FinancialTransactionRequest
 {
@@ -9,3 +17,4 @@ public class FinancialTransactionRequest
     public Guid? EntryId { get; set; }
     public List<FinancialTransactionItemRequest> Items { get; set; } = new();
 }
+

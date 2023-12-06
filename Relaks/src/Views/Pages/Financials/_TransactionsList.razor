@@ -1,0 +1,110 @@
+﻿@using Relaks.Views.Pages.Financials.ViewModels
+@using Relaks.Models.FinancialModels
+@using Relaks.Database
+@using Relaks.Database.Repositories
+@using Microsoft.EntityFrameworkCore
+
+@inject AppDbContext Db;
+
+<div class="d-flex">
+    <div class="col">
+        <Table TItem="FinancialTransaction" 
+               OnQueryAsync="@OnQueryAsync" 
+               IsPagination="true"
+               IsBordered="true"
+               IsStriped="true"
+               ShowToolbar="false"
+               PageItemsSource="@PageItemsSource">
+            <TableColumns>
+                <TableColumn @bind-Field="@context.CreatedAt" Text="Дата" FormatString="dd.MM.yyyy HH:mm" Width="100"/>
+                <TableColumn @bind-Field="@context.IsPlus" Text="Тип" Width="80">
+                    <Template Context="value">
+                        <Badge Color="@(value.Value ? Color.Success : Color.Danger)">@(value.Value ? "Пополнение" : "Списание")</Badge>
+                    </Template>
+                </TableColumn>
+                <TableColumn @bind-Field="@context.Total" Text="Сумма" Width="100">
+                    <Template Context="value">
+                        @value.Value.ToString("N2") @value.Row.Account.FinancialCurrency.Symbol
+                    </Template>
+                </TableColumn>
+                @* <TableColumn @bind-Field="@context.Description" Text="" Width="10"> *@
+                @*     <Template Context="value"> *@
+                @*         <div> *@
+                @*             @if (!string.IsNullOrEmpty(value.Value)) *@
+                @*             { *@
+                @*                 <Popover Content="@value.Value"> *@
+                @*                     <i class="las la-comment la-lg"></i> *@
+                @*                 </Popover> *@
+                @*             } *@
+                @*         </div> *@
+                @*     </Template> *@
+                @* </TableColumn> *@
+                <TableColumn @bind-Field="@context.Account" Width="450" Text="Объединение">
+                    <Template Context="value">
+                        <div style="text-wrap: initial">
+                            <EntryInlineItem EntryId="@value.Row.EntryId"/>
+                        </div>
+                    </Template>
+                </TableColumn>
+                 <TableColumn @bind-Field="@context.Description" Text="Описание">
+                        <Template Context="value">
+                            <div style="text-wrap: initial">
+                                @if (!string.IsNullOrEmpty(value.Value) && value.Value.Length > 150)
+                                {
+                                    <span>@value.Value.Substring(0, 150)</span>   
+                                }
+                            </div>
+                        </Template>
+                    </TableColumn>
+            </TableColumns>
+        </Table>
+    </div>
+</div>
+
+@code {
+    private static IEnumerable<int> PageItemsSource => new [] { 10, 20, 50 };
+    
+    [CascadingParameter]
+    public FinancialsStore Store { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+    
+    private Task<QueryData<FinancialTransaction>> OnQueryAsync(QueryPageOptions options)
+    {
+    //     IEnumerable<Foo> items = Items;
+    //     
+    //     var isFiltered = false;
+    //     if (options.Filters.Any())
+    //     {
+    //         items = items.Where(options.Filters.GetFilterFunc<Foo>());
+    //         isFiltered = true;
+    //     }
+    //
+    // // 排序
+    //     var isSorted = false;
+    //     if (!string.IsNullOrEmpty(options.SortName))
+    //     {
+    //         items = items.Sort(options.SortName, options.SortOrder);
+    //         isSorted = true;
+    //     }
+    
+    var q = Db.FinancialTransactions
+        .Include(x => x.Entry)
+        .Include(x => x.Account).ThenInclude(a => a.FinancialCurrency)
+        .OrderByDescending(x => x.CreatedAt);
+        
+    var paginatedResult = Store.AccountId.HasValue 
+        ? q.Where(x => x.AccountId.Equals(Store.AccountId.Value)).ToPaginatedResult(Store.TransactionListRequest) 
+        : q.ToPaginatedResult(Store.TransactionListRequest);
+    
+        return Task.FromResult(new QueryData<FinancialTransaction>()
+        {
+            Items = paginatedResult.Items,
+            TotalCount = paginatedResult.Total,
+            IsSorted = false,
+            IsFiltered = false,
+            IsSearch = false
+        });
+    }
+}
