@@ -28,16 +28,6 @@
     <div class="row">
         <div class="col-4">
             <Divider Text="Описание транзакции" class="mb-4"/>
-            @* <div class="mb-3"> *@
-            @*     <label for="financial-transaction-accountId" class="form-label">Счёт *</label> *@
-            @*     <Select id="financial-transaction-accountId" *@
-            @*             @bind-Value="@Req.AccountId" *@
-            @*             Items="@Store.AccountSelectOptions()" *@
-            @*             OnSelectedItemChanged="@HandleAccountIdChanged" *@
-            @*             ShowSearch="true"></Select> *@
-            @*     <ValidationMessage For="@(() => Req.AccountId)"/> *@
-            @* </div> *@
-
             <div class="mb-3">
                 <label class="form-label">Тип *</label>
                 <div class="btn-group w-100">
@@ -53,10 +43,16 @@
                 </div>
                 <ValidationMessage For="@(() => Req.IsPlus)"/>
             </div>
-
+            
             <div class="mb-3">
                 <SelectEntry EntryIds="@EntryIds" EntryIdsChanged="@HandleEntryChanged" IsMultiple="@false" Label="Объединение *"/>
                 <ValidationMessage For="@(() => Req.EntryId)"/>
+            </div>
+            
+            <div class="mb-3">
+                <label for="financial-transaction-desc" class="form-label">Описание</label>
+                <MyTextarea @bind-Value="@Req.Description" id="financial-transaction-desc" maxlength="500" placeholder="Что это за транзакция?"/>
+                <ValidationMessage For="@(() => Req.Description)"/>
             </div>
 
             <div class="mb-3">
@@ -69,15 +65,9 @@
             </div>
 
             <div class="mb-3">
-                <label for="financial-transaction-desc" class="form-label">Описание</label>
-                <MyTextarea @bind-Value="@Req.Description" id="financial-transaction-desc" maxlength="500"/>
-                <ValidationMessage For="@(() => Req.Description)"/>
-            </div>
-
-            <div class="mb-3">
                 <button class="btn btn-primary">
                     <i class="las la-lg me-1 @(IsEdit ? "la-edit" : "la-plus-circle")"></i>
-                    @(IsEdit ? Resources.Action.SaveChanges : Resources.Action.Add) транзакцию
+                    @(IsEdit ? Resources.Action.SaveChanges : $"{Resources.Action.Add} транзакцию")
                 </button>
             </div>
         </div>
@@ -99,7 +89,7 @@
             </button>
             
             <div class="h3 mt-5 text-secondary">
-                <span class="border-top border-secondary border-4 pt-2 px-4" style="--bs-border-opacity: .4;">Итого: @Total() @(Account.FinancialCurrency.Symbol)</span>
+                <span class="border-top border-secondary border-4 pt-2 px-4" style="--bs-border-opacity: .4;">Сумма: @Total()</span>
             </div>
         </div>
     </div>
@@ -185,7 +175,10 @@
         await OnStateChanged.InvokeAsync();
     }
 
-    private string Total() => Req.Items.Sum(x => x.Amount).ToString("N2");
+    private string Total()
+    {
+        return $"{Req.Items.Sum(x => x.Amount):N2} {Account.FinancialCurrency.Symbol}";
+    }
 
     private Task HandleSubmit()
     {

@@ -52,6 +52,11 @@ public class FinancialsStore(AppDbContext db)
         FindTransactions();
     }
 
+    public void FindForAccount()
+    {
+        FindTransactions();
+    }
+
     public void FindTransactions()
     {
         var q = db.FinancialTransactions

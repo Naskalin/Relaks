@@ -21,13 +21,18 @@
         {
             <div class="list-group-item p-0 cursor-pointer d-flex justify-content-between align-items-center gap-2 group-show @(account.Id.Equals(Store.AccountId) ? "bg-primary bg-opacity-10": "")">
                 <div class="p-3 col" @onclick="@(() => HandleClickAccount(account.Id))">
-                    <span class="@(account.Id.Equals(Store.AccountId) ? "text-primary": "")">@account.TitleWithCurrency()</span>
-                    @if (!string.IsNullOrEmpty(account.Description))
-                    {
-                        <Popover Content="@account.Description">
-                            <i class="las la-comment la-lg text-info ms-2"></i>
-                        </Popover>      
-                    }
+                    <div class="d-flex gap-2 align-items-center">
+                        <div class="col">
+                            <span class="@(account.Id.Equals(Store.AccountId) ? "text-primary" : "")">@account.Title</span>
+                            @if (!string.IsNullOrEmpty(account.Description))
+                            {
+                                <Popover Content="@account.Description">
+                                    <i class="las la-comment la-lg text-info ms-2"></i>
+                                </Popover>
+                            }
+                        </div>
+                        <div class="col-auto">@account.Balance.ToString("N2") @account.FinancialCurrency.Symbol</div>
+                    </div>
                 </div>
                 <div class="group-show__item pe-2 col-auto">
                     <button type="button"

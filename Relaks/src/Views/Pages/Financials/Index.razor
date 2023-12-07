@@ -67,7 +67,12 @@
     
     private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
     {
+        var prevAccountId = Store.AccountId;
         Store.AccountId = AccountId;
+        if (!prevAccountId.Equals(AccountId))
+        {
+            Store.FindForAccount();
+        }
         StateHasChanged();
     }
 
