@@ -4,7 +4,7 @@
 @inject NavigationManager Navigation;
 
 <div class="list-group border-0">
-        <div class="list-group-item group-show d-flex justify-content-between align-items-center gap-2 bg-secondary bg-opacity-25">
+        <div class="list-group-item group-show d-flex justify-content-between align-items-center gap-2 bg-secondary bg-opacity-10">
             <div class="d-flex col align-items-center gap-2">
                 <span class="badge bg-secondary bg-opacity-75 rounded-pill text-white">@Category.Accounts.Count</span>
                 <div class="fw-medium">@Category.Title</div>
@@ -54,6 +54,8 @@
     private Task HandleClickAccount(Guid accountId)
     {
         Navigation.NavigateTo($"/financials/{accountId.ToString()}");
+        Store.AccountId = accountId;
+        Store.FindTransactions();
         return OnStateChanged.InvokeAsync();
     }
 

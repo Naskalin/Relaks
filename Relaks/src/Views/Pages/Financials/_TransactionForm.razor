@@ -191,28 +191,15 @@
     {
         if (IsEdit && EditingTransaction != null)
         {
-            //edit
-            var initialFromBalance = EditingTransaction.FromBalance();
-            var initialCreatedAt = EditingTransaction.CreatedAt;
-            Req.MapTo(EditingTransaction);
-            FinManager.DeleteItemsForTransaction(EditingTransaction, Req);
-            FinancialManager.UpdateItemsForTransaction(EditingTransaction, Req);
-            FinancialManager.CreateItemsForTransaction(EditingTransaction, Req);
-            EditingTransaction.UpdateTotal();
-            FinManager.UpdateBalanceForExistingTransaction(EditingTransaction, initialFromBalance, initialCreatedAt);
+            FinManager.UpdateTransaction(EditingTransaction, Req);
         }
         else
         {
-            //new
-            var transaction = new FinancialTransaction();
-            Req.MapTo(transaction);
-            FinancialManager.CreateItemsForTransaction(transaction, Req);
-            transaction.UpdateTotal();
-            FinManager.UpdateBalanceForNewTransaction(transaction);
-            Db.FinancialTransactions.Add(transaction);
+            FinManager.CreateTransaction(Req);
         }
         
         Db.SaveChanges();
+        Store.FindTransactions();
 
         return HandleReturn();
     }
