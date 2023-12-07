@@ -29,47 +29,51 @@ public partial class DatabaseSeeder
         Db.SaveChanges();
     }
 
+    private FinancialTransaction? PreviousTransaction { get; set; }
     private void CreateFinancialTransactions()
     {
         var account = Db.FinancialAccounts.First(x => x.FinancialCurrencyId.Equals("RUB"));
         var entryId = Guid.Parse("01B137DA-A3CF-4C08-AC3E-752B3F156ED4");
         var categories = Db.FinancialTransactionCategories.ToDictionary(x => x.Title, x => x.Id);
 
-        for (int i = 0; i < 10; i++)
+        var transactions = new List<FinancialTransaction>();
+        transactions.Add(new()
         {
-          var transactions = new List<FinancialTransaction>()
+          AccountId = account.Id,
+          EntryId = entryId,
+          Description = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null}),
+          IsPlus = Faker.Random.Bool(),
+          CreatedAt = Faker.Date.Past(),
+          Items = new List<FinancialTransactionItem>()
           {
-            new()
-            {
-              AccountId = account.Id,
-              EntryId = entryId,
-              Description = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null}),
-              IsPlus = Faker.Random.Bool(),
-              CreatedAt = Faker.Date.Past(),
-              Items = new List<FinancialTransactionItem>()
-              {
-                new() {CategoryId = categories["Чипсы"], Quantity = Faker.Random.Int(1, 3), Amount = Faker.Random.Decimal(300, 600)},
-                new() {CategoryId = categories["Сигареты"], Quantity = Faker.Random.Int(1, 3), Amount = Faker.Random.Decimal(200, 800)},
-                new() {CategoryId = categories["Мясо"], Quantity = 1, Amount = Faker.Random.Decimal(800, 1500)},
-              }
-            },
-            new()
-            {
-              CreatedAt = Faker.Date.Past(),
-              AccountId = account.Id,
-              EntryId = entryId,
-              Description = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null}),
-              IsPlus = Faker.Random.Bool(),
-              Items = new List<FinancialTransactionItem>()
-              {
-                new() {CategoryId = categories["Молоко"], Quantity = 2, Amount = Faker.Random.Decimal(250, 400)},
-              }
-            }
-          };
+            new() {CategoryId = categories["Чипсы"], Quantity = Faker.Random.Int(1, 3), Amount = Math.Round(Faker.Random.Decimal(300, 600), 2)},
+            new() {CategoryId = categories["Сигареты"], Quantity = Faker.Random.Int(1, 3), Amount = Math.Round(Faker.Random.Decimal(200, 800), 2)},
+            new() {CategoryId = categories["Мясо"], Quantity = 1, Amount = Math.Round(Faker.Random.Decimal(800, 1500), 2)},
+          }
+        });
+        transactions.Add(new()
+        {
+          CreatedAt = Faker.Date.Past(),
+          AccountId = account.Id,
+          EntryId = entryId,
+          Description = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null}),
+          IsPlus = Faker.Random.Bool(),
+          Items = new List<FinancialTransactionItem>()
+          {
+            new() {CategoryId = categories["Молоко"], Quantity = 2, Amount = Math.Round(Faker.Random.Decimal(250, 400), 2)},
+          }
+        });
         
-          transactions.ForEach(x => x.UpdateTotal());
-          Db.FinancialTransactions.AddRange(transactions);
+        foreach (var transaction in transactions.OrderBy(x => x.CreatedAt).ToList())
+        {
+          transaction.UpdateTotal();
+          transaction.UpdateBalance(PreviousTransaction?.Balance ?? account.Balance);
+          PreviousTransaction = transaction;
         }
+          
+        account.Balance = transactions.Last().Balance;
+        Db.FinancialTransactions.AddRange(transactions);
+        
         Db.SaveChanges();
     }
 
@@ -119,10 +123,10 @@ public partial class DatabaseSeeder
             {
                 EntryId = entry.Id,
                 Description = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null}),
-                Title = $"Наличные {i}",
+                Title = $"Наличные",
                 FinancialCurrencyId = currency.Id,
                 StartAt = DateTime.Now,
-                InitialBalance = 10000
+                Balance = 10000
             };
             
             if (Faker.Random.Int(1, 4) >= 2)

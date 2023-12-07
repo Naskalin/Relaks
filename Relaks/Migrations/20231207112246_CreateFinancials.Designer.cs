@@ -11,7 +11,7 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231206123902_CreateFinancials")]
+    [Migration("20231207112246_CreateFinancials")]
     partial class CreateFinancials
     {
         /// <inheritdoc />
@@ -447,6 +447,10 @@ namespace Relaks.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<decimal>("Balance")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("TEXT");
 
@@ -461,10 +465,6 @@ namespace Relaks.Migrations
 
                     b.Property<string>("FinancialCurrencyId")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("InitialBalance")
-                        .HasPrecision(19, 4)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartAt")
@@ -525,6 +525,10 @@ namespace Relaks.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("AccountId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Balance")
+                        .HasPrecision(19, 4)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")

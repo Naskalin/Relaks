@@ -7,7 +7,7 @@ public interface IPaginatable
 }
 public interface ITotal
 {
-    public int Total { get; set; }
+    public int TotalItems { get; set; }
 }
 
 public interface IPaginatableResult<T> : ITotalResult<T>

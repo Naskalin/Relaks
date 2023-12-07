@@ -6,105 +6,79 @@
 
 @inject AppDbContext Db;
 
-<div class="d-flex">
-    <div class="col">
-        <Table TItem="FinancialTransaction" 
-               OnQueryAsync="@OnQueryAsync" 
-               IsPagination="true"
-               IsBordered="true"
-               IsStriped="true"
-               ShowToolbar="false"
-               PageItemsSource="@PageItemsSource">
-            <TableColumns>
-                <TableColumn @bind-Field="@context.CreatedAt" Text="Дата" FormatString="dd.MM.yyyy HH:mm" Width="100"/>
-                <TableColumn @bind-Field="@context.IsPlus" Text="Тип" Width="80">
-                    <Template Context="value">
-                        <Badge Color="@(value.Value ? Color.Success : Color.Danger)">@(value.Value ? "Пополнение" : "Списание")</Badge>
-                    </Template>
-                </TableColumn>
-                <TableColumn @bind-Field="@context.Total" Text="Сумма" Width="100">
-                    <Template Context="value">
-                        @value.Value.ToString("N2") @value.Row.Account.FinancialCurrency.Symbol
-                    </Template>
-                </TableColumn>
-                @* <TableColumn @bind-Field="@context.Description" Text="" Width="10"> *@
-                @*     <Template Context="value"> *@
-                @*         <div> *@
-                @*             @if (!string.IsNullOrEmpty(value.Value)) *@
-                @*             { *@
-                @*                 <Popover Content="@value.Value"> *@
-                @*                     <i class="las la-comment la-lg"></i> *@
-                @*                 </Popover> *@
-                @*             } *@
-                @*         </div> *@
-                @*     </Template> *@
-                @* </TableColumn> *@
-                <TableColumn @bind-Field="@context.Account" Width="450" Text="Объединение">
-                    <Template Context="value">
-                        <div style="text-wrap: initial">
-                            <EntryInlineItem EntryId="@value.Row.EntryId"/>
-                        </div>
-                    </Template>
-                </TableColumn>
-                 <TableColumn @bind-Field="@context.Description" Text="Описание">
-                        <Template Context="value">
-                            <div style="text-wrap: initial">
-                                @if (!string.IsNullOrEmpty(value.Value) && value.Value.Length > 150)
-                                {
-                                    <span>@value.Value.Substring(0, 150)</span>   
-                                }
-                            </div>
-                        </Template>
-                    </TableColumn>
-            </TableColumns>
-        </Table>
-    </div>
-</div>
+<MyPagination TotalPages="@Store.Transactions.TotalPages"
+              ActivePage="@Store.TransactionListRequest.Page"
+              TotalItems="@Store.Transactions.TotalItems"
+              OnPageChanged="@HandlePageChanged"
+/>
+
+<table class="table table-hover table-striped align-middle my-3">
+    <thead>
+    <tr>
+        <th style="width: 50px"></th>
+        <th style="width: 125px">Дата</th>
+        <th style="width: 100px">Тип</th>
+        <th style="width: 100px">Сумма</th>
+        <th style="width: 180px">Баланс в моменте</th>
+        <th style="width: 450px">Объединение</th>
+        <th>Описание</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var t in Store.Transactions.Items)
+    {
+        <tr class="group-show">
+            <td>
+                <button type="button" class="btn btn-circle btn-outline-secondary btn-sm group-show__item" @onclick="@(() => HandleEditTransaction(t.Id))">
+                    <i class="las la-edit la-lg"></i>
+                </button>
+            </td>
+            <td>@t.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+            <td><Badge Color="@(t.IsPlus ? Color.Success : Color.Danger)">@(t.IsPlus ? "Пополнение" : "Списание")</Badge></td>
+            <td style="white-space: nowrap">@t.Total.ToString("N2") @t.Account.FinancialCurrency.Symbol</td>
+            <td style="white-space: nowrap">
+                @t.FromBalance().ToString("N2") @t.Account.FinancialCurrency.Symbol
+                <i class="las la-long-arrow-alt-right la-lg text-secondary"></i>
+                @t.Balance.ToString("N2") @t.Account.FinancialCurrency.Symbol
+            </td>
+            <td>
+                <EntryInlineItem EntryId="@t.EntryId"/>
+            </td>
+            <td>
+                @if (!string.IsNullOrEmpty(t.Description) && t.Description.Length > 150)
+                {
+                    <small>@t.Description[..150]</small>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<MyPagination TotalPages="@Store.Transactions.TotalPages"
+              ActivePage="@Store.TransactionListRequest.Page"
+              TotalItems="@Store.Transactions.TotalItems"
+              OnPageChanged="@HandlePageChanged"
+              />
 
 @code {
-    private static IEnumerable<int> PageItemsSource => new [] { 10, 20, 50 };
-    
     [CascadingParameter]
     public FinancialsStore Store { get; set; } = null!;
 
     [Parameter]
     public EventCallback OnStateChanged { get; set; }
     
-    private Task<QueryData<FinancialTransaction>> OnQueryAsync(QueryPageOptions options)
+    private Task HandlePageChanged(int page)
     {
-    //     IEnumerable<Foo> items = Items;
-    //     
-    //     var isFiltered = false;
-    //     if (options.Filters.Any())
-    //     {
-    //         items = items.Where(options.Filters.GetFilterFunc<Foo>());
-    //         isFiltered = true;
-    //     }
-    //
-    // // 排序
-    //     var isSorted = false;
-    //     if (!string.IsNullOrEmpty(options.SortName))
-    //     {
-    //         items = items.Sort(options.SortName, options.SortOrder);
-    //         isSorted = true;
-    //     }
-    
-    var q = Db.FinancialTransactions
-        .Include(x => x.Entry)
-        .Include(x => x.Account).ThenInclude(a => a.FinancialCurrency)
-        .OrderByDescending(x => x.CreatedAt);
-        
-    var paginatedResult = Store.AccountId.HasValue 
-        ? q.Where(x => x.AccountId.Equals(Store.AccountId.Value)).ToPaginatedResult(Store.TransactionListRequest) 
-        : q.ToPaginatedResult(Store.TransactionListRequest);
-    
-        return Task.FromResult(new QueryData<FinancialTransaction>()
-        {
-            Items = paginatedResult.Items,
-            TotalCount = paginatedResult.Total,
-            IsSorted = false,
-            IsFiltered = false,
-            IsSearch = false
-        });
+        Store.TransactionListRequest.Page = page;
+        Store.FindTransactions();
+        return OnStateChanged.InvokeAsync();
+    }
+
+    private Task HandleEditTransaction(Guid transactionId)
+    {
+        Store.BodyEditTransactionId = transactionId;
+        Store.BodyState = FinancialsStore.BodyEnum.EditTransaction;
+        return OnStateChanged.InvokeAsync();
     }
 }

@@ -19,8 +19,8 @@
         </div>
         @foreach (var account in Category.Accounts)
         {
-            <div class="list-group-item p-0 cursor-pointer d-flex justify-content-between align-items-center gap-2 group-show">
-                <div class="p-3 col @(account.Id.Equals(Store.AccountId) ? "bg-primary bg-opacity-10": "")" @onclick="@(() => HandleClickAccount(account.Id))">
+            <div class="list-group-item p-0 cursor-pointer d-flex justify-content-between align-items-center gap-2 group-show @(account.Id.Equals(Store.AccountId) ? "bg-primary bg-opacity-10": "")">
+                <div class="p-3 col" @onclick="@(() => HandleClickAccount(account.Id))">
                     <span class="@(account.Id.Equals(Store.AccountId) ? "text-primary": "")">@account.TitleWithCurrency()</span>
                     @if (!string.IsNullOrEmpty(account.Description))
                     {

@@ -67,8 +67,8 @@ public static class EntryRepository
         {
             Page = paginated.Page,
             PerPage = paginated.PerPage,
-            PageCount = paginated.PageCount,
-            Total = paginated.Total,
+            TotalPages = paginated.TotalPages,
+            TotalItems = paginated.TotalItems,
             Items = paginated.Items.Select(x => new EntryFindResult {BaseEntry = x}).ToList()
         };
     }
@@ -109,8 +109,8 @@ public static class EntryRepository
         {
             Page = paginated.Page,
             PerPage = paginated.PerPage,
-            PageCount = paginated.PageCount,
-            Total = paginated.Total,
+            TotalPages = paginated.TotalPages,
+            TotalItems = paginated.TotalItems,
             Items = paginated.Items.Select(x => new EntryFindResult {BaseEntry = entries[x.Id], FtsEntry = x,}).ToList()
         };
     }

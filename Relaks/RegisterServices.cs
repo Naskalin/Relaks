@@ -30,6 +30,7 @@ public static class RegisterServices
         
         services.AddScoped<EntryManager>();
         services.AddScoped<AppFileManager>();
+        services.AddScoped<FinancialManager>();
         services.AddSignalR(e => e.MaximumReceiveMessageSize = null);
     }
 

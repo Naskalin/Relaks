@@ -10,7 +10,7 @@ public static class AppBaseRepository
         return new TotalResult<TEntity>()
         {
             Items = query.ToList(),
-            Total = query.Count(),
+            TotalItems = query.Count(),
         };      
     }
     
@@ -26,8 +26,8 @@ public static class AppBaseRepository
             Items = query.Skip(perPage * (page - 1)).Take(perPage).ToList(),
             Page = page,
             PerPage = perPage,
-            Total = total,
-            PageCount = (total + perPage - 1) / perPage,
+            TotalItems = total,
+            TotalPages = (total + perPage - 1) / perPage,
         };      
     }
 }

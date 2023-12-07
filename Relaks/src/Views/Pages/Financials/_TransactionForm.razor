@@ -7,6 +7,7 @@
 @using Relaks.Managers
 
 @inject AppDbContext Db;
+@inject FinancialManager FinManager;
 
 <div class="row align-items-center mb-3">
     <div class="col-auto">
@@ -140,6 +141,7 @@
             {
                 var itemReq = new FinancialTransactionItemRequest();
                 x.MapTo(itemReq);
+                itemReq.Id = x.Id;
                 return itemReq;
             }).ToList();
         }
@@ -183,18 +185,21 @@
         await OnStateChanged.InvokeAsync();
     }
 
-    private decimal Total() => Req.Items.Sum(x => x.Amount);
+    private string Total() => Req.Items.Sum(x => x.Amount).ToString("N2");
 
     private Task HandleSubmit()
     {
         if (IsEdit && EditingTransaction != null)
         {
             //edit
+            var initialFromBalance = EditingTransaction.FromBalance();
+            var initialCreatedAt = EditingTransaction.CreatedAt;
             Req.MapTo(EditingTransaction);
-            FinancialManager.DeleteItemsForTransaction(EditingTransaction, Req);
+            FinManager.DeleteItemsForTransaction(EditingTransaction, Req);
             FinancialManager.UpdateItemsForTransaction(EditingTransaction, Req);
             FinancialManager.CreateItemsForTransaction(EditingTransaction, Req);
             EditingTransaction.UpdateTotal();
+            FinManager.UpdateBalanceForExistingTransaction(EditingTransaction, initialFromBalance, initialCreatedAt);
         }
         else
         {
@@ -203,6 +208,7 @@
             Req.MapTo(transaction);
             FinancialManager.CreateItemsForTransaction(transaction, Req);
             transaction.UpdateTotal();
+            FinManager.UpdateBalanceForNewTransaction(transaction);
             Db.FinancialTransactions.Add(transaction);
         }
         

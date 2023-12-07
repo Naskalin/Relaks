@@ -25,7 +25,7 @@
     </div>
 </div>
 
-<_TransactionsList/>
+<_TransactionsList OnStateChanged="@(() => OnStateChanged.InvokeAsync())"/>
 @* @if (!Store.Transactions.Items.Any()) *@
 @* { *@
 @*     <p>Транзакций не найдено</p>    *@
@@ -34,9 +34,9 @@
 @* { *@
 @*     <div>asd</div>    *@
 @* } *@
-<p>Валюты</p>
-<p>Транзакции</p>
-<p>Категории транзакций</p>
+@* <p>Валюты</p> *@
+@* <p>Транзакции</p> *@
+@* <p>Категории транзакций</p> *@
 
 @code {
 

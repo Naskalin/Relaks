@@ -12,7 +12,7 @@
 
 <div class="d-flex align-items-center mb-3">
     <div class="d-flex gap-3 align-items-center text-muted me-3 small">
-        Всего найдено: @Store.ResultFiles.Total
+        Всего найдено: @Store.ResultFiles.TotalItems
     </div>
     <button type="button" class="btn btn-link btn-sm" @onclick="@(() => OnSortChange(nameof(BaseFile.DisplayName)))">
         По имени <OrderableIcon Orderable="@Store.Req" Prop="@nameof(BaseFile.DisplayName)"/>
@@ -26,7 +26,7 @@
 </div>
 
 
-@if (Store.ResultFiles.Total > 0)
+@if (Store.ResultFiles.TotalItems > 0)
 {
     <div class="d-flex align-items-center mb-3">
         <div class="d-flex gap-3 align-items-center text-muted me-3 small">
@@ -76,7 +76,7 @@
 
     private async Task HandleSelectAll()
     {
-        if (!Store.SelectedFileIds.Count.Equals(Store.ResultFiles.Total))
+        if (!Store.SelectedFileIds.Count.Equals(Store.ResultFiles.TotalItems))
         {
             Store.SelectedFileIds = Store.ResultFiles.Items.Select(x => x.BaseFile.Id).ToList();
         }

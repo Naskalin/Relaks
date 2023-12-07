@@ -92,7 +92,7 @@ public static class EntryFileRepository
         var total = FindBaseFiles(db, req).ToTotalResult();
         return new TotalResult<AppFileFindResult>()
         {
-            Total = total.Total,
+            TotalItems = total.TotalItems,
             Items = total.Items.Select(x => new AppFileFindResult {BaseFile = x}).ToList()
         };
     }
@@ -125,7 +125,7 @@ public static class EntryFileRepository
         var appFiles = db.BaseFiles.Where(x => baseFileIds.Contains(x.Id)).ToDictionary(x => x.Id, x => x);
         return new TotalResult<AppFileFindResult>()
         {
-            Total = ftsResult.Count,
+            TotalItems = ftsResult.Count,
             Items = ftsResult.Select(x => new AppFileFindResult {BaseFile = appFiles[x.Id], FtsFile = x,}).ToList()
         };
     }

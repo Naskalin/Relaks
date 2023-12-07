@@ -38,7 +38,7 @@ public class FinancialsStore(AppDbContext db)
     public List<FinancialAccount> Accounts { get; set; } = new();
     public List<FinancialTransactionCategory> TransactionCategories { get; set; } = new();
     public List<FinancialCurrency> Currencies { get; set; } = new();
-    // public PaginatableResult<FinancialTransaction> Transactions { get; set; } = new();
+    public PaginatableResult<FinancialTransaction> Transactions { get; set; } = new();
     public Guid? AccountId { get; set; }
     public FinancialTransactionListRequest TransactionListRequest { get; set; } = new() {Page = 1, PerPage = 10};
     
@@ -49,16 +49,20 @@ public class FinancialsStore(AppDbContext db)
         FindAccountCategories();
         FindCurrencies();
         FindTransactionCategories();
-        // FindTransactions();
+        FindTransactions();
     }
 
-    // public void FindTransactions()
-    // {
-    //     var q = db.FinancialTransactions.OrderByDescending(x => x.CreatedAt);
-    //     Transactions = AccountId.HasValue 
-    //         ? q.Where(x => x.AccountId.Equals(AccountId.Value)).ToPaginatedResult(TransactionListRequest) 
-    //         : q.ToPaginatedResult(TransactionListRequest);
-    // }
+    public void FindTransactions()
+    {
+        var q = db.FinancialTransactions
+            .Include(x => x.Entry)
+            .Include(x => x.Account).ThenInclude(a => a.FinancialCurrency)
+            .OrderByDescending(x => x.CreatedAt);
+        
+        Transactions = AccountId.HasValue 
+            ? q.Where(x => x.AccountId.Equals(AccountId.Value)).ToPaginatedResult(TransactionListRequest) 
+            : q.ToPaginatedResult(TransactionListRequest);
+    }
 
     public void FindTransactionCategories()
     {

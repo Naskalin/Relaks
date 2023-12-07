@@ -30,11 +30,12 @@ public class FinancialAccount
     public Guid EntryId { get; set; }
     public BaseEntry Entry { get; set; } = null!;
 
-    public string TitleWithCurrency() => $"{Title} ({FinancialCurrencyId})";
+    public string TitleWithCurrency() => $"{Title} ({FinancialCurrencyId}), {Balance.ToString("N2")} {FinancialCurrency.Symbol}";
     
     /// <summary>
-    /// Начальный баланс
+    /// Текущий баланс
+    /// А так же используется как начальный баланс, задаётся при создании счёта
     /// </summary>
     [Precision(19, 4)]
-    public decimal InitialBalance { get; set; }
+    public decimal Balance { get; set; }
 }
