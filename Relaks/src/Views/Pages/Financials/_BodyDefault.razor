@@ -1,19 +1,16 @@
 ﻿@using Relaks.Views.Pages.Financials.ViewModels
 
 <div class="d-flex align-items-center mb-3 gap-2">
-    @if (Store.AccountSelectOptions().Any() && Store.TransactionCategories.Any())
-    {
-        <div class="col-auto">
-            <button type="button" 
-                    class="btn btn-outline-primary btn-sm"
-                    disabled="@(!Store.AccountId.HasValue)"
-                    title="@(!Store.AccountId.HasValue ? "Выберите счёт" : "")"
-                    @onclick="@HandleAddTransaction">
-                Транзакция
-                <i class="las la-plus-circle la-lg ms-1"></i>
-            </button>
-        </div>
-    }
+    <div class="col-auto">
+        <button type="button" 
+                class="btn btn-outline-primary btn-sm"
+                disabled="@(!Store.AccountId.HasValue)"
+                title="@(!Store.AccountId.HasValue ? "Выберите счёт" : "")"
+                @onclick="@HandleAddTransaction">
+            Транзакция
+            <i class="las la-plus-circle la-lg ms-1"></i>
+        </button>
+    </div>
     <div class="col-auto">
         <button type="button" class="btn btn-outline-primary btn-sm" @onclick="@HandleAddCategory">
             Категория транзакции

@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Relaks.Database;
 using Relaks.Database.Repositories;
-using Relaks.Interfaces;
 using Relaks.Managers;
 using Relaks.Models.FinancialModels;
 using Relaks.Models.Misc;
@@ -34,19 +33,14 @@ public class FinancialsStore(AppDbContext db)
     public Guid? BodyEditTransactionId { get; set; }
     public Guid? SidebarEditAccountCategoryId { get; set; }
     public Guid? SidebarEditAccountId { get; set; }
-    public List<FinancialAccountCategory> AccountCategories { get; set; } = new();
-    public List<FinancialAccount> Accounts { get; set; } = new();
     public List<FinancialTransactionCategory> TransactionCategories { get; set; } = new();
     public List<FinancialCurrency> Currencies { get; set; } = new();
     public PaginatableResult<FinancialTransaction> Transactions { get; set; } = new();
     public Guid? AccountId { get; set; }
     public FinancialTransactionListRequest TransactionListRequest { get; set; } = new() {Page = 1, PerPage = 10};
-    
-    public FinancialAccount? SelectedAccount() => Accounts.FirstOrDefault(x => x.Id.Equals(AccountId));
 
     public void Initialize()
     {
-        FindAccountCategories();
         FindCurrencies();
         FindTransactionCategories();
         FindTransactions();
@@ -82,35 +76,11 @@ public class FinancialsStore(AppDbContext db)
             .ThenByDescending(x => x.Id.Equals("EUR"))
             .ToList();
     }
-    
-    private void FindAccountCategories()
-    {
-        AccountCategories = db.FinancialAccountCategories
-            .OrderBy(x => x.Title)
-            .Include(x => x.Accounts.OrderBy(a => a.Title))
-            .ToList();
-        
-        AccountCategories.ForEach(category => Accounts.AddRange(category.Accounts));
-    }
 
     public List<SelectedItem> FindTransactionCategoriesSelectOptions() =>
         TransactionCategories.ToTreeSelect().Select(x => new SelectedItem(x.Value.ToString(), x.Title)).ToList();
 
-    public List<SelectedItem> AccountSelectOptions()
-    {
-        var items = new List<SelectedItem>();
-        AccountCategories.ForEach(category =>
-        {
-            foreach (var account in category.Accounts)
-            {
-                items.Add(new SelectedItem(account.Id.ToString(), account.TitleWithCurrency()) {GroupName = category.Title});
-            }
-        });
-        
-        return items;
-    }
-
-    public List<SelectedItem> AccountCategoriesSelectOptions() =>  AccountCategories
+    public List<SelectedItem> AccountCategoriesSelectOptions() => db.FinancialAccountCategories
         .Select(x => new SelectedItem(x.Id.ToString(), x.Title))
         .ToList();
 

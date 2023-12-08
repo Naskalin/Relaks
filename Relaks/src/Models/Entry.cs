@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Relaks.Interfaces;
+using Relaks.Models.FinancialModels;
 
 namespace Relaks.Models;
 
@@ -40,6 +41,8 @@ public abstract class BaseEntry : IEntry, ITimestamped, ISoftDeletedReason
     /// Общие файлы
     /// </summary>
     public List<BaseFile> BaseFileRelations { get; set; } = new();
+
+    public List<FinancialAccount> FinancialAccounts { get; set; } = new();
 }
 
 public class EPerson : BaseEntry
