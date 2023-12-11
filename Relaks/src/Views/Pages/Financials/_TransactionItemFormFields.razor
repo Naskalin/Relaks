@@ -6,7 +6,12 @@
         <div class="row">
             <div class="col-7">
                 <label for="financial-transaction-item-category-@FieldId" class="form-label">Категория</label>
-                <Select Id="@($"financial-transaction-item-category-{FieldId}")" @bind-Value="@Req.CategoryId" Items="@Store.FindTransactionCategoriesSelectOptions()" ShowSearch="true"></Select>
+                @* <Select Id="@($"financial-transaction-item-category-{FieldId}")" @bind-Value="@Req.CategoryId" Items="@Store.FindTransactionCategoriesSelectOptions()" ShowSearch="true"></Select> *@
+                <TreeSelect TNode="FinancialTransactionCategory" 
+                            Nodes="@Store.TransactionCategories"
+                            NodeId="@Req.CategoryId"
+                            OnClickNode="@(guid => Req.CategoryId = guid)"
+                            />
                 <ValidationMessage For="@(() => Req.CategoryId)"/>
             </div>
             <div class="col-2">

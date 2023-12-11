@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Relaks.Database;
 using Relaks.Database.Repositories;
+using Relaks.Interfaces;
 using Relaks.Managers;
 using Relaks.Models.FinancialModels;
 using Relaks.Models.Misc;
@@ -28,13 +29,15 @@ public class FinancialsStore(AppDbContext db)
         EditTransaction,
     }
 
-    public BodyEnum BodyState { get; set; } = BodyEnum.Default;
+    public BodyEnum BodyState { get; set; } = BodyEnum.AddTransaction;
     public SidebarEnum SidebarState { get; set; } = SidebarEnum.Default;
     public Guid? BodyEditTransactionId { get; set; }
+    public Guid? BodyEditTransactionCategoryId { get; set; }
     public Guid? SidebarEditAccountCategoryId { get; set; }
     public Guid? SidebarEditAccountId { get; set; }
     public List<FinancialTransactionCategory> TransactionCategories { get; set; } = new();
     public List<FinancialCurrency> Currencies { get; set; } = new();
+    // private List<ITree<FinancialTransactionCategory>> TransactionCategories { get; set; } = new();
     // public PaginatableResult<FinancialTransaction> Transactions { get; set; } = new();
     public Guid? AccountId { get; set; }
     // public FinancialTransactionListRequest TransactionListRequest { get; set; } = new() {Page = 1, PerPage = 10};

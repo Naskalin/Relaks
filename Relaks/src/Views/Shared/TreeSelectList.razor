@@ -1,0 +1,20 @@
+﻿@using Relaks.Interfaces
+@typeparam TNode where TNode : class, ITree<TNode>;
+
+<div class="tree-list">
+    @foreach (var node in Nodes)
+    {
+        <TreeSelectNode Node="@node" TNode="@TNode" OnClickNode="@OnClickNode" NodeId="@NodeId"/>   
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<TNode> Nodes { get; set; } = new();
+    
+    [Parameter]
+    public Guid? NodeId { get; set; }
+    
+    [Parameter]
+    public EventCallback<Guid> OnClickNode { get; set; }
+}

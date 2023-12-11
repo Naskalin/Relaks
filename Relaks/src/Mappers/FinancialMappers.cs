@@ -75,4 +75,16 @@ public static class FinancialMappers
         req.Amount = item.Amount;
         req.Description = item.Description;
     }
+
+    public static void MapTo(this FinancialTransactionCategory cat, FinancialTransactionCategoryRequest req)
+    {
+        req.Title = cat.Title;
+        req.ParentId = cat.ParentId;
+    }
+    
+    public static void MapTo(this FinancialTransactionCategoryRequest req, FinancialTransactionCategory cat)
+    {
+        cat.Title = req.Title;
+        cat.ParentId = req.ParentId;
+    }
 }

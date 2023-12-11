@@ -15,11 +15,10 @@ public class StructureDiagramOptions
     public int DiagramScale { get; set; } = 100;
     public int LimitStructureItems { get; set; } = 3;
     public ShowItemsTypeEnum ShowItemsType { get; set; } = ShowItemsTypeEnum.Some;
-    // public bool IsShowStructureItems { get; set; } = true;
     public bool IsShowDates { get; set; }
 }
 
-public class EntryStructureStore
+public class EntryStructureStore(AppDbContext db)
 {
     public enum SidebarStateEnum
     {
@@ -33,7 +32,6 @@ public class EntryStructureStore
     
     public StructureGroup? SelectedGroup { get; set; }
     public StructureItem? SelectedItem { get; set; }
-    private readonly AppDbContext _db;
     public string Discriminator { get; set; } = null!;
     public List<StructureGroup> StructureGroups { get; set; } = new();
     public StructureGroupListRequest Req { get; set; } = new();
@@ -45,13 +43,8 @@ public class EntryStructureStore
     /// </summary>
     public StructureItem? BackToConnectionsStructureItem { get; set; }
 
-    public EntryStructureStore(AppDbContext db)
-    {
-        _db = db;
-    }
-
     public void FindStructure()
     {
-        StructureGroups = _db.StructureGroups.ToTree(Req);
+        StructureGroups = db.StructureGroups.ToTree(Req);
     }
 }

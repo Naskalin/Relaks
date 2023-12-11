@@ -1,0 +1,78 @@
+﻿@using Relaks.Interfaces
+@typeparam TNode where TNode : class, ITree<TNode>;
+@inject DialogService DialogService;
+
+
+<div class="input-group cursor-pointer" @onclick="@HandleSelectClick">
+    <span class="input-group-text">
+        <i class="las la-angle-right"></i>
+    </span>
+    <input type="text" value="@Title()" class="form-control">
+</div>
+
+@code {
+    [Parameter]
+    public List<TNode> Nodes { get; set; } = new();
+    
+    [Parameter]
+    public Guid? NodeId { get; set; }
+    
+    [Parameter]
+    public EventCallback<Guid> OnClickNode { get; set; }
+
+    private Dictionary<Guid, string> FlatNodes { get; set; } = new();
+
+    private string Title()
+    {
+        if (NodeId.HasValue && NodeId.Value != default && FlatNodes.TryGetValue(NodeId.Value, out var title))
+        {
+            return title;
+        }
+        
+        return "<Не выбрано>";
+    }
+    
+    private void Flat(List<TNode> nodes)
+    {
+        foreach (var node in nodes)
+        {
+            FlatNodes[node.Id] = node.Title;
+            if (node.Children.Any())
+            {
+                Flat(node.Children);
+            }
+        }
+    }
+    
+    protected override void OnInitialized()
+    {
+        Flat(Nodes);
+    }
+
+    private Task HandleSelectClick()
+    {
+        var option = new DialogOption
+        {
+            IsKeyboard = true,
+            IsBackdrop = true,
+            Title = "Выберите категорию",
+            IsScrolling = true,
+            CloseButtonText = "Закрыть",
+            // FullScreenSize = FullScreenSize.Always
+            Size = Size.ExtraLarge,
+        };
+
+        option.Component = BootstrapDynamicComponent.CreateComponent<TreeSelectList<TNode>>(new Dictionary<string, object?>()
+        {
+            ["Nodes"] = Nodes,
+            ["NodeId"] = NodeId,
+            ["OnClickNode"] = EventCallback.Factory.Create<Guid>(this, async guid =>
+            {
+                await OnClickNode.InvokeAsync(guid);
+                await option.CloseDialogAsync();
+            }),
+        });
+        
+        return DialogService.Show(option);
+    }
+}

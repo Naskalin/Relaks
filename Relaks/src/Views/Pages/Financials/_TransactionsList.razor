@@ -25,8 +25,8 @@
         <th style="width: 100px">Тип</th>
         <th style="width: 100px">Сумма</th>
         <th style="width: 180px">Баланс в моменте</th>
-        <th style="width: 450px">Объединение</th>
-        <th>Описание</th>
+        <th style="width: 44px"></th>
+        <th>Объединение</th>
     </tr>
     </thead>
     <tbody>
@@ -46,13 +46,15 @@
                 @t.Balance.ToString("N2") @t.Account.FinancialCurrency.Symbol
             </td>
             <td>
-                <EntryInlineItem EntryId="@t.EntryId"/>
+                @if (!string.IsNullOrEmpty(t.Description))
+                {
+                    <Popover Content="@t.Description">
+                        <i class="las la-comment text-info" style="font-size: 1.5rem;"></i>
+                    </Popover>
+                }
             </td>
             <td>
-                @if (!string.IsNullOrEmpty(t.Description) && t.Description.Length > 150)
-                {
-                    <small>@t.Description[..150]</small>
-                }
+                <EntryInlineItem EntryId="@t.EntryId"/>
             </td>
         </tr>
     }

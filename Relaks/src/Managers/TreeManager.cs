@@ -24,6 +24,25 @@ public static class TreeManager
         
         return null;
     }
+    
+    public static void SyncTreePaths<TEntity>(IQueryable<TEntity> q, Guid nodeId) where TEntity : class, ITree<TEntity>
+    {
+        // New node, not found in db
+        if (!q.Any(x => x.Id.Equals(nodeId))) return;
+        
+        // flat tree
+        var allTree = q
+            .Include(x => x.Children)
+            .ToList();
+        
+        // normalize tree to root nodes
+        allTree = allTree.Where(x => x.ParentId.Equals(null)).ToList();
+        
+        foreach (var rootNode in allTree)
+        {
+            SyncChildPaths(rootNode, rootNode.Children);
+        }
+    }
 
     public static void SyncTreePaths<TEntity>(IQueryable<TEntity> q, Guid nodeId, TEntity model) where TEntity : class, ITree<TEntity>
     {

@@ -9,3 +9,9 @@ public interface ITree<TEntity> where TEntity : class, ITree<TEntity>
     public string TreePath { get; set; }
     public string Title { get; set; }
 }
+
+public interface IParentable
+{
+    public Guid Id { get; set; }
+    public Guid? ParentId { get; set; }
+}

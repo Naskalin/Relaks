@@ -1,0 +1,81 @@
+﻿@using Relaks.Views.Pages.Financials.ViewModels
+@using Relaks.Models.FinancialModels
+@using Relaks.Database
+@using Relaks.Interfaces
+@using Relaks.Managers
+@using Relaks.Mappers
+
+@inject AppDbContext Db;
+
+<EditForm Model="@Req" OnValidSubmit="@HandleSubmit">
+    <FluentValidationValidator DisableAssemblyScanning="@true"/>
+    <ValidationSummary/>
+    
+    <div class="mb-3">
+        <label for="financialCategoryTitle" class="form-label">Название</label>
+        <InputText id="financialCategoryTitle" @bind-Value="@Req.Title" required="required" class="form-control"/>
+        <ValidationMessage For="@(() => Req.Title)"/>
+    </div>
+    
+    @* <div class="mb-3"> *@
+    @*     <TreeSelect Nodes="@Store.TransactionCategories"/> *@
+    @* </div> *@
+    
+    <div class="mb-3">
+        <button class="btn btn-primary">
+            <i class="las la-lg me-1 @(IsEdit ? "la-edit" : "la-plus-circle")"></i>
+            @(IsEdit ? Resources.Action.SaveChanges : $"{Resources.Action.Add} категорию")
+        </button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+    
+    [CascadingParameter]
+    public FinancialsStore Store { get; set; } = null!;
+
+    private FinancialTransactionCategoryRequest Req { get; set; } = new();
+    private bool IsEdit { get; set; }
+    private FinancialTransactionCategory? Category { get; set; }
+
+
+    protected override void OnParametersSet()
+    {
+        IsEdit = Store is {BodyState: FinancialsStore.BodyEnum.EditTransactionCategory,BodyEditTransactionCategoryId: not null};
+        if (IsEdit)
+        {
+            Category = Db.FinancialTransactionCategories.First(x => x.Id.Equals(Store.BodyEditTransactionCategoryId));
+            Category.MapTo(Req);
+            Req.Id = Category.Id;
+        }
+    }
+    
+    private Task HandleSubmit()
+    {
+        if (IsEdit && Category != null)
+        {
+            Req.MapTo(Category);
+            Db.SaveChanges();
+            TreeManager.SyncTreePaths(Db.FinancialTransactionCategories, Category.Id);
+        }
+        else
+        {
+            var category = new FinancialTransactionCategory();
+            Req.MapTo(category);
+            if (Req.ParentId.HasValue)
+            {
+                var parent = Db.FinancialTransactionCategories.First(x => x.Id.Equals(Req.ParentId));
+                TreeManager.UpdateTreePath(category, parent);
+            }
+            Db.FinancialTransactionCategories.Add(category);
+        }
+        
+        Db.SaveChanges();
+
+        return Task.CompletedTask;
+    // return HandleReturn();
+    }
+    
+}

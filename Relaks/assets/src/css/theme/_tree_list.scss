@@ -1,0 +1,15 @@
+﻿.tree-list {
+  &__el i {
+    opacity: .5;
+  }
+  &__el-title {
+    &:hover {
+      color: var(--bs-primary);
+      background: rgba(var(--bs-secondary-rgb), 0.1);
+    }
+  }
+  &__el.active>&__el-title {
+    background: rgba(var(--bs-primary-rgb), 0.5);
+    color: white
+  }
+}

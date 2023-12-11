@@ -20,7 +20,6 @@
     </div>
 </div>
 
-<Dump Data="@Req"/>
 <EditForm Model="@Req" OnValidSubmit="@HandleSubmit">
     <FluentValidationValidator DisableAssemblyScanning="@true"/>
     <ValidationSummary/>
@@ -192,7 +191,6 @@
         }
         
         Db.SaveChanges();
-        // Store.FindTransactions();
 
         return HandleReturn();
     }

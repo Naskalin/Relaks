@@ -1,0 +1,43 @@
+﻿@using Relaks.Interfaces
+@typeparam TNode where TNode : class, ITree<TNode>;
+
+<div class="tree-list__el @(!IsRoot() ? "ms-3" : "") @(IsActive() ? "active" : "")">
+    <div class="d-flex gap-2 align-items-center">
+            @if (Node.Children.Any())
+            {
+                <div class="col-auto">
+                    <button type="button" class="btn btn-circle btn-sm btn-outline-secondary">
+                        <i class="las la-angle-down"></i>
+                    </button>
+                </div>
+            }
+            <div class="col">
+                <div @onclick="@(() => OnClickNode.InvokeAsync(Node.Id))"
+                     class="tree-list__el-title d-flex p-2 align-items-center cursor-pointer gap-2">
+                    <i class="las la-angle-right"></i>
+                    @Node.Title
+                </div>
+            </div>
+    </div>
+    @if (Node.Children.Any())
+    {
+        foreach (var child in Node.Children)
+        {
+            <TreeSelectNode Node="@child" OnClickNode="@OnClickNode" NodeId="@NodeId"/>
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public TNode Node { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback<Guid> OnClickNode { get; set; }
+    
+    [Parameter]
+    public Guid? NodeId { get; set; }
+
+    private bool IsActive() => NodeId.HasValue && NodeId.Value.Equals(Node.Id);
+    private bool IsRoot() => !Node.ParentId.HasValue;
+}

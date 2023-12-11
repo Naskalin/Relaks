@@ -4,9 +4,11 @@ using Relaks.Interfaces;
 
 namespace Relaks.Validators;
 
-public class TreeValidator<TEntity> : AbstractValidator<TEntity> where TEntity : class, ITree<TEntity>
+public class TreeNodeValidator<TModel, TEntity> : AbstractValidator<TModel> 
+    where TModel : IParentable
+    where TEntity : class, ITree<TEntity>
 {
-    public TreeValidator(AppDbContext db)
+    public TreeNodeValidator(AppDbContext db)
     {
         When(x => x.ParentId != null, () =>
         {
@@ -14,8 +16,8 @@ public class TreeValidator<TEntity> : AbstractValidator<TEntity> where TEntity :
             RuleFor(x => x).Must(x => false == HasRecursion(db.Set<TEntity>(), x)).WithMessage("Рекурсия. Родительский узел не может быть вложен в дочерний.");
         });
     }
-
-    private static bool HasRecursion(IQueryable<ITree<TEntity>> q, ITree<TEntity> node)
+    
+    private static bool HasRecursion(IQueryable<ITree<TEntity>> q, IParentable node)
     {
         // Нет родителя = нет рекурсии
         if (!node.ParentId.HasValue) return false;
@@ -29,7 +31,7 @@ public class TreeValidator<TEntity> : AbstractValidator<TEntity> where TEntity :
         
         var parent = q.FirstOrDefault(x => x.Id.Equals(node.ParentId));
         ArgumentNullException.ThrowIfNull(parent);
-
+        
         // Node.Parent
         // -- Node.Children
         // ---- Node.SubChildren
