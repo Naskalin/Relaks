@@ -81,7 +81,7 @@
     {
         Navigation.NavigateTo($"/financials/{accountId.ToString()}");
         Store.AccountId = accountId;
-        Store.FindTransactions();
+        // Store.FindTransactions();
         return OnStateChanged.InvokeAsync();
     }
 }

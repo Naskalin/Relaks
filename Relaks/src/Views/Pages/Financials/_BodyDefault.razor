@@ -1,8 +1,9 @@
 ﻿@using Relaks.Views.Pages.Financials.ViewModels
+@using Relaks.Interfaces
 
 <div class="d-flex align-items-center mb-3 gap-2">
     <div class="col-auto">
-        <button type="button" 
+        <button type="button"
                 class="btn btn-outline-primary btn-sm"
                 disabled="@(!Store.AccountId.HasValue)"
                 title="@(!Store.AccountId.HasValue ? "Выберите счёт" : "")"
@@ -22,7 +23,11 @@
     </div>
 </div>
 
-<_TransactionsList OnStateChanged="@(() => OnStateChanged.InvokeAsync())"/>
+<_TransactionsList OnStateChanged="@(() => OnStateChanged.InvokeAsync())"
+                   FinancialAccountId="@Store.AccountId"
+                   FirstRow="@(new GuidRowView() {Th = FirstRowTh, Td = FirstRowTd})"
+/>
+
 @* @if (!Store.Transactions.Items.Any()) *@
 @* { *@
 @*     <p>Транзакций не найдено</p>    *@
@@ -55,4 +60,24 @@
         return OnStateChanged.InvokeAsync();
     }
 
+    private RenderFragment<Guid> FirstRowTd => guid => __builder =>
+    {
+        <td>
+            <button type="button" class="btn btn-circle btn-outline-secondary btn-sm group-show__item" @onclick="@(() => HandleEditTransaction(guid))">
+                <i class="las la-edit la-lg"></i>
+            </button>
+        </td>
+    };
+    
+    private RenderFragment FirstRowTh => __builder =>
+    {
+        <th style="width: 50px"></th>
+    };
+    private Task HandleEditTransaction(Guid transactionId)
+    {
+        
+        Store.BodyEditTransactionId = transactionId;
+        Store.BodyState = FinancialsStore.BodyEnum.EditTransaction;
+        return OnStateChanged.InvokeAsync();
+    }
 }

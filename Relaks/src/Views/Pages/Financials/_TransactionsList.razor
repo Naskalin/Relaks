@@ -3,19 +3,24 @@
 @using Relaks.Database
 @using Relaks.Database.Repositories
 @using Microsoft.EntityFrameworkCore
+@using Relaks.Interfaces
+@using Relaks.Models.Misc
 
 @inject AppDbContext Db;
 
-<MyPagination TotalPages="@Store.Transactions.TotalPages"
-              ActivePage="@Store.TransactionListRequest.Page"
-              TotalItems="@Store.Transactions.TotalItems"
+<MyPagination TotalPages="@Transactions.TotalPages"
+              TotalItems="@Transactions.TotalItems"
+              ActivePage="@TransactionListRequest.Page"
               OnPageChanged="@HandlePageChanged"
 />
 
 <table class="table table-hover table-striped align-middle my-3">
     <thead>
     <tr>
-        <th style="width: 50px"></th>
+        @if (FirstRow != null)
+        {
+            @FirstRow.Th
+        }
         <th style="width: 125px">Дата</th>
         <th style="width: 100px">Тип</th>
         <th style="width: 100px">Сумма</th>
@@ -25,14 +30,13 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var t in Store.Transactions.Items)
+    @foreach (var t in Transactions.Items)
     {
         <tr class="group-show">
-            <td>
-                <button type="button" class="btn btn-circle btn-outline-secondary btn-sm group-show__item" @onclick="@(() => HandleEditTransaction(t.Id))">
-                    <i class="las la-edit la-lg"></i>
-                </button>
-            </td>
+            @if (FirstRow != null)
+            {
+                @FirstRow.Td(t.Id)
+            }
             <td>@t.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
             <td><Badge Color="@(t.IsPlus ? Color.Success : Color.Danger)">@(t.IsPlus ? "Пополнение" : "Списание")</Badge></td>
             <td style="white-space: nowrap">@t.Total.ToString("N2") @t.Account.FinancialCurrency.Symbol</td>
@@ -55,30 +59,55 @@
     </tbody>
 </table>
 
-<MyPagination TotalPages="@Store.Transactions.TotalPages"
-              ActivePage="@Store.TransactionListRequest.Page"
-              TotalItems="@Store.Transactions.TotalItems"
+<MyPagination TotalPages="@Transactions.TotalPages"
+              TotalItems="@Transactions.TotalItems"
+              ActivePage="@TransactionListRequest.Page"
               OnPageChanged="@HandlePageChanged"
               />
 
 @code {
-    [CascadingParameter]
-    public FinancialsStore Store { get; set; } = null!;
-
     [Parameter]
     public EventCallback OnStateChanged { get; set; }
     
+    [Parameter]
+    public IGuidRowView? FirstRow { get; set; }
+    
+    [Parameter]
+    public Guid? FinancialAccountId { get; set; }
+
+    private FinancialTransactionListRequest TransactionListRequest { get; set; } = new() {Page = 1, PerPage = 10};
+    private PaginatableResult<FinancialTransaction> Transactions { get; set; } = new();
+    
+    
+    private void FindTransactions()
+    {
+        var q = Db.FinancialTransactions
+            .Include(x => x.Entry)
+            .Include(x => x.Account).ThenInclude(a => a.FinancialCurrency)
+            .OrderByDescending(x => x.CreatedAt);
+        
+        Transactions = FinancialAccountId.HasValue 
+            ? q.Where(x => x.AccountId.Equals(FinancialAccountId.Value)).ToPaginatedResult(TransactionListRequest) 
+            : q.ToPaginatedResult(TransactionListRequest);
+    }
+    
     private Task HandlePageChanged(int page)
     {
-        Store.TransactionListRequest.Page = page;
-        Store.FindTransactions();
+        TransactionListRequest.Page = page;
+        FindTransactions();
         return OnStateChanged.InvokeAsync();
     }
 
-    private Task HandleEditTransaction(Guid transactionId)
+    protected override void OnParametersSet()
     {
-        Store.BodyEditTransactionId = transactionId;
-        Store.BodyState = FinancialsStore.BodyEnum.EditTransaction;
-        return OnStateChanged.InvokeAsync();
+        FindTransactions();
     }
+
+    // private Task HandleEditTransaction(Guid transactionId)
+    // {
+    //     
+    //     // Store.BodyEditTransactionId = transactionId;
+    //     // Store.BodyState = FinancialsStore.BodyEnum.EditTransaction;
+    //     // return OnStateChanged.InvokeAsync();
+    // }
 }

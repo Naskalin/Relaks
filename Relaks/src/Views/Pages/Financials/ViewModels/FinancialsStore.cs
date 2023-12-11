@@ -35,33 +35,33 @@ public class FinancialsStore(AppDbContext db)
     public Guid? SidebarEditAccountId { get; set; }
     public List<FinancialTransactionCategory> TransactionCategories { get; set; } = new();
     public List<FinancialCurrency> Currencies { get; set; } = new();
-    public PaginatableResult<FinancialTransaction> Transactions { get; set; } = new();
+    // public PaginatableResult<FinancialTransaction> Transactions { get; set; } = new();
     public Guid? AccountId { get; set; }
-    public FinancialTransactionListRequest TransactionListRequest { get; set; } = new() {Page = 1, PerPage = 10};
+    // public FinancialTransactionListRequest TransactionListRequest { get; set; } = new() {Page = 1, PerPage = 10};
 
     public void Initialize()
     {
         FindCurrencies();
         FindTransactionCategories();
-        FindTransactions();
+        // FindTransactions();
     }
 
-    public void FindForAccount()
-    {
-        FindTransactions();
-    }
+    // public void FindForAccount()
+    // {
+    //     FindTransactions();
+    // }
 
-    public void FindTransactions()
-    {
-        var q = db.FinancialTransactions
-            .Include(x => x.Entry)
-            .Include(x => x.Account).ThenInclude(a => a.FinancialCurrency)
-            .OrderByDescending(x => x.CreatedAt);
-        
-        Transactions = AccountId.HasValue 
-            ? q.Where(x => x.AccountId.Equals(AccountId.Value)).ToPaginatedResult(TransactionListRequest) 
-            : q.ToPaginatedResult(TransactionListRequest);
-    }
+    // public void FindTransactions()
+    // {
+    //     var q = db.FinancialTransactions
+    //         .Include(x => x.Entry)
+    //         .Include(x => x.Account).ThenInclude(a => a.FinancialCurrency)
+    //         .OrderByDescending(x => x.CreatedAt);
+    //     
+    //     Transactions = AccountId.HasValue 
+    //         ? q.Where(x => x.AccountId.Equals(AccountId.Value)).ToPaginatedResult(TransactionListRequest) 
+    //         : q.ToPaginatedResult(TransactionListRequest);
+    // }
 
     public void FindTransactionCategories()
     {
