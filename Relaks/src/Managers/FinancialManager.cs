@@ -22,13 +22,12 @@ public class FinancialManager(AppDbContext db)
     {
         var initialFromBalance = transaction.FromBalance();
         var initialCreatedAt = transaction.CreatedAt;
-        var initialTotal = transaction.Total;
         req.MapTo(transaction);
         DeleteItemsForTransaction(transaction, req);
         UpdateItemsForTransaction(transaction, req);
         CreateItemsForTransaction(transaction, req);
         transaction.UpdateTotal();
-        UpdateBalanceForExistingTransaction(transaction, initialFromBalance, initialTotal, initialCreatedAt);
+        UpdateBalanceForExistingTransaction(transaction, initialFromBalance, initialCreatedAt);
     }
     
     private static void CreateItemsForTransaction(FinancialTransaction transaction, FinancialTransactionRequest req)
@@ -145,15 +144,9 @@ public class FinancialManager(AppDbContext db)
     /// </summary>
     /// <param name="editingTransaction">Транзакция, до её сохранения в базе данных</param>
     /// <param name="initialFromBalance">Исходный FromBalance(), до изменения модели</param>
-    /// <param name="initialTotal">Исходный Total, до изменения модели</param>
     /// <param name="initialCreatedAt">Исходная дата, до изменения модели</param>
-    private void UpdateBalanceForExistingTransaction(FinancialTransaction editingTransaction, decimal initialFromBalance,
-        decimal initialTotal, DateTime initialCreatedAt)
+    private void UpdateBalanceForExistingTransaction(FinancialTransaction editingTransaction, decimal initialFromBalance, DateTime initialCreatedAt)
     {
-        // изменений для обновления балансов не найдено
-        if (initialCreatedAt.Equals(editingTransaction.CreatedAt)
-            && initialTotal.Equals(editingTransaction.Total)) return;
-
         var account = db.FinancialAccounts.First(x => x.Id.Equals(editingTransaction.AccountId));
         var transactionsQuery = db
                 .FinancialTransactions
@@ -165,7 +158,6 @@ public class FinancialManager(AppDbContext db)
         if (initialCreatedAt.Equals(editingTransaction.CreatedAt))
         {
             // Время транзакции не изменено
-            // Получаем все последующие транзакции после существующей, исключая её саму
             var otherTransactions = transactionsQuery
                 .Where(x => x.CreatedAt >= initialCreatedAt)
                 .OrderBy(x => x.CreatedAt)
@@ -180,26 +172,6 @@ public class FinancialManager(AppDbContext db)
         // 9:45---10:00(Было)---10:15---10:30(Стало)--10:45
         if (editingTransaction.CreatedAt > initialCreatedAt)
         {
-            // // Промежуточные транзакции
-            // // 10:00(Было) <= others && others < 10:30(Стало)
-            // var betweenTransactions = transactionsQuery
-            //     .Where(x => initialCreatedAt <= x.CreatedAt && x.CreatedAt < editingTransaction.CreatedAt)
-            //     .Where(x => !x.Id.Equals(editingTransaction.Id))
-            //     .OrderBy(x => x.CreatedAt)
-            //     .ToList();
-            // if (betweenTransactions.Any())
-            // {
-            //     // Если есть, обновляем их, начальный баланс берём из существующей в бд транзакции
-            //     UpdateBalanceForTransactions(betweenTransactions, initialFromBalance);
-            //     // обновляем баланс текущей транзакции, начальный баланс берём из последней обновлённой транзакции
-            //     editingTransaction.UpdateBalance(betweenTransactions.Last().Balance);
-            // }
-            // else
-            // {
-            //     // Если нет, то обновляем баланс текущей по её же начальному балансу из бд
-            //     editingTransaction.UpdateBalance(initialFromBalance);
-            // }
-
             // Последующие транзакции
             // Всё что позднее >= 10:00(Было)
             var otherTransactions = transactionsQuery
