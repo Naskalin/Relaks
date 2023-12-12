@@ -23,7 +23,7 @@ public class HomepageStatisticStore
         EntryRelationships["Метки объединений"] = _db.EntryTagTitles.Count();
         EntryRelationships["Категории меток объединений"] = _db.EntryTagCategories.Count();
         EntryRelationships["Взаимосвязи с метками"] = _db.EntryTags.Count();
-        EntryRelationships["Взаимосвязи объединений"] = _db.EntryRelations.Count();
+        EntryRelationships["Взаимоотношения объединений"] = _db.EntryRelations.Count();
         
         EntryCounts["Люди"] = _db.EPersons.Count();
         EntryCounts["Компании"] = _db.ECompanies.Count();
