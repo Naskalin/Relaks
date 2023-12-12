@@ -4,6 +4,8 @@
 @using Relaks.Models.FinancialModels
 
 @inject AppDbContext Db;
+@inject IJSRuntime JsRuntime;
+@inject NavigationManager Navigation;
 
 <div class="row align-items-center mb-3">
     <div class="col-auto">
@@ -47,10 +49,13 @@
     {
         <div class="mb-3">
             <label for="financial-initial-balance" class="form-label">Начальный баланс</label>
-            <BootstrapInputNumber @bind-Value="Req.InitialBalance"
-                                  IsSelectAllTextOnFocus="true"
-                                  Step="0.01"
-                                  Id="financial-initial-balance"/>
+            <BootstrapInputGroup>
+                <BootstrapInputNumber @bind-Value="Req.InitialBalance"
+                                      IsSelectAllTextOnFocus="true"
+                                      Step="0.01"
+                                      Id="financial-initial-balance"/>
+                <BootstrapInputGroupLabel DisplayText="@(Store.Currencies.FirstOrDefault(x => x.Id.Equals(Req.FinancialCurrencyId))?.Symbol)"/>
+            </BootstrapInputGroup>
             <ValidationMessage For="@(() => Req.InitialBalance)"/>
             <div class="form-text">Начальный баланс можно задать только при создании счёта.</div>
         </div>
@@ -92,6 +97,17 @@
         </button>
     </div>
 </EditForm>
+
+@if (IsEdit)
+{
+    <hr>
+    <div class="text-end">
+        <button type="button" class="btn btn-link text-danger" @onclick="@HandleDelete">
+            <i class="las la-trash la-lg"></i>
+            @Resources.Action.Delete
+        </button>
+    </div>
+}
 
 @code {
 
@@ -146,7 +162,19 @@
         
         Db.SaveChanges();
 
-        Store.SidebarState = FinancialsStore.SidebarEnum.Default;
-        return OnStateChanged.InvokeAsync();
+        return HandleReturn();
+    }
+    
+    private async Task HandleDelete()
+    {
+        if (Account == null) return;
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
+        if (!isConfirmed) return;
+        
+        Db.FinancialAccounts.Remove(Account);
+        await Db.SaveChangesAsync();
+        Navigation.NavigateTo("/financials");
+        
+        await HandleReturn();
     }
 }
