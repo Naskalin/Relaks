@@ -4,7 +4,7 @@
 @using PhoneNumbers
 
 <div>
-    <div class="row align-items-center" id="entry-info-@EntryInfo.Id">
+    <div class="d-flex align-items-center" id="entry-info-@EntryInfo.Id">
         <div class="col-auto" style="width: 2rem">
             <i class="@DataHelper.EntityIcon(EntryInfo.Discriminator) la-lg @(EntryInfo.IsFavorite ? "text-warning" : "")"></i>
         </div>
