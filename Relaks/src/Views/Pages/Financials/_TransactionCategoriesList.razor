@@ -1,0 +1,57 @@
+﻿@using Relaks.Views.Pages.Financials.ViewModels
+@using Relaks.Models.FinancialModels
+
+<div class="row align-items-center mb-3">
+    <div class="col-auto">
+        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@HandleReturn" title="Вернуться">
+            <i class="las la-arrow-left la-lg"></i>
+        </button>
+    </div>
+    <div class="col">
+        <h5 class="mb-0">Категории транзакций</h5>
+    </div>
+    <div class="col-auto">
+        <button type="button" class="btn btn-outline-primary" @onclick="@HandleAddCategory">
+            Категория транзакции
+            <i class="las la-plus-circle la-lg ms-1"></i>
+        </button>
+    </div>
+</div>
+
+<TreeSelectList
+    TNode="FinancialTransactionCategory"
+    OnClickNode="@HandleClickNode"
+    Nodes="@Store.TransactionCategories">
+    <AfterNodeTitle>
+        <i class="las la-edit la-lg ms-2 group-show__item"></i>
+    </AfterNodeTitle>
+</TreeSelectList>
+
+@code {
+    [CascadingParameter]
+    public FinancialsStore Store { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+    
+    private Task HandleReturn()
+    {
+        Store.BodyState = FinancialsStore.BodyEnum.Default;
+        return OnStateChanged.InvokeAsync();
+    }
+    
+    private Task HandleAddCategory()
+    {
+        Store.BackToBodyState = FinancialsStore.BodyEnum.TransactionCategories;
+        Store.BodyState = FinancialsStore.BodyEnum.AddTransactionCategory;
+        return OnStateChanged.InvokeAsync();
+    }
+
+    private Task HandleClickNode(Guid transactionCategoryId)
+    {
+        Store.BackToBodyState = FinancialsStore.BodyEnum.TransactionCategories;
+        Store.BodyEditTransactionCategoryId = transactionCategoryId;
+        Store.BodyState = FinancialsStore.BodyEnum.EditTransactionCategory;
+        return OnStateChanged.InvokeAsync();
+    }
+}

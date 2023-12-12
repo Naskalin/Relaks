@@ -1,5 +1,12 @@
 ﻿.tree-list {
   &__el-title {
+    &.active {
+      color: var(--bs-primary);
+      font-weight: 500;
+      i {
+        color: var(--bs-primary);
+      }
+    }
     &:hover {
       color: var(--bs-primary);
       background: rgba(var(--bs-secondary-rgb), 0.1);

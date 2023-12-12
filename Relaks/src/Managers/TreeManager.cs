@@ -7,6 +7,25 @@ namespace Relaks.Managers;
 public static class TreeManager
 {
 
+    private static void FlatById<TEntity>(List<TEntity> nodes, Dictionary<Guid, TEntity> flatNodes) where TEntity : class, ITree<TEntity>
+    {
+        foreach (var node in nodes)
+        {
+            flatNodes[node.Id] = node;
+            if (node.Children.Any())
+            {
+                FlatById(node.Children, flatNodes);
+            }
+        }
+    }
+    
+    public static Dictionary<Guid, TEntity> ToFlatById<TEntity>(this List<TEntity> tree) where TEntity : class, ITree<TEntity>
+    {
+        var flatNodes = new Dictionary<Guid, TEntity>();
+        FlatById(tree, flatNodes);
+        return flatNodes;
+    }
+    
     /// <summary>
     /// Поиск ноды в детях текущей ноды по идентификатору
     /// </summary>

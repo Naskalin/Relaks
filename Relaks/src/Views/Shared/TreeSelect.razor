@@ -1,12 +1,19 @@
 ﻿@using Relaks.Interfaces
+@using Relaks.Managers
 @typeparam TNode where TNode : class, ITree<TNode>;
 @inject DialogService DialogService;
 
-<div class="input-group cursor-pointer" @onclick="@HandleSelectClick">
-    <span class="input-group-text">
+<div class="input-group cursor-pointer">
+    <span class="input-group-text" @onclick="@HandleSelectClick">
         <i class="las la-sitemap la-lg"></i>
     </span>
-    <input type="text" value="@Title()" class="form-control">
+    <input type="text" value="@Title()" class="form-control" @onclick="@HandleSelectClick">
+    @if (Clearable)
+    {
+        <button class="btn btn-outline-secondary" type="button" @onclick="@HandleClear">
+            <i class="las la-times la-lg"></i>
+        </button>   
+    }
 </div>
 
 @code {
@@ -15,6 +22,9 @@
     
     [Parameter]
     public Guid? NodeId { get; set; }
+    
+    [Parameter]
+    public bool Clearable { get; set; }
     
     [Parameter]
     public EventCallback<Guid> OnClickNode { get; set; }
@@ -30,22 +40,17 @@
         
         return "<Не выбрано>";
     }
-    
-    private void Flat(List<TNode> nodes)
+
+    private Task HandleClear()
     {
-        foreach (var node in nodes)
-        {
-            FlatNodes[node.Id] = node;
-            if (node.Children.Any())
-            {
-                Flat(node.Children);
-            }
-        }
+        NodeId = null;
+        StateHasChanged();
+        return Task.CompletedTask;
     }
     
     protected override void OnInitialized()
     {
-        Flat(Nodes);
+        FlatNodes = Nodes.ToFlatById();
     }
 
     private Task HandleSelectClick()
@@ -64,7 +69,6 @@
         option.Component = BootstrapDynamicComponent.CreateComponent<TreeSelectList<TNode>>(new Dictionary<string, object?>()
         {
             ["Nodes"] = Nodes,
-            ["FlatNodes"] = FlatNodes.Values.ToList(),
             ["NodeId"] = NodeId,
             ["OnClickNode"] = EventCallback.Factory.Create<Guid>(this, async guid =>
             {

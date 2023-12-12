@@ -85,6 +85,6 @@ public static class FinancialMappers
     public static void MapTo(this FinancialTransactionCategoryRequest req, FinancialTransactionCategory cat)
     {
         cat.Title = req.Title;
-        cat.ParentId = req.ParentId;
+        cat.ParentId = req.ParentId.HasValue && req.ParentId.Value == default ? null : req.ParentId;
     }
 }

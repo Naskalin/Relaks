@@ -3,31 +3,36 @@
 
 @if (!FilteredIds.Any() || FilteredIds.Contains(Node.Id))
 {
-    <div class="tree-list__el @(!IsRoot() ? "ms-3" : "") @(IsActive() ? "active" : "")">
-        <div class="d-flex">
-            @if (Node.Children.Any() && !FilteredIds.Any())
-            {
-                <div class="col-auto">
+    <div class="tree-list__el @(IsActive() ? "active" : "")">
+        <div class="d-flex gap-1">
+            <div class="col-auto" style="width: 28px">
+                @if (Node.Children.Any() && !FilteredIds.Any())
+                {
                     <button type="button" class="btn btn-circle btn-xs btn-outline-secondary tree-list__collapse-btn" @onclick="@(() => IsOpen = !IsOpen)">
                         <i class="las @(IsOpen ? "la-angle-down" : "la-angle-right")"></i>
                     </button>
-                </div>
-            }
+                }
+                else
+                {
+                    <div class="text-end"><i class="las la-angle-right" style="margin-top: 12px;"></i></div>   
+                }
+            </div>
             <div class="col">
                 <div @onclick="@(() => OnClickNode.InvokeAsync(Node.Id))"
-                     class="tree-list__el-title p-2 cursor-pointer">
-                    @if (!Node.Children.Any())
-                    {
-                        <i class="las la-angle-right text-secondary me-2"></i>
-                    }
+                     class="tree-list__el-title group-show p-2 cursor-pointer @(Node.Id.Equals(NodeId) ? "active" : "")">
+                        @* <i class="las la-angle-right me-2"></i> *@
                     @Node.Title
+                    @if (AfterNodeTitle != null)
+                    {
+                        @AfterNodeTitle(Node.Id)
+                    }
                 </div>
-                
+
                 @if (IsOpen && Node.Children.Any())
                 {
                     foreach (var child in Node.Children)
                     {
-                        <TreeSelectNode Node="@child" OnClickNode="@OnClickNode" NodeId="@NodeId" FilteredIds="@FilteredIds"/>
+                        <TreeSelectNode Node="@child" OnClickNode="@OnClickNode" NodeId="@NodeId" FilteredIds="@FilteredIds" AfterNodeTitle="@AfterNodeTitle"/>
                     }
                 }
             </div>
@@ -47,6 +52,9 @@
 
     [Parameter]
     public List<Guid> FilteredIds { get; set; } = new();
+    
+    [Parameter]
+    public RenderFragment<Guid>? AfterNodeTitle { get; set; }
 
     private bool IsOpen { get; set; } = true;
     private bool IsActive() => NodeId.HasValue && NodeId.Value.Equals(Node.Id);

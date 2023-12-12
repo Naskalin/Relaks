@@ -168,10 +168,10 @@
         Req.EntryId = entryIds.FirstOrDefault();
     }
 
-    private async Task HandleReturn()
+    private Task HandleReturn()
     {
         Store.BodyState = FinancialsStore.BodyEnum.Default;
-        await OnStateChanged.InvokeAsync();
+        return OnStateChanged.InvokeAsync();
     }
 
     private string Total()

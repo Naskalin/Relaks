@@ -1,5 +1,5 @@
 ﻿@using Relaks.Interfaces
-@using Console = System.Console
+@using Relaks.Managers
 @typeparam TNode where TNode : class, ITree<TNode>;
 
 <div class="mb-3">
@@ -8,7 +8,7 @@
 <div class="tree-list">
     @foreach (var node in Nodes)
     {
-        <TreeSelectNode Node="@node" TNode="@TNode" OnClickNode="@OnClickNode" NodeId="@NodeId" FilteredIds="@FilteredIds"/>   
+        <TreeSelectNode Node="@node" TNode="@TNode" OnClickNode="@OnClickNode" NodeId="@NodeId" FilteredIds="@FilteredIds" AfterNodeTitle="@AfterNodeTitle"/>   
     }
 </div>
 
@@ -17,15 +17,22 @@
     public List<TNode> Nodes { get; set; } = new();
     
     [Parameter]
-    public List<TNode> FlatNodes { get; set; } = new();
-    
-    [Parameter]
     public Guid? NodeId { get; set; }
     
     [Parameter]
     public EventCallback<Guid> OnClickNode { get; set; }
+    
+    [Parameter]
+    public RenderFragment<Guid>? AfterNodeTitle { get; set; }
+    
+    private List<TNode> FlatNodes { get; set; } = new();
 
     private string? Search { get; set; } = "";
+
+    protected override void OnInitialized()
+    {
+        FlatNodes = Nodes.ToFlatById().Values.ToList();
+    }
 
     private void HandleValueChanged(ChangeEventArgs e)
     {

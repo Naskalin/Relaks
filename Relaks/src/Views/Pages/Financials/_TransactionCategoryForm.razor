@@ -7,6 +7,17 @@
 
 @inject AppDbContext Db;
 
+<div class="row align-items-center mb-3">
+    <div class="col-auto">
+        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@HandleReturn" title="Вернуться">
+            <i class="las la-arrow-left la-lg"></i>
+        </button>
+    </div>
+    <div class="col">
+        <h5 class="mb-0">@(IsEdit ? "Изменить категорию транзакций" : "Добавить категорию для транзакций")</h5>
+    </div>
+</div>
+
 <EditForm Model="@Req" OnValidSubmit="@HandleSubmit">
     <FluentValidationValidator DisableAssemblyScanning="@true"/>
     <ValidationSummary/>
@@ -57,6 +68,20 @@
         }
     }
     
+    private Task HandleReturn()
+    {
+        if (Store.BackToBodyState.HasValue)
+        {
+            Store.BodyState = Store.BackToBodyState.Value;
+            Store.BackToBodyState = null;
+        }
+        else
+        {
+            Store.BodyState = FinancialsStore.BodyEnum.Default;   
+        }
+        return OnStateChanged.InvokeAsync();
+    }
+    
     private Task HandleSubmit()
     {
         if (IsEdit && Category != null)
@@ -69,17 +94,15 @@
         {
             var category = new FinancialTransactionCategory();
             Req.MapTo(category);
-            if (Req.ParentId.HasValue)
-            {
-                var parent = Db.FinancialTransactionCategories.First(x => x.Id.Equals(Req.ParentId));
-                TreeManager.UpdateTreePath(category, parent);
-            }
+            var parent = Db.FinancialTransactionCategories.FirstOrDefault(x => x.Id.Equals(Req.ParentId));
+            TreeManager.UpdateTreePath(category, parent);
             Db.FinancialTransactionCategories.Add(category);
         }
         
         Db.SaveChanges();
-
-        return Task.CompletedTask;
+        Store.FindTransactionCategories();
+        return HandleReturn();
     }
+    
     
 }

@@ -42,6 +42,9 @@
                     case FinancialsStore.BodyEnum.AddTransactionCategory:
                         <_TransactionCategoryForm OnStateChanged="@StateHasChanged"/>
                         break;
+                    case FinancialsStore.BodyEnum.TransactionCategories:
+                        <_TransactionCategoriesList OnStateChanged="@StateHasChanged"/>
+                        break;
                     default:
                         <_BodyDefault OnStateChanged="@StateHasChanged"/>
                         break;
@@ -71,13 +74,8 @@
     
     private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
     {
-        var prevAccountId = Store.AccountId;
         Store.AccountId = AccountId;
         Store.BodyState = FinancialsStore.BodyEnum.Default;
-        // if (!prevAccountId.Equals(AccountId))
-        // {
-        //     Store.FindForAccount();
-        // }
         StateHasChanged();
     }
 

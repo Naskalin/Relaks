@@ -23,9 +23,11 @@ public class FinancialsStore(AppDbContext db)
         EditTransactionCategory,
         AddTransaction,
         EditTransaction,
+        TransactionCategories,
     }
 
     public BodyEnum BodyState { get; set; } = BodyEnum.Default;
+    public BodyEnum? BackToBodyState { get; set; }
     public SidebarEnum SidebarState { get; set; } = SidebarEnum.Default;
     public Guid? BodyEditTransactionId { get; set; }
     public Guid? BodyEditTransactionCategoryId { get; set; }
