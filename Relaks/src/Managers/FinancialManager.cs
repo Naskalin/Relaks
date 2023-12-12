@@ -8,6 +8,36 @@ namespace Relaks.Managers;
 
 public class FinancialManager(AppDbContext db)
 {
+    public void DeleteTransaction(FinancialTransaction transaction)
+    {
+        // 9:45---10:00(Удаляемая)---10:15---10:30
+        db.FinancialTransactions.Remove(transaction);
+        
+        var account = db.FinancialAccounts.First(x => x.Id.Equals(transaction.AccountId));
+        var transactionsQuery = db
+            .FinancialTransactions
+            .Include(x => x.Items)
+            .OrderBy(x => x.CreatedAt)
+            .Where(x => x.AccountId.Equals(transaction.AccountId))
+        ;
+
+        
+        var otherTransactions = transactionsQuery
+            .Where(x => x.CreatedAt >= transaction.CreatedAt)
+            .Where(x => !x.Id.Equals(transaction.Id))
+            .ToList()
+            ;
+        
+        if (otherTransactions.Any())
+        {
+            UpdateBalanceForTransactions(otherTransactions, transaction.FromBalance());
+            account.Balance = otherTransactions.Last().Balance;
+            return;
+        }
+
+        account.Balance = transaction.FromBalance();
+    }
+    
     public void CreateTransaction(FinancialTransactionRequest req)
     {
         var transaction = new FinancialTransaction();

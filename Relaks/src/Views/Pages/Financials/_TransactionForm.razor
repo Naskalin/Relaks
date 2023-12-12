@@ -8,6 +8,7 @@
 
 @inject AppDbContext Db;
 @inject FinancialManager FinManager;
+@inject IJSRuntime JsRuntime;
 
 <div class="row align-items-center mb-3">
     <div class="col-auto">
@@ -92,6 +93,17 @@
         </div>
     </div>
 </EditForm>
+
+@if (IsEdit)
+{
+    <hr>
+    <div class="text-end">
+        <button type="button" class="btn btn-link text-danger" @onclick="@HandleDelete">
+            <i class="las la-trash la-lg"></i>
+            @Resources.Action.Delete
+        </button>
+    </div>
+}
 
 @code {
 
@@ -192,6 +204,17 @@
         Db.SaveChanges();
 
         return HandleReturn();
+    }
+    
+    private async Task HandleDelete()
+    {
+        if (EditingTransaction == null) return;
+        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
+        if (!isConfirmed) return;
+        
+        FinManager.DeleteTransaction(EditingTransaction);
+        await Db.SaveChangesAsync();
+        await HandleReturn();
     }
 
 }
