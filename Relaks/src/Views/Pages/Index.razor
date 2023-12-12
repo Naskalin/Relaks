@@ -15,18 +15,7 @@
                 <div class="col">
                     <NumberStat Label="@item.Key"
                                 Number="@item.Value.ToString()"
-                                class="bg-success text-white"/>
-                </div>
-            }
-        </div>
-        
-        <div class="row">
-            @foreach (var item in Store.EInfoCounts)
-            {
-                <div class="col">
-                    <NumberStat Label="@item.Key"
-                                Number="@item.Value.ToString()"
-                                class="bg-primary-subtle text-secondary-emphasis"/>
+                                class="bg-secondary text-white"/>
                 </div>
             }
         </div>
@@ -37,7 +26,29 @@
                 <div class="col">
                     <NumberStat Label="@item.Key"
                                 Number="@item.Value.ToString()"
-                                class="bg-info-subtle text-secondary-emphasis"/>
+                                class="bg-dark-subtle text-secondary-emphasis"/>
+                </div>
+            }
+        </div>
+        
+        <div class="row">
+            @foreach (var item in Store.EInfoCounts)
+            {
+                <div class="col">
+                    <NumberStat Label="@item.Key"
+                                Number="@item.Value.ToString()"
+                                class="bg-secondary text-white"/>
+                </div>
+            }
+        </div>
+
+        <div class="row">
+            @foreach (var item in Store.FinancialCounts)
+            {
+                <div class="col">
+                    <NumberStat Label="@item.Key"
+                                Number="@item.Value.ToString()"
+                                class="bg-dark-subtle text-secondary-emphasis"/>
                 </div>
             }
         </div>

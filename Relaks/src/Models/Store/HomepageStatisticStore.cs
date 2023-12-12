@@ -11,6 +11,7 @@ public class HomepageStatisticStore
         _db = db;
     }
 
+    public Dictionary<string, int> FinancialCounts { get; set; } = new();
     public Dictionary<string, int> EntryCounts { get; set; } = new();
     public Dictionary<string, int> FileCounts { get; set; } = new();
     public Dictionary<string, int> EInfoCounts { get; set; } = new();
@@ -31,5 +32,10 @@ public class HomepageStatisticStore
         EInfoCounts["Эл. почты"] = _db.EiEmails.Count();
         EInfoCounts["Ссылки"] = _db.EiUrls.Count();
         EInfoCounts["Наборы данных"] = _db.EiDatasets.Count();
+
+        FinancialCounts["Финансовые транзакции"] = _db.FinancialTransactions.Count();
+        FinancialCounts["Категории финансовых транзакций"] = _db.FinancialTransactionCategories.Count();
+        FinancialCounts["Финансовые счета"] = _db.FinancialAccounts.Count();
+        FinancialCounts["Категории финансовых счетов"] = _db.FinancialAccountCategories.Count();
     }
 }
