@@ -2,10 +2,9 @@
 @typeparam TNode where TNode : class, ITree<TNode>;
 @inject DialogService DialogService;
 
-
 <div class="input-group cursor-pointer" @onclick="@HandleSelectClick">
     <span class="input-group-text">
-        <i class="las la-angle-right"></i>
+        <i class="las la-sitemap la-lg"></i>
     </span>
     <input type="text" value="@Title()" class="form-control">
 </div>
@@ -20,13 +19,13 @@
     [Parameter]
     public EventCallback<Guid> OnClickNode { get; set; }
 
-    private Dictionary<Guid, string> FlatNodes { get; set; } = new();
+    private Dictionary<Guid, TNode> FlatNodes { get; set; } = new();
 
     private string Title()
     {
-        if (NodeId.HasValue && NodeId.Value != default && FlatNodes.TryGetValue(NodeId.Value, out var title))
+        if (NodeId.HasValue && NodeId.Value != default && FlatNodes.TryGetValue(NodeId.Value, out var node))
         {
-            return title;
+            return node.Title;
         }
         
         return "<Не выбрано>";
@@ -36,7 +35,7 @@
     {
         foreach (var node in nodes)
         {
-            FlatNodes[node.Id] = node.Title;
+            FlatNodes[node.Id] = node;
             if (node.Children.Any())
             {
                 Flat(node.Children);
@@ -55,16 +54,17 @@
         {
             IsKeyboard = true,
             IsBackdrop = true,
+            IsCentered = true,
             Title = "Выберите категорию",
             IsScrolling = true,
             CloseButtonText = "Закрыть",
-            // FullScreenSize = FullScreenSize.Always
-            Size = Size.ExtraLarge,
+            FullScreenSize = FullScreenSize.Always,
         };
 
         option.Component = BootstrapDynamicComponent.CreateComponent<TreeSelectList<TNode>>(new Dictionary<string, object?>()
         {
             ["Nodes"] = Nodes,
+            ["FlatNodes"] = FlatNodes.Values.ToList(),
             ["NodeId"] = NodeId,
             ["OnClickNode"] = EventCallback.Factory.Create<Guid>(this, async guid =>
             {

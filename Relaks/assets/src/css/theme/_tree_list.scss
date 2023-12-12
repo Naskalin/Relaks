@@ -1,7 +1,4 @@
 ﻿.tree-list {
-  &__el i {
-    opacity: .5;
-  }
   &__el-title {
     &:hover {
       color: var(--bs-primary);
@@ -11,5 +8,9 @@
   &__el.active>&__el-title {
     background: rgba(var(--bs-primary-rgb), 0.5);
     color: white
+  }
+  &__collapse-btn {
+    margin-top: 5px;
+    margin-right: 5px;
   }
 }

@@ -1,10 +1,14 @@
 ﻿@using Relaks.Interfaces
+@using Console = System.Console
 @typeparam TNode where TNode : class, ITree<TNode>;
 
+<div class="mb-3">
+    <input value="@Search" @oninput="@HandleValueChanged" class="form-control" placeholder="Фильтр категорий..." autofocus="autofocus"/>
+</div>
 <div class="tree-list">
     @foreach (var node in Nodes)
     {
-        <TreeSelectNode Node="@node" TNode="@TNode" OnClickNode="@OnClickNode" NodeId="@NodeId"/>   
+        <TreeSelectNode Node="@node" TNode="@TNode" OnClickNode="@OnClickNode" NodeId="@NodeId" FilteredIds="@FilteredIds"/>   
     }
 </div>
 
@@ -13,8 +17,53 @@
     public List<TNode> Nodes { get; set; } = new();
     
     [Parameter]
+    public List<TNode> FlatNodes { get; set; } = new();
+    
+    [Parameter]
     public Guid? NodeId { get; set; }
     
     [Parameter]
     public EventCallback<Guid> OnClickNode { get; set; }
+
+    private string? Search { get; set; } = "";
+
+    private void HandleValueChanged(ChangeEventArgs e)
+    {
+        Search = e.Value?.ToString() ?? "";
+        FilterNodes();
+    }
+
+    private List<Guid> FilteredIds { get; set; } = new();
+
+    private void FilterNodes()
+    {
+        if (string.IsNullOrEmpty(Search))
+        {
+            FilteredIds = [];
+            return;
+        }
+        
+        var s = Search.ToLower();
+        var treePaths = FlatNodes
+            .Where(x => x.Title.ToLower().Contains(s))
+            .Select(x => x.TreePath)
+            .ToList();
+        
+        if (!treePaths.Any())  {
+            FilteredIds = [];
+            return;
+        }
+        
+        var ids = new List<Guid>();
+        foreach (var treePath in treePaths)
+        {
+            var treeIds = treePath.Split("/")
+                .Where(str => !string.IsNullOrEmpty(str))
+                .Select(Guid.Parse)
+                .ToList();
+            ids.AddRange(treeIds);
+        }
+        
+        FilteredIds =  ids.Distinct().ToList();
+    }
 }

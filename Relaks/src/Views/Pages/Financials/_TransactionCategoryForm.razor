@@ -17,9 +17,14 @@
         <ValidationMessage For="@(() => Req.Title)"/>
     </div>
     
-    @* <div class="mb-3"> *@
-    @*     <TreeSelect Nodes="@Store.TransactionCategories"/> *@
-    @* </div> *@
+    <div class="mb-3">
+        <label for="" class="form-label">Родитель</label>
+        <TreeSelect TNode="FinancialTransactionCategory"
+                    Nodes="@Store.TransactionCategories"
+                    NodeId="@Req.ParentId"
+                    OnClickNode="@(guid => Req.ParentId = guid)"/>
+        <ValidationMessage For="@(() => Req.ParentId)"/>
+    </div>
     
     <div class="mb-3">
         <button class="btn btn-primary">
@@ -75,7 +80,6 @@
         Db.SaveChanges();
 
         return Task.CompletedTask;
-    // return HandleReturn();
     }
     
 }

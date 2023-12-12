@@ -32,21 +32,20 @@
                 </div>
             </div>
             <div class="col-9 ps-4">
+                @switch (Store.BodyState)
+                {
+                    case FinancialsStore.BodyEnum.EditTransaction:
+                    case FinancialsStore.BodyEnum.AddTransaction:
                         <_TransactionForm OnStateChanged="@StateHasChanged"/>
-                @* @switch (Store.BodyState) *@
-                @* { *@
-                @*     case FinancialsStore.BodyEnum.EditTransaction: *@
-                @*     case FinancialsStore.BodyEnum.AddTransaction: *@
-                @*         <_TransactionForm OnStateChanged="@StateHasChanged"/> *@
-                @*         break; *@
-                @*     case FinancialsStore.BodyEnum.EditTransactionCategory: *@
-                @*     case FinancialsStore.BodyEnum.AddTransactionCategory: *@
-                @*         <_TransactionCategoryForm OnStateChanged="@StateHasChanged"/> *@
-                @*         break; *@
-                @*     default: *@
-                @*         <_BodyDefault OnStateChanged="@StateHasChanged"/> *@
-                @*         break; *@
-                @* } *@
+                        break;
+                    case FinancialsStore.BodyEnum.EditTransactionCategory:
+                    case FinancialsStore.BodyEnum.AddTransactionCategory:
+                        <_TransactionCategoryForm OnStateChanged="@StateHasChanged"/>
+                        break;
+                    default:
+                        <_BodyDefault OnStateChanged="@StateHasChanged"/>
+                        break;
+                }
                 
             </div>
         </div>

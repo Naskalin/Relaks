@@ -5,8 +5,7 @@
     <div class="col">
         <div class="row">
             <div class="col-7">
-                <label for="financial-transaction-item-category-@FieldId" class="form-label">Категория</label>
-                @* <Select Id="@($"financial-transaction-item-category-{FieldId}")" @bind-Value="@Req.CategoryId" Items="@Store.FindTransactionCategoriesSelectOptions()" ShowSearch="true"></Select> *@
+                <label for="" class="form-label">Категория</label>
                 <TreeSelect TNode="FinancialTransactionCategory" 
                             Nodes="@Store.TransactionCategories"
                             NodeId="@Req.CategoryId"
