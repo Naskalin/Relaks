@@ -14,12 +14,12 @@
                 }
                 else
                 {
-                    <div class="text-end"><i class="las la-angle-right" style="margin-top: 12px;"></i></div>   
+                    <div class="text-end"><i class="las la-angle-right" style="margin-top: 8px;"></i></div>   
                 }
             </div>
             <div class="col">
                 <div @onclick="@(() => OnClickNode.InvokeAsync(Node.Id))"
-                     class="tree-list__el-title group-show p-2 cursor-pointer @(Node.Id.Equals(NodeId) ? "active" : "")">
+                     class="tree-list__el-title group-show py-1 px-2 cursor-pointer @(Node.Id.Equals(NodeId) ? "active" : "")">
                         @* <i class="las la-angle-right me-2"></i> *@
                     @Node.Title
                     @if (AfterNodeTitle != null)

@@ -43,6 +43,19 @@
         <ValidationMessage For="@(() => Req.FinancialCurrencyId)"/>
     </div>
     
+    @if (!IsEdit)
+    {
+        <div class="mb-3">
+            <label for="financial-initial-balance" class="form-label">Начальный баланс</label>
+            <BootstrapInputNumber @bind-Value="Req.InitialBalance"
+                                  IsSelectAllTextOnFocus="true"
+                                  Step="0.01"
+                                  Id="financial-initial-balance"/>
+            <ValidationMessage For="@(() => Req.InitialBalance)"/>
+            <div class="form-text">Начальный баланс можно задать только при создании счёта.</div>
+        </div>
+    }
+    
     <div class="row">
         <div class="col">
             <div class="mb-3">
@@ -109,10 +122,10 @@
         Req.EntryId = entryIds.FirstOrDefault();
     }
 
-    private async Task HandleReturn()
+    private Task HandleReturn()
     {
         Store.SidebarState = FinancialsStore.SidebarEnum.Default;
-        await OnStateChanged.InvokeAsync();
+        return OnStateChanged.InvokeAsync();
     }
 
     private Task HandleSubmit()
@@ -123,7 +136,10 @@
         }
         else
         {
-            var account = new FinancialAccount();
+            var account = new FinancialAccount()
+            {
+                Balance = Req.InitialBalance ?? 0
+            };
             Req.MapTo(account);
             Db.FinancialAccounts.Add(account);
         }

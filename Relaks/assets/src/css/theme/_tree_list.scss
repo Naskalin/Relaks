@@ -1,5 +1,6 @@
 ﻿.tree-list {
   &__el-title {
+    margin-bottom: .25rem;
     &.active {
       color: var(--bs-primary);
       font-weight: 500;
@@ -17,7 +18,6 @@
     color: white
   }
   &__collapse-btn {
-    margin-top: 5px;
     margin-right: 5px;
   }
 }

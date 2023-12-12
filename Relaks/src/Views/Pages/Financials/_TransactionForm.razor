@@ -74,14 +74,13 @@
             <Divider Text="Состав транзакции" class="mb-4"/>
             <div class="mb-3">
                 @foreach (var itemReq in Req.Items)
-                            {
-                                <_TransactionItemFormFields Req="@itemReq" 
-                                                            Currency="@Account.FinancialCurrency"
-                                                            OnStateChanged="@(StateHasChanged)"
-                                                            CanDelete="@(Req.Items.Count > 1)"
-                                                            OnDelete="@HandleDeleteItem"
-                                                            />
-                            }
+                {
+                    <_TransactionItemFormFields Req="@itemReq"
+                                                Currency="@Account.FinancialCurrency"
+                                                OnStateChanged="@(StateHasChanged)"
+                                                CanDelete="@(Req.Items.Count > 1)"
+                                                OnDelete="@HandleDeleteItem"/>
+                }
             </div>
             <button type="button" class="btn btn-outline-dark btn-sm" @onclick="@HandleAddItem">
                 Добавить ещё <i class="las la-plus ms-1 la-lg"></i>

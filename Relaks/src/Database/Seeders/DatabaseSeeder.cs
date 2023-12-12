@@ -25,29 +25,22 @@ public partial class DatabaseSeeder
         Db.Database.ExecuteSqlRaw("DELETE FROM FinancialAccountCategories;");
         
         
-        // Db.Database.ExecuteSqlRaw("DELETE FROM FtsEntryInfos;");
-        // Db.Database.ExecuteSqlRaw("DELETE FROM FtsEntries;");
-        //
-        // Db.Database.ExecuteSqlRaw("DELETE FROM EntryInfos;");
-        // Db.Database.ExecuteSqlRaw("DELETE FROM Entries;");
-        //
-        // Db.Database.ExecuteSqlRaw("delete from StructureItems;");
-        // Db.Database.ExecuteSqlRaw("delete from StructureGroups;");
-        // Db.Database.ExecuteSqlRaw("delete from EntryRelations;");
-
-        // Db.Database.ExecuteSqlRaw("delete from BaseEntryProfession;");
-        // Db.Database.ExecuteSqlRaw("delete from Professions;");
-        // Db.Database.ExecuteSqlRaw("delete from ProfessionCategories;");
+        Db.Database.ExecuteSqlRaw("DELETE FROM FtsEntryInfos;");
+        Db.Database.ExecuteSqlRaw("DELETE FROM FtsEntries;");
         
-        // Db.Database.ExecuteSqlRaw("delete from ProfessionCategories;");
+        Db.Database.ExecuteSqlRaw("DELETE FROM EntryInfos;");
+        Db.Database.ExecuteSqlRaw("DELETE FROM Entries;");
         
-
+        Db.Database.ExecuteSqlRaw("delete from StructureItems;");
+        Db.Database.ExecuteSqlRaw("delete from StructureGroups;");
+        Db.Database.ExecuteSqlRaw("delete from EntryRelations;");
+        
         // SeedProfessions();
-        // SeedEntries();
-        // SeedEntryInfos();
-        // SeedStructures();
+        SeedEntries();
+        SeedEntryInfos();
+        SeedStructures();
         // // SeedInfoTemplate();
-        // SeedEntryRelations();
+        SeedEntryRelations();
         SeedFinancials();
     }
 }
