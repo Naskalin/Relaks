@@ -1,4 +1,5 @@
-﻿using Relaks.Database;
+﻿using BootstrapBlazor.Components;
+using Relaks.Database;
 
 namespace Relaks.Models.Store;
 
@@ -11,6 +12,7 @@ public class HomepageStatisticStore
         _db = db;
     }
 
+    public Dictionary<string, int> EntryRelationships { get; set; } = new();
     public Dictionary<string, int> FinancialCounts { get; set; } = new();
     public Dictionary<string, int> EntryCounts { get; set; } = new();
     public Dictionary<string, int> FileCounts { get; set; } = new();
@@ -18,6 +20,11 @@ public class HomepageStatisticStore
 
     public void FindData()
     {
+        EntryRelationships["Метки объединений"] = _db.EntryTagTitles.Count();
+        EntryRelationships["Категории меток объединений"] = _db.EntryTagCategories.Count();
+        EntryRelationships["Взаимосвязи с метками"] = _db.EntryTags.Count();
+        EntryRelationships["Взаимосвязи объединений"] = _db.EntryRelations.Count();
+        
         EntryCounts["Люди"] = _db.EPersons.Count();
         EntryCounts["Компании"] = _db.ECompanies.Count();
         EntryCounts["Проекты"] = _db.EProjects.Count();

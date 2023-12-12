@@ -52,6 +52,17 @@
                 </div>
             }
         </div>
+
+        <div class="row">
+            @foreach (var item in Store.EntryRelationships)
+            {
+                <div class="col">
+                    <NumberStat Label="@item.Key"
+                                Number="@item.Value.ToString()"
+                                class="bg-secondary text-white"/>
+                </div>
+            }
+        </div>
     </div>
 
     @* <p>bootstrap icons <i class="bi bi-1-square text-red"></i></p> *@
