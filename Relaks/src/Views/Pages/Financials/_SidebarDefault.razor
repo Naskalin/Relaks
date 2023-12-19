@@ -1,87 +1,87 @@
-﻿@using Relaks.Views.Pages.Financials.ViewModels
-
-@inject NavigationManager Navigation;
-
-<div class="d-flex align-items-center justify-content-between mb-3 gap-2">
-    <div class="col">
-        <span class="h5">Счета</span>
-    </div>
-    <div class="col-auto">
-        <button type="button" class="btn btn-outline-primary" @onclick="@HandleAddAccount">
-            Счёт
-            <i class="las la-plus-circle la-lg ms-1"></i>
-        </button>
-    </div>
-    <div class="col-auto">
-        <button type="button" class="btn btn-outline-primary" @onclick="@HandleAddCategory">
-            Категория счёта
-            <i class="las la-plus-circle la-lg ms-1"></i>
-        </button>
-    </div>
-</div>
-
-<_AccountsList OnClickAccount="@HandleClickAccount" AccountId="@Store.AccountId">
-    <AfterAccountCategory>
-        <button type="button"
-                @onclick="@(() => HandleClickEditCategory(context))"
-                class="btn btn-circle btn-sm btn-outline-light" title="Изменить">
-            <i class="las la-edit la-lg"></i>
-        </button>
-    </AfterAccountCategory>
-    <AfterAccount>
-        <button type="button"
-                @onclick="@(() => HandleClickEditAccount(context))"
-                class="btn btn-circle btn-sm @(context.Equals(Store.AccountId) ? "btn-outline-light" : "btn-outline-secondary")" title="Изменить">
-            <i class="las la-edit la-lg"></i>
-        </button>
-    </AfterAccount>
-</_AccountsList>
-@* <div class="d-flex flex-column gap-3"> *@
-@*     @foreach (var category in Store.AccountCategories) *@
-@*     { *@
-@*         <_SidebarCategoryItem OnStateChanged="@(() => OnStateChanged.InvokeAsync())" Category="@category"/> *@
-@*     } *@
+﻿@* @using Relaks.Views.Pages.Financials.ViewModels *@
+@* *@
+@* @inject NavigationManager Navigation; *@
+@* *@
+@* <div class="d-flex align-items-center justify-content-between mb-3 gap-2"> *@
+@*     <div class="col"> *@
+@*         <span class="h5">Счета</span> *@
+@*     </div> *@
+@*     <div class="col-auto"> *@
+@*         <button type="button" class="btn btn-outline-primary" @onclick="@HandleAddAccount"> *@
+@*             Счёт *@
+@*             <i class="las la-plus-circle la-lg ms-1"></i> *@
+@*         </button> *@
+@*     </div> *@
+@*     <div class="col-auto"> *@
+@*         <button type="button" class="btn btn-outline-primary" @onclick="@HandleAddCategory"> *@
+@*             Категория счёта *@
+@*             <i class="las la-plus-circle la-lg ms-1"></i> *@
+@*         </button> *@
+@*     </div> *@
 @* </div> *@
-
-@code {
-
-    [CascadingParameter]
-    public FinancialsStore Store { get; set; } = null!;
-
-    [Parameter]
-    public EventCallback OnStateChanged { get; set; }
-
-    private Task HandleAddCategory()
-    {
-        Store.SidebarState = FinancialsStore.SidebarEnum.AddAccountCategory;
-        return OnStateChanged.InvokeAsync();
-    }
-
-    private Task HandleAddAccount()
-    {
-        Store.SidebarState = FinancialsStore.SidebarEnum.AddAccount;
-        return OnStateChanged.InvokeAsync();
-    }
-    
-    private Task HandleClickEditCategory(Guid categoryId)
-    {
-        Store.SidebarEditAccountCategoryId = categoryId;
-        Store.SidebarState = FinancialsStore.SidebarEnum.EditAccountCategory;
-        return OnStateChanged.InvokeAsync();
-    }
-    
-    private Task HandleClickEditAccount(Guid accountId)
-    {
-        Store.SidebarEditAccountId = accountId;
-        Store.SidebarState = FinancialsStore.SidebarEnum.EditAccount;
-        return OnStateChanged.InvokeAsync();
-    }
-    
-    private Task HandleClickAccount(Guid accountId)
-    {
-        Navigation.NavigateTo($"/financials/{accountId.ToString()}");
-        Store.AccountId = accountId;
-        // Store.FindTransactions();
-        return OnStateChanged.InvokeAsync();
-    }
-}
+@* *@
+@* <_AccountsList OnClickAccount="@HandleClickAccount" AccountId="@Store.AccountId"> *@
+@*     <AfterAccountCategory> *@
+@*         <button type="button" *@
+@*                 @onclick="@(() => HandleClickEditCategory(context))" *@
+@*                 class="btn btn-circle btn-sm btn-outline-light" title="Изменить"> *@
+@*             <i class="las la-edit la-lg"></i> *@
+@*         </button> *@
+@*     </AfterAccountCategory> *@
+@*     <AfterAccount> *@
+@*         <button type="button" *@
+@*                 @onclick="@(() => HandleClickEditAccount(context))" *@
+@*                 class="btn btn-circle btn-sm @(context.Equals(Store.AccountId) ? "btn-outline-light" : "btn-outline-secondary")" title="Изменить"> *@
+@*             <i class="las la-edit la-lg"></i> *@
+@*         </button> *@
+@*     </AfterAccount> *@
+@* </_AccountsList> *@
+@* $1$ <div class="d-flex flex-column gap-3"> #1# *@
+@* $1$     @foreach (var category in Store.AccountCategories) #1# *@
+@* $1$     { #1# *@
+@* $1$         <_SidebarCategoryItem OnStateChanged="@(() => OnStateChanged.InvokeAsync())" Category="@category"/> #1# *@
+@* $1$     } #1# *@
+@* $1$ </div> #1# *@
+@* *@
+@* @code { *@
+@* *@
+@*     [CascadingParameter] *@
+@*     public FinancialsStore Store { get; set; } = null!; *@
+@* *@
+@*     [Parameter] *@
+@*     public EventCallback OnStateChanged { get; set; } *@
+@* *@
+@*     private Task HandleAddCategory() *@
+@*     { *@
+@*         Store.SidebarState = FinancialsStore.SidebarEnum.AddAccountCategory; *@
+@*         return OnStateChanged.InvokeAsync(); *@
+@*     } *@
+@* *@
+@*     private Task HandleAddAccount() *@
+@*     { *@
+@*         Store.SidebarState = FinancialsStore.SidebarEnum.AddAccount; *@
+@*         return OnStateChanged.InvokeAsync(); *@
+@*     } *@
+@*      *@
+@*     private Task HandleClickEditCategory(Guid categoryId) *@
+@*     { *@
+@*         Store.SidebarEditAccountCategoryId = categoryId; *@
+@*         Store.SidebarState = FinancialsStore.SidebarEnum.EditAccountCategory; *@
+@*         return OnStateChanged.InvokeAsync(); *@
+@*     } *@
+@*      *@
+@*     private Task HandleClickEditAccount(Guid accountId) *@
+@*     { *@
+@*         Store.SidebarEditAccountId = accountId; *@
+@*         Store.SidebarState = FinancialsStore.SidebarEnum.EditAccount; *@
+@*         return OnStateChanged.InvokeAsync(); *@
+@*     } *@
+@*      *@
+@*     private Task HandleClickAccount(Guid accountId) *@
+@*     { *@
+@*         Navigation.NavigateTo($"/financials/{accountId.ToString()}"); *@
+@*         Store.AccountId = accountId; *@
+@*         // Store.FindTransactions(); *@
+@*         return OnStateChanged.InvokeAsync(); *@
+@*     } *@
+@* } *@

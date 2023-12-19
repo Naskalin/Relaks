@@ -1,0 +1,55 @@
+﻿@page "/financial-transactions-categories"
+
+@using Relaks.Database
+@using Relaks.Models.FinancialModels
+@using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels
+
+@inject AppDbContext Db;
+@inject DialogService DialogService;
+
+<CascadingValue Value="@Store">
+    <div class="my-3"></div>
+    <HalfPage IsCentered="@true">
+        <MyTitle ShowEndTitle="@true">
+            <ChildContent>Категории финансовых транзакций</ChildContent>
+            <EndTitle>
+                <button type="button" @onclick="@HandleAddCategory" class="btn btn-primary">
+                    <i class="las la-plus-circle la-lg me-1"></i>
+                    Добавить категорию
+                </button>
+            </EndTitle>
+        </MyTitle>
+
+        <TreeSelectList
+            TNode="FinancialTransactionCategory"
+            OnClickNode="@HandleClickNode"
+            Nodes="@Store.TransactionCategories">
+            <AfterNodeTitle>
+                <i class="las la-edit la-lg ms-2 group-show__item"></i>
+            </AfterNodeTitle>
+        </TreeSelectList>
+    </HalfPage>
+</CascadingValue>
+
+@code {
+    private FinancialTransactionCategoriesStore Store { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        Store = new(Db, DialogService);
+        Store.FindCategories();
+    }
+
+    private Task HandleAddCategory()
+    {
+        Store.SidebarState = FinancialTransactionCategoriesStore.SidebarStateEnum.New;
+        return Store.ShowFormModal();
+    }
+
+    private Task HandleClickNode(Guid transactionCategoryId)
+    {
+        Store.CategoryId = transactionCategoryId;
+        Store.SidebarState = FinancialTransactionCategoriesStore.SidebarStateEnum.Edit;
+        return Store.ShowFormModal();
+    }
+}

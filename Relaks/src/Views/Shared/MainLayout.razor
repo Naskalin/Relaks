@@ -25,12 +25,12 @@ else
             <small class="text-muted">люди/компании/проекты</small>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/financials">
-            <div>Финансы</div>
-            <small class="text-muted">доходы и расходы</small>
-          </a>
-        </li>
+        @* <li class="nav-item"> *@
+        @*   <a class="nav-link" href="/financials"> *@
+        @*     <div>Финансы</div> *@
+        @*     <small class="text-muted">доходы и расходы</small> *@
+        @*   </a> *@
+        @* </li> *@
         <li class="nav-item">
           <a class="nav-link" href="/timeline">
             <div>События</div>
@@ -51,6 +51,12 @@ else
                 <small class="text-muted">категории и метки</small>
               </a>
             </li>
+          <li>
+            <a class="dropdown-item" href="/financial-transactions-categories">
+              <div>Категории финансовых транзакций</div>
+              <small class="text-muted">общие для объединений</small>
+            </a>
+          </li>
             <li>
               <a class="dropdown-item" href="/dataset-templates">
                 <div>Шаблоны</div>

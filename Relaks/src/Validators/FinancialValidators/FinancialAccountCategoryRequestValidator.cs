@@ -8,5 +8,6 @@ public class FinancialAccountCategoryRequestValidator : AbstractValidator<Financ
     public FinancialAccountCategoryRequestValidator()
     {
         RuleFor(x => x.Title).NotEmpty().MaximumLength(255);
+        RuleFor(x => x.EntryId).Must(entryId => entryId.HasValue && entryId.Value != default);
     }
 }

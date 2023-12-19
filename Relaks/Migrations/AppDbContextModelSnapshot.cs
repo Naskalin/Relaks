@@ -448,6 +448,9 @@ namespace Relaks.Migrations
                         .HasPrecision(19, 4)
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("BaseEntryId")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("TEXT");
 
@@ -455,9 +458,6 @@ namespace Relaks.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("EndAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("EntryId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FinancialCurrencyId")
@@ -473,9 +473,9 @@ namespace Relaks.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("BaseEntryId");
 
-                    b.HasIndex("EntryId");
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("FinancialCurrencyId");
 
@@ -488,11 +488,16 @@ namespace Relaks.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid>("EntryId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EntryId");
 
                     b.ToTable("FinancialAccountCategories");
                 });
@@ -1066,15 +1071,13 @@ namespace Relaks.Migrations
 
             modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialAccount", b =>
                 {
+                    b.HasOne("Relaks.Models.BaseEntry", null)
+                        .WithMany("FinancialAccounts")
+                        .HasForeignKey("BaseEntryId");
+
                     b.HasOne("Relaks.Models.FinancialModels.FinancialAccountCategory", "Category")
                         .WithMany("Accounts")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Relaks.Models.BaseEntry", "Entry")
-                        .WithMany()
-                        .HasForeignKey("EntryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1086,9 +1089,18 @@ namespace Relaks.Migrations
 
                     b.Navigation("Category");
 
-                    b.Navigation("Entry");
-
                     b.Navigation("FinancialCurrency");
+                });
+
+            modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialAccountCategory", b =>
+                {
+                    b.HasOne("Relaks.Models.BaseEntry", "Entry")
+                        .WithMany()
+                        .HasForeignKey("EntryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Entry");
                 });
 
             modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialTransaction", b =>
@@ -1213,6 +1225,8 @@ namespace Relaks.Migrations
                     b.Navigation("EntryFiles");
 
                     b.Navigation("EntryInfos");
+
+                    b.Navigation("FinancialAccounts");
 
                     b.Navigation("Tags");
                 });

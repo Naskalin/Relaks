@@ -1,87 +1,87 @@
-﻿@page "/financials"
-@page "/financials/{accountId:guid}"
-
-@using Relaks.Views.Pages.Financials.ViewModels
-@using Relaks.Database
-
-@inject AppDbContext Db;
-@inject NavigationManager Navigation;
-@implements IDisposable;
-
-<PageTemplate>
-    <MyTitle>Финансы</MyTitle>
-
-    <CascadingValue Value="@Store">
-        <div class="row">
-            <div class="col-3">
-                <div>
-                    @switch (Store.SidebarState)
-                    {
-                        case FinancialsStore.SidebarEnum.EditAccountCategory:
-                        case FinancialsStore.SidebarEnum.AddAccountCategory:
-                            <_AccountCategoryForm OnStateChanged="@StateHasChanged"/>
-                            break;
-                        case FinancialsStore.SidebarEnum.EditAccount:
-                        case FinancialsStore.SidebarEnum.AddAccount:
-                            <_AccountForm OnStateChanged="@StateHasChanged"/>
-                            break;
-                        default:
-                            <_SidebarDefault OnStateChanged="@StateHasChanged"/>
-                            break;
-                    }
-                </div>
-            </div>
-            <div class="col-9 ps-4">
-                @switch (Store.BodyState)
-                {
-                    case FinancialsStore.BodyEnum.EditTransaction:
-                    case FinancialsStore.BodyEnum.AddTransaction:
-                        <_TransactionForm OnStateChanged="@StateHasChanged"/>
-                        break;
-                    case FinancialsStore.BodyEnum.EditTransactionCategory:
-                    case FinancialsStore.BodyEnum.AddTransactionCategory:
-                        <_TransactionCategoryForm OnStateChanged="@StateHasChanged"/>
-                        break;
-                    case FinancialsStore.BodyEnum.TransactionCategories:
-                        <_TransactionCategoriesList OnStateChanged="@StateHasChanged"/>
-                        break;
-                    default:
-                        <_BodyDefault OnStateChanged="@StateHasChanged"/>
-                        break;
-                }
-                
-            </div>
-        </div>
-        
-    </CascadingValue>
-</PageTemplate>
-
-@code {
-    private FinancialsStore Store { get; set; } = null!;
-    
-    [Parameter]
-    public Guid? AccountId { get; set; }
-
-    protected override void OnInitialized()
-    {
-        Store = new(Db)
-        {
-            AccountId = AccountId,
-        };
-        Navigation.LocationChanged += HandleLocationChanged;
-        Store.Initialize();
-    }
-    
-    private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
-    {
-        Store.AccountId = AccountId;
-        Store.BodyState = FinancialsStore.BodyEnum.Default;
-        StateHasChanged();
-    }
-
-    public void Dispose()
-    {
-        Navigation.LocationChanged -= HandleLocationChanged;
-    }
-
-}
+﻿@* @page "/financials" *@
+@* @page "/financials/{accountId:guid}" *@
+@* *@
+@* @using Relaks.Views.Pages.Financials.ViewModels *@
+@* @using Relaks.Database *@
+@* *@
+@* @inject AppDbContext Db; *@
+@* @inject NavigationManager Navigation; *@
+@* @implements IDisposable; *@
+@* *@
+@* <PageTemplate> *@
+@*     <MyTitle>Финансы</MyTitle> *@
+@* *@
+@*     <CascadingValue Value="@Store"> *@
+@*          *@
+@*         $1$ <div class="row"> #1# *@
+@*         $1$     <div class="col-3"> #1# *@
+@*         $1$         <div> #1# *@
+@*         $1$             @switch (Store.SidebarState) #1# *@
+@*         $1$             { #1# *@
+@*         $1$                 case FinancialsStore.SidebarEnum.EditAccountCategory: #1# *@
+@*         $1$                 case FinancialsStore.SidebarEnum.AddAccountCategory: #1# *@
+@*         $1$                     <_AccountCategoryForm OnStateChanged="@StateHasChanged"/> #1# *@
+@*         $1$                     break; #1# *@
+@*         $1$                 case FinancialsStore.SidebarEnum.EditAccount: #1# *@
+@*         $1$                 case FinancialsStore.SidebarEnum.AddAccount: #1# *@
+@*         $1$                     <_AccountForm OnStateChanged="@StateHasChanged"/> #1# *@
+@*         $1$                     break; #1# *@
+@*         $1$                 default: #1# *@
+@*         $1$                     <_SidebarDefault OnStateChanged="@StateHasChanged"/> #1# *@
+@*         $1$                     break; #1# *@
+@*         $1$             } #1# *@
+@*         $1$         </div> #1# *@
+@*         $1$     </div> #1# *@
+@*         $1$     <div class="col-9 ps-4"> #1# *@
+@*         $1$         @switch (Store.BodyState) #1# *@
+@*         $1$         { #1# *@
+@*         $1$             case FinancialsStore.BodyEnum.EditTransaction: #1# *@
+@*         $1$             case FinancialsStore.BodyEnum.AddTransaction: #1# *@
+@*         $1$                 <_TransactionForm OnStateChanged="@StateHasChanged"/> #1# *@
+@*         $1$                 break; #1# *@
+@*         $1$             case FinancialsStore.BodyEnum.EditTransactionCategory: #1# *@
+@*         $1$             case FinancialsStore.BodyEnum.AddTransactionCategory: #1# *@
+@*         $1$                 <_TransactionCategoryForm OnStateChanged="@StateHasChanged"/> #1# *@
+@*         $1$                 break; #1# *@
+@*         $1$             case FinancialsStore.BodyEnum.TransactionCategories: #1# *@
+@*         $1$                 <_TransactionCategoriesList OnStateChanged="@StateHasChanged"/> #1# *@
+@*         $1$                 break; #1# *@
+@*         $1$             default: #1# *@
+@*         $1$                 <_BodyDefault OnStateChanged="@StateHasChanged"/> #1# *@
+@*         $1$                 break; #1# *@
+@*         $1$         } #1# *@
+@*         $1$          #1# *@
+@*         $1$     </div> #1# *@
+@*         $1$ </div> #1# *@
+@* *@
+@*     </CascadingValue> *@
+@* </PageTemplate> *@
+@* *@
+@* @code { *@
+@*     private FinancialsStore Store { get; set; } = null!; *@
+@*      *@
+@*     [Parameter] *@
+@*     public Guid? AccountId { get; set; } *@
+@* *@
+@*     protected override void OnInitialized() *@
+@*     { *@
+@*         Store = new(Db) *@
+@*         { *@
+@*             AccountId = AccountId, *@
+@*         }; *@
+@*         Navigation.LocationChanged += HandleLocationChanged; *@
+@*         Store.Initialize(); *@
+@*     } *@
+@*      *@
+@*     private void HandleLocationChanged(object? sender, LocationChangedEventArgs e) *@
+@*     { *@
+@*         Store.AccountId = AccountId; *@
+@*         Store.BodyState = FinancialsStore.BodyEnum.Default; *@
+@*         StateHasChanged(); *@
+@*     } *@
+@* *@
+@*     public void Dispose() *@
+@*     { *@
+@*         Navigation.LocationChanged -= HandleLocationChanged; *@
+@*     } *@
+@* } *@

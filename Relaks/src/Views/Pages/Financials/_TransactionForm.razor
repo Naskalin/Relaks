@@ -1,220 +1,219 @@
-﻿@using Relaks.Views.Pages.Financials.ViewModels
-@using Relaks.Database
-@using Relaks.Mappers
-@using Relaks.Models.FinancialModels
-@using Console = System.Console
-@using Microsoft.EntityFrameworkCore
-@using Relaks.Managers
-
-@inject AppDbContext Db;
-@inject FinancialManager FinManager;
-@inject IJSRuntime JsRuntime;
-
-<div class="row align-items-center mb-3">
-    <div class="col-auto">
-        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@HandleReturn" title="Вернуться">
-            <i class="las la-arrow-left la-lg"></i>
-        </button>
-    </div>
-    <div class="col">
-        <h5 class="mb-0">@(IsEdit ? "Изменить транзакцию" : "Добавить транзакцию")</h5>
-    </div>
-</div>
-
-<EditForm Model="@Req" OnValidSubmit="@HandleSubmit">
-    <FluentValidationValidator DisableAssemblyScanning="@true"/>
-    <ValidationSummary/>
-
-    <div class="row">
-        <div class="col-4">
-            <Divider Text="Описание транзакции" class="mb-4"/>
-            <div class="mb-3">
-                <label class="form-label">Тип *</label>
-                <div class="btn-group w-100">
-                    @foreach (var t in TransactionTypes)
-                    {
-                        <button type="button"
-                                @onclick="@(() => Req.IsPlus = t.Val)"
-                                class="btn @(Req.IsPlus.HasValue && Req.IsPlus.Value == t.Val ? $"btn-{t.Color}" : "btn-outline-secondary")">
-                            <i class="@t.Icon la-lg me-2"></i>
-                            @t.Name
-                        </button>
-                    }
-                </div>
-                <ValidationMessage For="@(() => Req.IsPlus)"/>
-            </div>
-            
-            <div class="mb-3">
-                <SelectEntry EntryIds="@EntryIds" EntryIdsChanged="@HandleEntryChanged" IsMultiple="@false" Label="Объединение *"/>
-                <ValidationMessage For="@(() => Req.EntryId)"/>
-            </div>
-            
-            <div class="mb-3">
-                <label for="financial-transaction-desc" class="form-label">Описание</label>
-                <MyTextarea @bind-Value="@Req.Description" id="financial-transaction-desc" maxlength="500" placeholder="Что это за транзакция?"/>
-                <ValidationMessage For="@(() => Req.Description)"/>
-            </div>
-
-            <div class="mb-3">
-                <label for="financial-transaction-createdAt" class="form-label">Дата и время *</label>
-                <InputDate Type="InputDateType.DateTimeLocal"
-                           @bind-Value="@Req.CreatedAt"
-                           id="financial-transaction-createdAt"
-                           class="form-control"/>
-                <ValidationMessage For="@(() => Req.CreatedAt)"/>
-            </div>
-
-            <div class="mb-3">
-                <button class="btn btn-primary">
-                    <i class="las la-lg me-1 @(IsEdit ? "la-edit" : "la-plus-circle")"></i>
-                    @(IsEdit ? Resources.Action.SaveChanges : $"{Resources.Action.Add} транзакцию")
-                </button>
-            </div>
-        </div>
-        <div class="col-8 ps-4">
-            <Divider Text="Состав транзакции" class="mb-4"/>
-            <div class="mb-3">
-                @foreach (var itemReq in Req.Items)
-                {
-                    <_TransactionItemFormFields Req="@itemReq"
-                                                Currency="@Account.FinancialCurrency"
-                                                OnStateChanged="@(StateHasChanged)"
-                                                CanDelete="@(Req.Items.Count > 1)"
-                                                OnDelete="@HandleDeleteItem"/>
-                }
-            </div>
-            <button type="button" class="btn btn-outline-dark btn-sm" @onclick="@HandleAddItem">
-                Добавить ещё <i class="las la-plus ms-1 la-lg"></i>
-            </button>
-            
-            <div class="h3 mt-5 text-secondary">
-                <span class="border-top border-secondary border-4 pt-2 px-4" style="--bs-border-opacity: .4;">Сумма: @Total()</span>
-            </div>
-        </div>
-    </div>
-</EditForm>
-
-@if (IsEdit)
-{
-    <hr>
-    <div class="text-end">
-        <button type="button" class="btn btn-link text-danger" @onclick="@HandleDelete">
-            <i class="las la-trash la-lg"></i>
-            @Resources.Action.Delete
-        </button>
-    </div>
-}
-
-@code {
-
-    [CascadingParameter]
-    public FinancialsStore Store { get; set; } = null!;
-
-    [Parameter]
-    public EventCallback OnStateChanged { get; set; }
-    
-    private bool IsEdit { get; set; }
-    private FinancialTransactionRequest Req { get; set; } = new();
-    private FinancialAccount Account { get; set; } = null!;
-    private FinancialTransaction? EditingTransaction { get; set; }
-    private List<Guid> EntryIds { get; set; } = new();
-
-    private List<(string Name, bool Val, string Icon, string Color)> TransactionTypes { get; set; } = new()
-    {
-        ("Пополнение", true, "las la-plus-circle", "success"),
-        ("Списание", false, "las la-minus-circle", "danger"),
-    };
-
-    protected override void OnParametersSet()
-    {
-        IsEdit = Store is {BodyState: FinancialsStore.BodyEnum.EditTransaction,BodyEditTransactionId: not null};
-        if (IsEdit)
-        {
-            EditingTransaction = Db
-                .FinancialTransactions
-                .Include(x => x.Items)
-                .First(x => x.Id.Equals(Store.BodyEditTransactionId));
-            EntryIds = new List<Guid>() {EditingTransaction.EntryId};
-            
-            EditingTransaction.MapTo(Req);
-            Req.Items = EditingTransaction.Items.Select(x =>
-            {
-                var itemReq = new FinancialTransactionItemRequest();
-                x.MapTo(itemReq);
-                itemReq.Id = x.Id;
-                return itemReq;
-            }).ToList();
-        }
-        else
-        {
-            Req.Items = new() {new()};
-            if (Store.AccountId.HasValue)
-            {
-                Req.AccountId = Store.AccountId.Value;
-            }
-        }
-        
-        Account = Db.FinancialAccounts
-            .Include(x => x.FinancialCurrency)
-            .Include(x => x.Entry)
-            .Include(x => x.Category)
-            .First(x => x.Id.Equals(Req.AccountId));
-        
-    }
-
-    private void HandleAddItem()
-    {
-        Req.Items.Add(new());
-        StateHasChanged();
-    }
-
-    private void HandleDeleteItem(FinancialTransactionItemRequest item)
-    {
-        if (Req.Items.Count > 1) Req.Items.Remove(item);
-    }
-
-    private void HandleEntryChanged(List<Guid> entryIds)
-    {
-        EntryIds = entryIds;
-        Req.EntryId = entryIds.FirstOrDefault();
-    }
-
-    private Task HandleReturn()
-    {
-        Store.BodyState = FinancialsStore.BodyEnum.Default;
-        return OnStateChanged.InvokeAsync();
-    }
-
-    private string Total()
-    {
-        return $"{Req.Items.Sum(x => x.Amount):N2} {Account.FinancialCurrency.Symbol}";
-    }
-
-    private Task HandleSubmit()
-    {
-        if (IsEdit && EditingTransaction != null)
-        {
-            FinManager.UpdateTransaction(EditingTransaction, Req);
-        }
-        else
-        {
-            FinManager.CreateTransaction(Req);
-        }
-        
-        Db.SaveChanges();
-
-        return HandleReturn();
-    }
-    
-    private async Task HandleDelete()
-    {
-        if (EditingTransaction == null) return;
-        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
-        if (!isConfirmed) return;
-        
-        FinManager.DeleteTransaction(EditingTransaction);
-        await Db.SaveChangesAsync();
-        await HandleReturn();
-    }
-
-}
+﻿@* @using Relaks.Views.Pages.Financials.ViewModels *@
+@* @using Relaks.Database *@
+@* @using Relaks.Mappers *@
+@* @using Relaks.Models.FinancialModels *@
+@* @using Console = System.Console *@
+@* @using Microsoft.EntityFrameworkCore *@
+@* @using Relaks.Managers *@
+@* *@
+@* @inject AppDbContext Db; *@
+@* @inject FinancialManager FinManager; *@
+@* @inject IJSRuntime JsRuntime; *@
+@* *@
+@* <div class="row align-items-center mb-3"> *@
+@*     <div class="col-auto"> *@
+@*         <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@HandleReturn" title="Вернуться"> *@
+@*             <i class="las la-arrow-left la-lg"></i> *@
+@*         </button> *@
+@*     </div> *@
+@*     <div class="col"> *@
+@*         <h5 class="mb-0">@(IsEdit ? "Изменить транзакцию" : "Добавить транзакцию")</h5> *@
+@*     </div> *@
+@* </div> *@
+@* *@
+@* <EditForm Model="@Req" OnValidSubmit="@HandleSubmit"> *@
+@*     <FluentValidationValidator DisableAssemblyScanning="@true"/> *@
+@*     <ValidationSummary/> *@
+@* *@
+@*     <div class="row"> *@
+@*         <div class="col-4"> *@
+@*             <Divider Text="Описание транзакции" class="mb-4"/> *@
+@*             <div class="mb-3"> *@
+@*                 <label class="form-label">Тип *</label> *@
+@*                 <div class="btn-group w-100"> *@
+@*                     @foreach (var t in TransactionTypes) *@
+@*                     { *@
+@*                         <button type="button" *@
+@*                                 @onclick="@(() => Req.IsPlus = t.Val)" *@
+@*                                 class="btn @(Req.IsPlus.HasValue && Req.IsPlus.Value == t.Val ? $"btn-{t.Color}" : "btn-outline-secondary")"> *@
+@*                             <i class="@t.Icon la-lg me-2"></i> *@
+@*                             @t.Name *@
+@*                         </button> *@
+@*                     } *@
+@*                 </div> *@
+@*                 <ValidationMessage For="@(() => Req.IsPlus)"/> *@
+@*             </div> *@
+@*              *@
+@*             <div class="mb-3"> *@
+@*                 <SelectEntry EntryIds="@EntryIds" EntryIdsChanged="@HandleEntryChanged" IsMultiple="@false" Label="Объединение *"/> *@
+@*                 <ValidationMessage For="@(() => Req.EntryId)"/> *@
+@*             </div> *@
+@*              *@
+@*             <div class="mb-3"> *@
+@*                 <label for="financial-transaction-desc" class="form-label">Описание</label> *@
+@*                 <MyTextarea @bind-Value="@Req.Description" id="financial-transaction-desc" maxlength="500" placeholder="Что это за транзакция?"/> *@
+@*                 <ValidationMessage For="@(() => Req.Description)"/> *@
+@*             </div> *@
+@* *@
+@*             <div class="mb-3"> *@
+@*                 <label for="financial-transaction-createdAt" class="form-label">Дата и время *</label> *@
+@*                 <InputDate Type="InputDateType.DateTimeLocal" *@
+@*                            @bind-Value="@Req.CreatedAt" *@
+@*                            id="financial-transaction-createdAt" *@
+@*                            class="form-control"/> *@
+@*                 <ValidationMessage For="@(() => Req.CreatedAt)"/> *@
+@*             </div> *@
+@* *@
+@*             <div class="mb-3"> *@
+@*                 <button class="btn btn-primary"> *@
+@*                     <i class="las la-lg me-1 @(IsEdit ? "la-edit" : "la-plus-circle")"></i> *@
+@*                     @(IsEdit ? Resources.Action.SaveChanges : $"{Resources.Action.Add} транзакцию") *@
+@*                 </button> *@
+@*             </div> *@
+@*         </div> *@
+@*         <div class="col-8 ps-4"> *@
+@*             <Divider Text="Состав транзакции" class="mb-4"/> *@
+@*             <div class="mb-3"> *@
+@*                 @foreach (var itemReq in Req.Items) *@
+@*                 { *@
+@*                     <_TransactionItemFormFields Req="@itemReq" *@
+@*                                                 Currency="@Account.FinancialCurrency" *@
+@*                                                 OnStateChanged="@(StateHasChanged)" *@
+@*                                                 CanDelete="@(Req.Items.Count > 1)" *@
+@*                                                 OnDelete="@HandleDeleteItem"/> *@
+@*                 } *@
+@*             </div> *@
+@*             <button type="button" class="btn btn-outline-dark btn-sm" @onclick="@HandleAddItem"> *@
+@*                 Добавить ещё <i class="las la-plus ms-1 la-lg"></i> *@
+@*             </button> *@
+@*              *@
+@*             <div class="h3 mt-5 text-secondary"> *@
+@*                 <span class="border-top border-secondary border-4 pt-2 px-4" style="--bs-border-opacity: .4;">Сумма: @Total()</span> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </EditForm> *@
+@* *@
+@* @if (IsEdit) *@
+@* { *@
+@*     <hr> *@
+@*     <div class="text-end"> *@
+@*         <button type="button" class="btn btn-link text-danger" @onclick="@HandleDelete"> *@
+@*             <i class="las la-trash la-lg"></i> *@
+@*             @Resources.Action.Delete *@
+@*         </button> *@
+@*     </div> *@
+@* } *@
+@* *@
+@* @code { *@
+@* *@
+@*     [CascadingParameter] *@
+@*     public FinancialsStore Store { get; set; } = null!; *@
+@* *@
+@*     [Parameter] *@
+@*     public EventCallback OnStateChanged { get; set; } *@
+@*      *@
+@*     private bool IsEdit { get; set; } *@
+@*     private FinancialTransactionRequest Req { get; set; } = new(); *@
+@*     private FinancialAccount Account { get; set; } = null!; *@
+@*     private FinancialTransaction? EditingTransaction { get; set; } *@
+@*     private List<Guid> EntryIds { get; set; } = new(); *@
+@* *@
+@*     private List<(string Name, bool Val, string Icon, string Color)> TransactionTypes { get; set; } = new() *@
+@*     { *@
+@*         ("Пополнение", true, "las la-plus-circle", "success"), *@
+@*         ("Списание", false, "las la-minus-circle", "danger"), *@
+@*     }; *@
+@* *@
+@*     protected override void OnParametersSet() *@
+@*     { *@
+@*         IsEdit = Store is {BodyState: FinancialsStore.BodyEnum.EditTransaction,BodyEditTransactionId: not null}; *@
+@*         if (IsEdit) *@
+@*         { *@
+@*             EditingTransaction = Db *@
+@*                 .FinancialTransactions *@
+@*                 .Include(x => x.Items) *@
+@*                 .First(x => x.Id.Equals(Store.BodyEditTransactionId)); *@
+@*             EntryIds = new List<Guid>() {EditingTransaction.EntryId}; *@
+@*              *@
+@*             EditingTransaction.MapTo(Req); *@
+@*             Req.Items = EditingTransaction.Items.Select(x => *@
+@*             { *@
+@*                 var itemReq = new FinancialTransactionItemRequest(); *@
+@*                 x.MapTo(itemReq); *@
+@*                 itemReq.Id = x.Id; *@
+@*                 return itemReq; *@
+@*             }).ToList(); *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             Req.Items = new() {new()}; *@
+@*             if (Store.AccountId.HasValue) *@
+@*             { *@
+@*                 Req.AccountId = Store.AccountId.Value; *@
+@*             } *@
+@*         } *@
+@*          *@
+@*         Account = Db.FinancialAccounts *@
+@*             .Include(x => x.FinancialCurrency) *@
+@*             .Include(x => x.Category) *@
+@*             .First(x => x.Id.Equals(Req.AccountId)); *@
+@*          *@
+@*     } *@
+@* *@
+@*     private void HandleAddItem() *@
+@*     { *@
+@*         Req.Items.Add(new()); *@
+@*         StateHasChanged(); *@
+@*     } *@
+@* *@
+@*     private void HandleDeleteItem(FinancialTransactionItemRequest item) *@
+@*     { *@
+@*         if (Req.Items.Count > 1) Req.Items.Remove(item); *@
+@*     } *@
+@* *@
+@*     private void HandleEntryChanged(List<Guid> entryIds) *@
+@*     { *@
+@*         EntryIds = entryIds; *@
+@*         Req.EntryId = entryIds.FirstOrDefault(); *@
+@*     } *@
+@* *@
+@*     private Task HandleReturn() *@
+@*     { *@
+@*         Store.BodyState = FinancialsStore.BodyEnum.Default; *@
+@*         return OnStateChanged.InvokeAsync(); *@
+@*     } *@
+@* *@
+@*     private string Total() *@
+@*     { *@
+@*         return $"{Req.Items.Sum(x => x.Amount):N2} {Account.FinancialCurrency.Symbol}"; *@
+@*     } *@
+@* *@
+@*     private Task HandleSubmit() *@
+@*     { *@
+@*         if (IsEdit && EditingTransaction != null) *@
+@*         { *@
+@*             FinManager.UpdateTransaction(EditingTransaction, Req); *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             FinManager.CreateTransaction(Req); *@
+@*         } *@
+@*          *@
+@*         Db.SaveChanges(); *@
+@* *@
+@*         return HandleReturn(); *@
+@*     } *@
+@*      *@
+@*     private async Task HandleDelete() *@
+@*     { *@
+@*         if (EditingTransaction == null) return; *@
+@*         var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation); *@
+@*         if (!isConfirmed) return; *@
+@*          *@
+@*         FinManager.DeleteTransaction(EditingTransaction); *@
+@*         await Db.SaveChangesAsync(); *@
+@*         await HandleReturn(); *@
+@*     } *@
+@* *@
+@* } *@

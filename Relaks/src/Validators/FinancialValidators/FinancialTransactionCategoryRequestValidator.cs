@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Relaks.Database;
 using Relaks.Models.FinancialModels;
-using Relaks.Views.Pages.Financials.ViewModels;
+using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels;
 
 namespace Relaks.Validators.FinancialValidators;
 

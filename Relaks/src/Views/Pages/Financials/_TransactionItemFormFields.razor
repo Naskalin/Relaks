@@ -1,66 +1,66 @@
-﻿@using Relaks.Views.Pages.Financials.ViewModels
-@using Relaks.Models.FinancialModels
-
-<div class="row group-show align-items-end mb-3">
-    <div class="col">
-        <div class="row">
-            <div class="col-7">
-                <label for="" class="form-label">Категория</label>
-                <TreeSelect TNode="FinancialTransactionCategory" 
-                            Nodes="@Store.TransactionCategories"
-                            NodeId="@Req.CategoryId"
-                            OnClickNode="@(guid => Req.CategoryId = guid)"
-                            />
-                <ValidationMessage For="@(() => Req.CategoryId)"/>
-            </div>
-            <div class="col-2">
-                <label for="transaction-item-quantity-@FieldId" class="form-label">Количество</label>
-                <BootstrapInputNumber @bind-Value="Req.Quantity" IsSelectAllTextOnFocus="true" Id="@($"transaction-item-quantity-{FieldId}")" Min="1"/>
-                <ValidationMessage For="@(() => Req.Quantity)"/>
-            </div>
-            <div class="col-3">
-                <label for="transaction-item-amount-@FieldId" class="form-label">Сумма</label>
-                <BootstrapInputGroup>
-                    <BootstrapInputNumber @bind-Value="Req.Amount"
-                                          IsSelectAllTextOnFocus="true" 
-                                          Step="0.01" 
-                                          Id="@($"transaction-item-amount-{FieldId}")"
-                                          OnValueChanged="@(_ => OnStateChanged.InvokeAsync())"/>
-                    <BootstrapInputGroupLabel DisplayText="@Currency?.Symbol"/>
-                </BootstrapInputGroup>
-                <ValidationMessage For="@(() => Req.Amount)"/>
-            </div>
-        </div>
-    </div>
-    <div class="col-auto group-show__item">
-        <button type="button"
-                class="btn btn-circle btn-outline-danger btn-sm"
-                style="position: relative; bottom: 4px;"
-                disabled="@(!CanDelete)"
-                @onclick="@(() => OnDelete.InvokeAsync(Req))">
-            <i class="las la-times la-lg"></i>
-        </button>
-    </div>
-</div>
-
-@code {
-    [CascadingParameter]
-    public FinancialsStore Store { get; set; } = null!;
-    
-    [Parameter]
-    public bool CanDelete { get; set; }
-
-    [Parameter]
-    public FinancialCurrency? Currency { get; set; } = null!;
-    
-    [Parameter]
-    public EventCallback OnStateChanged { get; set; }
-    
-    [Parameter]
-    public EventCallback<FinancialTransactionItemRequest> OnDelete { get; set; }
-
-    [Parameter]
-    public FinancialTransactionItemRequest Req { get; set; } = new();
-    
-    private string FieldId { get; set; } = Guid.NewGuid().ToString();
-}
+﻿@* @using Relaks.Views.Pages.Financials.ViewModels *@
+@* @using Relaks.Models.FinancialModels *@
+@* *@
+@* <div class="row group-show align-items-end mb-3"> *@
+@*     <div class="col"> *@
+@*         <div class="row"> *@
+@*             <div class="col-7"> *@
+@*                 <label for="" class="form-label">Категория</label> *@
+@*                 <TreeSelect TNode="FinancialTransactionCategory"  *@
+@*                             Nodes="@Store.TransactionCategories" *@
+@*                             NodeId="@Req.CategoryId" *@
+@*                             OnClickNode="@(guid => Req.CategoryId = guid)" *@
+@*                             /> *@
+@*                 <ValidationMessage For="@(() => Req.CategoryId)"/> *@
+@*             </div> *@
+@*             <div class="col-2"> *@
+@*                 <label for="transaction-item-quantity-@FieldId" class="form-label">Количество</label> *@
+@*                 <BootstrapInputNumber @bind-Value="Req.Quantity" IsSelectAllTextOnFocus="true" Id="@($"transaction-item-quantity-{FieldId}")" Min="1"/> *@
+@*                 <ValidationMessage For="@(() => Req.Quantity)"/> *@
+@*             </div> *@
+@*             <div class="col-3"> *@
+@*                 <label for="transaction-item-amount-@FieldId" class="form-label">Сумма</label> *@
+@*                 <BootstrapInputGroup> *@
+@*                     <BootstrapInputNumber @bind-Value="Req.Amount" *@
+@*                                           IsSelectAllTextOnFocus="true"  *@
+@*                                           Step="0.01"  *@
+@*                                           Id="@($"transaction-item-amount-{FieldId}")" *@
+@*                                           OnValueChanged="@(_ => OnStateChanged.InvokeAsync())"/> *@
+@*                     <BootstrapInputGroupLabel DisplayText="@Currency?.Symbol"/> *@
+@*                 </BootstrapInputGroup> *@
+@*                 <ValidationMessage For="@(() => Req.Amount)"/> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@*     <div class="col-auto group-show__item"> *@
+@*         <button type="button" *@
+@*                 class="btn btn-circle btn-outline-danger btn-sm" *@
+@*                 style="position: relative; bottom: 4px;" *@
+@*                 disabled="@(!CanDelete)" *@
+@*                 @onclick="@(() => OnDelete.InvokeAsync(Req))"> *@
+@*             <i class="las la-times la-lg"></i> *@
+@*         </button> *@
+@*     </div> *@
+@* </div> *@
+@* *@
+@* @code { *@
+@*     [CascadingParameter] *@
+@*     public FinancialsStore Store { get; set; } = null!; *@
+@*      *@
+@*     [Parameter] *@
+@*     public bool CanDelete { get; set; } *@
+@* *@
+@*     [Parameter] *@
+@*     public FinancialCurrency? Currency { get; set; } = null!; *@
+@*      *@
+@*     [Parameter] *@
+@*     public EventCallback OnStateChanged { get; set; } *@
+@*      *@
+@*     [Parameter] *@
+@*     public EventCallback<FinancialTransactionItemRequest> OnDelete { get; set; } *@
+@* *@
+@*     [Parameter] *@
+@*     public FinancialTransactionItemRequest Req { get; set; } = new(); *@
+@*      *@
+@*     private string FieldId { get; set; } = Guid.NewGuid().ToString(); *@
+@* } *@

@@ -1,42 +1,31 @@
-﻿@using Relaks.Views.Pages.Financials.ViewModels
+﻿@using Relaks.Managers
 @using Relaks.Models.FinancialModels
 @using Relaks.Database
-@using Relaks.Interfaces
-@using Relaks.Managers
+@using Relaks.Database.Repositories
 @using Relaks.Mappers
+@using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels
 
 @inject AppDbContext Db;
-
-<div class="row align-items-center mb-3">
-    <div class="col-auto">
-        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@HandleReturn" title="Вернуться">
-            <i class="las la-arrow-left la-lg"></i>
-        </button>
-    </div>
-    <div class="col">
-        <h5 class="mb-0">@(IsEdit ? "Изменить категорию транзакций" : "Добавить категорию для транзакций")</h5>
-    </div>
-</div>
 
 <EditForm Model="@Req" OnValidSubmit="@HandleSubmit">
     <FluentValidationValidator DisableAssemblyScanning="@true"/>
     <ValidationSummary/>
-    
+
     <div class="mb-3">
         <label for="financialCategoryTitle" class="form-label">Название</label>
         <InputText id="financialCategoryTitle" @bind-Value="@Req.Title" required="required" class="form-control"/>
         <ValidationMessage For="@(() => Req.Title)"/>
     </div>
-    
+
     <div class="mb-3">
-        <label for="" class="form-label">Родитель</label>
+        <label class="form-label">Родитель</label>
         <TreeSelect TNode="FinancialTransactionCategory"
-                    Nodes="@Store.TransactionCategories"
+                    Nodes="@TransactionCategories"
                     NodeId="@Req.ParentId"
                     OnClickNode="@(guid => Req.ParentId = guid)"/>
         <ValidationMessage For="@(() => Req.ParentId)"/>
     </div>
-    
+
     <div class="mb-3">
         <button class="btn btn-primary">
             <i class="las la-lg me-1 @(IsEdit ? "la-edit" : "la-plus-circle")"></i>
@@ -46,42 +35,35 @@
 </EditForm>
 
 @code {
-    [Parameter]
-    public EventCallback OnStateChanged { get; set; }
-    
-    [CascadingParameter]
-    public FinancialsStore Store { get; set; } = null!;
 
+    [Parameter]
+    public Guid? CategoryId { get; set; } 
+    
+    [Parameter]
+    public EventCallback OnFormSubmit { get; set; }
+    
+    private List<FinancialTransactionCategory> TransactionCategories { get; set; } = new();
     private FinancialTransactionCategoryRequest Req { get; set; } = new();
     private bool IsEdit { get; set; }
     private FinancialTransactionCategory? Category { get; set; }
 
-
+    protected override void OnInitialized()
+    {
+        TransactionCategories = Db.FinancialTransactionCategories.ToBaseTree();
+    }
+    
     protected override void OnParametersSet()
     {
-        IsEdit = Store is {BodyState: FinancialsStore.BodyEnum.EditTransactionCategory,BodyEditTransactionCategoryId: not null};
+        Req = new();
+        IsEdit = CategoryId.HasValue;
         if (IsEdit)
         {
-            Category = Db.FinancialTransactionCategories.First(x => x.Id.Equals(Store.BodyEditTransactionCategoryId));
+            Category = Db.FinancialTransactionCategories.First(x => x.Id.Equals(CategoryId));
             Category.MapTo(Req);
             Req.Id = Category.Id;
         }
     }
-    
-    private Task HandleReturn()
-    {
-        if (Store.BackToBodyState.HasValue)
-        {
-            Store.BodyState = Store.BackToBodyState.Value;
-            Store.BackToBodyState = null;
-        }
-        else
-        {
-            Store.BodyState = FinancialsStore.BodyEnum.Default;   
-        }
-        return OnStateChanged.InvokeAsync();
-    }
-    
+
     private Task HandleSubmit()
     {
         if (IsEdit && Category != null)
@@ -98,11 +80,10 @@
             TreeManager.UpdateTreePath(category, parent);
             Db.FinancialTransactionCategories.Add(category);
         }
-        
+
         Db.SaveChanges();
-        Store.FindTransactionCategories();
-        return HandleReturn();
+        return OnFormSubmit.InvokeAsync();
     }
-    
-    
+
+
 }

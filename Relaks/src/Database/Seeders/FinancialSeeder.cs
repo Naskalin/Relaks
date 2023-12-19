@@ -15,17 +15,17 @@ public partial class DatabaseSeeder
     private void SeedFinancials()
     {
         var entry = Db.BaseEntries.First(x => x.Id.Equals(Guid.Parse("01FBDDDD-1D69-4757-A8D2-5050A1AED4D4")));
-        if (!Db.FinancialAccountCategories.Any()) CreateFinancialAccountCategories();
+        if (!Db.FinancialAccountCategories.Any()) CreateFinancialAccountCategories(entry);
         if (!Db.FinancialCurrencies.Any()) CreateCurrencies();
-        if (!Db.FinancialAccounts.Any()) CreateFinancialAccounts(entry);
+        if (!Db.FinancialAccounts.Any()) CreateFinancialAccounts();
         if (!Db.FinancialTransactionCategories.Any()) CreateFinancialTransactionCategories();
         if (!Db.FinancialTransactions.Any()) CreateFinancialTransactions();
     }
 
-    private void CreateFinancialAccountCategories()
+    private void CreateFinancialAccountCategories(BaseEntry entry)
     {
-        Db.FinancialAccountCategories.Add(new() {Title = "Наличные"});
-        Db.FinancialAccountCategories.Add(new() {Title = "Кредитные карты"});
+        Db.FinancialAccountCategories.Add(new() {Title = "Наличные", EntryId = entry.Id});
+        Db.FinancialAccountCategories.Add(new() {Title = "Кредитные карты", EntryId = entry.Id});
         Db.SaveChanges();
     }
 
@@ -109,7 +109,7 @@ public partial class DatabaseSeeder
         Db.SaveChanges();
     }
 
-    private void CreateFinancialAccounts(BaseEntry entry)
+    private void CreateFinancialAccounts()
     {
         var rub = Db.FinancialCurrencies.First(x => x.Id.Equals("RUB"));
         var usd = Db.FinancialCurrencies.First(x => x.Id.Equals("USD"));
@@ -121,7 +121,6 @@ public partial class DatabaseSeeder
         {
             var item = new FinancialAccount
             {
-                EntryId = entry.Id,
                 Description = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null}),
                 Title = $"Наличные",
                 FinancialCurrencyId = currency.Id,

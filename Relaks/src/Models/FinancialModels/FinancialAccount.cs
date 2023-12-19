@@ -24,11 +24,11 @@ public class FinancialAccount
     /// </summary>
     public DateTime? EndAt { get; set; }
 
-    /// <summary>
-    /// Владелец счёта
-    /// </summary>
-    public Guid EntryId { get; set; }
-    public BaseEntry Entry { get; set; } = null!;
+    // /// <summary>
+    // /// Владелец счёта
+    // /// </summary>
+    // public Guid EntryId { get; set; }
+    // public BaseEntry Entry { get; set; } = null!;
 
     public string TitleWithCurrency() => $"{Title} ({FinancialCurrencyId}), {Balance.ToString("N2")} {FinancialCurrency.Symbol}";
     

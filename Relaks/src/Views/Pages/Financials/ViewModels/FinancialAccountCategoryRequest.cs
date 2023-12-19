@@ -3,4 +3,5 @@
 public class FinancialAccountCategoryRequest
 {
     public string Title { get; set; } = null!;
+    public Guid? EntryId { get; set; }
 }

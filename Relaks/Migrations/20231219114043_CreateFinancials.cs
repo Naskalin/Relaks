@@ -16,11 +16,18 @@ namespace Relaks.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Title = table.Column<string>(type: "TEXT", nullable: false)
+                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    EntryId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FinancialAccountCategories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FinancialAccountCategories_Entries_EntryId",
+                        column: x => x.EntryId,
+                        principalTable: "Entries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -53,18 +60,17 @@ namespace Relaks.Migrations
                     CategoryId = table.Column<Guid>(type: "TEXT", nullable: false),
                     StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndAt = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    EntryId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Balance = table.Column<decimal>(type: "TEXT", precision: 19, scale: 4, nullable: false)
+                    Balance = table.Column<decimal>(type: "TEXT", precision: 19, scale: 4, nullable: false),
+                    BaseEntryId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FinancialAccounts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FinancialAccounts_Entries_EntryId",
-                        column: x => x.EntryId,
+                        name: "FK_FinancialAccounts_Entries_BaseEntryId",
+                        column: x => x.BaseEntryId,
                         principalTable: "Entries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_FinancialAccounts_FinancialAccountCategories_CategoryId",
                         column: x => x.CategoryId,
@@ -138,14 +144,19 @@ namespace Relaks.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_FinancialAccountCategories_EntryId",
+                table: "FinancialAccountCategories",
+                column: "EntryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FinancialAccounts_BaseEntryId",
+                table: "FinancialAccounts",
+                column: "BaseEntryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FinancialAccounts_CategoryId",
                 table: "FinancialAccounts",
                 column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FinancialAccounts_EntryId",
-                table: "FinancialAccounts",
-                column: "EntryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FinancialAccounts_FinancialCurrencyId",
