@@ -1,6 +1,6 @@
 ﻿using Relaks.Interfaces;
 
-namespace Relaks.Views.Pages.Financials.ViewModels;
+namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
 
 public class FinancialTransactionListRequest : IPaginatable
 {

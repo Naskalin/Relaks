@@ -1,0 +1,88 @@
+﻿@using Relaks.Views.Pages.EntryFinancials.ViewModels
+@using Relaks.Interfaces
+@using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels
+
+<div class="d-flex align-items-center mb-3 gap-2">
+    <div class="col">
+        <span class="h5">Транзакции</span>
+    </div>
+    <div class="col-auto">
+        <button type="button"
+                class="btn btn-outline-primary"
+                disabled="@(!Store.AccountId.HasValue)"
+                title="@(!Store.AccountId.HasValue ? "Выберите счёт" : "")"
+                @onclick="@HandleAddTransaction">
+            Транзакция
+            <i class="las la-plus-circle la-lg ms-1"></i>
+        </button>
+    </div>
+    <div class="col-auto">
+        <button type="button" class="btn btn-outline-primary" @onclick="@HandleAddCategory">
+            Категория транзакции
+            <i class="las la-plus-circle la-lg ms-1"></i>
+        </button>
+    </div>
+    @* <div class="col-auto"> *@
+    @*     <button type="button" class="btn btn-outline-secondary" @onclick="@HandleShowTransactionCategories"> *@
+    @*         Категории транзакций *@
+    @*         <i class="las la-angle-right la-lg ms-1"></i> *@
+    @*     </button> *@
+    @* </div> *@
+</div>
+
+<_TransactionsList OnStateChanged="@(() => OnStateChanged.InvokeAsync())"
+                   FinancialAccountId="@Store.AccountId"
+                   FirstRow="@(new GuidRowView() {Th = FirstRowTh, Td = FirstRowTd})"
+/>
+
+@code {
+
+    [CascadingParameter]
+    public FinancialsStore Store { get; set; } = null!;
+    
+    [CascadingParameter]
+    public FinancialTransactionCategoriesStore TransactionCategoriesStore { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+
+    private Task HandleAddCategory()
+    {
+        TransactionCategoriesStore.SidebarState = FinancialTransactionCategoriesStore.SidebarStateEnum.New;
+        return TransactionCategoriesStore.ShowFormModal();
+    }
+
+    private Task HandleAddTransaction()
+    {
+        Store.BodyState = FinancialsStore.BodyEnum.AddTransaction;
+        return OnStateChanged.InvokeAsync();
+    }
+
+    private RenderFragment<Guid> FirstRowTd => guid => __builder =>
+    {
+        <td>
+            <button type="button" class="btn btn-circle btn-outline-secondary btn-sm group-show__item" @onclick="@(() => HandleEditTransaction(guid))">
+                <i class="las la-edit la-lg"></i>
+            </button>
+        </td>
+    };
+
+    private RenderFragment FirstRowTh => __builder =>
+    {
+        <th style="width: 50px"></th>
+    };
+
+    private Task HandleEditTransaction(Guid transactionId)
+    {
+
+        Store.BodyEditTransactionId = transactionId;
+        Store.BodyState = FinancialsStore.BodyEnum.EditTransaction;
+        return OnStateChanged.InvokeAsync();
+    }
+
+    private Task HandleShowTransactionCategories()
+    {
+        Store.BodyState = FinancialsStore.BodyEnum.TransactionCategories;
+        return OnStateChanged.InvokeAsync();
+    }
+}

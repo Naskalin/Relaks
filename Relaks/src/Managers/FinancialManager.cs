@@ -2,7 +2,7 @@
 using Relaks.Database;
 using Relaks.Mappers;
 using Relaks.Models.FinancialModels;
-using Relaks.Views.Pages.Financials.ViewModels;
+using Relaks.Views.Pages.EntryFinancials.ViewModels;
 
 namespace Relaks.Managers;
 

@@ -47,8 +47,8 @@
         StateHasChanged();
         return Task.CompletedTask;
     }
-    
-    protected override void OnInitialized()
+
+    protected override void OnParametersSet()
     {
         FlatNodes = Nodes.ToFlatById();
     }

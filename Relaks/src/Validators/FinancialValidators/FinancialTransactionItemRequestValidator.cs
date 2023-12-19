@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Relaks.Views.Pages.Financials.ViewModels;
+using Relaks.Views.Pages.EntryFinancials.ViewModels;
 
 namespace Relaks.Validators.FinancialValidators;
 

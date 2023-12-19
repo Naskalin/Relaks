@@ -30,13 +30,4 @@
         <Content Remove="src\Database\**" />
         <Content Remove="assets\**" />
     </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="src\Views\Pages\FinancialTransactionCategories\_TransactionCategoriesList.razor" />
-      <AdditionalFiles Include="src\Views\Pages\FinancialTransactionCategories\_TransactionCategoryForm.razor" />
-    </ItemGroup>
-
-<!--    <ItemGroup>-->
-<!--      <UpToDateCheckInput Remove="Pages\Shared\_Layout.cshtml" />-->
-<!--    </ItemGroup>-->
 </Project>

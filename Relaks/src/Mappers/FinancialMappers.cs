@@ -1,5 +1,5 @@
 ﻿using Relaks.Models.FinancialModels;
-using Relaks.Views.Pages.Financials.ViewModels;
+using Relaks.Views.Pages.EntryFinancials.ViewModels;
 using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels;
 
 namespace Relaks.Mappers;

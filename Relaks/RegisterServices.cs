@@ -17,7 +17,7 @@ using Relaks.Validators.EntryTagValidators;
 using Relaks.Validators.EntryValidators;
 using Relaks.Validators.FinancialValidators;
 using Relaks.Validators.StructureValidators;
-using Relaks.Views.Pages.Financials.ViewModels;
+using Relaks.Views.Pages.EntryFinancials.ViewModels;
 using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels;
 
 namespace Relaks;

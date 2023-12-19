@@ -1,0 +1,94 @@
+﻿@page "/entries/{entryId:guid}/financials"
+@page "/entries/{entryId:guid}/financials/{accountId:guid}"
+
+@using Relaks.Views.Pages.EntryFinancials.ViewModels
+@using Relaks.Database
+@using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels
+
+@inject AppDbContext Db;
+@inject NavigationManager Navigation;
+@inject DialogService DialogService;
+
+<EntryProfileLayout EntryId="@EntryId">
+    <EntryProfileTabs EntryId="@EntryId"/>
+    <MyTitle>Финансы</MyTitle>
+
+    <CascadingValue Value="@TransactionCategoriesStore">
+        <CascadingValue Value="@Store">
+
+            <div class="row">
+                <div class="col-4">
+                    <div>
+                        @switch (Store.SidebarState)
+                        {
+                            case FinancialsStore.SidebarEnum.EditAccountCategory:
+                            case FinancialsStore.SidebarEnum.AddAccountCategory:
+                                <_AccountCategoryForm OnStateChanged="@StateHasChanged"/>
+                                break;
+                            case FinancialsStore.SidebarEnum.EditAccount:
+                            case FinancialsStore.SidebarEnum.AddAccount:
+                                <_AccountForm OnStateChanged="@StateHasChanged"/>
+                                break;
+                            default:
+                                <_SidebarDefault OnStateChanged="@StateHasChanged"/>
+                                break;
+                        }
+                    </div>
+                </div>
+                <div class="col-8">
+                    @switch (Store.BodyState)
+                    {
+                        case FinancialsStore.BodyEnum.EditTransaction:
+                        case FinancialsStore.BodyEnum.AddTransaction:
+                            <_TransactionForm OnStateChanged="@StateHasChanged"/>
+                            break;
+                        @*     case FinancialsStore.BodyEnum.EditTransactionCategory: *@
+                        @*     case FinancialsStore.BodyEnum.AddTransactionCategory: *@
+                        @*         <_TransactionCategoryForm OnStateChanged="@StateHasChanged"/> *@
+                        @*         break; *@
+                        @*     case FinancialsStore.BodyEnum.TransactionCategories: *@
+                        @*         <_TransactionCategoriesList OnStateChanged="@StateHasChanged"/> *@
+                        @*         break; *@
+                        default:
+                            <_BodyDefault OnStateChanged="@StateHasChanged"/>
+                            break;
+                    }
+
+                </div>
+            </div>
+        </CascadingValue>
+    </CascadingValue>
+</EntryProfileLayout>
+
+@code {
+    private FinancialsStore Store { get; set; } = null!;
+    private FinancialTransactionCategoriesStore TransactionCategoriesStore { get; set; } = null!;
+
+    [Parameter]
+    public Guid EntryId { get; set; }
+
+    [Parameter]
+    public Guid? AccountId { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Store = new(Db, EntryId);
+        TransactionCategoriesStore = new FinancialTransactionCategoriesStore(Db, DialogService);
+        TransactionCategoriesStore.FindCategories();
+        Store.Initialize();
+        Navigation.LocationChanged += HandleLocationChanged;
+    }
+
+    private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        Store.AccountId = AccountId;
+        Store.BodyState = FinancialsStore.BodyEnum.Default;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        Navigation.LocationChanged -= HandleLocationChanged;
+    }
+
+}

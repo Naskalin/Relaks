@@ -3,10 +3,12 @@ using Relaks.Database;
 using Relaks.Database.Repositories;
 using Relaks.Models.FinancialModels;
 
-namespace Relaks.Views.Pages.Financials.ViewModels;
+namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
 
-public class FinancialsStore(AppDbContext db)
+public class FinancialsStore(AppDbContext db, Guid entryId)
 {
+    public Guid EntryId { get; } = entryId;
+
     public enum SidebarEnum
     {
         Default,
@@ -33,20 +35,20 @@ public class FinancialsStore(AppDbContext db)
     public Guid? BodyEditTransactionCategoryId { get; set; }
     public Guid? SidebarEditAccountCategoryId { get; set; }
     public Guid? SidebarEditAccountId { get; set; }
-    public List<FinancialTransactionCategory> TransactionCategories { get; set; } = new();
+    // public List<FinancialTransactionCategory> TransactionCategories { get; set; } = new();
     public List<FinancialCurrency> Currencies { get; set; } = new();
     public Guid? AccountId { get; set; }
 
     public void Initialize()
     {
         FindCurrencies();
-        FindTransactionCategories();
+        // FindTransactionCategories();
     }
 
-    public void FindTransactionCategories()
-    {
-        TransactionCategories = db.FinancialTransactionCategories.ToBaseTree();
-    }
+    // public void FindTransactionCategories()
+    // {
+    //     TransactionCategories = db.FinancialTransactionCategories.ToBaseTree();
+    // }
     
     private void FindCurrencies()
     {
