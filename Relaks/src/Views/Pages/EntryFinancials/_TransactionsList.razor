@@ -78,12 +78,12 @@
     public Guid? FinancialAccountId { get; set; }
 
     private FinancialTransactionListRequest TransactionListRequest { get; set; } = new() {Page = 1, PerPage = 10};
-    private PaginatableResult<FinancialTransaction> Transactions { get; set; } = new();
+    private PaginatableResult<EntryFinancialTransaction> Transactions { get; set; } = new();
 
 
     private void FindTransactions()
     {
-        var q = Db.FinancialTransactions
+        var q = Db.EntryFinancialTransactions
             .Include(x => x.Entry)
             .Include(x => x.Account).ThenInclude(a => a.FinancialCurrency)
             .OrderByDescending(x => x.CreatedAt);

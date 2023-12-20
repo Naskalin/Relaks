@@ -19,7 +19,7 @@ public partial class DatabaseSeeder
         if (!Db.FinancialCurrencies.Any()) CreateCurrencies();
         if (!Db.FinancialAccounts.Any()) CreateFinancialAccounts();
         if (!Db.FinancialTransactionCategories.Any()) CreateFinancialTransactionCategories();
-        if (!Db.FinancialTransactions.Any()) CreateFinancialTransactions();
+        if (!Db.EntryFinancialTransactions.Any()) CreateFinancialTransactions();
     }
 
     private void CreateFinancialAccountCategories(BaseEntry entry)
@@ -29,14 +29,14 @@ public partial class DatabaseSeeder
         Db.SaveChanges();
     }
 
-    private FinancialTransaction? PreviousTransaction { get; set; }
+    private EntryFinancialTransaction? PreviousTransaction { get; set; }
     private void CreateFinancialTransactions()
     {
         var account = Db.FinancialAccounts.First(x => x.FinancialCurrencyId.Equals("RUB"));
         var entryId = Guid.Parse("01B137DA-A3CF-4C08-AC3E-752B3F156ED4");
         var categories = Db.FinancialTransactionCategories.ToDictionary(x => x.Title, x => x.Id);
 
-        var transactions = new List<FinancialTransaction>();
+        var transactions = new List<EntryFinancialTransaction>();
         transactions.Add(new()
         {
           AccountId = account.Id,
@@ -72,7 +72,7 @@ public partial class DatabaseSeeder
         }
           
         account.Balance = transactions.Last().Balance;
-        Db.FinancialTransactions.AddRange(transactions);
+        Db.EntryFinancialTransactions.AddRange(transactions);
         
         Db.SaveChanges();
     }

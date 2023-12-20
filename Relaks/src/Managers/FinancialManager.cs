@@ -8,14 +8,16 @@ namespace Relaks.Managers;
 
 public class FinancialManager(AppDbContext db)
 {
-    public void DeleteTransaction(FinancialTransaction transaction)
+    // public void DeleteTransaction(EntryFinancialTransaction transaction)
+    public void DeleteTransaction(BaseFinancialTransaction transaction)
     {
         // 9:45---10:00(Удаляемая)---10:15---10:30
-        db.FinancialTransactions.Remove(transaction);
+        // db.EntryFinancialTransactions.Remove(transaction);
+        db.BaseFinancialTransactions.Remove(transaction);
         
         var account = db.FinancialAccounts.First(x => x.Id.Equals(transaction.AccountId));
         var transactionsQuery = db
-            .FinancialTransactions
+            .EntryFinancialTransactions
             .Include(x => x.Items)
             .OrderBy(x => x.CreatedAt)
             .Where(x => x.AccountId.Equals(transaction.AccountId))
@@ -40,30 +42,29 @@ public class FinancialManager(AppDbContext db)
     
     public void CreateTransaction(FinancialTransactionRequest req)
     {
-        var transaction = new FinancialTransaction();
+        var transaction = new EntryFinancialTransaction();
         req.MapTo(transaction);
-        CreateItemsForTransaction(transaction, req);
+        CreateItemsForTransaction(transaction, req.Items);
         transaction.UpdateTotal();
         UpdateBalanceForNewTransaction(transaction);
-        db.FinancialTransactions.Add(transaction);
+        db.EntryFinancialTransactions.Add(transaction);
     }
 
-    public void UpdateTransaction(FinancialTransaction transaction, FinancialTransactionRequest req)
+    public void UpdateTransaction(EntryFinancialTransaction transaction, FinancialTransactionRequest req)
     {
         var initialFromBalance = transaction.FromBalance();
         var initialCreatedAt = transaction.CreatedAt;
         req.MapTo(transaction);
-        DeleteItemsForTransaction(transaction, req);
-        UpdateItemsForTransaction(transaction, req);
-        CreateItemsForTransaction(transaction, req);
+        DeleteItemsForTransaction(transaction, req.Items);
+        UpdateItemsForTransaction(transaction, req.Items);
+        CreateItemsForTransaction(transaction, req.Items);
         transaction.UpdateTotal();
         UpdateBalanceForExistingTransaction(transaction, initialFromBalance, initialCreatedAt);
     }
     
-    private static void CreateItemsForTransaction(FinancialTransaction transaction, FinancialTransactionRequest req)
+    private static void CreateItemsForTransaction(EntryFinancialTransaction transaction, List<FinancialTransactionItemRequest> reqItems)
     {
-        var newItems = req
-            .Items
+        var newItems = reqItems
             .Where(x => !x.Id.HasValue) // new items has no id
             .Select(x =>
             {
@@ -75,29 +76,29 @@ public class FinancialManager(AppDbContext db)
         transaction.Items.AddRange(newItems);
     }
 
-    private static void DeleteItemsForTransaction(FinancialTransaction transaction, FinancialTransactionRequest req)
+    private static void DeleteItemsForTransaction(EntryFinancialTransaction transaction, List<FinancialTransactionItemRequest> reqItems)
     {
-        var reqIds = req.Items.Where(x => x.Id.HasValue).Select(x => x.Id!.Value).ToList();
+        var reqIds = reqItems.Where(x => x.Id.HasValue).Select(x => x.Id!.Value).ToList();
         transaction.Items.RemoveAll(x => !reqIds.Contains(x.Id));
     }
 
-    private static void UpdateItemsForTransaction(FinancialTransaction transaction, FinancialTransactionRequest req)
+    private static void UpdateItemsForTransaction(EntryFinancialTransaction transaction, List<FinancialTransactionItemRequest> reqItems)
     {
-        req.Items.Where(x => x.Id.HasValue).ToList().ForEach(reqItem =>
+        reqItems.Where(x => x.Id.HasValue).ToList().ForEach(reqItem =>
         {
             var item = transaction.Items.First(t => t.Id.Equals(reqItem.Id));
             reqItem.MapTo(item);
         });
     }
 
-    private FinancialTransaction? PreviousTransaction { get; set; }
+    private EntryFinancialTransaction? PreviousTransaction { get; set; }
 
     /// <summary>
     /// Отсортированные транзакции
     /// </summary>
     /// <param name="orderedTransactions">Отсортированные транзакции в порядке возрастания</param>
     /// <param name="fromBalance">Начальный баланс для первой транзакции</param>
-    private void UpdateBalanceForTransactions(List<FinancialTransaction> orderedTransactions, decimal fromBalance)
+    private void UpdateBalanceForTransactions(List<EntryFinancialTransaction> orderedTransactions, decimal fromBalance)
     {
         PreviousTransaction = null;
 
@@ -108,11 +109,11 @@ public class FinancialManager(AppDbContext db)
         }
     }
 
-    private void UpdateBalanceForNewTransaction(FinancialTransaction newTransaction)
+    private void UpdateBalanceForNewTransaction(BaseFinancialTransaction newTransaction)
     {
         var account = db.FinancialAccounts.First(x => x.Id.Equals(newTransaction.AccountId));
         var transactionsQuery = db
-                .FinancialTransactions
+                .EntryFinancialTransactions
                 .Include(x => x.Items)
                 .OrderByDescending(x => x.CreatedAt)
                 .Where(x => x.AccountId.Equals(newTransaction.AccountId))
@@ -175,11 +176,11 @@ public class FinancialManager(AppDbContext db)
     /// <param name="editingTransaction">Транзакция, до её сохранения в базе данных</param>
     /// <param name="initialFromBalance">Исходный FromBalance(), до изменения модели</param>
     /// <param name="initialCreatedAt">Исходная дата, до изменения модели</param>
-    private void UpdateBalanceForExistingTransaction(FinancialTransaction editingTransaction, decimal initialFromBalance, DateTime initialCreatedAt)
+    private void UpdateBalanceForExistingTransaction(BaseFinancialTransaction editingTransaction, decimal initialFromBalance, DateTime initialCreatedAt)
     {
         var account = db.FinancialAccounts.First(x => x.Id.Equals(editingTransaction.AccountId));
         var transactionsQuery = db
-                .FinancialTransactions
+                .EntryFinancialTransactions
                 .Include(x => x.Items)
                 .OrderByDescending(x => x.CreatedAt)
                 .Where(x => x.AccountId.Equals(editingTransaction.AccountId))

@@ -44,7 +44,11 @@ public sealed class AppDbContext : DbContext
     public DbSet<FinancialCurrency> FinancialCurrencies { get; set; } = null!;
     public DbSet<FinancialAccount> FinancialAccounts { get; set; } = null!;
     public DbSet<FinancialAccountCategory> FinancialAccountCategories { get; set; } = null!;
-    public DbSet<FinancialTransaction> FinancialTransactions { get; set; } = null!;
+    // public DbSet<FinancialTransaction> EntryFinancialTransactions { get; set; } = null!;
+    public DbSet<BaseFinancialTransaction> BaseFinancialTransactions { get; set; } = null!;
+    public DbSet<EntryFinancialTransaction> EntryFinancialTransactions { get; set; } = null!;
+    public DbSet<AccountFinancialTransaction> AccountFinancialTransactions { get; set; } = null!;
+    
     public DbSet<FinancialTransactionItem> FinancialTransactionItems { get; set; } = null!;
     public DbSet<FinancialTransactionCategory> FinancialTransactionCategories { get; set; } = null!;
     

@@ -2,12 +2,6 @@
 
 namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
 
-public class FinancialTransactionListRequest : IPaginatable
-{
-    public int Page { get; set; }
-    public int PerPage { get; set; }
-}
-
 public class FinancialTransactionRequest
 {
     public bool? IsPlus { get; set; }
@@ -18,3 +12,11 @@ public class FinancialTransactionRequest
     public List<FinancialTransactionItemRequest> Items { get; set; } = new();
 }
 
+public class FinancialTransactionItemRequest
+{
+    public Guid? Id { get; set; }
+    public Guid CategoryId { get; set; }
+    public int Quantity { get; set; } = 1;
+    public decimal Amount { get; set; } = 0.01m;
+    public string? Description { get; set; }
+}

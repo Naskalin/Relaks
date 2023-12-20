@@ -39,7 +39,7 @@ public static class FinancialMappers
         account.EndAt = req.EndAt;
     }
 
-    public static void MapTo(this FinancialTransactionRequest req, FinancialTransaction transaction)
+    public static void MapTo(this FinancialTransactionRequest req, EntryFinancialTransaction transaction)
     {
         ArgumentNullException.ThrowIfNull(req.EntryId);
         ArgumentNullException.ThrowIfNull(req.IsPlus);
@@ -51,7 +51,9 @@ public static class FinancialMappers
         transaction.EntryId = req.EntryId.Value;
     }
     
-    public static void MapTo(this FinancialTransaction transaction, FinancialTransactionRequest req)
+    // public static void MapTo(this BaseFinancialTransfer transfer)
+    
+    public static void MapTo(this EntryFinancialTransaction transaction, FinancialTransactionRequest req)
     {
         req.IsPlus = transaction.IsPlus;
         req.CreatedAt = transaction.CreatedAt;

@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace Relaks.Models.FinancialModels;
 
-public class FinancialTransaction
+public abstract class BaseFinancialTransaction
 {
     public Guid Id { get; set; }
     
@@ -16,23 +17,17 @@ public class FinancialTransaction
     /// <summary>
     /// Описание операции
     /// </summary>
+    [MaxLength(500)]
     public string? Description { get; set; }
 
     public Guid AccountId { get; set; }
     public FinancialAccount Account { get; set; } = null!;
-    
-    public Guid EntryId { get; set; }
-    public BaseEntry Entry { get; set; } = null!;
-
-    public List<FinancialTransactionItem> Items { get; set; } = new();
     
     /// <summary>
     /// Сумма FinancialTransactionItem
     /// </summary>
     [Precision(19, 4)]
     public decimal Total { get; set; }
-
-    public void UpdateTotal() => Total = Items.Sum(x => x.Amount);
 
     /// <summary>
     /// Баланс после транзакции
@@ -53,4 +48,42 @@ public class FinancialTransaction
     {
         return IsPlus ? Balance - Total : Balance + Total;
     }
+    
+    public List<FinancialTransactionItem> Items { get; set; } = new();
+
+    public void UpdateTotal()
+    {
+        if (!Items.Any()) return;
+        Total = Items.Sum(x => x.Amount);
+    }
+}
+
+public class EntryFinancialTransaction : BaseFinancialTransaction
+{
+    public Guid EntryId { get; set; }
+    public BaseEntry Entry { get; set; } = null!;
+}
+
+// public class EntryFinancialTransaction : BaseFinancialTransaction
+// {
+//     public Guid EntryId { get; set; }
+//     public BaseEntry Entry { get; set; } = null!;
+// }
+
+public class AccountFinancialTransaction : BaseFinancialTransaction
+{
+    public Guid Account2Id { get; set; }
+    public FinancialAccount Account2 { get; set; } = null!;
+
+    /// <summary>
+    /// От кого прилетело
+    /// </summary>
+    /// <returns></returns>
+    public FinancialAccount From() => IsPlus ? Account2 : Account;
+    
+    /// <summary>
+    /// Куда улетело
+    /// </summary>
+    /// <returns></returns>
+    public FinancialAccount To() => IsPlus ? Account : Account2;
 }

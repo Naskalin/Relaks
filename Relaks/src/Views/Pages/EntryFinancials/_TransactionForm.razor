@@ -126,7 +126,7 @@
     private bool IsEdit { get; set; }
     private FinancialTransactionRequest Req { get; set; } = new();
     private FinancialAccount Account { get; set; } = null!;
-    private FinancialTransaction? EditingTransaction { get; set; }
+    private EntryFinancialTransaction? EditingTransaction { get; set; }
     private List<Guid> EntryIds { get; set; } = new();
 
     private List<(string Name, bool Val, string Icon, string Color)> TransactionTypes { get; set; } = new()
@@ -141,7 +141,7 @@
         if (IsEdit)
         {
             EditingTransaction = Db
-                .FinancialTransactions
+                .EntryFinancialTransactions
                 .Include(x => x.Items)
                 .First(x => x.Id.Equals(Store.BodyEditTransactionId));
             EntryIds = new List<Guid>() {EditingTransaction.EntryId};
@@ -231,5 +231,4 @@
         await Db.SaveChangesAsync();
         await HandleReturn();
     }
-
 }
