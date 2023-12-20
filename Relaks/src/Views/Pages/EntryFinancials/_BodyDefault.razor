@@ -30,10 +30,13 @@
     @* </div> *@
 </div>
 
-<_TransactionsList OnStateChanged="@(() => OnStateChanged.InvokeAsync())"
-                   FinancialAccountId="@Store.AccountId"
-                   FirstRow="@(new GuidRowView() {Th = FirstRowTh, Td = FirstRowTd})"
-/>
+@if (Store.AccountId.HasValue)
+{
+    <_TransactionsList OnStateChanged="@(() => OnStateChanged.InvokeAsync())"
+                       FinancialAccountId="@Store.AccountId.Value"
+                       FirstRow="@(new GuidRowView() {Th = FirstRowTh, Td = FirstRowTd})"
+    />   
+}
 
 @code {
 

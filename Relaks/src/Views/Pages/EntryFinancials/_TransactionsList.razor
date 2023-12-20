@@ -23,40 +23,41 @@
         }
         <th style="width: 125px">Дата</th>
         <th style="width: 100px">Тип</th>
-        <th style="width: 100px">Сумма</th>
+        <th style="width: 120px">Сумма</th>
         <th style="width: 180px">Баланс в моменте</th>
         <th style="width: 44px"></th>
         <th>Объединение</th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var t in Transactions.Items)
+    @foreach (var transaction in Transactions.Items)
     {
-        <tr class="group-show">
-            @if (FirstRow != null)
-            {
-                @FirstRow.Td(t.Id)
-            }
-            <td>@t.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
-            <td><Badge Color="@(t.IsPlus ? Color.Success : Color.Danger)">@(t.IsPlus ? "Пополнение" : "Списание")</Badge></td>
-            <td style="white-space: nowrap">@t.Total.ToString("N2") @t.Account.FinancialCurrency.Symbol</td>
-            <td style="white-space: nowrap">
-                @t.FromBalance().ToString("N2") @t.Account.FinancialCurrency.Symbol
-                <i class="las la-long-arrow-alt-right la-lg text-secondary"></i>
-                @t.Balance.ToString("N2") @t.Account.FinancialCurrency.Symbol
-            </td>
-            <td>
-                @if (!string.IsNullOrEmpty(t.Description))
-                {
-                    <Popover Content="@t.Description">
-                        <i class="las la-comment text-info" style="font-size: 1.5rem;"></i>
-                    </Popover>
-                }
-            </td>
-            <td>
-                <EntryInlineItem EntryId="@t.EntryId"/>
-            </td>
-        </tr>
+        <_TransactionsListItem FirstRow="@FirstRow" Transaction="@transaction" FinancialAccountId="@FinancialAccountId"/>
+        @* <tr class="group-show"> *@
+        @*     @if (FirstRow != null) *@
+        @*     { *@
+        @*         @FirstRow.Td(t.Id) *@
+        @*     } *@
+        @*     <td>@t.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td> *@
+        @*     <td><Badge Color="@(t.IsPlus ? Color.Success : Color.Danger)">@(t.IsPlus ? "Пополнение" : "Списание")</Badge></td> *@
+        @*     <td style="white-space: nowrap">@t.Total.ToString("N2") @t.Account.FinancialCurrency.Symbol</td> *@
+        @*     <td style="white-space: nowrap"> *@
+        @*         @t.FromBalance().ToString("N2") @t.Account.FinancialCurrency.Symbol *@
+        @*         <i class="las la-long-arrow-alt-right la-lg text-secondary"></i> *@
+        @*         @t.Balance.ToString("N2") @t.Account.FinancialCurrency.Symbol *@
+        @*     </td> *@
+        @*     <td> *@
+        @*         @if (!string.IsNullOrEmpty(t.Description)) *@
+        @*         { *@
+        @*             <Popover Content="@t.Description"> *@
+        @*                 <i class="las la-comment text-info" style="font-size: 1.5rem;"></i> *@
+        @*             </Popover> *@
+        @*         } *@
+        @*     </td> *@
+        @*     <td> *@
+        @*         <EntryInlineItem EntryId="@t.EntryId"/> *@
+        @*     </td> *@
+        @* </tr> *@
     }
     </tbody>
 </table>
@@ -75,7 +76,7 @@
     public IGuidRowView? FirstRow { get; set; }
 
     [Parameter]
-    public Guid? FinancialAccountId { get; set; }
+    public Guid FinancialAccountId { get; set; }
 
     private FinancialTransactionListRequest TransactionListRequest { get; set; } = new() {Page = 1, PerPage = 10};
     private PaginatableResult<EntryFinancialTransaction> Transactions { get; set; } = new();
@@ -83,14 +84,14 @@
 
     private void FindTransactions()
     {
-        var q = Db.EntryFinancialTransactions
+        Transactions = Db.EntryFinancialTransactions
+            .Where(x => x.AccountId.Equals(FinancialAccountId))
             .Include(x => x.Entry)
-            .Include(x => x.Account).ThenInclude(a => a.FinancialCurrency)
-            .OrderByDescending(x => x.CreatedAt);
-
-        Transactions = FinancialAccountId.HasValue
-            ? q.Where(x => x.AccountId.Equals(FinancialAccountId.Value)).ToPaginatedResult(TransactionListRequest)
-            : q.ToPaginatedResult(TransactionListRequest);
+            .Include(x => x.Account)
+            .ThenInclude(a => a.FinancialCurrency)
+            .OrderByDescending(x => x.CreatedAt)
+            .ToPaginatedResult(TransactionListRequest)
+        ;
     }
 
     private Task HandlePageChanged(int page)
@@ -104,12 +105,4 @@
     {
         FindTransactions();
     }
-
-    // private Task HandleEditTransaction(Guid transactionId)
-    // {
-    //
-    //     // Store.BodyEditTransactionId = transactionId;
-    //     // Store.BodyState = FinancialsStore.BodyEnum.EditTransaction;
-    //     // return OnStateChanged.InvokeAsync();
-    // }
 }

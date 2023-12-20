@@ -44,12 +44,11 @@ public partial class DatabaseSeeder
           Description = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null}),
           IsPlus = Faker.Random.Bool(),
           CreatedAt = Faker.Date.Past(),
-          Items = new List<FinancialTransactionItem>()
-          {
+          Items = [
             new() {CategoryId = categories["Чипсы"], Quantity = Faker.Random.Int(1, 3), Amount = Math.Round(Faker.Random.Decimal(300, 600), 2)},
             new() {CategoryId = categories["Сигареты"], Quantity = Faker.Random.Int(1, 3), Amount = Math.Round(Faker.Random.Decimal(200, 800), 2)},
-            new() {CategoryId = categories["Мясо"], Quantity = 1, Amount = Math.Round(Faker.Random.Decimal(800, 1500), 2)},
-          }
+            new() {CategoryId = categories["Мясо"], Quantity = 1, Amount = Math.Round(Faker.Random.Decimal(800, 1500), 2)}
+          ]
         });
         transactions.Add(new()
         {
@@ -58,10 +57,9 @@ public partial class DatabaseSeeder
           EntryId = entryId,
           Description = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null}),
           IsPlus = Faker.Random.Bool(),
-          Items = new List<FinancialTransactionItem>()
-          {
+          Items = [
             new() {CategoryId = categories["Молоко"], Quantity = 2, Amount = Math.Round(Faker.Random.Decimal(250, 400), 2)},
-          }
+          ]
         });
         
         foreach (var transaction in transactions.OrderBy(x => x.CreatedAt).ToList())

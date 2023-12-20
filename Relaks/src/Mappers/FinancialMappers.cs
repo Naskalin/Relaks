@@ -39,32 +39,54 @@ public static class FinancialMappers
         account.EndAt = req.EndAt;
     }
 
-    public static void MapTo(this FinancialTransactionRequest req, EntryFinancialTransaction transaction)
+    public static void MapTo(this EntryFinancialTransactionRequest req, EntryFinancialTransaction transaction)
     {
         ArgumentNullException.ThrowIfNull(req.EntryId);
-        ArgumentNullException.ThrowIfNull(req.IsPlus);
-        
-        transaction.IsPlus = req.IsPlus.Value;
-        transaction.CreatedAt = req.CreatedAt;
-        transaction.Description = req.Description;
-        transaction.AccountId = req.AccountId;
         transaction.EntryId = req.EntryId.Value;
+        req.MapToBase(transaction);
     }
     
-    // public static void MapTo(this BaseFinancialTransfer transfer)
-    
-    public static void MapTo(this EntryFinancialTransaction transaction, FinancialTransactionRequest req)
+    public static void MapTo(this AccountFinancialTransactionRequest req, AccountFinancialTransaction transaction)
+    {
+        ArgumentNullException.ThrowIfNull(req.Account2Id);
+        transaction.Account2Id = req.Account2Id.Value;
+        req.MapToBase(transaction);
+    }
+
+    private static void MapToBase(this BaseFinancialTransaction transaction, BaseFinancialTransactionRequest req)
     {
         req.IsPlus = transaction.IsPlus;
         req.CreatedAt = transaction.CreatedAt;
         req.Description = transaction.Description;
         req.AccountId = transaction.AccountId;
+    }
+
+    private static void MapToBase(this BaseFinancialTransactionRequest req, BaseFinancialTransaction transaction)
+    {
+        ArgumentNullException.ThrowIfNull(req.IsPlus);
+        transaction.IsPlus = req.IsPlus.Value;
+        transaction.CreatedAt = req.CreatedAt;
+        transaction.Description = req.Description;
+        transaction.AccountId = req.AccountId;
+    }
+    
+    public static void MapTo(this EntryFinancialTransaction transaction, EntryFinancialTransactionRequest req)
+    {
         req.EntryId = transaction.EntryId;
+        transaction.MapToBase(req);
+    }
+    
+    public static void MapTo(this AccountFinancialTransaction transaction, AccountFinancialTransactionRequest req)
+    {
+        req.Account2Id = transaction.Account2Id;
+        transaction.MapToBase(req);
     }
 
     public static void MapTo(this FinancialTransactionItemRequest req, FinancialTransactionItem item)
     {
-        item.CategoryId = req.CategoryId;
+        ArgumentNullException.ThrowIfNull(req.CategoryId);
+        
+        item.CategoryId = req.CategoryId.Value;
         item.Quantity = req.Quantity;
         item.Amount = req.Amount;
         item.Description = req.Description;

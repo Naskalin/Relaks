@@ -66,7 +66,8 @@ public static class RegisterServices
         
         services.AddScoped<IValidator<FinancialAccountCategoryRequest>, FinancialAccountCategoryRequestValidator>();
         services.AddScoped<IValidator<FinancialAccountRequest>, FinancialAccountRequestValidator>();
-        services.AddScoped<IValidator<FinancialTransactionRequest>, FinancialTransactionRequestValidator>();
+        services.AddScoped<IValidator<EntryFinancialTransactionRequest>, EntryFinancialTransactionRequestValidator>();
+        services.AddScoped<IValidator<AccountFinancialTransactionRequest>, AccountFinancialTransactionRequestValidator>();
         services.AddScoped<IValidator<FinancialTransactionItemRequest>, FinancialTransactionItemRequestValidator>();
         services.AddScoped<IValidator<FinancialTransactionCategoryRequest>, FinancialTransactionCategoryRequestValidator>();
 

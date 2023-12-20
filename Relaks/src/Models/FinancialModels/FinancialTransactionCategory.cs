@@ -1,4 +1,5 @@
-﻿using Relaks.Interfaces;
+﻿using System.ComponentModel.DataAnnotations;
+using Relaks.Interfaces;
 
 namespace Relaks.Models.FinancialModels;
 
@@ -8,6 +9,9 @@ public class FinancialTransactionCategory : ITree<FinancialTransactionCategory>
     public List<FinancialTransactionCategory> Children { get; set; } = new();
     public Guid? ParentId { get; set; }
     public FinancialTransactionCategory? Parent { get; set; }
+    
     public string TreePath { get; set; } = null!;
+    
+    [MaxLength(255)]
     public string Title { get; set; } = null!;
 }

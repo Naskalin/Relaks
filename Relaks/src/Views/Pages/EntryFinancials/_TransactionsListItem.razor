@@ -1,0 +1,76 @@
+﻿@using Relaks.Interfaces
+@using Relaks.Models.FinancialModels
+
+<tr class="group-show">
+    @if (FirstRow != null)
+    {
+        @FirstRow.Td(Transaction.Id)
+    }
+    <td>@Transaction.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+    <td>
+        @if (Transaction.Discriminator.Equals(nameof(AccountFinancialTransaction)))
+        {
+            <Badge Color="Color.Primary">Перевод</Badge>
+        }
+        else
+        {
+            <Badge Color="@(IsPlus ? Color.Success : Color.Danger)">@(IsPlus ? "Пополнение" : "Списание")</Badge>
+        }
+    </td>
+    <td style="white-space: nowrap" class="fw-semibold @(IsPlus ? "text-success" : "text-danger")">
+        @(IsPlus ? "+" : "-")@Transaction.Total.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol
+    </td>
+    <td style="white-space: nowrap">
+        @Transaction.FromBalance().ToString("N2") @Transaction.Account.FinancialCurrency.Symbol
+        <i class="las la-long-arrow-alt-right la-lg text-secondary"></i>
+        @Transaction.Balance.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol
+    </td>
+    <td>
+        @if (!string.IsNullOrEmpty(Transaction.Description))
+        {
+            <Popover Content="@Transaction.Description">
+                <i class="las la-comment text-info" style="font-size: 1.5rem;"></i>
+            </Popover>
+        }
+    </td>
+    <td>
+        @if (!string.IsNullOrEmpty(AccountHelpText))
+        {
+            <small class="text-secondary">@AccountHelpText</small>
+        }
+        <EntryInlineItem EntryId="@EntryId"/>
+    </td>
+</tr>
+
+@code {
+    [Parameter]
+    public IGuidRowView? FirstRow { get; set; }
+
+    [Parameter]
+    public BaseFinancialTransaction Transaction { get; set; } = null!;
+    
+    [Parameter]
+    public Guid FinancialAccountId { get; set; }
+    
+    private Guid EntryId { get; set; }
+    private bool IsPlus { get; set; }
+    private string? AccountHelpText { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (Transaction.Discriminator.Equals(nameof(EntryFinancialTransaction)))
+        {
+            var entryTransaction = (EntryFinancialTransaction) Transaction;
+            EntryId = entryTransaction.EntryId;
+            IsPlus = entryTransaction.IsPlus;
+            return;
+        }
+     
+        var accountTransaction = (AccountFinancialTransaction) Transaction;
+        var secondAccount = accountTransaction.SecondAccount(FinancialAccountId);
+        EntryId = secondAccount.Category.EntryId;
+        AccountHelpText = $"{secondAccount.Category.Title} {secondAccount.TitleWithCurrency()}";
+        IsPlus = accountTransaction.IsPlusFor(FinancialAccountId);
+    }
+    
+}

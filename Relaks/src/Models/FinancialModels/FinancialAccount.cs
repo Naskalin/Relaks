@@ -1,13 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace Relaks.Models.FinancialModels;
 
 public class FinancialAccount
 {
     public Guid Id { get; set; }
+    [MaxLength(255)]
     public string Title { get; set; } = null!;
+    
+    [MaxLength(500)]
     public string? Description { get; set; }
 
+    [MaxLength(3)]
     public string FinancialCurrencyId { get; set; } = null!;
     public FinancialCurrency FinancialCurrency { get; set; } = null!;
 

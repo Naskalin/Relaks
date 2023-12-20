@@ -7,7 +7,7 @@
     <span class="input-group-text" @onclick="@HandleSelectClick">
         <i class="las la-sitemap la-lg"></i>
     </span>
-    <input type="text" value="@Title()" class="form-control" @onclick="@HandleSelectClick">
+    <input type="text" value="@Title()" readonly="readonly" class="form-control" @onclick="@HandleSelectClick">
     @if (Clearable)
     {
         <button class="btn btn-outline-secondary" type="button" @onclick="@HandleClear">

@@ -40,7 +40,7 @@ public class FinancialManager(AppDbContext db)
         account.Balance = transaction.FromBalance();
     }
     
-    public void CreateTransaction(FinancialTransactionRequest req)
+    public void CreateTransaction(EntryFinancialTransactionRequest req)
     {
         var transaction = new EntryFinancialTransaction();
         req.MapTo(transaction);
@@ -50,7 +50,7 @@ public class FinancialManager(AppDbContext db)
         db.EntryFinancialTransactions.Add(transaction);
     }
 
-    public void UpdateTransaction(EntryFinancialTransaction transaction, FinancialTransactionRequest req)
+    public void UpdateTransaction(EntryFinancialTransaction transaction, EntryFinancialTransactionRequest req)
     {
         var initialFromBalance = transaction.FromBalance();
         var initialCreatedAt = transaction.CreatedAt;

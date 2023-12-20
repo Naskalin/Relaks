@@ -16,7 +16,7 @@ namespace Relaks.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     EntryId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -37,7 +37,7 @@ namespace Relaks.Migrations
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     ParentId = table.Column<Guid>(type: "TEXT", nullable: true),
                     TreePath = table.Column<string>(type: "TEXT", nullable: false),
-                    Title = table.Column<string>(type: "TEXT", nullable: false)
+                    Title = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -54,9 +54,9 @@ namespace Relaks.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Title = table.Column<string>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: true),
-                    FinancialCurrencyId = table.Column<string>(type: "TEXT", nullable: false),
+                    Title = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
+                    FinancialCurrencyId = table.Column<string>(type: "TEXT", maxLength: 3, nullable: false),
                     CategoryId = table.Column<Guid>(type: "TEXT", nullable: false),
                     StartAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     EndAt = table.Column<DateTime>(type: "TEXT", nullable: true),
@@ -92,11 +92,13 @@ namespace Relaks.Migrations
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     IsPlus = table.Column<bool>(type: "INTEGER", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    Description = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
+                    Discriminator = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     AccountId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    EntryId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Total = table.Column<decimal>(type: "TEXT", precision: 19, scale: 4, nullable: false),
-                    Balance = table.Column<decimal>(type: "TEXT", precision: 19, scale: 4, nullable: false)
+                    Balance = table.Column<decimal>(type: "TEXT", precision: 19, scale: 4, nullable: false),
+                    Account2Id = table.Column<Guid>(type: "TEXT", nullable: true),
+                    EntryId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -105,6 +107,12 @@ namespace Relaks.Migrations
                         name: "FK_FinancialTransactions_Entries_EntryId",
                         column: x => x.EntryId,
                         principalTable: "Entries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FinancialTransactions_FinancialAccounts_Account2Id",
+                        column: x => x.Account2Id,
+                        principalTable: "FinancialAccounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -124,7 +132,7 @@ namespace Relaks.Migrations
                     CategoryId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Quantity = table.Column<int>(type: "INTEGER", nullable: false),
                     Amount = table.Column<decimal>(type: "TEXT", precision: 19, scale: 4, nullable: false),
-                    Description = table.Column<string>(type: "TEXT", nullable: true)
+                    Description = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -177,6 +185,11 @@ namespace Relaks.Migrations
                 name: "IX_FinancialTransactionItems_TransactionId",
                 table: "FinancialTransactionItems",
                 column: "TransactionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FinancialTransactions_Account2Id",
+                table: "FinancialTransactions",
+                column: "Account2Id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FinancialTransactions_AccountId",

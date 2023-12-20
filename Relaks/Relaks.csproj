@@ -29,5 +29,6 @@
     <ItemGroup>
         <Content Remove="src\Database\**" />
         <Content Remove="assets\**" />
+        <Content Remove="appsettings.Development.json" />
     </ItemGroup>
 </Project>

@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace Relaks.Models.FinancialModels;
 
+[Table("FinancialTransactions")]
 public abstract class BaseFinancialTransaction
 {
     public Guid Id { get; set; }
@@ -20,6 +22,9 @@ public abstract class BaseFinancialTransaction
     [MaxLength(500)]
     public string? Description { get; set; }
 
+    [MaxLength(50)]
+    public string Discriminator { get; set; } = null!;
+
     public Guid AccountId { get; set; }
     public FinancialAccount Account { get; set; } = null!;
     
@@ -35,6 +40,8 @@ public abstract class BaseFinancialTransaction
     [Precision(19, 4)]
     public decimal Balance { get; set; }
     
+    public List<FinancialTransactionItem> Items { get; set; } = new();
+    
     public void UpdateBalance(decimal fromBalance)
     {
         Balance = IsPlus ? fromBalance + Total : fromBalance - Total;
@@ -48,8 +55,6 @@ public abstract class BaseFinancialTransaction
     {
         return IsPlus ? Balance - Total : Balance + Total;
     }
-    
-    public List<FinancialTransactionItem> Items { get; set; } = new();
 
     public void UpdateTotal()
     {
@@ -64,26 +69,17 @@ public class EntryFinancialTransaction : BaseFinancialTransaction
     public BaseEntry Entry { get; set; } = null!;
 }
 
-// public class EntryFinancialTransaction : BaseFinancialTransaction
-// {
-//     public Guid EntryId { get; set; }
-//     public BaseEntry Entry { get; set; } = null!;
-// }
-
 public class AccountFinancialTransaction : BaseFinancialTransaction
 {
     public Guid Account2Id { get; set; }
     public FinancialAccount Account2 { get; set; } = null!;
 
-    /// <summary>
-    /// От кого прилетело
-    /// </summary>
-    /// <returns></returns>
-    public FinancialAccount From() => IsPlus ? Account2 : Account;
+    public FinancialAccount FirstAccount(Guid currentAccountId) =>
+        currentAccountId.Equals(AccountId) ? Account : Account2;
     
-    /// <summary>
-    /// Куда улетело
-    /// </summary>
-    /// <returns></returns>
-    public FinancialAccount To() => IsPlus ? Account : Account2;
+    public FinancialAccount SecondAccount(Guid currentAccountId) =>
+        currentAccountId.Equals(AccountId) ? Account2 : Account;
+    
+    public bool IsPlusFor(Guid currentAccountId) => 
+        currentAccountId.Equals(AccountId) ? IsPlus : !IsPlus;
 }

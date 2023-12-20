@@ -124,7 +124,7 @@
     public EventCallback OnStateChanged { get; set; }
 
     private bool IsEdit { get; set; }
-    private FinancialTransactionRequest Req { get; set; } = new();
+    private EntryFinancialTransactionRequest Req { get; set; } = new();
     private FinancialAccount Account { get; set; } = null!;
     private EntryFinancialTransaction? EditingTransaction { get; set; }
     private List<Guid> EntryIds { get; set; } = new();

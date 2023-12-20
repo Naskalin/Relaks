@@ -8,7 +8,7 @@ public class FinancialTransactionItem
     public Guid Id { get; set; }
 
     public Guid TransactionId { get; set; }
-    public EntryFinancialTransaction Transaction { get; set; } = null!;
+    public BaseFinancialTransaction Transaction { get; set; } = null!;
 
     public Guid CategoryId { get; set; }
     public FinancialTransactionCategory Category { get; set; } = null!;
