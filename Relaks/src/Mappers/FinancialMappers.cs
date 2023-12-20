@@ -48,9 +48,22 @@ public static class FinancialMappers
     
     public static void MapTo(this AccountFinancialTransactionRequest req, AccountFinancialTransaction transaction)
     {
-        ArgumentNullException.ThrowIfNull(req.Account2Id);
-        transaction.Account2Id = req.Account2Id.Value;
+        ArgumentNullException.ThrowIfNull(req.SecondAccountId);
+        transaction.SecondAccountId = req.SecondAccountId.Value;
         req.MapToBase(transaction);
+    }
+
+    public static AccountFinancialTransactionRequest ToReverseRequest(this AccountFinancialTransactionRequest req)
+    {
+        var reverseReq = req;
+        
+        ArgumentNullException.ThrowIfNull(req.SecondAccountId);
+        ArgumentNullException.ThrowIfNull(req.IsPlus);
+        reverseReq.AccountId = req.SecondAccountId.Value;
+        reverseReq.SecondAccountId = req.AccountId;
+        reverseReq.IsPlus = !req.IsPlus;
+        
+        return reverseReq;
     }
 
     private static void MapToBase(this BaseFinancialTransaction transaction, BaseFinancialTransactionRequest req)
@@ -78,7 +91,7 @@ public static class FinancialMappers
     
     public static void MapTo(this AccountFinancialTransaction transaction, AccountFinancialTransactionRequest req)
     {
-        req.Account2Id = transaction.Account2Id;
+        req.SecondAccountId = transaction.SecondAccountId;
         transaction.MapToBase(req);
     }
 

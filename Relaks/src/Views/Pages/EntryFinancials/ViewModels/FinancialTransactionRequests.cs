@@ -18,7 +18,7 @@ public class EntryFinancialTransactionRequest : BaseFinancialTransactionRequest
 
 public class AccountFinancialTransactionRequest : BaseFinancialTransactionRequest
 {
-    public Guid? Account2Id;
+    public Guid? SecondAccountId;
 }
 
 public class FinancialTransactionItemRequest

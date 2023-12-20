@@ -71,15 +71,9 @@ public class EntryFinancialTransaction : BaseFinancialTransaction
 
 public class AccountFinancialTransaction : BaseFinancialTransaction
 {
-    public Guid Account2Id { get; set; }
-    public FinancialAccount Account2 { get; set; } = null!;
-
-    public FinancialAccount FirstAccount(Guid currentAccountId) =>
-        currentAccountId.Equals(AccountId) ? Account : Account2;
+    public Guid SecondAccountId { get; set; }
+    public FinancialAccount SecondAccount { get; set; } = null!;
     
-    public FinancialAccount SecondAccount(Guid currentAccountId) =>
-        currentAccountId.Equals(AccountId) ? Account2 : Account;
-    
-    public bool IsPlusFor(Guid currentAccountId) => 
-        currentAccountId.Equals(AccountId) ? IsPlus : !IsPlus;
+    public Guid ReverseTransactionId { get; set; }
+    public AccountFinancialTransaction ReverseTransaction { get; set; } = null!;
 }

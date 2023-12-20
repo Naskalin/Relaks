@@ -29,7 +29,7 @@ public class AccountFinancialTransactionRequestValidator : AbstractValidator<Acc
 {
     public AccountFinancialTransactionRequestValidator()
     {
-        RuleFor(x => x.Account2Id)
+        RuleFor(x => x.SecondAccountId)
             .NotEqual(x => x.AccountId).WithMessage("Аккаунты должны быть различны")
             .Must(account2Id => account2Id.HasValue && account2Id.Value != default);
         RuleFor(x => x).SetValidator(new BaseFinancialTransactionRequestValidator());

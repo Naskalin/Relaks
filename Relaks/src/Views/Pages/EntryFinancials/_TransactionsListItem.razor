@@ -14,11 +14,11 @@
         }
         else
         {
-            <Badge Color="@(IsPlus ? Color.Success : Color.Danger)">@(IsPlus ? "Пополнение" : "Списание")</Badge>
+            <Badge Color="@(Transaction.IsPlus ? Color.Success : Color.Danger)">@(Transaction.IsPlus ? "Пополнение" : "Списание")</Badge>
         }
     </td>
-    <td style="white-space: nowrap" class="fw-semibold @(IsPlus ? "text-success" : "text-danger")">
-        @(IsPlus ? "+" : "-")@Transaction.Total.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol
+    <td style="white-space: nowrap" class="fw-semibold @(Transaction.IsPlus ? "text-success" : "text-danger")">
+        @(Transaction.IsPlus ? "+" : "-")@Transaction.Total.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol
     </td>
     <td style="white-space: nowrap">
         @Transaction.FromBalance().ToString("N2") @Transaction.Account.FinancialCurrency.Symbol
@@ -53,7 +53,6 @@
     public Guid FinancialAccountId { get; set; }
     
     private Guid EntryId { get; set; }
-    private bool IsPlus { get; set; }
     private string? AccountHelpText { get; set; }
 
     protected override void OnParametersSet()
@@ -62,15 +61,13 @@
         {
             var entryTransaction = (EntryFinancialTransaction) Transaction;
             EntryId = entryTransaction.EntryId;
-            IsPlus = entryTransaction.IsPlus;
             return;
         }
      
         var accountTransaction = (AccountFinancialTransaction) Transaction;
-        var secondAccount = accountTransaction.SecondAccount(FinancialAccountId);
+        var secondAccount = accountTransaction.SecondAccount;
         EntryId = secondAccount.Category.EntryId;
         AccountHelpText = $"{secondAccount.Category.Title} {secondAccount.TitleWithCurrency()}";
-        IsPlus = accountTransaction.IsPlusFor(FinancialAccountId);
     }
     
 }

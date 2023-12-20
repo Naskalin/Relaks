@@ -6,7 +6,6 @@
 @using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels
 
 @inject AppDbContext Db;
-@inject NavigationManager Navigation;
 @inject DialogService DialogService;
 
 <EntryProfileLayout EntryId="@EntryId">
@@ -76,19 +75,14 @@
         TransactionCategoriesStore = new FinancialTransactionCategoriesStore(Db, DialogService);
         TransactionCategoriesStore.FindCategories();
         Store.Initialize();
-        Navigation.LocationChanged += HandleLocationChanged;
     }
 
-    private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
+    protected override void OnParametersSet()
     {
-        Store.AccountId = AccountId;
-        Store.BodyState = FinancialsStore.BodyEnum.Default;
-        StateHasChanged();
+        if (!Store.AccountId.Equals(AccountId))
+        {
+            Store.AccountId = AccountId;
+            Store.BodyState = FinancialsStore.BodyEnum.Default;   
+        }
     }
-
-    public void Dispose()
-    {
-        Navigation.LocationChanged -= HandleLocationChanged;
-    }
-
 }
