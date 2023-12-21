@@ -5,6 +5,9 @@
 body {
   overflow-y: scroll;
 }
+:root,[data-bs-theme=light] {
+  --bs-body-bg: #f9f9f9;
+}
 
 // убриаем эффекты рамок при наведении на инпуты
 .form-control {
