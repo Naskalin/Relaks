@@ -10,15 +10,18 @@ public partial class FinancialManager
     public void CreateTransaction(AccountFinancialTransactionRequest req)
     {
         var transaction = new AccountFinancialTransaction();
+        var reverseTransaction = new AccountFinancialTransaction();
+        
         req.MapTo(transaction);
+        transaction.ReverseTransaction = reverseTransaction;
         CreateItemsForTransaction(transaction, req.Items);
         transaction.UpdateTotal();
         UpdateBalanceForNewTransaction(transaction);
         db.AccountFinancialTransactions.Add(transaction);
 
-        var reverseTransaction = new AccountFinancialTransaction();
         var reverseReq = req.ToReverseRequest();
         reverseReq.MapTo(reverseTransaction);
+        reverseTransaction.ReverseTransaction = transaction;
         CreateItemsForTransaction(reverseTransaction, reverseReq.Items);
         reverseTransaction.UpdateTotal();
         UpdateBalanceForNewTransaction(reverseTransaction);

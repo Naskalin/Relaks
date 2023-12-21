@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Relaks.Database;
 using Relaks.Interfaces;
 
 namespace Relaks.Managers;

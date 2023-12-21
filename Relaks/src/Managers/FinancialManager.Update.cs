@@ -7,6 +7,35 @@ namespace Relaks.Managers;
 
 public partial class FinancialManager
 {
+    public void UpdateTransaction(AccountFinancialTransaction transaction, AccountFinancialTransactionRequest req)
+    {
+        // Удаляем текущую реверс транзакцию
+        DeleteTransaction(transaction.ReverseTransaction);
+        // Создаём новую
+        var reverseTransaction = new AccountFinancialTransaction();
+        
+        var initialFromBalance = transaction.FromBalance();
+        var initialCreatedAt = transaction.CreatedAt;
+        req.MapTo(transaction);
+        // Связываем изменяемую транзакцию с новой реверсивной
+        transaction.ReverseTransaction = reverseTransaction;
+        DeleteItemsForTransaction(transaction, req.Items);
+        UpdateItemsForTransaction(transaction, req.Items);
+        CreateItemsForTransaction(transaction, req.Items);
+        transaction.UpdateTotal();
+        UpdateBalanceForExistingTransaction(transaction, initialFromBalance, initialCreatedAt);
+        
+        // Создаём новую реверсивную транзакцию
+        var reverseReq = req.ToReverseRequest();
+        reverseReq.MapTo(reverseTransaction);
+        // Связываем с изменяемой
+        reverseTransaction.ReverseTransaction = transaction;
+        CreateItemsForTransaction(reverseTransaction, reverseReq.Items);
+        reverseTransaction.UpdateTotal();
+        UpdateBalanceForNewTransaction(reverseTransaction);
+        db.AccountFinancialTransactions.Add(reverseTransaction);
+    }
+    
     public void UpdateTransaction(EntryFinancialTransaction transaction, EntryFinancialTransactionRequest req)
     {
         var initialFromBalance = transaction.FromBalance();
