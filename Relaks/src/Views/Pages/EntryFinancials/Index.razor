@@ -16,7 +16,7 @@
         <CascadingValue Value="@Store">
 
             <div class="row">
-                <div class="col-4">
+                <div class="col-auto" style="width: 30%">
                     <div>
                         @switch (Store.SidebarState)
                         {
@@ -34,12 +34,16 @@
                         }
                     </div>
                 </div>
-                <div class="col-8">
+                <div class="col">
                     @switch (Store.BodyState)
                     {
-                        case FinancialsStore.BodyEnum.EditTransaction:
-                        case FinancialsStore.BodyEnum.AddTransaction:
-                            <_TransactionForm OnStateChanged="@StateHasChanged"/>
+                        case FinancialsStore.BodyEnum.EditEntryTransaction:
+                        case FinancialsStore.BodyEnum.AddEntryTransaction:
+                            <_TransactionEntryForm OnStateChanged="@StateHasChanged"/>
+                            break;
+                        case FinancialsStore.BodyEnum.EditAccountTransaction:
+                        case FinancialsStore.BodyEnum.AddAccountTransaction:
+                            <_TransactionAccountForm OnStateChanged="@StateHasChanged"/>
                             break;
                         @*     case FinancialsStore.BodyEnum.EditTransactionCategory: *@
                         @*     case FinancialsStore.BodyEnum.AddTransactionCategory: *@
@@ -72,13 +76,14 @@
     protected override void OnInitialized()
     {
         Store = new(Db, EntryId);
-        TransactionCategoriesStore = new FinancialTransactionCategoriesStore(Db, DialogService);
-        TransactionCategoriesStore.FindCategories();
         Store.Initialize();
     }
 
     protected override void OnParametersSet()
     {
+        TransactionCategoriesStore = new FinancialTransactionCategoriesStore(Db, DialogService);
+        TransactionCategoriesStore.FindCategories();
+        
         if (!Store.AccountId.Equals(AccountId))
         {
             Store.AccountId = AccountId;

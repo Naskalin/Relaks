@@ -8,6 +8,9 @@ body {
 :root,[data-bs-theme=light] {
   --bs-body-bg: #f9f9f9;
 }
+[data-bs-theme=dark] {
+  --bs-body-bg: #212529; 
+}
 
 // убриаем эффекты рамок при наведении на инпуты
 .form-control {

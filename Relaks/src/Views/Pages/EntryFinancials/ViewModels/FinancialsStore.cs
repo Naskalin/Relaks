@@ -1,6 +1,5 @@
 ﻿using BootstrapBlazor.Components;
 using Relaks.Database;
-using Relaks.Database.Repositories;
 using Relaks.Models.FinancialModels;
 
 namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
@@ -23,33 +22,26 @@ public class FinancialsStore(AppDbContext db, Guid entryId)
         Default,
         AddTransactionCategory,
         EditTransactionCategory,
-        AddTransaction,
-        EditTransaction,
+        AddAccountTransaction,
+        EditAccountTransaction,
+        AddEntryTransaction,
+        EditEntryTransaction,
         TransactionCategories,
     }
 
     public BodyEnum BodyState { get; set; } = BodyEnum.Default;
-    public BodyEnum? BackToBodyState { get; set; }
     public SidebarEnum SidebarState { get; set; } = SidebarEnum.Default;
     public Guid? BodyEditTransactionId { get; set; }
-    public Guid? BodyEditTransactionCategoryId { get; set; }
     public Guid? SidebarEditAccountCategoryId { get; set; }
     public Guid? SidebarEditAccountId { get; set; }
-    // public List<FinancialTransactionCategory> TransactionCategories { get; set; } = new();
     public List<FinancialCurrency> Currencies { get; set; } = new();
     public Guid? AccountId { get; set; }
 
     public void Initialize()
     {
         FindCurrencies();
-        // FindTransactionCategories();
     }
 
-    // public void FindTransactionCategories()
-    // {
-    //     TransactionCategories = db.FinancialTransactionCategories.ToBaseTree();
-    // }
-    
     private void FindCurrencies()
     {
         Currencies = db.FinancialCurrencies

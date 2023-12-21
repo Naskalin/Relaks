@@ -2,7 +2,6 @@
 @using Relaks.Database
 @using Relaks.Mappers
 @using Relaks.Models.FinancialModels
-@using Console = System.Console
 @using Microsoft.EntityFrameworkCore
 @using Relaks.Managers
 @using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels
@@ -18,7 +17,7 @@
         </button>
     </div>
     <div class="col">
-        <h5 class="mb-0">@(IsEdit ? "Изменить транзакцию" : "Добавить транзакцию")</h5>
+        <h5 class="mb-0">@(IsEdit ? "Изменить перевод" : "Добавить перевод") между счетами</h5>
     </div>
     <div class="col-auto">
         <button type="button" class="btn btn-outline-primary" @onclick="@HandleAddCategory">
@@ -38,11 +37,11 @@
             <div class="mb-3">
                 <label class="form-label">Тип *</label>
                 <div class="btn-group w-100">
-                    @foreach (var t in TransactionTypes)
+                    @foreach (var t in ArithmeticTypes)
                     {
                         <button type="button"
                                 @onclick="@(() => Req.IsPlus = t.Val)"
-                                class="btn @(Req.IsPlus.HasValue && Req.IsPlus.Value == t.Val ? $"btn-{t.Color}" : "btn-outline-secondary")">
+                                class="btn w-50 @(Req.IsPlus.HasValue && Req.IsPlus.Value == t.Val ? $"btn-{t.Color}" : "btn-outline-secondary")">
                             <i class="@t.Icon la-lg me-2"></i>
                             @t.Name
                         </button>
@@ -50,15 +49,17 @@
                 </div>
                 <ValidationMessage For="@(() => Req.IsPlus)"/>
             </div>
-
+            
             <div class="mb-3">
-                <SelectEntry EntryIds="@EntryIds" EntryIdsChanged="@HandleEntryChanged" IsMultiple="@false" Label="Объединение *"/>
-                <ValidationMessage For="@(() => Req.EntryId)"/>
+                accounts
+                
+                @Req.SecondAccountId
+                <ValidationMessage For="@(() => Req.SecondAccountId)"/>
             </div>
 
             <div class="mb-3">
-                <label for="financial-transaction-desc" class="form-label">Описание</label>
-                <MyTextarea @bind-Value="@Req.Description" id="financial-transaction-desc" maxlength="500" placeholder="Что это за транзакция?"/>
+                <label for="financial-transaction-desc" class="form-label">Описание транзакции</label>
+                <MyTextarea @bind-Value="@Req.Description" id="financial-transaction-desc" maxlength="500"/>
                 <ValidationMessage For="@(() => Req.Description)"/>
             </div>
 
@@ -124,28 +125,28 @@
     public EventCallback OnStateChanged { get; set; }
 
     private bool IsEdit { get; set; }
-    private EntryFinancialTransactionRequest Req { get; set; } = new();
+    private AccountFinancialTransactionRequest Req { get; set; } = new();
     private FinancialAccount Account { get; set; } = null!;
-    private EntryFinancialTransaction? EditingTransaction { get; set; }
-    private List<Guid> EntryIds { get; set; } = new();
+    private AccountFinancialTransaction? EditingTransaction { get; set; }
 
-    private List<(string Name, bool Val, string Icon, string Color)> TransactionTypes { get; set; } = new()
+    private List<(string Name, bool Val, string Icon, string Color)> ArithmeticTypes { get; set; } = new()
     {
         ("Пополнение", true, "las la-plus-circle", "success"),
-        ("Списание", false, "las la-minus-circle", "danger"),
+        ("Перевод", false, "las la-minus-circle", "danger"),
     };
 
     protected override void OnParametersSet()
     {
-        IsEdit = Store is {BodyState: FinancialsStore.BodyEnum.EditTransaction,BodyEditTransactionId: not null};
+        ArgumentNullException.ThrowIfNull(Store.AccountId);
+        
+        IsEdit = Store is {BodyState: FinancialsStore.BodyEnum.EditAccountTransaction,BodyEditTransactionId: not null};
         if (IsEdit)
         {
             EditingTransaction = Db
-                .EntryFinancialTransactions
+                .AccountFinancialTransactions
                 .Include(x => x.Items)
                 .First(x => x.Id.Equals(Store.BodyEditTransactionId));
-            EntryIds = new List<Guid>() {EditingTransaction.EntryId};
-
+            
             EditingTransaction.MapTo(Req);
             Req.Items = EditingTransaction.Items.Select(x =>
             {
@@ -158,22 +159,21 @@
         else
         {
             Req.Items = new() {new()};
-            if (Store.AccountId.HasValue)
-            {
+            // if (Store.AccountId.HasValue)
+            // {
                 Req.AccountId = Store.AccountId.Value;
-            }
+            // }
         }
 
         Account = Db.FinancialAccounts
             .Include(x => x.FinancialCurrency)
             .Include(x => x.Category)
             .First(x => x.Id.Equals(Req.AccountId));
-
     }
     
     private Task HandleAddCategory()
     {
-        TransactionCategoriesStore.SidebarState = FinancialTransactionCategoriesStore.SidebarStateEnum.New;
+        // TransactionCategoriesStore.SidebarState = FinancialTransactionCategoriesStore.SidebarStateEnum.New;
         return TransactionCategoriesStore.ShowFormModal();
     }
 
@@ -186,12 +186,6 @@
     private void HandleDeleteItem(FinancialTransactionItemRequest item)
     {
         if (Req.Items.Count > 1) Req.Items.Remove(item);
-    }
-
-    private void HandleEntryChanged(List<Guid> entryIds)
-    {
-        EntryIds = entryIds;
-        Req.EntryId = entryIds.FirstOrDefault();
     }
 
     private Task HandleReturn()

@@ -11,9 +11,19 @@
                 class="btn btn-outline-primary"
                 disabled="@(!Store.AccountId.HasValue)"
                 title="@(!Store.AccountId.HasValue ? "Выберите счёт" : "")"
-                @onclick="@HandleAddTransaction">
+                @onclick="@HandleAddEntryTransaction">
             Транзакция
-            <i class="las la-plus-circle la-lg ms-1"></i>
+            <i class="las la-coins la-lg ms-1"></i>
+        </button>
+    </div>
+    <div class="col-auto">
+        <button type="button"
+                class="btn btn-outline-primary"
+                disabled="@(!Store.AccountId.HasValue)"
+                title="@(!Store.AccountId.HasValue ? "Выберите счёт" : "")"
+                @onclick="@HandleAddAccountTransaction">
+            Перевод между счетами
+            <i class="las la-exchange-alt la-lg ms-1"></i>
         </button>
     </div>
     <div class="col-auto">
@@ -64,9 +74,15 @@ else
         return TransactionCategoriesStore.ShowFormModal();
     }
 
-    private Task HandleAddTransaction()
+    private Task HandleAddEntryTransaction()
     {
-        Store.BodyState = FinancialsStore.BodyEnum.AddTransaction;
+        Store.BodyState = FinancialsStore.BodyEnum.AddEntryTransaction;
+        return OnStateChanged.InvokeAsync();
+    }
+    
+    private Task HandleAddAccountTransaction()
+    {
+        Store.BodyState = FinancialsStore.BodyEnum.AddAccountTransaction;
         return OnStateChanged.InvokeAsync();
     }
 
@@ -88,7 +104,7 @@ else
     {
 
         Store.BodyEditTransactionId = transactionId;
-        Store.BodyState = FinancialsStore.BodyEnum.EditTransaction;
+        Store.BodyState = FinancialsStore.BodyEnum.EditEntryTransaction;
         return OnStateChanged.InvokeAsync();
     }
 
