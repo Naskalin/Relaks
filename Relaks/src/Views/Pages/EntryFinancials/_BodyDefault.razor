@@ -6,6 +6,14 @@
     <div class="col">
         <span class="h5">Транзакции</span>
     </div>
+    @if (!Store.AccountId.HasValue)
+    {
+        <div class="col-auto">
+            <Tooltip Title="Выберите счёт, чтобы добавить транзакцию или перевод">
+                <i class="las la-info-circle text-secondary" style="font-size: 1.8rem"></i>
+            </Tooltip>
+        </div>
+    }
     <div class="col-auto">
         <button type="button"
                 class="btn btn-outline-primary"
@@ -20,7 +28,6 @@
         <button type="button"
                 class="btn btn-outline-primary"
                 disabled="@(!Store.AccountId.HasValue)"
-                title="@(!Store.AccountId.HasValue ? "Выберите счёт" : "")"
                 @onclick="@HandleAddAccountTransaction">
             Перевод между счетами
             <i class="las la-exchange-alt la-lg ms-1"></i>
