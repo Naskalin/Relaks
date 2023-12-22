@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<_AccountsList OnClickAccount="@HandleClickAccount" AccountId="@Store.AccountId" EntryId="@Store.EntryId">
+<_EntryFinancialAccountsList OnClickAccount="@HandleClickAccount" AccountId="@Store.AccountId" EntryId="@Store.EntryId">
     <AfterAccountCategory>
         <button type="button"
                 @onclick="@(() => HandleClickEditCategory(context))"
@@ -35,7 +35,7 @@
             <i class="las la-edit la-lg"></i>
         </button>
     </AfterAccount>
-</_AccountsList>
+</_EntryFinancialAccountsList>
 
 @code {
 

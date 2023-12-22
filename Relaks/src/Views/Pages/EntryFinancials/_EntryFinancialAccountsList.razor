@@ -4,6 +4,7 @@
 
 @inject AppDbContext Db;
 
+@Before
 <div class="d-flex flex-column gap-3">
     @foreach (var category in AccountCategories)
     {
@@ -60,6 +61,9 @@
     public Guid? AccountId { get; set; }
 
     [Parameter]
+    public RenderFragment? Before { get; set; }
+    
+    [Parameter]
     public EventCallback<Guid?> AccountChanged { get; set; }
 
     [Parameter]
@@ -71,7 +75,6 @@
     [Parameter]
     public RenderFragment<Guid>? AfterAccount { get; set; }
 
-    // private Dictionary<Guid, Dictionary<Guid, List<FinancialAccount>>> CategoryEntryAccounts { get; set; } = new();
     private List<FinancialAccountCategory> AccountCategories { get; set; } = new();
 
     protected override void OnInitialized()
@@ -82,27 +85,6 @@
             .Include(x => x.Accounts)
             .OrderBy(x => x.Title)
             .ToList();
-        // var accounts = Db.FinancialAccounts.ToList();
-        // foreach (var category in AccountCategories)
-        // {
-        //     foreach (var account in accounts)
-        //     {
-        //         if (!CategoryEntryAccounts.ContainsKey(category.Id))
-        //         {
-        //             CategoryEntryAccounts[category.Id] = new();
-        //         }
-        //
-        //         if (!account.CategoryId.Equals(category.Id)) continue;
-        //         if (!CategoryEntryAccounts[category.Id].ContainsKey(account.EntryId))
-        //         {
-        //             CategoryEntryAccounts[category.Id][account.EntryId] = new() {account};
-        //         }
-        //         else
-        //         {
-        //             CategoryEntryAccounts[category.Id][account.EntryId].Add(account);
-        //         }
-        //     }
-        // }
     }
 
 }

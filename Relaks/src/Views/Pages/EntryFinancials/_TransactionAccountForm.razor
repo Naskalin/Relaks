@@ -47,13 +47,18 @@
                         </button>
                     }
                 </div>
+                @if (Req.IsPlus.HasValue)
+                {
+                    <div class="form-text">
+                        @(Req.IsPlus == true ? "Пополнить этот счёт суммой, которая будет списана с другого выбранного счёта" : "Перевести сумму на другой выбранный счёт, которая будет списана с этого счёта")
+                    </div>
+                }
                 <ValidationMessage For="@(() => Req.IsPlus)"/>
             </div>
             
             <div class="mb-3">
-                accounts
-                
-                @Req.SecondAccountId
+                <label class="form-label">Выберите счёт</label>
+                <SelectEntryFinancialAccount @bind-AccountId="@Req.SecondAccountId"/>
                 <ValidationMessage For="@(() => Req.SecondAccountId)"/>
             </div>
 
@@ -75,7 +80,7 @@
             <div class="mb-3">
                 <button class="btn btn-primary">
                     <i class="las la-lg me-1 @(IsEdit ? "la-edit" : "la-plus-circle")"></i>
-                    @(IsEdit ? Resources.Action.SaveChanges : $"{Resources.Action.Add} транзакцию")
+                    @(IsEdit ? Resources.Action.SaveChanges : $"{Resources.Action.Add} перевод между счетами")
                 </button>
             </div>
         </div>

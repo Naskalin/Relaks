@@ -52,6 +52,7 @@ public class FinancialsStore(AppDbContext db, Guid entryId)
     }
 
     public List<SelectedItem> AccountCategoriesSelectOptions() => db.FinancialAccountCategories
+        .Where(x => x.EntryId.Equals(EntryId))
         .Select(x => new SelectedItem(x.Id.ToString(), x.Title))
         .ToList();
 

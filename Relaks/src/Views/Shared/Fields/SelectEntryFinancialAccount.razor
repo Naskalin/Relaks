@@ -1,0 +1,116 @@
+﻿@using Relaks.Database
+@using Microsoft.EntityFrameworkCore
+@using Relaks.Models.FinancialModels
+
+@inject AppDbContext Db;
+@inject DialogService DialogService;
+
+@EntryId.ToString()
+<label class="form-label" for="@FieldId">@Label</label>
+<div class="input-group cursor-pointer">
+    <span class="input-group-text" @onclick="@HandleSelectClick">
+        <i class="las la-wallet la-lg"></i>
+    </span>
+    <input type="text" value="@Title()" readonly="readonly" id="@FieldId" class="form-control" @onclick="@HandleSelectClick">
+    @if (Clearable)
+    {
+        <button class="btn btn-outline-secondary" type="button" @onclick="@HandleClear">
+            <i class="las la-times la-lg"></i>
+        </button>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public bool Clearable { get; set; }
+    
+    [Parameter]
+    public Guid? AccountId { get; set; }
+    
+    [Parameter]
+    public EventCallback<Guid?> AccountIdChanged { get; set; }
+    
+    [Parameter]
+    public EventCallback<Guid> OnClickAccount { get; set; }
+
+    [Parameter]
+    public string Label { get; set; } = "Финансовый счёт";
+
+    private string FieldId { get; set; } = Guid.NewGuid().ToString();
+    private Guid EntryId { get; set; }
+    private FinancialAccount? Account { get; set; }
+    private List<SelectedItem> EntrySelectItems { get; set; } = new();
+    
+    private Task HandleClear()
+    {
+        AccountId = null;
+        AccountIdChanged.InvokeAsync(AccountId);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+    
+    private RenderFragment SelectEntryFragment => __builder =>
+    {
+        <Select TValue="Guid" Items="EntrySelectItems" @bind-Value="@EntryId">
+            <DisplayTemplate>
+                <EntryInlineItem EntryId="@Guid.Parse(context!.Value)"/>
+            </DisplayTemplate>
+        </Select>
+    };
+    
+    protected override void OnParametersSet()
+    {
+        var entryIds = Db.FinancialAccountCategories.Select(x => x.EntryId).Distinct();
+        EntryId = entryIds.First();
+        EntrySelectItems = Db.BaseEntries
+            .Where(x => entryIds.Contains(x.Id))
+            .Select(x => new SelectedItem(x.Id.ToString(), x.Name))
+            .ToList();
+    }
+    
+    private string Title()
+    {
+        if (Account == null) return "<Не выбрано>";
+        return $"{Account.Category.Entry} &rarr; {Account.Category.Title} &rarr; {Account.TitleWithCurrency()}";
+    }
+
+    private void OnAccountIdChanged(Guid accountId)
+    {
+        AccountId = accountId;
+        AccountIdChanged.InvokeAsync(AccountId);
+        Account = Db
+            .FinancialAccounts
+            .Include(x => x.Category).ThenInclude(x => x.Entry)
+            .First(x => x.Id.Equals(accountId));
+    }
+    
+    private Task HandleSelectClick()
+    {
+        var option = new DialogOption
+        {
+            IsKeyboard = true,
+            IsBackdrop = true,
+            IsCentered = true,
+            Title = "Выберите финансовый счёт",
+            IsScrolling = true,
+            CloseButtonText = "Закрыть",
+            Size = Size.ExtraLarge
+        };
+        
+        option.Component = BootstrapDynamicComponent.CreateComponent<_EntryFinancialAccountsList>(new Dictionary<string, object?>()
+        {
+            ["EntryId"] = EntryId,
+            ["AccountId"] = AccountId,
+            ["Before"] = SelectEntryFragment,
+            // ["AccountChanged"] = EventCallback.Factory.Create<Guid>(this, async guid =>
+            // {
+            //     OnAccountIdChanged(guid);
+            //     await OnClickAccount.InvokeAsync(guid);
+            //     await option.CloseDialogAsync();
+            // }),
+        });
+        
+        return DialogService.Show(option);
+    }
+
+}
