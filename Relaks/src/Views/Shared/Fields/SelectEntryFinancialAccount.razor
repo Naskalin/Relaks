@@ -51,11 +51,22 @@
     
     private RenderFragment SelectEntryFragment => __builder =>
     {
-        <Select TValue="Guid" Items="EntrySelectItems" @bind-Value="@EntryId">
-            <DisplayTemplate>
-                <EntryInlineItem EntryId="@Guid.Parse(context!.Value)"/>
-            </DisplayTemplate>
-        </Select>
+        <div class="d-flex align-items-center mb-3 gap-2">
+            <div>
+                <i class="las la-hand-point-right text-secondary" style="font-size: 1.8rem;"></i>
+            </div>
+            <div>
+                @EntryId.ToString()
+                <Select TValue="Guid"
+                        Items="EntrySelectItems"
+                        @bind-Value="@EntryId"
+                        OnSelectedItemChanged="@OnEntryIdChanged">
+                    <DisplayTemplate>
+                        <EntryInlineItem EntryId="@Guid.Parse(context!.Value)"/>
+                    </DisplayTemplate>
+                </Select>
+            </div>
+        </div>
     };
     
     protected override void OnParametersSet()
@@ -72,6 +83,12 @@
     {
         if (Account == null) return "<Не выбрано>";
         return $"{Account.Category.Entry} &rarr; {Account.Category.Title} &rarr; {Account.TitleWithCurrency()}";
+    }
+
+    private Task OnEntryIdChanged(SelectedItem item)
+    {
+        EntryId = Guid.Parse(item.Value);
+        return Task.CompletedTask;
     }
 
     private void OnAccountIdChanged(Guid accountId)
@@ -102,6 +119,7 @@
             ["EntryId"] = EntryId,
             ["AccountId"] = AccountId,
             ["Before"] = SelectEntryFragment,
+            // ["Before"] = BootstrapDynamicComponent.CreateComponent<SelectEntrySimple>(new Dictionary<string, object?>() {}),
             // ["AccountChanged"] = EventCallback.Factory.Create<Guid>(this, async guid =>
             // {
             //     OnAccountIdChanged(guid);

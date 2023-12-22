@@ -1,0 +1,31 @@
+﻿@using Relaks.Database
+
+@inject AppDbContext Db;
+
+<Select TValue="Guid?" Items="EntrySelectItems" @bind-Value="@Value">
+    <DisplayTemplate>
+        <EntryInlineItem EntryId="@Guid.Parse(context!.Value)"/>
+    </DisplayTemplate>
+</Select>
+
+@code {
+    [Parameter]
+    public Guid? Value { get; set; }
+    
+    [Parameter]
+    public EventCallback<Guid?> ValueChanged { get; set; }
+    
+    [Parameter]
+    public List<Guid> EntryIds { get; set; } = new();
+    
+    private List<SelectedItem> EntrySelectItems { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        EntrySelectItems = Db.BaseEntries
+            .Where(x => EntryIds.Contains(x.Id))
+            .Select(x => new SelectedItem(x.Id.ToString(), x.Name))
+            .ToList();
+    }
+
+}
