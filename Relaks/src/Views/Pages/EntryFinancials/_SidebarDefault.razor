@@ -20,7 +20,7 @@
     </div>
 </div>
 
-<_EntryFinancialAccountsList OnClickAccount="@HandleClickAccount" AccountId="@Store.AccountId" EntryId="@Store.EntryId">
+<_AccountsList AccountIdChanged="@HandleClickAccount" AccountId="@Store.AccountId" EntryId="@Store.EntryId">
     <AfterAccountCategory>
         <button type="button"
                 @onclick="@(() => HandleClickEditCategory(context))"
@@ -35,7 +35,7 @@
             <i class="las la-edit la-lg"></i>
         </button>
     </AfterAccount>
-</_EntryFinancialAccountsList>
+</_AccountsList>
 
 @code {
 
@@ -71,7 +71,7 @@
         return OnStateChanged.InvokeAsync();
     }
 
-    private Task HandleClickAccount(Guid accountId)
+    private Task HandleClickAccount(Guid? accountId)
     {
         Navigation.NavigateTo($"/entries/{Store.EntryId}/financials/{accountId.ToString()}");
         Store.AccountId = accountId;

@@ -1,91 +1,74 @@
 ﻿@using Relaks.Database
-@using Relaks.Models.FinancialModels
-@using Microsoft.EntityFrameworkCore
 
 @inject AppDbContext Db;
 
-@Before
-<div class="d-flex flex-column gap-3">
-    @foreach (var category in AccountCategories)
-    {
-        <div class="list-group border-0">
-            <div class="list-group-item group-show d-flex justify-content-between align-items-center gap-2 bg-dark bg-opacity-75">
-                <div class="col">
-                    <div class="fw-medium text-center text-uppercase text-white" style="letter-spacing: .15rem">@category.Title</div>
-                </div>
-                @if (AfterAccountCategory != null)
-                {
-                    <div class="col-auto group-show__item">
-                        @AfterAccountCategory(category.Id)
-                    </div>
-                }
-            </div>
-            @foreach (var account in category.Accounts)
-            {
-                <div class="list-group-item p-0 cursor-pointer d-flex justify-content-between align-items-center gap-2 group-show @(account.Id.Equals(AccountId) ? "bg-primary bg-opacity-50" : "")">
-                    <div class="p-3 col pe-1" @onclick="@(() => OnClickAccount.InvokeAsync(account.Id))">
-                        <div class="d-flex gap-2 align-items-center @(account.Id.Equals(AccountId) ? "text-white" : "")">
-                            <div class="col">
-                                <span>
-                                    <i class="las la-angle-right la-lg me-1"></i>
-                                    @account.Title
-                                </span>
-                                @if (!string.IsNullOrEmpty(account.Description))
-                                {
-                                    <Popover Content="@account.Description">
-                                        <i class="las la-comment la-lg ms-2" style="opacity: .7"></i>
-                                    </Popover>
-                                }
-                            </div>
-                            <div class="col-auto">@account.Balance.ToString("N2") @account.FinancialCurrency.Symbol</div>
-                        </div>
-                    </div>
-                    @if (AfterAccount != null)
-                    {
-                        <div class="group-show__item pe-2 col-auto">
-                            @AfterAccount(account.Id)
-                        </div>
-                    }
-                </div>
-            }
+@if (EntryId.HasValue)
+{
+    @EntryId
+    <div class="d-flex align-items-center mb-3 gap-2">
+        <div>
+            <i class="las la-hand-point-right text-secondary" style="font-size: 1.8rem;"></i>
         </div>
-    }
-</div>
+        <div>
+            <Select TValue="Guid?"
+                    Items="EntrySelectItems"
+                    @bind-Value="@EntryId"
+                    OnSelectedItemChanged="@OnEntryIdChanged">
+                <DisplayTemplate>
+                    <EntryInlineItem EntryId="@Guid.Parse(context!.Value)"/>
+                </DisplayTemplate>
+            </Select>
+        </div>
+    </div>
+
+    @* <_AccountsList @bind-AccountId="@AccountId" EntryId="@EntryId.Value"/>    *@
+}
+else
+{
+    <p>Не найдено объединений с наличием финансовых счетов.</p>   
+}
 
 @code {
-
     [Parameter]
-    public Guid EntryId { get; set; }
+    public Guid? EntryId { get; set; }
+    
+    [Parameter]
+    public EventCallback<Guid?> EntryIdChanged { get; set; }
     
     [Parameter]
     public Guid? AccountId { get; set; }
-
-    [Parameter]
-    public RenderFragment? Before { get; set; }
     
     [Parameter]
-    public EventCallback<Guid?> AccountChanged { get; set; }
-
+    public EventCallback<Guid?> AccountIdChanged { get; set; }
+    
     [Parameter]
-    public EventCallback<Guid> OnClickAccount { get; set; }
-
-    [Parameter]
-    public RenderFragment<Guid>? AfterAccountCategory { get; set; }
-
-    [Parameter]
-    public RenderFragment<Guid>? AfterAccount { get; set; }
-
-    private List<FinancialAccountCategory> AccountCategories { get; set; } = new();
-
-    protected override void OnInitialized()
+    public EventCallback OnStateChanged { get; set; }
+    
+    protected override void OnParametersSet()
     {
-        AccountCategories = Db
-            .FinancialAccountCategories
-            .Where(x => x.EntryId.Equals(EntryId))
-            .Include(x => x.Accounts)
-            .OrderBy(x => x.Title)
+        var entryIds = Db.FinancialAccountCategories.Select(x => x.EntryId).Distinct();
+        if (!entryIds.Any()) return;
+        
+        EntrySelectItems = Db.BaseEntries
+            .Where(x => entryIds.Contains(x.Id))
+            .Select(x => new SelectedItem(x.Id.ToString(), x.Name))
             .ToList();
+
+        EntryId ??= entryIds.First();
     }
-
+    
+    
+    private List<SelectedItem> EntrySelectItems { get; set; } = new();
+    
+    private Task OnEntryIdChanged(SelectedItem item)
+    {
+        EntryId = Guid.Parse(item.Value);
+        return Task.CompletedTask;
+    }
+    
+    private Task HandleClickAccount(Guid? accountId)
+    {
+        AccountId = accountId;
+        return OnStateChanged.InvokeAsync();
+    }
 }
-

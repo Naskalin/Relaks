@@ -1,17 +1,15 @@
 ﻿@page "/test"
-@using Relaks.Utils
-@using Console = System.Console
-@inject AppOperation AppOperation;
 
 <PageTemplate>
     <MyTitle>Test</MyTitle>
 
-    <button @onclick="@Restart">Restart</button>
+    <p>EntryId: @EntryId</p>
+    
+    <_EntryFinancialAccountsList OnStateChanged="@StateHasChanged" @bind-EntryId="@EntryId"/>
+    @* <SelectEntryFinancialAccount/> *@
 </PageTemplate>
 
 @code {
-    private void Restart()
-    {
-        Console.WriteLine(@">>>>>>>>>>>>>>>>>>>>>> ok test reload");
-    }
+    private Guid? EntryId { get; set; }
+    private Guid? AccountId { get; set; }
 }

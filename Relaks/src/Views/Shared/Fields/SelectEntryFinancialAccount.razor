@@ -5,7 +5,6 @@
 @inject AppDbContext Db;
 @inject DialogService DialogService;
 
-@EntryId.ToString()
 <label class="form-label" for="@FieldId">@Label</label>
 <div class="input-group cursor-pointer">
     <span class="input-group-text" @onclick="@HandleSelectClick">
@@ -22,25 +21,26 @@
 
 @code {
     [Parameter]
-    public bool Clearable { get; set; }
-    
-    [Parameter]
     public Guid? AccountId { get; set; }
     
     [Parameter]
     public EventCallback<Guid?> AccountIdChanged { get; set; }
     
     [Parameter]
-    public EventCallback<Guid> OnClickAccount { get; set; }
-
+    public bool Clearable { get; set; }
+    
+    @* *@
+    @* [Parameter] *@
+    @* public EventCallback<Guid> OnClickAccount { get; set; } *@
+    @* *@
     [Parameter]
     public string Label { get; set; } = "Финансовый счёт";
-
-    private string FieldId { get; set; } = Guid.NewGuid().ToString();
-    private Guid EntryId { get; set; }
-    private FinancialAccount? Account { get; set; }
-    private List<SelectedItem> EntrySelectItems { get; set; } = new();
     
+    private string FieldId { get; set; } = Guid.NewGuid().ToString();
+    private Guid? EntryId { get; set; }
+    private FinancialAccount? Account { get; set; }
+    @* private List<SelectedItem> EntrySelectItems { get; set; } = new(); *@
+    @* *@
     private Task HandleClear()
     {
         AccountId = null;
@@ -48,57 +48,57 @@
         StateHasChanged();
         return Task.CompletedTask;
     }
-    
-    private RenderFragment SelectEntryFragment => __builder =>
-    {
-        <div class="d-flex align-items-center mb-3 gap-2">
-            <div>
-                <i class="las la-hand-point-right text-secondary" style="font-size: 1.8rem;"></i>
-            </div>
-            <div>
-                @EntryId.ToString()
-                <Select TValue="Guid"
-                        Items="EntrySelectItems"
-                        @bind-Value="@EntryId"
-                        OnSelectedItemChanged="@OnEntryIdChanged">
-                    <DisplayTemplate>
-                        <EntryInlineItem EntryId="@Guid.Parse(context!.Value)"/>
-                    </DisplayTemplate>
-                </Select>
-            </div>
-        </div>
-    };
-    
-    protected override void OnParametersSet()
-    {
-        var entryIds = Db.FinancialAccountCategories.Select(x => x.EntryId).Distinct();
-        EntryId = entryIds.First();
-        EntrySelectItems = Db.BaseEntries
-            .Where(x => entryIds.Contains(x.Id))
-            .Select(x => new SelectedItem(x.Id.ToString(), x.Name))
-            .ToList();
-    }
-    
+    @* *@
+    @* private RenderFragment SelectEntryFragment => __builder => *@
+    @* { *@
+    @*     <div class="d-flex align-items-center mb-3 gap-2"> *@
+    @*         <div> *@
+    @*             <i class="las la-hand-point-right text-secondary" style="font-size: 1.8rem;"></i> *@
+    @*         </div> *@
+    @*         <div> *@
+    @*             @EntryId.ToString() *@
+    @*             <Select TValue="Guid" *@
+    @*                     Items="EntrySelectItems" *@
+    @*                     @bind-Value="@EntryId" *@
+    @*                     OnSelectedItemChanged="@OnEntryIdChanged"> *@
+    @*                 <DisplayTemplate> *@
+    @*                     <EntryInlineItem EntryId="@Guid.Parse(context!.Value)"/> *@
+    @*                 </DisplayTemplate> *@
+    @*             </Select> *@
+    @*         </div> *@
+    @*     </div> *@
+    @* }; *@
+    @* *@
+    @* protected override void OnParametersSet() *@
+    @* { *@
+    @*     var entryIds = Db.FinancialAccountCategories.Select(x => x.EntryId).Distinct(); *@
+    @*     EntryId = entryIds.First(); *@
+    @*     EntrySelectItems = Db.BaseEntries *@
+    @*         .Where(x => entryIds.Contains(x.Id)) *@
+    @*         .Select(x => new SelectedItem(x.Id.ToString(), x.Name)) *@
+    @*         .ToList(); *@
+    @* } *@
+    @* *@
     private string Title()
     {
         if (Account == null) return "<Не выбрано>";
         return $"{Account.Category.Entry} &rarr; {Account.Category.Title} &rarr; {Account.TitleWithCurrency()}";
     }
-
-    private Task OnEntryIdChanged(SelectedItem item)
-    {
-        EntryId = Guid.Parse(item.Value);
-        return Task.CompletedTask;
-    }
-
-    private void OnAccountIdChanged(Guid accountId)
+    @* *@
+    @* private Task OnEntryIdChanged(SelectedItem item) *@
+    @* { *@
+    @*     EntryId = Guid.Parse(item.Value); *@
+    @*     return Task.CompletedTask; *@
+    @* } *@
+    @* *@
+    private void OnAccountIdChanged(Guid? accountId)
     {
         AccountId = accountId;
         AccountIdChanged.InvokeAsync(AccountId);
         Account = Db
             .FinancialAccounts
             .Include(x => x.Category).ThenInclude(x => x.Entry)
-            .First(x => x.Id.Equals(accountId));
+            .FirstOrDefault(x => x.Id.Equals(accountId));
     }
     
     private Task HandleSelectClick()
@@ -113,21 +113,17 @@
             CloseButtonText = "Закрыть",
             Size = Size.ExtraLarge
         };
-        
+    
         option.Component = BootstrapDynamicComponent.CreateComponent<_EntryFinancialAccountsList>(new Dictionary<string, object?>()
         {
-            ["EntryId"] = EntryId,
             ["AccountId"] = AccountId,
-            ["Before"] = SelectEntryFragment,
-            // ["Before"] = BootstrapDynamicComponent.CreateComponent<SelectEntrySimple>(new Dictionary<string, object?>() {}),
-            // ["AccountChanged"] = EventCallback.Factory.Create<Guid>(this, async guid =>
-            // {
-            //     OnAccountIdChanged(guid);
-            //     await OnClickAccount.InvokeAsync(guid);
-            //     await option.CloseDialogAsync();
-            // }),
+            ["AccountIdChanged"] = EventCallback.Factory.Create<Guid?>(this, async guid =>
+            {
+                OnAccountIdChanged(guid);
+                await option.CloseDialogAsync();
+            }),
         });
-        
+    
         return DialogService.Show(option);
     }
 
