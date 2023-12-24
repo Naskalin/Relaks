@@ -4,6 +4,8 @@
 
 @inject AppDbContext Db;
 
+@* <p>_AccountList EntryId: @EntryId</p> *@
+@* <p>_AccountList AccountId: @AccountId</p> *@
 <div class="d-flex flex-column gap-3">
     @foreach (var category in AccountCategories)
     {
@@ -70,12 +72,12 @@
 
     private List<FinancialAccountCategory> AccountCategories { get; set; } = new();
 
-    protected override void OnInitialized()
+    protected override void OnParametersSet()
     {
         AccountCategories = Db
             .FinancialAccountCategories
             .Where(x => x.EntryId.Equals(EntryId))
-            .Include(x => x.Accounts)
+            .Include(x => x.Accounts).ThenInclude(x => x.FinancialCurrency)
             .OrderBy(x => x.Title)
             .ToList();
     }

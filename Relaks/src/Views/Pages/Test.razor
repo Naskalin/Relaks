@@ -4,12 +4,13 @@
     <MyTitle>Test</MyTitle>
 
     <p>EntryId: @EntryId</p>
+    <p>AccountId: @AccountId</p>
     
-    <_EntryFinancialAccountsList OnStateChanged="@StateHasChanged"
-                                 @bind-EntryId="@EntryId"
-                                 />
-                                 @* @bind-AccountId="@AccountId" *@
-    @* <SelectEntryFinancialAccount/> *@
+    @* <_EntryFinancialAccountsList OnStateChanged="@StateHasChanged" *@
+    @*                              @bind-EntryId="@EntryId" *@
+    @*                              @bind-AccountId="@AccountId" *@
+    @* /> *@
+    <SelectEntryFinancialAccount @bind-AccountId="@AccountId"/>
 </PageTemplate>
 
 @code {

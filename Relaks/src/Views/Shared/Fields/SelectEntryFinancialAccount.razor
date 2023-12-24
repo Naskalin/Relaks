@@ -41,12 +41,12 @@
     private FinancialAccount? Account { get; set; }
     @* private List<SelectedItem> EntrySelectItems { get; set; } = new(); *@
     @* *@
-    private Task HandleClear()
+    private async Task HandleClear()
     {
         AccountId = null;
-        AccountIdChanged.InvokeAsync(AccountId);
+        await AccountIdChanged.InvokeAsync(AccountId);
         StateHasChanged();
-        return Task.CompletedTask;
+        await Task.CompletedTask;
     }
     @* *@
     @* private RenderFragment SelectEntryFragment => __builder => *@
@@ -82,7 +82,7 @@
     private string Title()
     {
         if (Account == null) return "<Не выбрано>";
-        return $"{Account.Category.Entry} &rarr; {Account.Category.Title} &rarr; {Account.TitleWithCurrency()}";
+        return $"{Account.Category.Entry.Name} \u2192 {Account.Category.Title} \u2192 {Account.TitleWithCurrency()}";
     }
     @* *@
     @* private Task OnEntryIdChanged(SelectedItem item) *@
@@ -91,10 +91,10 @@
     @*     return Task.CompletedTask; *@
     @* } *@
     @* *@
-    private void OnAccountIdChanged(Guid? accountId)
+    private async Task OnAccountIdChanged(Guid? accountId)
     {
         AccountId = accountId;
-        AccountIdChanged.InvokeAsync(AccountId);
+        await AccountIdChanged.InvokeAsync(AccountId);
         Account = Db
             .FinancialAccounts
             .Include(x => x.Category).ThenInclude(x => x.Entry)
@@ -119,7 +119,7 @@
             ["AccountId"] = AccountId,
             ["AccountIdChanged"] = EventCallback.Factory.Create<Guid?>(this, async guid =>
             {
-                OnAccountIdChanged(guid);
+                await OnAccountIdChanged(guid);
                 await option.CloseDialogAsync();
             }),
         });

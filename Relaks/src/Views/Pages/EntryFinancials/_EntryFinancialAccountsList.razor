@@ -2,15 +2,15 @@
 
 @inject AppDbContext Db;
 
+<p>_EntryFinancialAccountsList EntryId: @EntryId</p>
+<p>_EntryFinancialAccountsList AccountId: @AccountId</p>
 @if (EntryId.HasValue)
 {
-    @EntryId
     <div class="d-flex align-items-center mb-3 gap-2">
         <div>
             <i class="las la-hand-point-right text-secondary" style="font-size: 1.8rem;"></i>
         </div>
         <div>
-                    @* @bind-Value="@EntryId" *@
             <Select TValue="Guid?"
                     Items="EntrySelectItems"
                     Value="@EntryId"
@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    @* <_AccountsList @bind-AccountId="@AccountId" EntryId="@EntryId.Value"/> *@
+    <_AccountsList AccountId="@AccountId" AccountIdChanged="@AccountIdChanged" EntryId="@EntryId.Value"/>
 }
 else
 {
