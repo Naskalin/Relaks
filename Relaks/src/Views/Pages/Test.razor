@@ -5,7 +5,10 @@
 
     <p>EntryId: @EntryId</p>
     
-    <_EntryFinancialAccountsList OnStateChanged="@StateHasChanged" @bind-EntryId="@EntryId"/>
+    <_EntryFinancialAccountsList OnStateChanged="@StateHasChanged"
+                                 @bind-EntryId="@EntryId"
+                                 />
+                                 @* @bind-AccountId="@AccountId" *@
     @* <SelectEntryFinancialAccount/> *@
 </PageTemplate>
 

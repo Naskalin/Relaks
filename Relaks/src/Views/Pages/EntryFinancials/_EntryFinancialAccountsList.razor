@@ -10,10 +10,12 @@
             <i class="las la-hand-point-right text-secondary" style="font-size: 1.8rem;"></i>
         </div>
         <div>
+                    @* @bind-Value="@EntryId" *@
             <Select TValue="Guid?"
                     Items="EntrySelectItems"
-                    @bind-Value="@EntryId"
-                    OnSelectedItemChanged="@OnEntryIdChanged">
+                    Value="@EntryId"
+                    OnSelectedItemChanged="@OnEntryIdChanged"
+                    >
                 <DisplayTemplate>
                     <EntryInlineItem EntryId="@Guid.Parse(context!.Value)"/>
                 </DisplayTemplate>
@@ -21,7 +23,7 @@
         </div>
     </div>
 
-    @* <_AccountsList @bind-AccountId="@AccountId" EntryId="@EntryId.Value"/>    *@
+    @* <_AccountsList @bind-AccountId="@AccountId" EntryId="@EntryId.Value"/> *@
 }
 else
 {
@@ -62,8 +64,8 @@ else
     
     private Task OnEntryIdChanged(SelectedItem item)
     {
-        EntryId = Guid.Parse(item.Value);
-        return Task.CompletedTask;
+        EntryId = Guid.TryParse(item.Value, out var guid) ? guid : null;
+        return EntryIdChanged.InvokeAsync(EntryId);
     }
     
     private Task HandleClickAccount(Guid? accountId)
