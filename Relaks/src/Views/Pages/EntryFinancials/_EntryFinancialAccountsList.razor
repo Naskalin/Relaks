@@ -35,7 +35,11 @@
     </div>
 
     <label class="form-label">Финансовые счета объединения</label>
-    <_AccountsList AccountId="@AccountId" AccountIdChanged="@AccountIdChanged" EntryId="@EntryId.Value"/>
+    <_AccountsList
+        AccountId="@AccountId" 
+        AccountIdChanged="@AccountIdChanged"
+        DisabledReasonAccountIds="@DisabledReasonAccountIds"
+        EntryId="@EntryId.Value"/>
 }
 else
 {
@@ -57,6 +61,9 @@ else
     
     [Parameter]
     public EventCallback OnStateChanged { get; set; }
+    
+    [Parameter]
+    public Dictionary<Guid, string> DisabledReasonAccountIds { get; set; } = new();
     
     protected override void OnParametersSet()
     {

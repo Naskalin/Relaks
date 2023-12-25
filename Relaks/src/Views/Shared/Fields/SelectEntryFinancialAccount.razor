@@ -1,4 +1,4 @@
-﻿@using Relaks.Database
+﻿    @using Relaks.Database
 @using Microsoft.EntityFrameworkCore
 @using Relaks.Models.FinancialModels
 
@@ -32,11 +32,13 @@
     [Parameter]
     public string Label { get; set; } = "Выберите финансовый счёт";
     
+    [Parameter]
+    public Dictionary<Guid, string> DisabledReasonAccountIds { get; set; } = new();
+    
     private string FieldId { get; set; } = Guid.NewGuid().ToString();
     private Guid? EntryId { get; set; }
     private FinancialAccount? Account { get; set; }
-    @* private List<SelectedItem> EntrySelectItems { get; set; } = new(); *@
-    @* *@
+    
     private async Task HandleClear()
     {
         AccountId = null;
@@ -77,6 +79,7 @@
         option.Component = BootstrapDynamicComponent.CreateComponent<_EntryFinancialAccountsList>(new Dictionary<string, object?>()
         {
             ["AccountId"] = AccountId,
+            ["DisabledReasonAccountIds"] = DisabledReasonAccountIds,
             ["AccountIdChanged"] = EventCallback.Factory.Create<Guid?>(this, async guid =>
             {
                 await OnAccountIdChanged(guid);
