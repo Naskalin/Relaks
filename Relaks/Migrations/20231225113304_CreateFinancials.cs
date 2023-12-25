@@ -97,7 +97,8 @@ namespace Relaks.Migrations
                     AccountId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Total = table.Column<decimal>(type: "TEXT", precision: 19, scale: 4, nullable: false),
                     Balance = table.Column<decimal>(type: "TEXT", precision: 19, scale: 4, nullable: false),
-                    Account2Id = table.Column<Guid>(type: "TEXT", nullable: true),
+                    SecondAccountId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    ReverseTransactionId = table.Column<Guid>(type: "TEXT", nullable: true),
                     EntryId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
@@ -110,14 +111,14 @@ namespace Relaks.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FinancialTransactions_FinancialAccounts_Account2Id",
-                        column: x => x.Account2Id,
+                        name: "FK_FinancialTransactions_FinancialAccounts_AccountId",
+                        column: x => x.AccountId,
                         principalTable: "FinancialAccounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FinancialTransactions_FinancialAccounts_AccountId",
-                        column: x => x.AccountId,
+                        name: "FK_FinancialTransactions_FinancialAccounts_SecondAccountId",
+                        column: x => x.SecondAccountId,
                         principalTable: "FinancialAccounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -187,11 +188,6 @@ namespace Relaks.Migrations
                 column: "TransactionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FinancialTransactions_Account2Id",
-                table: "FinancialTransactions",
-                column: "Account2Id");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_FinancialTransactions_AccountId",
                 table: "FinancialTransactions",
                 column: "AccountId");
@@ -200,6 +196,11 @@ namespace Relaks.Migrations
                 name: "IX_FinancialTransactions_EntryId",
                 table: "FinancialTransactions",
                 column: "EntryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FinancialTransactions_SecondAccountId",
+                table: "FinancialTransactions",
+                column: "SecondAccountId");
         }
 
         /// <inheritdoc />

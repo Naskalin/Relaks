@@ -8,14 +8,9 @@
     }
     <td>@Transaction.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
     <td>
-        @if (Transaction.Discriminator.Equals(nameof(AccountFinancialTransaction)))
-        {
-            <Badge Color="Color.Primary">Перевод</Badge>
-        }
-        else
-        {
-            <Badge Color="@(Transaction.IsPlus ? Color.Success : Color.Danger)">@(Transaction.IsPlus ? "Пополнение" : "Списание")</Badge>
-        }
+        <Badge Color="@(Transaction.IsPlus ? Color.Success : Color.Danger)">
+            @(Transaction is AccountFinancialTransaction ? "Перевод" : Transaction.IsPlus ? "Пополнение" : "Списание")
+        </Badge>
     </td>
     <td style="white-space: nowrap" class="fw-semibold @(Transaction.IsPlus ? "text-success" : "text-danger")">
         @(Transaction.IsPlus ? "+" : "-")@Transaction.Total.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol
@@ -34,11 +29,15 @@
         }
     </td>
     <td>
-        @if (!string.IsNullOrEmpty(AccountHelpText))
-        {
-            <small class="text-secondary">@AccountHelpText</small>
-        }
-        <EntryInlineItem EntryId="@EntryId"/>
+        
+        <EntryInlineItem EntryId="@EntryId">
+            <AfterBody>
+                @if (!string.IsNullOrEmpty(AccountHelpText))
+                {
+                    <small class="text-primary">@AccountHelpText</small>
+                }
+            </AfterBody>
+        </EntryInlineItem>
     </td>
 </tr>
 
@@ -67,7 +66,7 @@
         var accountTransaction = (AccountFinancialTransaction) Transaction;
         var secondAccount = accountTransaction.SecondAccount;
         EntryId = secondAccount.Category.EntryId;
-        AccountHelpText = $"{secondAccount.Category.Title} {secondAccount.TitleWithCurrency()}";
+        AccountHelpText = $"Счёт: {secondAccount.Category.Title} / {secondAccount.TitleWithCurrency()}";
     }
     
 }

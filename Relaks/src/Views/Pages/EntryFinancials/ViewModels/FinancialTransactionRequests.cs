@@ -16,9 +16,13 @@ public class EntryFinancialTransactionRequest : BaseFinancialTransactionRequest
     public Guid? EntryId { get; set; }
 }
 
-public class AccountFinancialTransactionRequest : BaseFinancialTransactionRequest
+public class AccountFinancialTransactionRequest : BaseFinancialTransactionRequest, ICloneable
 {
     public Guid? SecondAccountId;
+    public object Clone()
+    {
+        return MemberwiseClone();
+    }
 }
 
 public class FinancialTransactionItemRequest

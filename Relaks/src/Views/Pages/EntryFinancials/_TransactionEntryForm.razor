@@ -169,7 +169,6 @@
             .Include(x => x.FinancialCurrency)
             .Include(x => x.Category)
             .First(x => x.Id.Equals(Req.AccountId));
-
     }
     
     private Task HandleAddCategory()

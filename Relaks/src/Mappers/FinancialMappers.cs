@@ -55,7 +55,7 @@ public static class FinancialMappers
 
     public static AccountFinancialTransactionRequest ToReverseRequest(this AccountFinancialTransactionRequest req)
     {
-        var reverseReq = req;
+        var reverseReq = (AccountFinancialTransactionRequest) req.Clone();
         
         ArgumentNullException.ThrowIfNull(req.SecondAccountId);
         ArgumentNullException.ThrowIfNull(req.IsPlus);

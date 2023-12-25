@@ -1,6 +1,10 @@
 ﻿@using Relaks.Views.Pages.EntryFinancials.ViewModels
 @using Relaks.Interfaces
 @using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels
+@using Relaks.Database
+@using Relaks.Models.FinancialModels
+
+@inject AppDbContext Db;
 
 <div class="d-flex align-items-center mb-3 gap-2">
     <div class="col">
@@ -109,9 +113,11 @@ else
 
     private Task HandleEditTransaction(Guid transactionId)
     {
-
+        var transaction = Db.BaseFinancialTransactions.First(x => x.Id.Equals(transactionId));
         Store.BodyEditTransactionId = transactionId;
-        Store.BodyState = FinancialsStore.BodyEnum.EditEntryTransaction;
+        Store.BodyState = transaction is EntryFinancialTransaction 
+            ? FinancialsStore.BodyEnum.EditEntryTransaction 
+            : FinancialsStore.BodyEnum.EditAccountTransaction;
         return OnStateChanged.InvokeAsync();
     }
 

@@ -7,7 +7,8 @@ public partial class FinancialManager
 {
     public void DeleteTransaction(AccountFinancialTransaction transaction)
     {
-        var reverseTransaction = transaction.ReverseTransaction;
+        // var reverseTransaction = transaction.ReverseTransaction;
+        var reverseTransaction = db.AccountFinancialTransactions.First(x => x.Id.Equals(transaction.ReverseTransactionId));
         BaseDeleteTransaction(transaction);
         BaseDeleteTransaction(reverseTransaction);
     }

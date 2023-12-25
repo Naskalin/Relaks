@@ -7,7 +7,7 @@ namespace Relaks.Models.FinancialModels;
 [Table("FinancialTransactions")]
 public abstract class BaseFinancialTransaction
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     
     /// <summary>
     /// true Пополнение, false списание
@@ -75,5 +75,5 @@ public class AccountFinancialTransaction : BaseFinancialTransaction
     public FinancialAccount SecondAccount { get; set; } = null!;
     
     public Guid ReverseTransactionId { get; set; }
-    public AccountFinancialTransaction ReverseTransaction { get; set; } = null!;
+    // public AccountFinancialTransaction ReverseTransaction { get; set; } = null!;
 }

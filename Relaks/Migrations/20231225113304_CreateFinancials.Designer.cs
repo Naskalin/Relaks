@@ -11,7 +11,7 @@ using Relaks.Database;
 namespace Relaks.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231220114247_CreateFinancials")]
+    [Migration("20231225113304_CreateFinancials")]
     partial class CreateFinancials
     {
         /// <inheritdoc />
@@ -971,10 +971,13 @@ namespace Relaks.Migrations
                 {
                     b.HasBaseType("Relaks.Models.FinancialModels.BaseFinancialTransaction");
 
-                    b.Property<Guid>("Account2Id")
+                    b.Property<Guid>("ReverseTransactionId")
                         .HasColumnType("TEXT");
 
-                    b.HasIndex("Account2Id");
+                    b.Property<Guid>("SecondAccountId")
+                        .HasColumnType("TEXT");
+
+                    b.HasIndex("SecondAccountId");
 
                     b.ToTable("FinancialTransactions");
 
@@ -1259,13 +1262,13 @@ namespace Relaks.Migrations
 
             modelBuilder.Entity("Relaks.Models.FinancialModels.AccountFinancialTransaction", b =>
                 {
-                    b.HasOne("Relaks.Models.FinancialModels.FinancialAccount", "Account2")
+                    b.HasOne("Relaks.Models.FinancialModels.FinancialAccount", "SecondAccount")
                         .WithMany()
-                        .HasForeignKey("Account2Id")
+                        .HasForeignKey("SecondAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Account2");
+                    b.Navigation("SecondAccount");
                 });
 
             modelBuilder.Entity("Relaks.Models.FinancialModels.EntryFinancialTransaction", b =>

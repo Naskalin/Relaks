@@ -24,8 +24,12 @@ public partial class DatabaseSeeder
 
     private void CreateFinancialAccountCategories(BaseEntry entry)
     {
+        var entry2Id = Db.BaseEntries.Where(x => !x.Id.Equals(entry.Id)).Select(x => x.Id).First();
         Db.FinancialAccountCategories.Add(new() {Title = "Наличные", EntryId = entry.Id});
         Db.FinancialAccountCategories.Add(new() {Title = "Кредитные карты", EntryId = entry.Id});
+        
+        Db.FinancialAccountCategories.Add(new() {Title = "Наличные", EntryId = entry2Id});
+        Db.FinancialAccountCategories.Add(new() {Title = "Кредитные карты", EntryId = entry2Id});
         Db.SaveChanges();
     }
 
@@ -109,38 +113,37 @@ public partial class DatabaseSeeder
 
     private void CreateFinancialAccounts()
     {
-        var rub = Db.FinancialCurrencies.First(x => x.Id.Equals("RUB"));
-        var usd = Db.FinancialCurrencies.First(x => x.Id.Equals("USD"));
-
         var categoryIds = Db.FinancialAccountCategories.Select(x => x.Id).ToList();
         var accounts = new List<FinancialAccount>();
         var i = 0;
-        foreach (var currency in new [] {rub, usd})
+        foreach (var categoryId in categoryIds)
         {
-            var item = new FinancialAccount
+          for (int j = 0; j < 3; j++)
+          {
+            var currencyId = "RUB";
+            if (j != 0)
             {
-                Description = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null}),
-                Title = $"Наличные",
-                FinancialCurrencyId = currency.Id,
-                StartAt = DateTime.Now,
-                Balance = 10000
+              currencyId = Faker.Random.ArrayElement(new[] {"RUB", "EUR", "USD"}); 
+            }
+            var account = new FinancialAccount
+            {
+              Description = Faker.Random.ArrayElement(new[] {Faker.Lorem.Paragraph(1), null}),
+              Title = Faker.Random.ArrayElement(new [] {"Сбережения", "На путешествия", "На бучение"}) + " #" + i,
+              FinancialCurrencyId = currencyId,
+              StartAt = DateTime.Now,
+              Balance = 10000,
+              CategoryId = categoryId,
             };
             
             if (Faker.Random.Int(1, 4) >= 2)
             {
-                item.EndAt = Faker.Date.Soon(365, item.StartAt);
+              account.EndAt = Faker.Date.Soon(365, account.StartAt);
             }
             
-            item.CategoryId = categoryIds.Last();
-            if (currency.Id.Equals("RUB"))
-            {
-                item.CategoryId = categoryIds.First();
-            }
-            
-            accounts.Add(item);
+            accounts.Add(account);
             i++;
+          }
         }
-        
         
         Db.FinancialAccounts.AddRange(accounts);
         Db.SaveChanges();

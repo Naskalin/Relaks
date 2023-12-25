@@ -10,15 +10,18 @@ public partial class FinancialManager
     public void UpdateTransaction(AccountFinancialTransaction transaction, AccountFinancialTransactionRequest req)
     {
         // Удаляем текущую реверс транзакцию
-        DeleteTransaction(transaction.ReverseTransaction);
-        // Создаём новую
+        // DeleteTransaction(transaction.ReverseTransaction);
+        // var reverseTransaction = db.BaseFinancialTransactions.First(x => x.Id.Equals(transaction.ReverseTransactionId));
+        BaseDeleteTransaction(db.AccountFinancialTransactions.First(x => x.Id.Equals(transaction.ReverseTransactionId)));
+        // Создаём новую реверс транзакцию
         var reverseTransaction = new AccountFinancialTransaction();
         
         var initialFromBalance = transaction.FromBalance();
         var initialCreatedAt = transaction.CreatedAt;
         req.MapTo(transaction);
         // Связываем изменяемую транзакцию с новой реверсивной
-        transaction.ReverseTransaction = reverseTransaction;
+        // transaction.ReverseTransaction = reverseTransaction;
+        transaction.ReverseTransactionId = reverseTransaction.Id;
         DeleteItemsForTransaction(transaction, req.Items);
         UpdateItemsForTransaction(transaction, req.Items);
         CreateItemsForTransaction(transaction, req.Items);
@@ -29,7 +32,7 @@ public partial class FinancialManager
         var reverseReq = req.ToReverseRequest();
         reverseReq.MapTo(reverseTransaction);
         // Связываем с изменяемой
-        reverseTransaction.ReverseTransaction = transaction;
+        reverseTransaction.ReverseTransactionId = transaction.Id;
         CreateItemsForTransaction(reverseTransaction, reverseReq.Items);
         reverseTransaction.UpdateTotal();
         UpdateBalanceForNewTransaction(reverseTransaction);

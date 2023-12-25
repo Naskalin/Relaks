@@ -24,7 +24,7 @@
             @foreach (var account in category.Accounts)
             {
                 <div class="list-group-item p-0 cursor-pointer d-flex justify-content-between align-items-center gap-2 group-show @(account.Id.Equals(AccountId) ? "bg-primary bg-opacity-50" : "")">
-                    <div class="p-3 col pe-1" @onclick="@(() => OnClickAccount(account.Id))" disabled="@DisabledReasonAccountIds.Keys.Contains(account.Id)">
+                    <div class="p-3 col pe-2" @onclick="@(() => OnClickAccount(account.Id))" disabled="@DisabledReasonAccountIds.Keys.Contains(account.Id)">
                         <div class="d-flex gap-2 align-items-center @(account.Id.Equals(AccountId) ? "text-white" : "")">
                             <div class="col">
                                 <span>

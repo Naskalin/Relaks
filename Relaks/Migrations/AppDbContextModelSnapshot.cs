@@ -968,10 +968,13 @@ namespace Relaks.Migrations
                 {
                     b.HasBaseType("Relaks.Models.FinancialModels.BaseFinancialTransaction");
 
-                    b.Property<Guid>("Account2Id")
+                    b.Property<Guid>("ReverseTransactionId")
                         .HasColumnType("TEXT");
 
-                    b.HasIndex("Account2Id");
+                    b.Property<Guid>("SecondAccountId")
+                        .HasColumnType("TEXT");
+
+                    b.HasIndex("SecondAccountId");
 
                     b.ToTable("FinancialTransactions");
 
@@ -1256,13 +1259,13 @@ namespace Relaks.Migrations
 
             modelBuilder.Entity("Relaks.Models.FinancialModels.AccountFinancialTransaction", b =>
                 {
-                    b.HasOne("Relaks.Models.FinancialModels.FinancialAccount", "Account2")
+                    b.HasOne("Relaks.Models.FinancialModels.FinancialAccount", "SecondAccount")
                         .WithMany()
-                        .HasForeignKey("Account2Id")
+                        .HasForeignKey("SecondAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Account2");
+                    b.Navigation("SecondAccount");
                 });
 
             modelBuilder.Entity("Relaks.Models.FinancialModels.EntryFinancialTransaction", b =>
