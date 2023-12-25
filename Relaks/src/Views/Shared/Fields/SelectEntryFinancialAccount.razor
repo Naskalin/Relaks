@@ -30,7 +30,7 @@
     public bool Clearable { get; set; }
     
     [Parameter]
-    public string Label { get; set; } = "Финансовый счёт";
+    public string Label { get; set; } = "Выберите финансовый счёт";
     
     private string FieldId { get; set; } = Guid.NewGuid().ToString();
     private Guid? EntryId { get; set; }
@@ -71,7 +71,7 @@
             Title = "Выберите финансовый счёт",
             IsScrolling = true,
             CloseButtonText = "Закрыть",
-            Size = Size.ExtraLarge,
+            Size = Size.Medium,
         };
     
         option.Component = BootstrapDynamicComponent.CreateComponent<_EntryFinancialAccountsList>(new Dictionary<string, object?>()

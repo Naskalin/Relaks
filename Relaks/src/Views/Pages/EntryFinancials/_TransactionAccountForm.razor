@@ -57,7 +57,6 @@
             </div>
             
             <div class="mb-3">
-                <label class="form-label">Выберите счёт</label>
                 <SelectEntryFinancialAccount @bind-AccountId="@Req.SecondAccountId"/>
                 <ValidationMessage For="@(() => Req.SecondAccountId)"/>
             </div>
