@@ -29,10 +29,6 @@
     [Parameter]
     public bool Clearable { get; set; }
     
-    @* *@
-    @* [Parameter] *@
-    @* public EventCallback<Guid> OnClickAccount { get; set; } *@
-    @* *@
     [Parameter]
     public string Label { get; set; } = "Финансовый счёт";
     
@@ -48,49 +44,13 @@
         StateHasChanged();
         await Task.CompletedTask;
     }
-    @* *@
-    @* private RenderFragment SelectEntryFragment => __builder => *@
-    @* { *@
-    @*     <div class="d-flex align-items-center mb-3 gap-2"> *@
-    @*         <div> *@
-    @*             <i class="las la-hand-point-right text-secondary" style="font-size: 1.8rem;"></i> *@
-    @*         </div> *@
-    @*         <div> *@
-    @*             @EntryId.ToString() *@
-    @*             <Select TValue="Guid" *@
-    @*                     Items="EntrySelectItems" *@
-    @*                     @bind-Value="@EntryId" *@
-    @*                     OnSelectedItemChanged="@OnEntryIdChanged"> *@
-    @*                 <DisplayTemplate> *@
-    @*                     <EntryInlineItem EntryId="@Guid.Parse(context!.Value)"/> *@
-    @*                 </DisplayTemplate> *@
-    @*             </Select> *@
-    @*         </div> *@
-    @*     </div> *@
-    @* }; *@
-    @* *@
-    @* protected override void OnParametersSet() *@
-    @* { *@
-    @*     var entryIds = Db.FinancialAccountCategories.Select(x => x.EntryId).Distinct(); *@
-    @*     EntryId = entryIds.First(); *@
-    @*     EntrySelectItems = Db.BaseEntries *@
-    @*         .Where(x => entryIds.Contains(x.Id)) *@
-    @*         .Select(x => new SelectedItem(x.Id.ToString(), x.Name)) *@
-    @*         .ToList(); *@
-    @* } *@
-    @* *@
+    
     private string Title()
     {
         if (Account == null) return "<Не выбрано>";
         return $"{Account.Category.Entry.Name} \u2192 {Account.Category.Title} \u2192 {Account.TitleWithCurrency()}";
     }
-    @* *@
-    @* private Task OnEntryIdChanged(SelectedItem item) *@
-    @* { *@
-    @*     EntryId = Guid.Parse(item.Value); *@
-    @*     return Task.CompletedTask; *@
-    @* } *@
-    @* *@
+
     private async Task OnAccountIdChanged(Guid? accountId)
     {
         AccountId = accountId;
@@ -111,7 +71,7 @@
             Title = "Выберите финансовый счёт",
             IsScrolling = true,
             CloseButtonText = "Закрыть",
-            Size = Size.ExtraLarge
+            Size = Size.ExtraLarge,
         };
     
         option.Component = BootstrapDynamicComponent.CreateComponent<_EntryFinancialAccountsList>(new Dictionary<string, object?>()
