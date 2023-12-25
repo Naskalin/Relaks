@@ -1,6 +1,7 @@
 ﻿@using Relaks.Models
 @using Relaks.Database
 @using Microsoft.EntityFrameworkCore
+@using Relaks.Utils.Extensions
 
 @inject AppDbContext Db;
 
@@ -22,7 +23,7 @@
          @if (!string.IsNullOrEmpty(Entry.Description))
          {
              <div style="line-height: 1.2rem; max-height: 2.4rem;overflow: hidden;text-overflow: ellipsis;">
-                 <div class="small">@Entry.Description</div>
+                 <div class="small">@Entry.Description.Truncate(50)</div>
              </div>
          }
          @if (AfterBody != null)
