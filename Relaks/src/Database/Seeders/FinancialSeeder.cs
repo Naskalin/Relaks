@@ -24,12 +24,12 @@ public partial class DatabaseSeeder
 
     private void CreateFinancialAccountCategories(BaseEntry entry)
     {
-        var entry2Id = Db.BaseEntries.Where(x => !x.Id.Equals(entry.Id)).Select(x => x.Id).First();
         Db.FinancialAccountCategories.Add(new() {Title = "Наличные", EntryId = entry.Id});
         Db.FinancialAccountCategories.Add(new() {Title = "Кредитные карты", EntryId = entry.Id});
         
-        Db.FinancialAccountCategories.Add(new() {Title = "Наличные", EntryId = entry2Id});
-        Db.FinancialAccountCategories.Add(new() {Title = "Кредитные карты", EntryId = entry2Id});
+        // var entry2Id = Db.BaseEntries.Where(x => !x.Id.Equals(entry.Id)).Select(x => x.Id).First();
+        // Db.FinancialAccountCategories.Add(new() {Title = "Наличные", EntryId = entry2Id});
+        // Db.FinancialAccountCategories.Add(new() {Title = "Кредитные карты", EntryId = entry2Id});
         Db.SaveChanges();
     }
 

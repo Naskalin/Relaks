@@ -10,9 +10,9 @@
     <span class="input-group-text" @onclick="@HandleSelectClick">
         <i class="las la-wallet la-lg"></i>
     </span>
-    @if (Account != null)
-    {
-        <div class="form-control" @onclick="@HandleSelectClick">
+    <div class="form-control" @onclick="@HandleSelectClick">
+        @if (Account != null)
+        {
             <EntryInlineItem EntryId="@Account.Category.EntryId">
                 <AfterBody>
                     <small class="text-success">
@@ -20,8 +20,12 @@
                     </small>
                 </AfterBody>
             </EntryInlineItem>
-        </div>   
-    }
+        }
+        else
+        {
+            @($"<{Label}>")
+        }
+    </div>   
     @if (Clearable)
     {
         <button class="btn btn-outline-secondary" type="button" @onclick="@HandleClear">

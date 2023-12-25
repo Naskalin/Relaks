@@ -28,11 +28,18 @@ public partial class FinancialManager
         transaction.UpdateTotal();
         UpdateBalanceForExistingTransaction(transaction, initialFromBalance, initialCreatedAt);
         
-        // Создаём новую реверсивную транзакцию
-        var reverseReq = req.ToReverseRequest();
-        reverseReq.MapTo(reverseTransaction);
-        // Связываем с изменяемой
         reverseTransaction.ReverseTransactionId = transaction.Id;
+        // Получаем реверс реквест
+        var reverseReq = req.ToReverseRequest();
+        // изменяем его так, чтобы создалист новые элементы (item.Id = null)
+        reverseReq.Items = transaction.Items.Select(x =>
+        {
+            var itemReq = new FinancialTransactionItemRequest();
+            x.MapTo(itemReq);
+            return itemReq;
+        }).ToList();
+        reverseReq.MapTo(reverseTransaction);
+        
         CreateItemsForTransaction(reverseTransaction, reverseReq.Items);
         reverseTransaction.UpdateTotal();
         UpdateBalanceForNewTransaction(reverseTransaction);
