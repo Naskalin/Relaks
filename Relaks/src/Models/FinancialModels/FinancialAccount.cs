@@ -43,4 +43,6 @@ public class FinancialAccount
     /// </summary>
     [Precision(19, 4)]
     public decimal Balance { get; set; }
+
+    public List<BaseFinancialTransaction> Transactions { get; set; } = new();
 }
