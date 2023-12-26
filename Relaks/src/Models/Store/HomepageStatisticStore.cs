@@ -40,9 +40,10 @@ public class HomepageStatisticStore
         EInfoCounts["Ссылки"] = _db.EiUrls.Count();
         EInfoCounts["Наборы данных"] = _db.EiDatasets.Count();
 
-        FinancialCounts["Финансовые транзакции"] = _db.EntryFinancialTransactions.Count();
-        FinancialCounts["Категории финансовых транзакций"] = _db.FinancialTransactionCategories.Count();
+        FinancialCounts["Финансовые транзакции"] = _db.BaseFinancialTransactions.Count();
+        FinancialCounts["Составляющие транзакций"] = _db.FinancialTransactionItems.Count();
+        FinancialCounts["Категории транзакций"] = _db.FinancialTransactionCategories.Count();
         FinancialCounts["Финансовые счета"] = _db.FinancialAccounts.Count();
-        FinancialCounts["Категории финансовых счетов"] = _db.FinancialAccountCategories.Count();
+        FinancialCounts["Категории счетов"] = _db.FinancialAccountCategories.Count();
     }
 }
