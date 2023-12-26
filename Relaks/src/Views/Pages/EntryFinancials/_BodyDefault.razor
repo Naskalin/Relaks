@@ -24,7 +24,7 @@
                 disabled="@(!Store.AccountId.HasValue)"
                 title="@(!Store.AccountId.HasValue ? "Выберите счёт" : "")"
                 @onclick="@HandleAddEntryTransaction">
-            Транзакция
+            Для объединения
             <i class="las la-coins la-lg ms-1"></i>
         </button>
     </div>
@@ -33,7 +33,7 @@
                 class="btn btn-outline-primary"
                 disabled="@(!Store.AccountId.HasValue)"
                 @onclick="@HandleAddAccountTransaction">
-            Перевод между счетами
+            Между счетами
             <i class="las la-exchange-alt la-lg ms-1"></i>
         </button>
     </div>
