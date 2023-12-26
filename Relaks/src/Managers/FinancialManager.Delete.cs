@@ -18,7 +18,7 @@ public partial class FinancialManager
         BaseDeleteTransaction(transaction);
     }
     
-    private void BaseDeleteTransaction(BaseFinancialTransaction transaction)
+    public void BaseDeleteTransaction(BaseFinancialTransaction transaction)
     {
         // 9:45---10:00(Удаляемая)---10:15---10:30
         db.BaseFinancialTransactions.Remove(transaction);

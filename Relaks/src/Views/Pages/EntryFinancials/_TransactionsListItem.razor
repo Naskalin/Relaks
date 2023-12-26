@@ -1,5 +1,6 @@
 ﻿@using Relaks.Interfaces
 @using Relaks.Models.FinancialModels
+@using Relaks.Utils.Extensions
 
 <tr class="group-show">
     @if (FirstRow != null)
@@ -7,11 +8,6 @@
         @FirstRow.Td(Transaction.Id)
     }
     <td>@Transaction.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
-    <td>
-        <Badge Color="@(Transaction.IsPlus ? Color.Success : Color.Danger)">
-            @(Transaction is AccountFinancialTransaction ? "Перевод" : Transaction.IsPlus ? "Пополнение" : "Списание")
-        </Badge>
-    </td>
     <td style="white-space: nowrap" class="fw-semibold @(Transaction.IsPlus ? "text-success" : "text-danger")">
         @(Transaction.IsPlus ? "+" : "-")@Transaction.Total.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol
     </td>
@@ -21,10 +17,11 @@
         @Transaction.Balance.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol
     </td>
     <td>
+        <small>@(string.Join(", ", Categories).Truncate(40))</small>
         @if (!string.IsNullOrEmpty(Transaction.Description))
         {
             <Popover Content="@Transaction.Description">
-                <i class="las la-comment text-info" style="font-size: 1.5rem;"></i>
+                <i class="las la-comment text-success ms-1" style="font-size: 1.2rem;"></i>
             </Popover>
         }
     </td>
@@ -32,9 +29,11 @@
         
         <EntryInlineItem EntryId="@EntryId">
             <AfterBody>
-                @if (!string.IsNullOrEmpty(AccountHelpText))
+                @if (Transaction is AccountFinancialTransaction accountTransaction)
                 {
-                    <small class="text-success">@AccountHelpText</small>
+                    <span class="text-success">
+                        @accountTransaction.SecondAccount.Category.Title / @accountTransaction.SecondAccount.TitleWithCurrency()
+                    </span>
                 }
             </AfterBody>
         </EntryInlineItem>
@@ -52,13 +51,13 @@
     public Guid FinancialAccountId { get; set; }
     
     private Guid EntryId { get; set; }
-    private string? AccountHelpText { get; set; }
+    private List<string> Categories { get; set; } = new();
 
     protected override void OnParametersSet()
     {
-        if (Transaction.Discriminator.Equals(nameof(EntryFinancialTransaction)))
+        Categories = Transaction.Items.Select(x => x.Category.Title).Distinct().ToList();
+        if (Transaction is EntryFinancialTransaction entryTransaction)
         {
-            var entryTransaction = (EntryFinancialTransaction) Transaction;
             EntryId = entryTransaction.EntryId;
             return;
         }
@@ -66,7 +65,6 @@
         var accountTransaction = (AccountFinancialTransaction) Transaction;
         var secondAccount = accountTransaction.SecondAccount;
         EntryId = secondAccount.Category.EntryId;
-        AccountHelpText = $"Счёт: {secondAccount.Category.Title} / {secondAccount.TitleWithCurrency()}";
     }
     
 }

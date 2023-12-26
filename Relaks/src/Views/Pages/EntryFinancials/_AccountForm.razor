@@ -1,11 +1,13 @@
 ﻿@using Relaks.Views.Pages.EntryFinancials.ViewModels
 @using Relaks.Database
+@using Relaks.Managers
 @using Relaks.Mappers
 @using Relaks.Models.FinancialModels
 
 @inject AppDbContext Db;
 @inject IJSRuntime JsRuntime;
 @inject NavigationManager Navigation;
+@inject FinancialManager FinManager;
 
 <div class="row align-items-center mb-3">
     <div class="col-auto">
@@ -159,7 +161,20 @@
         if (!isConfirmed) return;
 
         Db.FinancialAccounts.Remove(Account);
-        await Db.SaveChangesAsync();
+        var reverseTransactions = Db
+            .AccountFinancialTransactions
+            .Where(x => x.SecondAccountId.Equals(Account.Id))
+            .ToList()
+        ;
+        foreach (var reverseTransaction in reverseTransactions)
+        {
+            // ужасный костыль, ибо надо пересчитывать баланс в моменте для другого связанного аккаунта
+            FinManager.BaseDeleteTransaction(reverseTransaction);
+            await Db.SaveChangesAsync();
+        }
+        
+        if (!reverseTransactions.Any()) await Db.SaveChangesAsync();
+        
         Navigation.NavigateTo($"/entries/{Store.EntryId}/financials");
 
         await HandleReturn();

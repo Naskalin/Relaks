@@ -15,9 +15,9 @@
         {
             <EntryInlineItem EntryId="@Account.Category.EntryId">
                 <AfterBody>
-                    <small class="text-success">
-                        Счёт: @Account.Category.Title / @Account.TitleWithCurrency()
-                    </small>
+                    <span class="text-success">
+                        @Account.Category.Title / @Account.TitleWithCurrency()
+                    </span>
                 </AfterBody>
             </EntryInlineItem>
         }
