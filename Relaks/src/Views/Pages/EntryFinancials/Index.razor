@@ -54,6 +54,10 @@
                         @*         break; *@
                         default:
                             <_BodyDefault OnStateChanged="@StateHasChanged"/>
+                            if (AccountId.HasValue)
+                            {
+                                <_AccountLineChart AccountId="@AccountId.Value"/>
+                            }
                             break;
                     }
 

@@ -1,0 +1,61 @@
+﻿@using Relaks.Database
+@using System.Diagnostics.CodeAnalysis
+
+@inject AppDbContext Db;
+
+<div class="mt-5"></div>
+<div class="d-flex mb-3">
+    <span class="h5">Статистика</span>
+</div>
+<Chart @ref="LineChart" OnInitAsync="@(() => OnInit())"/>
+
+@code {
+    [Parameter]
+    public Guid AccountId { get; set; }
+    
+    [NotNull]
+    private Chart? LineChart { get; set; }
+    
+    // private readonly int _lineDataCount = 7;
+    
+    // private Random Randomer { get; } = new();
+    
+    private Task<ChartDataSource> OnInit()
+    {
+        var ds = new ChartDataSource();
+        ds.Options.XScalesGridColor = "#6c757d";
+        ds.Options.YScalesGridColor = "#6c757d";
+        ds.Options.ShowXScales = true;
+        ds.Options.ShowYScales = true;
+
+        var transactionsQuery = Db.BaseFinancialTransactions
+            .OrderBy(x => x.CreatedAt)
+            .Where(x => x.AccountId.Equals(AccountId));
+        // var totals = transactions.Select(x => (object) x.Total).ToList();
+
+        ds.Labels = transactionsQuery
+            .Select(x => x.CreatedAt.ToString("dd.MM.yyyy HH:mm"))
+            .ToList();
+        ds.Data.Add(new ChartDataset()
+        {
+            Label = "Сумма",
+            Data = transactionsQuery.Select(x => (object) (x.IsPlus ? x.Total : -x.Total)).ToList(),
+        });
+        ds.Data.Add(new ChartDataset()
+        {
+            Label = "Баланс",
+            Data = transactionsQuery.Select(x => (object) x.Balance).ToList(),
+        });
+        // ds.Labels = Enumerable.Range(1, _lineDataCount).Select(i => i.ToString());
+        // for (var index = 0; index < 2; index++)
+        // {
+        //     ds.Data.Add(new ChartDataset()
+        //     {
+        //         Label = $"Set {index}",
+        //         Data = Enumerable.Range(1, _lineDataCount).Select((_, _) => (object) Randomer.Next(20, 37)),
+        //     });
+        // }
+
+        return Task.FromResult(ds);
+    }
+}
