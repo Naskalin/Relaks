@@ -1117,7 +1117,7 @@ namespace Relaks.Migrations
             modelBuilder.Entity("Relaks.Models.FinancialModels.BaseFinancialTransaction", b =>
                 {
                     b.HasOne("Relaks.Models.FinancialModels.FinancialAccount", "Account")
-                        .WithMany()
+                        .WithMany("Transactions")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1305,6 +1305,11 @@ namespace Relaks.Migrations
             modelBuilder.Entity("Relaks.Models.FinancialModels.BaseFinancialTransaction", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialAccount", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("Relaks.Models.FinancialModels.FinancialAccountCategory", b =>

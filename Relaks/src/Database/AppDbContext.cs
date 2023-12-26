@@ -71,6 +71,8 @@ public sealed class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new StructureGroupConfiguration());
         modelBuilder.ApplyConfiguration(new EntryRelationConfiguration());
         modelBuilder.ApplyConfiguration(new EntryTagCategoryConfiguration());
+        modelBuilder.ApplyConfiguration(new FinancialTransactionConfiguration());
+        modelBuilder.ApplyConfiguration(new FinancialAccountConfiguration());
 
         // DateTime Always UTC
         // https://stackoverflow.com/a/61243301/5638975
