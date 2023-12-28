@@ -1,0 +1,42 @@
+﻿@using Relaks.Views.Shared.Charts.ViewModels
+@using Relaks.Database
+@using System.Text.Json
+
+@inject IJSRuntime Js;
+@inject AppDbContext Db;
+
+@AccountIds.Count
+@(string.Join(", ", AccountIds))
+@if (!AccountIds.Any())
+{
+    <p>Выберите один или несколько счетов для отображения статистики</p>      
+}
+<div id="@_htmlElementId"></div>
+
+@code {
+    [Parameter]
+    public List<Guid> AccountIds { get; set; } = new();
+
+    private FinancialAccountStatisticsStore Store { get; set; } = null!;
+    
+    private readonly string _htmlElementId = Guid.NewGuid().ToString();
+
+    protected override void OnInitialized()
+    {
+        Store = new(Db, AccountIds);
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        return !firstRender ? Task.CompletedTask : InitializeChart();
+    }
+
+    private Task InitializeChart()
+    {
+        var data = Store.Calculate();
+        data.HtmlElementId = _htmlElementId;
+        var json = JsonSerializer.Serialize(data, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        return Task.FromResult(Js.InvokeVoidAsync("InitializeFinancialChart", json));
+        return Task.CompletedTask;
+    }
+}

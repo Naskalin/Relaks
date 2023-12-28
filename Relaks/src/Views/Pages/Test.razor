@@ -1,36 +1,56 @@
 ﻿@page "/test"
 @using System.Diagnostics.CodeAnalysis
+@using Microsoft.EntityFrameworkCore
+@using Relaks.Database
+
+@inject IJSRuntime Js;
+@inject AppDbContext Db;
 
 <PageTemplate>
     <MyTitle>Test</MyTitle>
 
-   <Chart @ref="LineChart" OnInitAsync="@(() => OnInit())"/>
-
+    <FinancialAccountChart AccountIds="@AccountIds"/>
 </PageTemplate>
 
 @code {
-    [NotNull]
-    private Chart? LineChart { get; set; }
+    private List<Guid> AccountIds { get; set; } = new();
 
-    private readonly int LineDataCount = 7;
-    
-    private Random Randomer { get; } = new();
-    
-    private Task<ChartDataSource> OnInit()
+    protected override void OnInitialized()
     {
-        var ds = new ChartDataSource();
-        ds.Options.XScalesGridColor = "#6c757d";
-        ds.Options.YScalesGridColor = "#6c757d";
-        ds.Labels = Enumerable.Range(1, LineDataCount).Select(i => i.ToString());
-        for (var index = 0; index < 2; index++)
-        {
-            ds.Data.Add(new ChartDataset()
-            {
-                Label = $"Set {index}",
-                Data = Enumerable.Range(1, LineDataCount).Select((_, _) => (object) Randomer.Next(20, 37)),
-            });
-        }
-
-        return Task.FromResult(ds);
+        AccountIds = Db.BaseFinancialTransactions
+            .Select(x => x.AccountId)
+            .Distinct()
+            .ToList();
     }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender == false) return Task.CompletedTask;
+        return Task.FromResult(Js.InvokeVoidAsync("InitializeChart"));
+    }
+
+    // [NotNull]
+    // private Chart? LineChart { get; set; }
+    //
+    // private readonly int LineDataCount = 7;
+    //
+    // private Random Randomer { get; } = new();
+    //
+    // private Task<ChartDataSource> OnInit()
+    // {
+    //     var ds = new ChartDataSource();
+    //     ds.Options.XScalesGridColor = "#6c757d";
+    //     ds.Options.YScalesGridColor = "#6c757d";
+    //     ds.Labels = Enumerable.Range(1, LineDataCount).Select(i => i.ToString());
+    //     for (var index = 0; index < 2; index++)
+    //     {
+    //         ds.Data.Add(new ChartDataset()
+    //         {
+    //             Label = $"Set {index}",
+    //             Data = Enumerable.Range(1, LineDataCount).Select((_, _) => (object) Randomer.Next(20, 37)),
+    //         });
+    //     }
+    //
+    //     return Task.FromResult(ds);
+    // }
 }

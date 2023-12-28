@@ -10,7 +10,6 @@
         <PackageReference Include="Blazored.LocalStorage" Version="4.4.0" />
         <PackageReference Include="Bogus" Version="34.0.2" />
         <PackageReference Include="BootstrapBlazor" Version="8.0.3" />
-        <PackageReference Include="BootstrapBlazor.Chart" Version="8.0.1" />
         <PackageReference Include="BootstrapBlazor.FontAwesome" Version="8.0.0" />
         <PackageReference Include="ColorHashSharp" Version="1.0.0" />
         <PackageReference Include="libphonenumber-csharp" Version="8.13.25" />

@@ -1,10 +1,12 @@
-﻿import '../css/app.scss';
+﻿
+import '../css/app.scss';
 import './_image_cropper.js';
 import './_file_download.js';
 import './_dataset_sortable.js';
 import './_textarea_autosize.js';
 import './_scroll_to.js';
 import './_draggable_zone.js';
+import './charts/index.js'
 
 window.SetThemeColorMode = (modeName) => {
     try {

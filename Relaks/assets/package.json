@@ -6,6 +6,7 @@
   "dependencies": {
     "@popperjs/core": "^2.11.7",
     "arrows-svg": "^1.6.0",
+    "billboard.js": "^3.10.3",
     "bootstrap-icons": "^1.10.4",
     "cropperjs": "^1.5.13",
     "esbuild": "0.17.17",
