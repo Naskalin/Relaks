@@ -1,0 +1,117 @@
+﻿@using Relaks.Views.Shared.Charts.ViewModels
+@using Relaks.Database
+
+@inject AppDbContext Db;
+
+<Dump Data="@Store.Req"/>
+<Dump Data="@_requestYearsItems"/>
+<div class="d-flex gap-4">
+    <div class="mb-3">
+        <label class="form-label">Тип отображения данных</label>
+        <Select TValue="@FinancialAccountStatisticsRequest.TypeEnum"
+                @bind-Value="@Store.Req.Type"
+                OnValueChanged="@(_ => OnStateHasChanged.InvokeAsync())"
+                Items="@_requestTypeItems">
+        </Select>
+    </div>
+    @if (IsMonthDate())
+    {
+        <div class="mb-3">
+            <label class="form-label">Месяц</label>
+            <InputDate Type="@InputDateType.Month"
+                       @bind-Value="@Store.Req.TempDate"
+                       @bind-Value:after="@(() => OnStateHasChanged.InvokeAsync())"
+                       class="form-control"/>
+        </div>
+    }
+    else if (IsYearDate())
+    {
+        <div class="mb-3">
+            <label class="form-label">Год</label>
+            <Select TValue="@int"
+                    @bind-Value="@RequestYear"
+                    OnValueChanged="@(year => OnYearChanged(year))"
+                    Items="@_requestYearsItems">
+            </Select>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex gap-2">
+            <div class="mb-3">
+                <label class="form-label">Дата начала</label>
+                <InputDate Type="@InputDateType.Date"
+                           @bind-Value="@Store.Req.From"
+                           @bind-Value:after="@(() => OnStateHasChanged.InvokeAsync())"
+                           class="form-control"/>
+                          
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Дата окончания</label>
+                <InputDate Type="@InputDateType.Date"
+                           @bind-Value="@Store.Req.To"
+                           @bind-Value:after="@(() => OnStateHasChanged.InvokeAsync())"
+                           class="form-control"/>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+
+    [CascadingParameter]
+    public FinancialAccountStatisticsStore Store { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback OnStateHasChanged { get; set; }
+
+    private bool IsMonthDate() => new[]
+    {
+        FinancialAccountStatisticsRequest.TypeEnum.MonthByDays,
+        FinancialAccountStatisticsRequest.TypeEnum.MonthByTransactions
+    }.Contains(Store.Req.Type);
+
+    private bool IsCustomDate() => new[]
+    {
+        FinancialAccountStatisticsRequest.TypeEnum.CustomByDays,
+        FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths,
+        FinancialAccountStatisticsRequest.TypeEnum.CustomByTransactions
+    }.Contains(Store.Req.Type);
+
+    private bool IsYearDate() => new[]
+    {
+        FinancialAccountStatisticsRequest.TypeEnum.YearByDays,
+        FinancialAccountStatisticsRequest.TypeEnum.YearByMonths,
+        FinancialAccountStatisticsRequest.TypeEnum.YearByTransactions
+    }.Contains(Store.Req.Type);
+
+    protected override void OnParametersSet()
+    {
+        var years = Db.BaseFinancialTransactions.Select(x => x.CreatedAt.Year).Distinct().OrderByDescending(x => x).ToList();
+        _requestYearsItems = years.Select(x => new SelectedItem(x.ToString(), x.ToString())).ToList();
+    }
+
+    private int RequestYear { get; set; }
+    private List<SelectedItem> _requestYearsItems = new();
+
+    private Task OnYearChanged(int year)
+    {
+        RequestYear = year;
+        var tempDate = Store.Req.TempDate;
+        Store.Req.TempDate = new DateTime(year, tempDate.Month, tempDate.Day);
+        return OnStateHasChanged.InvokeAsync();
+    }
+
+    private List<SelectedItem> _requestTypeItems = new()
+    {
+        new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.MonthByTransactions.ToString(), "Месяц по транзакзиям"),
+        new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.MonthByDays.ToString(), "Месяц по дням"),
+        new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.YearByMonths.ToString(), "Год по месяцам"),
+        new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.YearByDays.ToString(), "Год по дням"),
+        new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.YearByTransactions.ToString(), "Год по транзакзиям"),
+        new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.CustomByDays.ToString(), "Произвольно по дням"),
+        new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths.ToString(), "Произвольно по месяцам"),
+        new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.CustomByTransactions.ToString(), "Произвольно по транзакциям"),
+    };
+
+}

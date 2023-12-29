@@ -2,26 +2,8 @@
 
 public class FinancialAccountLineChartModel
 {
-    public enum TypeEnum
-    {
-        Transactions,
-        Days,
-        Months,
-    }
-
-    public TypeEnum Type { get; set; } = TypeEnum.Days;
-    
-    /// <summary>
-    /// Период от
-    /// </summary>
-    public DateTime From { get; set; }
-    
-    /// <summary>
-    /// Период до
-    /// </summary>
-    public DateTime To { get; set; }
-    
     public string HtmlElementId { get; set; } = null!;
+    public List<DateTime> Dates { get; set; } = new(); 
     public List<FinancialAccountChartModel> Accounts { get; set; } = new();
 }
 
@@ -29,6 +11,16 @@ public class FinancialAccountChartModel
 {
     
     public decimal Total { get; set; }
+    
+    /// <summary>
+    /// Пополнений за этот период
+    /// </summary>
+    public decimal TotalIncome { get; set; }
+    
+    /// <summary>
+    /// Списаний за этот период
+    /// </summary>
+    public decimal TotalOutlay { get; set; }
     
     /// <summary>
     /// Средний баланс за этот период
@@ -52,5 +44,14 @@ public class FinancialAccountChartItemModel
 {
     public DateTime Date { get; set; }
     public decimal Total { get; set; }
+    /// <summary>
+    /// Пополнений за этот период
+    /// </summary>
+    public decimal TotalIncome { get; set; }
+    
+    /// <summary>
+    /// Списаний за этот период
+    /// </summary>
+    public decimal TotalOutlay { get; set; }
     public decimal AverageBalance { get; set; }
 }

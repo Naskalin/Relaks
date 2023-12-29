@@ -8,7 +8,9 @@ window.InitializeFinancialChart = (data) => {
     
     let columns = [];
     model.accounts.forEach(account => {
-        console.log(account.items);
+        // console.log(account.totalIncome, account.totalOutlay);
+        // console.log(account.totalIncome2, account.totalOutlay2);
+        // console.log(account.items);
         let avgBalance = ['Средний баланс'];
         // let totalIncome = ['Пополнения'];
         // let totalOutlay = ['Списания'];

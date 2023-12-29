@@ -41,7 +41,7 @@ public partial class DatabaseSeeder
         var categories = Db.FinancialTransactionCategories.ToDictionary(x => x.Title, x => x.Id);
 
         var transactions = new List<EntryFinancialTransaction>();
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 500; i++)
         {
           transactions.Add(new()
           {

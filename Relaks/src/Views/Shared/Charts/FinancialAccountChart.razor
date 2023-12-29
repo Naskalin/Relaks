@@ -5,13 +5,19 @@
 @inject IJSRuntime Js;
 @inject AppDbContext Db;
 
-@AccountIds.Count
-@(string.Join(", ", AccountIds))
-@if (!AccountIds.Any())
-{
-    <p>Выберите один или несколько счетов для отображения статистики</p>      
-}
-<div id="@_htmlElementId"></div>
+<Dump Data="@Store.Req"/>
+<Dump Data="@Store.Calculate()"/>
+<CascadingValue Value="@Store">
+    @if (!AccountIds.Any())
+    {
+        <p>Выберите один или несколько счетов для отображения статистики</p>      
+    }
+    else
+    {
+        <_Filter OnStateHasChanged="@OnFilterChange"/>
+    }
+    <div id="@_htmlElementId"></div>
+</CascadingValue>
 
 @code {
     [Parameter]
@@ -24,11 +30,18 @@
     protected override void OnInitialized()
     {
         Store = new(Db, AccountIds);
+        Store.Initialize();
     }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
         return !firstRender ? Task.CompletedTask : InitializeChart();
+    }
+
+    private Task OnFilterChange()
+    {
+        StateHasChanged();
+        return InitializeChart();
     }
 
     private Task InitializeChart()
@@ -37,6 +50,5 @@
         data.HtmlElementId = _htmlElementId;
         var json = JsonSerializer.Serialize(data, new JsonSerializerOptions(JsonSerializerDefaults.Web));
         return Task.FromResult(Js.InvokeVoidAsync("InitializeFinancialChart", json));
-        return Task.CompletedTask;
     }
 }
