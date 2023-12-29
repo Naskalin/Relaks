@@ -1,10 +1,12 @@
 ﻿@using Relaks.Views.Shared.Charts.ViewModels
 @using Relaks.Database
+@using Relaks.Utils.Extensions
+@using Console = System.Console
 
 @inject AppDbContext Db;
 
 <Dump Data="@Store.Req"/>
-<Dump Data="@_requestYearsItems"/>
+@* <Dump Data="@_requestYearsItems"/> *@
 <div class="d-flex gap-4">
     <div class="mb-3">
         <label class="form-label">Тип отображения данных</label>
@@ -19,8 +21,8 @@
         <div class="mb-3">
             <label class="form-label">Месяц</label>
             <InputDate Type="@InputDateType.Month"
-                       @bind-Value="@Store.Req.TempDate"
-                       @bind-Value:after="@(() => OnStateHasChanged.InvokeAsync())"
+                       @bind-Value="@TempDate"
+                       @bind-Value:after="@(OnMonthChanged)"  
                        class="form-control"/>
         </div>
     }
@@ -65,6 +67,7 @@
     [Parameter]
     public EventCallback OnStateHasChanged { get; set; }
 
+    private DateTime TempDate { get; set; } = DateTime.Now;
     private bool IsMonthDate() => new[]
     {
         FinancialAccountStatisticsRequest.TypeEnum.MonthByDays,
@@ -94,11 +97,20 @@
     private int RequestYear { get; set; }
     private List<SelectedItem> _requestYearsItems = new();
 
+    private Task OnMonthChanged()
+    {
+        var date = TempDate;
+        Store.Req.From = date.StartOfMonth();
+        Store.Req.To = date.EndOfMonth();
+        return OnStateHasChanged.InvokeAsync();
+    }
     private Task OnYearChanged(int year)
     {
         RequestYear = year;
-        var tempDate = Store.Req.TempDate;
-        Store.Req.TempDate = new DateTime(year, tempDate.Month, tempDate.Day);
+        var now = new DateTime();
+        var date = new DateTime(year, now.Month, now.Day);
+        Store.Req.From = date.StartOfYear();
+        Store.Req.To = date.EndOfYear();
         return OnStateHasChanged.InvokeAsync();
     }
 

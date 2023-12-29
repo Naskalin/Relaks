@@ -74,8 +74,8 @@
 
     public void FindItems()
     {
-        Req.StartDay = Date.StartTimeOfMonth();
-        Req.EndDay = Date.EndTimeOfMonth();
+        Req.StartDay = Date.StartOfMonth();
+        Req.EndDay = Date.EndOfMonth();
         Items = Db.FindTimeline(Req);
         StateHasChanged();
     }

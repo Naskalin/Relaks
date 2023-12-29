@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Relaks.Database;
 using Relaks.Utils.Extensions;
+using DateTime = System.DateTime;
 
 namespace Relaks.Views.Shared.Charts.ViewModels;
 
@@ -11,16 +12,30 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
     public void Initialize()
     {
         var now = DateTime.Now;
-        Req.TempDate = now;
-        Req.To = now.EndDayOfMonth();
-        Req.From = now.StartDayOfMonth();
+        Req.To = now.EndOfMonth();
+        Req.From = now.StartOfMonth();
     }
     
     public FinancialAccountLineChartModel Calculate()
     {
         var result = new FinancialAccountLineChartModel();
-
-        result.Dates = Req.TempDate.ToMonthRangeDays();
+        var period = new Tuple<DateTime, DateTime>(Req.From, Req.To);
+        switch (Req.Type)
+        {
+            case FinancialAccountStatisticsRequest.TypeEnum.YearByDays:
+            case FinancialAccountStatisticsRequest.TypeEnum.MonthByDays:
+            case FinancialAccountStatisticsRequest.TypeEnum.CustomByDays:
+                result.Dates = period.ToDays();
+                break;
+            case FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths:
+            case FinancialAccountStatisticsRequest.TypeEnum.YearByMonths:
+                result.Dates = period.ToMonths();
+                break;
+            default:
+                // custom
+                result.Dates = [];
+                break;
+        }
         
         var accounts = db.FinancialAccounts
             .Where(x => accountIds.Contains(x.Id))
@@ -64,6 +79,27 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
                         .ToList()
                     ;
 
+                // добавляем пустые данные
+                var emptyDates = result.Dates.Except(items.Select(x => x.Date.Date)).ToList();
+                if (emptyDates.Any())
+                {
+                    foreach (var emptyDate in emptyDates)
+                    {
+                        var prevItem = items.FirstOrDefault(x => emptyDate > x.Date);
+                    
+                        items.Add(new FinancialAccountChartItemModel()
+                        {
+                            Date = emptyDate,
+                            AverageBalance = prevItem?.AverageBalance ?? 0,
+                            TotalIncome = 0,
+                            TotalOutlay = 0,
+                            Total = 0,
+                        });
+                    }
+
+                    items = items.OrderBy(x => x.Date).ToList();
+                }
+                
                 accountModel.Items = items;
             }
 

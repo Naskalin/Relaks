@@ -1,12 +1,13 @@
 ﻿@using Relaks.Views.Shared.Charts.ViewModels
 @using Relaks.Database
 @using System.Text.Json
+@using System.Dynamic
 
 @inject IJSRuntime Js;
 @inject AppDbContext Db;
 
-<Dump Data="@Store.Req"/>
-<Dump Data="@Store.Calculate()"/>
+@* <Dump Data="@Store.Req"/> *@
+<Dump Data="@Store.Calculate().Dates"/>
 <CascadingValue Value="@Store">
     @if (!AccountIds.Any())
     {
@@ -47,8 +48,26 @@
     private Task InitializeChart()
     {
         var data = Store.Calculate();
-        data.HtmlElementId = _htmlElementId;
-        var json = JsonSerializer.Serialize(data, new JsonSerializerOptions(JsonSerializerDefaults.Web));
-        return Task.FromResult(Js.InvokeVoidAsync("InitializeFinancialChart", json));
+        dynamic json = new ExpandoObject();
+        foreach (var account in data.Accounts)
+        {
+            var averageBalance = new List<decimal>();
+            foreach (var item in account.Items)
+            {
+                // averageBalance.Add(item.AverageBalance);   
+            }
+        
+            json["Test"] = averageBalance;
+        }
+        
+        var result = new
+        {
+            HtmlElementId = _htmlElementId,
+            Json = json,
+            Dates = data.Dates,
+            // Data = data,
+        };
+        
+        return Task.FromResult(Js.InvokeVoidAsync("InitializeFinancialChart", JsonSerializer.Serialize(result)));
     }
 }

@@ -18,8 +18,6 @@ public class FinancialAccountStatisticsRequest
     
     public TypeEnum Type { get; set; } = TypeEnum.MonthByDays;
     
-    public DateTime TempDate { get; set; }
-    
     /// <summary>
     /// Период от
     /// </summary>

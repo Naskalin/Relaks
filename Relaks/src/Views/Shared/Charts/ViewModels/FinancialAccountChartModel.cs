@@ -2,7 +2,6 @@
 
 public class FinancialAccountLineChartModel
 {
-    public string HtmlElementId { get; set; } = null!;
     public List<DateTime> Dates { get; set; } = new(); 
     public List<FinancialAccountChartModel> Accounts { get; set; } = new();
 }
