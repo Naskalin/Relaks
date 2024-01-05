@@ -44,13 +44,17 @@ public class FinancialAccountChartItemModel
     public DateTime Date { get; set; }
     public decimal Total { get; set; }
     /// <summary>
-    /// Пополнений за этот период
+    /// Пополнений в эту дату
     /// </summary>
     public decimal TotalIncome { get; set; }
     
     /// <summary>
-    /// Списаний за этот период
+    /// Списаний в эту дату
     /// </summary>
     public decimal TotalOutlay { get; set; }
+    
+    /// <summary>
+    /// Средний баланс в эту дату
+    /// </summary>
     public decimal AverageBalance { get; set; }
 }

@@ -38,7 +38,7 @@
                 @if (Transaction is AccountFinancialTransaction accountTransaction)
                 {
                     <span class="text-success">
-                        @accountTransaction.SecondAccount.Category.Title / @accountTransaction.SecondAccount.TitleWithCurrency()
+                        @accountTransaction.SecondAccount.Category.Title / @accountTransaction.SecondAccount.TitleWithCurrencyAndBalance()
                     </span>
                 }
             </AfterBody>

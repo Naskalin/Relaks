@@ -35,7 +35,8 @@ public class FinancialAccount
     // public Guid EntryId { get; set; }
     // public BaseEntry Entry { get; set; } = null!;
 
-    public string TitleWithCurrency() => $"{Title} ({FinancialCurrencyId}), {Balance.ToString("N2")} {FinancialCurrency.Symbol}";
+    public string TitleWithCurrency() => $"{Title} ({FinancialCurrency.Symbol})";
+    public string TitleWithCurrencyAndBalance() => $"{Title} ({FinancialCurrencyId}), {Balance.ToString("N2")} {FinancialCurrency.Symbol}";
     
     /// <summary>
     /// Текущий баланс

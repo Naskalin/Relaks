@@ -7,7 +7,7 @@
 @inject AppDbContext Db;
 
 @* <Dump Data="@Store.Req"/> *@
-<Dump Data="@Store.Calculate().Dates"/>
+@* <Dump Data="@Store.Calculate().Accounts.First()"/> *@
 <CascadingValue Value="@Store">
     @if (!AccountIds.Any())
     {
@@ -17,7 +17,8 @@
     {
         <_Filter OnStateHasChanged="@OnFilterChange"/>
     }
-    <div id="@_htmlElementId"></div>
+    <div id="@(_id + 1)"></div>
+    <div id="@(_id + 2)"></div>
 </CascadingValue>
 
 @code {
@@ -25,8 +26,8 @@
     public List<Guid> AccountIds { get; set; } = new();
 
     private FinancialAccountStatisticsStore Store { get; set; } = null!;
-    
-    private readonly string _htmlElementId = Guid.NewGuid().ToString();
+
+    private string _id = Guid.NewGuid().ToString(); 
 
     protected override void OnInitialized()
     {
@@ -47,25 +48,83 @@
 
     private Task InitializeChart()
     {
-        var data = Store.Calculate();
-        dynamic json = new ExpandoObject();
-        foreach (var account in data.Accounts)
+        // var data = Store.Calculate();
+        // dynamic json = new ExpandoObject();
+        // foreach (var account in data.Accounts)
+        // {
+        //     var averageBalance = new List<decimal>();
+        //     foreach (var item in account.Items)
+        //     {
+        //         // averageBalance.Add(item.AverageBalance);   
+        //     }
+        //
+        //     json["Test"] = averageBalance;
+        // }
+
+        var firstDict = new Dictionary<string, List<decimal>>();
+        var secondDict = new Dictionary<string, List<decimal>>();
+        var secondBarGroups = new List<List<string>>();
+        var calculated = Store.Calculate();
+        foreach (var account in calculated.Accounts)
         {
-            var averageBalance = new List<decimal>();
+            var averageBalanceTitle = "Средний баланс";
+            var totalOutlayTitle = "Списание";
+            var totalIncomeTitle = "Пополнение";
+            var totalTitle = "Сумма";
+            
+            if (calculated.Accounts.Count > 1)
+            {
+                averageBalanceTitle += $" ({account.Title})";
+                totalOutlayTitle += $" ({account.Title})";
+                totalIncomeTitle += $" ({account.Title})";
+                totalTitle += $" ({account.Title})";
+            }
+
+            firstDict[averageBalanceTitle] = new List<decimal>();
+            secondDict[totalTitle] = new List<decimal>();
+            secondDict[totalOutlayTitle] = new List<decimal>();
+            secondDict[totalIncomeTitle] = new List<decimal>();
+            
+            secondBarGroups.Add([totalOutlayTitle, totalIncomeTitle]);
+
             foreach (var item in account.Items)
             {
-                // averageBalance.Add(item.AverageBalance);   
+                firstDict[averageBalanceTitle].Add(item.AverageBalance);
+                secondDict[totalTitle].Add(item.Total);
+                secondDict[totalOutlayTitle].Add(-item.TotalOutlay);
+                secondDict[totalIncomeTitle].Add(item.TotalIncome);
             }
-        
-            json["Test"] = averageBalance;
+        }
+
+        string datesFormat;
+        switch (Store.Req.Type)
+        {
+            case FinancialAccountStatisticsRequest.TypeEnum.YearByDays:
+            case FinancialAccountStatisticsRequest.TypeEnum.MonthByDays:
+            case FinancialAccountStatisticsRequest.TypeEnum.CustomByDays:
+                datesFormat = "%d.%m.%Y";
+                break;
+            case FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths:
+            case FinancialAccountStatisticsRequest.TypeEnum.YearByMonths:
+                datesFormat = "%m.%Y";
+                break;
+            default:
+                // by transactions
+                datesFormat = "%d.%m.%Y %H:%M";
+                break;
         }
         
         var result = new
         {
-            HtmlElementId = _htmlElementId,
-            Json = json,
-            Dates = data.Dates,
-            // Data = data,
+            HtmlElementIds = new []{_id + 1, _id + 2},
+            calculated.Dates,
+            DatesFormat = datesFormat,
+            Data = new
+            {
+                First = firstDict,
+                Second = secondDict,
+                SecondBarGroups = secondBarGroups,
+            }
         };
         
         return Task.FromResult(Js.InvokeVoidAsync("InitializeFinancialChart", JsonSerializer.Serialize(result)));

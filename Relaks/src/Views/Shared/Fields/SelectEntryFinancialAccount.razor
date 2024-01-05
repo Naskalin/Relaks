@@ -16,7 +16,7 @@
             <EntryInlineItem EntryId="@Account.Category.EntryId">
                 <AfterBody>
                     <span class="text-success">
-                        @Account.Category.Title / @Account.TitleWithCurrency()
+                        @Account.Category.Title / @Account.TitleWithCurrencyAndBalance()
                     </span>
                 </AfterBody>
             </EntryInlineItem>
@@ -64,7 +64,7 @@
     private string Title()
     {
         if (Account == null) return "<Не выбрано>";
-        return $"{Account.Category.Entry.Name} \u2192 {Account.Category.Title} \u2192 {Account.TitleWithCurrency()}";
+        return $"{Account.Category.Entry.Name} \u2192 {Account.Category.Title} \u2192 {Account.TitleWithCurrencyAndBalance()}";
     }
 
     protected override void OnParametersSet()

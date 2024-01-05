@@ -11,7 +11,8 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
 
     public void Initialize()
     {
-        var now = DateTime.Now;
+        var now = DateTime.Now.AddMonths(-1);
+        // var now = DateTime.Now;
         Req.To = now.EndOfMonth();
         Req.From = now.StartOfMonth();
     }

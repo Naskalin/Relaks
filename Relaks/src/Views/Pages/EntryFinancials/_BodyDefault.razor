@@ -56,7 +56,8 @@
     <_TransactionsList OnStateChanged="@(() => OnStateChanged.InvokeAsync())"
                        FinancialAccountId="@Store.AccountId.Value"
                        FirstRow="@(new GuidRowView() {Th = FirstRowTh, Td = FirstRowTd})"
-    />   
+    />
+    <FinancialAccountChart AccountIds="@(new List<Guid>(){Store.AccountId.Value})"/>
 }
 else
 {

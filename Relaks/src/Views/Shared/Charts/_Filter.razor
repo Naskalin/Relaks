@@ -8,11 +8,11 @@
 <Dump Data="@Store.Req"/>
 @* <Dump Data="@_requestYearsItems"/> *@
 <div class="d-flex gap-4">
-    <div class="mb-3">
+    <div class="mb-3 col-3">
         <label class="form-label">Тип отображения данных</label>
         <Select TValue="@FinancialAccountStatisticsRequest.TypeEnum"
                 @bind-Value="@Store.Req.Type"
-                OnValueChanged="@(_ => OnStateHasChanged.InvokeAsync())"
+                OnValueChanged="@(type => OnTypeChanged(type))"
                 Items="@_requestTypeItems">
         </Select>
     </div>
@@ -22,7 +22,7 @@
             <label class="form-label">Месяц</label>
             <InputDate Type="@InputDateType.Month"
                        @bind-Value="@TempDate"
-                       @bind-Value:after="@(OnMonthChanged)"  
+                       @bind-Value:after="@OnMonthChanged"  
                        class="form-control"/>
         </div>
     }
@@ -112,6 +112,27 @@
         Store.Req.From = date.StartOfYear();
         Store.Req.To = date.EndOfYear();
         return OnStateHasChanged.InvokeAsync();
+    }
+
+    private Task OnTypeChanged(FinancialAccountStatisticsRequest.TypeEnum type)
+    {
+        switch (type)
+        {
+            case FinancialAccountStatisticsRequest.TypeEnum.YearByDays:
+            case FinancialAccountStatisticsRequest.TypeEnum.YearByMonths:
+            case FinancialAccountStatisticsRequest.TypeEnum.YearByTransactions:
+                return OnYearChanged(DateTime.Now.Year);
+            case FinancialAccountStatisticsRequest.TypeEnum.MonthByDays:
+            case FinancialAccountStatisticsRequest.TypeEnum.MonthByTransactions:
+                TempDate = DateTime.Now;
+                return OnMonthChanged();
+            default:
+                // custom
+                var now = new DateTime();
+                Store.Req.From = now.StartOfMonth();
+                Store.Req.To = now.EndOfMonth();
+                return OnStateHasChanged.InvokeAsync();
+        }
     }
 
     private List<SelectedItem> _requestTypeItems = new()
