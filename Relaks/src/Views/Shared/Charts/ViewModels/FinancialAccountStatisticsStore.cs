@@ -82,10 +82,17 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
 
                 // добавляем пустые данные
                 var emptyDates = Calculated.Dates.Except(items.Select(x => x.Date.Date)).ToList();
+                
                 if (emptyDates.Any())
                 {
                     foreach (var emptyDate in emptyDates)
                     {
+                        //TODO: если это первая дата в диапозоне, то получается нуль это не правильно
+                        // среднее значение есть в предыдущей записи в бд
+                        // Вообще проверить как оно с пустыми данными работает
+                        // в идеале наверное просто отдавать нет данных
+                        
+                        // TODO: расставить сразу минусы для TotalOutlay и проставить их в коде
                         var prevItem = items.FirstOrDefault(x => emptyDate > x.Date);
                     
                         items.Add(new FinancialAccountChartItemModel()
