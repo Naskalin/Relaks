@@ -2,6 +2,12 @@
 
 public class FinancialAccountLineChartModel
 {
+    public string? CurrencySymbol { get; set; }
+    
+    /// <summary>
+    /// 3 symbol Currency, like RUB, USD, EUR
+    /// </summary>
+    public string? CurrencyId { get; set; }
     public List<DateTime> Dates { get; set; } = new(); 
     public List<FinancialAccountChartModel> Accounts { get; set; } = new();
 }

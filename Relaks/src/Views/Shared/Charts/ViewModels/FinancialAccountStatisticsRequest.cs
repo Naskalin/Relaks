@@ -6,14 +6,11 @@ public class FinancialAccountStatisticsRequest
 {
     public enum TypeEnum
     {
-        MonthByTransactions,
         MonthByDays,
         YearByMonths,
         YearByDays,
-        YearByTransactions,
         CustomByDays,
         CustomByMonths,
-        CustomByTransactions,
     }
     
     public TypeEnum Type { get; set; } = TypeEnum.MonthByDays;

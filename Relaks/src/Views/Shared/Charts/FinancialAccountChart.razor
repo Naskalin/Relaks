@@ -9,13 +9,14 @@
 @* <Dump Data="@Store.Req"/> *@
 @* <Dump Data="@Store.Calculate().Accounts.First()"/> *@
 <CascadingValue Value="@Store">
-    @if (!AccountIds.Any())
+    @if (AccountIds.Any())
     {
-        <p>Выберите один или несколько счетов для отображения статистики</p>      
+        <_Filter OnStateHasChanged="@OnFilterChange"/>
+        <_Summary/>
     }
     else
     {
-        <_Filter OnStateHasChanged="@OnFilterChange"/>
+        <p>Выберите один или несколько счетов для отображения статистики</p>
     }
     <div id="@(_id + 1)"></div>
     <div id="@(_id + 2)"></div>
@@ -42,37 +43,26 @@
 
     private Task OnFilterChange()
     {
-        StateHasChanged();
+        // StateHasChanged();
         return InitializeChart();
     }
 
     private Task InitializeChart()
     {
-        // var data = Store.Calculate();
-        // dynamic json = new ExpandoObject();
-        // foreach (var account in data.Accounts)
-        // {
-        //     var averageBalance = new List<decimal>();
-        //     foreach (var item in account.Items)
-        //     {
-        //         // averageBalance.Add(item.AverageBalance);   
-        //     }
-        //
-        //     json["Test"] = averageBalance;
-        // }
-
+        Store.Calculate();
+        StateHasChanged();
+        
         var firstDict = new Dictionary<string, List<decimal>>();
         var secondDict = new Dictionary<string, List<decimal>>();
         var secondBarGroups = new List<List<string>>();
-        var calculated = Store.Calculate();
-        foreach (var account in calculated.Accounts)
+        foreach (var account in Store.Calculated.Accounts)
         {
             var averageBalanceTitle = "Средний баланс";
             var totalOutlayTitle = "Списание";
             var totalIncomeTitle = "Пополнение";
             var totalTitle = "Сумма";
             
-            if (calculated.Accounts.Count > 1)
+            if (Store.Calculated.Accounts.Count > 1)
             {
                 averageBalanceTitle += $" ({account.Title})";
                 totalOutlayTitle += $" ({account.Title})";
@@ -96,28 +86,21 @@
             }
         }
 
-        string datesFormat;
-        switch (Store.Req.Type)
+        var datesFormat = "%d.%m.%Y";
+        if (new[]
+            {
+                FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths,
+                FinancialAccountStatisticsRequest.TypeEnum.YearByMonths,
+            }.Contains(Store.Req.Type))
         {
-            case FinancialAccountStatisticsRequest.TypeEnum.YearByDays:
-            case FinancialAccountStatisticsRequest.TypeEnum.MonthByDays:
-            case FinancialAccountStatisticsRequest.TypeEnum.CustomByDays:
-                datesFormat = "%d.%m.%Y";
-                break;
-            case FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths:
-            case FinancialAccountStatisticsRequest.TypeEnum.YearByMonths:
-                datesFormat = "%m.%Y";
-                break;
-            default:
-                // by transactions
-                datesFormat = "%d.%m.%Y %H:%M";
-                break;
+            datesFormat = "%m.%Y";
         }
         
         var result = new
         {
             HtmlElementIds = new []{_id + 1, _id + 2},
-            calculated.Dates,
+            Currency = Store.Calculated.CurrencyId,
+            Store.Calculated.Dates,
             DatesFormat = datesFormat,
             Data = new
             {

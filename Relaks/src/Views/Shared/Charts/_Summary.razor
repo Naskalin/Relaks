@@ -1,0 +1,38 @@
+﻿@using Relaks.Views.Shared.Charts.ViewModels
+
+<div class="table-responsive">
+    <table class="table mb-3">
+        <thead>
+        <tr>
+                <th></th>
+                <th>Валюта</th>
+                <th>Средний баланс</th>
+                <th>Сумма</th>
+                <th>Пополнения</th>
+                <th>Списания</th>
+                <th>Кол-во транзакций</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var acc in Store.Calculated.Accounts)
+        {
+            <tr>
+                <td>@acc.Title</td>
+                <td>@Store.Calculated.CurrencyId</td>
+                <td>@acc.AverageBalance.ToString("N2") @Store.Calculated.CurrencySymbol</td>
+                <td class="@(acc.Total > 0 ? "text-success" : "text-danger")">
+                    @(acc.Total > 0 ? "+" : "")@acc.Total.ToString("N2") @Store.Calculated.CurrencySymbol
+                </td>
+                <td class="@(acc.Total > 0 ? "text-success" : "")">@(acc.Total > 0 ? "+" : "")@acc.TotalIncome.ToString("N2") @Store.Calculated.CurrencySymbol</td>
+                <td class="@(acc.Total > 0 ? "text-danger" : "")">@(acc.Total > 0 ? "-" : "")@acc.TotalOutlay.ToString("N2") @Store.Calculated.CurrencySymbol</td>
+                <td>@acc.TransactionsCount шт.</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [CascadingParameter]
+    public FinancialAccountStatisticsStore Store { get; set; } = null!;
+}

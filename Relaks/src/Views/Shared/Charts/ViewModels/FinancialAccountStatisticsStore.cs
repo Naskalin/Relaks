@@ -8,41 +8,41 @@ namespace Relaks.Views.Shared.Charts.ViewModels;
 public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> accountIds)
 {
     public FinancialAccountStatisticsRequest Req { get; set; } = new();
+    public FinancialAccountLineChartModel Calculated { get; set; } = new();
 
     public void Initialize()
     {
-        var now = DateTime.Now.AddMonths(-1);
-        // var now = DateTime.Now;
+        var now = DateTime.Now;
         Req.To = now.EndOfMonth();
         Req.From = now.StartOfMonth();
     }
     
-    public FinancialAccountLineChartModel Calculate()
+    public void Calculate()
     {
-        var result = new FinancialAccountLineChartModel();
+        Calculated = new FinancialAccountLineChartModel();
         var period = new Tuple<DateTime, DateTime>(Req.From, Req.To);
-        switch (Req.Type)
+        if (new[]
+            {
+                FinancialAccountStatisticsRequest.TypeEnum.YearByDays,
+                FinancialAccountStatisticsRequest.TypeEnum.MonthByDays,
+                FinancialAccountStatisticsRequest.TypeEnum.CustomByDays,
+            }.Contains(Req.Type))
         {
-            case FinancialAccountStatisticsRequest.TypeEnum.YearByDays:
-            case FinancialAccountStatisticsRequest.TypeEnum.MonthByDays:
-            case FinancialAccountStatisticsRequest.TypeEnum.CustomByDays:
-                result.Dates = period.ToDays();
-                break;
-            case FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths:
-            case FinancialAccountStatisticsRequest.TypeEnum.YearByMonths:
-                result.Dates = period.ToMonths();
-                break;
-            default:
-                // custom
-                result.Dates = [];
-                break;
+            Calculated.Dates = period.ToDays();
+        }
+        else
+        {
+            // months types
+            Calculated.Dates = period.ToMonths();
         }
         
         var accounts = db.FinancialAccounts
             .Where(x => accountIds.Contains(x.Id))
             .Include(x => x.FinancialCurrency)
             .ToDictionary(x => x.Id, x => x);
-        
+
+        Calculated.CurrencyId = accounts.Values.FirstOrDefault()?.FinancialCurrencyId;
+        Calculated.CurrencySymbol = accounts.Values.FirstOrDefault()?.FinancialCurrency.Symbol;
         foreach (var accountId in accountIds)
         {
             var query = db.BaseFinancialTransactions
@@ -81,7 +81,7 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
                     ;
 
                 // добавляем пустые данные
-                var emptyDates = result.Dates.Except(items.Select(x => x.Date.Date)).ToList();
+                var emptyDates = Calculated.Dates.Except(items.Select(x => x.Date.Date)).ToList();
                 if (emptyDates.Any())
                 {
                     foreach (var emptyDate in emptyDates)
@@ -104,9 +104,7 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
                 accountModel.Items = items;
             }
 
-            result.Accounts.Add(accountModel);
+            Calculated.Accounts.Add(accountModel);
         }
-
-        return result;
     }
 }

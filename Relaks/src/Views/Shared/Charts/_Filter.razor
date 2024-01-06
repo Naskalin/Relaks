@@ -5,7 +5,7 @@
 
 @inject AppDbContext Db;
 
-<Dump Data="@Store.Req"/>
+@* <Dump Data="@Store.Req"/> *@
 @* <Dump Data="@_requestYearsItems"/> *@
 <div class="d-flex gap-4">
     <div class="mb-3 col-3">
@@ -42,17 +42,17 @@
         <div class="d-flex gap-2">
             <div class="mb-3">
                 <label class="form-label">Дата начала</label>
-                <InputDate Type="@InputDateType.Date"
+                <InputDate Type="@(Store.Req.Type == FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths ? InputDateType.Month : InputDateType.Date)"
                            @bind-Value="@Store.Req.From"
-                           @bind-Value:after="@(() => OnStateHasChanged.InvokeAsync())"
+                           @bind-Value:after="@OnDateFromChanged"
                            class="form-control"/>
                           
             </div>
             <div class="mb-3">
                 <label class="form-label">Дата окончания</label>
-                <InputDate Type="@InputDateType.Date"
+                <InputDate Type="@(Store.Req.Type == FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths ? InputDateType.Month : InputDateType.Date)"
                            @bind-Value="@Store.Req.To"
-                           @bind-Value:after="@(() => OnStateHasChanged.InvokeAsync())"
+                           @bind-Value:after="@OnDateToChanged"
                            class="form-control"/>
             </div>
         </div>
@@ -60,7 +60,6 @@
 </div>
 
 @code {
-
     [CascadingParameter]
     public FinancialAccountStatisticsStore Store { get; set; } = null!;
 
@@ -71,21 +70,18 @@
     private bool IsMonthDate() => new[]
     {
         FinancialAccountStatisticsRequest.TypeEnum.MonthByDays,
-        FinancialAccountStatisticsRequest.TypeEnum.MonthByTransactions
     }.Contains(Store.Req.Type);
 
     private bool IsCustomDate() => new[]
     {
         FinancialAccountStatisticsRequest.TypeEnum.CustomByDays,
         FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths,
-        FinancialAccountStatisticsRequest.TypeEnum.CustomByTransactions
     }.Contains(Store.Req.Type);
 
     private bool IsYearDate() => new[]
     {
         FinancialAccountStatisticsRequest.TypeEnum.YearByDays,
         FinancialAccountStatisticsRequest.TypeEnum.YearByMonths,
-        FinancialAccountStatisticsRequest.TypeEnum.YearByTransactions
     }.Contains(Store.Req.Type);
 
     protected override void OnParametersSet()
@@ -104,6 +100,25 @@
         Store.Req.To = date.EndOfMonth();
         return OnStateHasChanged.InvokeAsync();
     }
+
+    private Task OnDateFromChanged()
+    {
+        Store.Req.From = Store.Req.Type == FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths
+            ? Store.Req.From.StartOfMonth()
+            : Store.Req.From.StartOfDay();
+        
+        return OnStateHasChanged.InvokeAsync();
+    }
+    
+    private Task OnDateToChanged()
+    {
+        Store.Req.To = Store.Req.Type == FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths
+            ? Store.Req.To.EndOfMonth()
+            : Store.Req.To.EndOfDay();
+        
+        return OnStateHasChanged.InvokeAsync();
+    }
+    
     private Task OnYearChanged(int year)
     {
         RequestYear = year;
@@ -116,35 +131,27 @@
 
     private Task OnTypeChanged(FinancialAccountStatisticsRequest.TypeEnum type)
     {
-        switch (type)
+        if (new[]
+            {
+                FinancialAccountStatisticsRequest.TypeEnum.YearByDays,
+                FinancialAccountStatisticsRequest.TypeEnum.YearByMonths,
+                FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths,
+            }.Contains(Store.Req.Type))
         {
-            case FinancialAccountStatisticsRequest.TypeEnum.YearByDays:
-            case FinancialAccountStatisticsRequest.TypeEnum.YearByMonths:
-            case FinancialAccountStatisticsRequest.TypeEnum.YearByTransactions:
-                return OnYearChanged(DateTime.Now.Year);
-            case FinancialAccountStatisticsRequest.TypeEnum.MonthByDays:
-            case FinancialAccountStatisticsRequest.TypeEnum.MonthByTransactions:
-                TempDate = DateTime.Now;
-                return OnMonthChanged();
-            default:
-                // custom
-                var now = new DateTime();
-                Store.Req.From = now.StartOfMonth();
-                Store.Req.To = now.EndOfMonth();
-                return OnStateHasChanged.InvokeAsync();
+            return OnYearChanged(DateTime.Now.Year);
         }
+        
+        TempDate = DateTime.Now;
+        return OnMonthChanged();
     }
 
     private List<SelectedItem> _requestTypeItems = new()
     {
-        new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.MonthByTransactions.ToString(), "Месяц по транзакзиям"),
         new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.MonthByDays.ToString(), "Месяц по дням"),
         new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.YearByMonths.ToString(), "Год по месяцам"),
         new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.YearByDays.ToString(), "Год по дням"),
-        new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.YearByTransactions.ToString(), "Год по транзакзиям"),
         new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.CustomByDays.ToString(), "Произвольно по дням"),
         new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths.ToString(), "Произвольно по месяцам"),
-        new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.CustomByTransactions.ToString(), "Произвольно по транзакциям"),
     };
 
 }
