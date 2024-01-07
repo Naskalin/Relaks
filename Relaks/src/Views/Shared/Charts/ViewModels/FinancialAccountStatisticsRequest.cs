@@ -6,6 +6,7 @@ public class FinancialAccountStatisticsRequest
 {
     public enum TypeEnum
     {
+        AllByMonths,
         MonthByDays,
         YearByMonths,
         YearByDays,

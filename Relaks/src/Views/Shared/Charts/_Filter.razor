@@ -5,7 +5,7 @@
 
 @inject AppDbContext Db;
 
-@* <Dump Data="@Store.Req"/> *@
+<Dump Data="@Store.Req"/>
 @* <Dump Data="@_requestYearsItems"/> *@
 <div class="d-flex gap-4">
     <div class="mb-3 col-3">
@@ -16,46 +16,49 @@
                 Items="@_requestTypeItems">
         </Select>
     </div>
-    @if (IsMonthDate())
+    @if (Store.Req.Type != FinancialAccountStatisticsRequest.TypeEnum.AllByMonths)
     {
-        <div class="mb-3">
-            <label class="form-label">Месяц</label>
-            <InputDate Type="@InputDateType.Month"
-                       @bind-Value="@TempDate"
-                       @bind-Value:after="@OnMonthChanged"  
-                       class="form-control"/>
-        </div>
-    }
-    else if (IsYearDate())
-    {
-        <div class="mb-3">
-            <label class="form-label">Год</label>
-            <Select TValue="@int"
-                    @bind-Value="@RequestYear"
-                    OnValueChanged="@(year => OnYearChanged(year))"
-                    Items="@_requestYearsItems">
-            </Select>
-        </div>
-    }
-    else
-    {
-        <div class="d-flex gap-2">
+        @if (IsMonthDate())
+        {
             <div class="mb-3">
-                <label class="form-label">Дата начала</label>
-                <InputDate Type="@(Store.Req.Type == FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths ? InputDateType.Month : InputDateType.Date)"
-                           @bind-Value="@Store.Req.From"
-                           @bind-Value:after="@OnDateFromChanged"
+                <label class="form-label">Месяц</label>
+                <InputDate Type="@InputDateType.Month"
+                           @bind-Value="@TempDate"
+                           @bind-Value:after="@OnMonthChanged"  
                            class="form-control"/>
+            </div>
+        }
+        else if (IsYearDate())
+        {
+            <div class="mb-3">
+                <label class="form-label">Год</label>
+                <Select TValue="@int"
+                        @bind-Value="@RequestYear"
+                        OnValueChanged="@(year => OnYearChanged(year))"
+                        Items="@_requestYearsItems">
+                </Select>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex gap-2">
+                <div class="mb-3">
+                    <label class="form-label">Дата начала</label>
+                    <InputDate Type="@(Store.Req.Type == FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths ? InputDateType.Month : InputDateType.Date)"
+                               @bind-Value="@Store.Req.From"
+                               @bind-Value:after="@OnDateFromChanged"
+                               class="form-control"/>
                           
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Дата окончания</label>
+                    <InputDate Type="@(Store.Req.Type == FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths ? InputDateType.Month : InputDateType.Date)"
+                               @bind-Value="@Store.Req.To"
+                               @bind-Value:after="@OnDateToChanged"
+                               class="form-control"/>
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Дата окончания</label>
-                <InputDate Type="@(Store.Req.Type == FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths ? InputDateType.Month : InputDateType.Date)"
-                           @bind-Value="@Store.Req.To"
-                           @bind-Value:after="@OnDateToChanged"
-                           class="form-control"/>
-            </div>
-        </div>
+        }   
     }
 </div>
 
@@ -147,6 +150,7 @@
 
     private List<SelectedItem> _requestTypeItems = new()
     {
+        new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.AllByMonths.ToString(), "Всё по месяцам"),
         new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.MonthByDays.ToString(), "Месяц по дням"),
         new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.YearByMonths.ToString(), "Год по месяцам"),
         new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.YearByDays.ToString(), "Год по дням"),

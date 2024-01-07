@@ -16,26 +16,45 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
         Req.To = now.EndOfMonth();
         Req.From = now.StartOfMonth();
     }
-    
-    public void Calculate()
+
+    private Tuple<DateTime, DateTime> GetPeriod()
     {
-        Calculated = new FinancialAccountLineChartModel();
         var period = new Tuple<DateTime, DateTime>(Req.From, Req.To);
+        if (Req.Type != FinancialAccountStatisticsRequest.TypeEnum.AllByMonths) return period;
+        
+        var transactionsQuery = db.BaseFinancialTransactions.Where(x => accountIds.Contains(x.AccountId));
+        if (transactionsQuery.Any())
+        {
+            period = new Tuple<DateTime, DateTime>(
+                transactionsQuery.Min(x => x.CreatedAt).StartOfMonth(),
+                transactionsQuery.Max(x => x.CreatedAt).EndOfMonth()
+            );
+        }
+        return period;
+    }
+
+    private void PeriodToDates(Tuple<DateTime, DateTime> period)
+    {
         if (new[]
             {
                 FinancialAccountStatisticsRequest.TypeEnum.YearByDays,
                 FinancialAccountStatisticsRequest.TypeEnum.MonthByDays,
-                FinancialAccountStatisticsRequest.TypeEnum.CustomByDays,
+                FinancialAccountStatisticsRequest.TypeEnum.CustomByDays
             }.Contains(Req.Type))
         {
             Calculated.Dates = period.ToDays();
-        }
-        else
-        {
-            // months types
-            Calculated.Dates = period.ToMonths();
+            return;
         }
         
+        Calculated.Dates = period.ToMonths();
+    }
+
+    public void Calculate()
+    {
+        Calculated = new FinancialAccountLineChartModel();
+        var period = GetPeriod();
+        PeriodToDates(period);
+
         var accounts = db.FinancialAccounts
             .Where(x => accountIds.Contains(x.Id))
             .Include(x => x.FinancialCurrency)
@@ -47,15 +66,13 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
         {
             var query = db.BaseFinancialTransactions
                     .Where(x => x.AccountId.Equals(accountId))
-                    .Where(x => x.CreatedAt >= Req.From && x.CreatedAt < Req.To)
+                    .Where(x => x.CreatedAt >= period.Item1 && x.CreatedAt < period.Item2)
                     .OrderBy(x => x.CreatedAt)
                 ;
 
             var accountModel = new FinancialAccountChartModel();
-            if (accounts.TryGetValue(accountId, out var account))
-            {
-                accountModel.Title = account.TitleWithCurrency();
-            }
+            var account = accounts[accountId];
+            accountModel.Title = account.TitleWithCurrency();
 
             if (query.Any())
             {
@@ -81,8 +98,10 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
                     ;
 
                 // добавляем пустые данные
-                var emptyDates = Calculated.Dates.Except(items.Select(x => x.Date.Date)).ToList();
-                
+                var emptyDates = Calculated.Dates.Except(items.Select(x => x.Date.Date))
+                    .OrderBy(x => x.Date)
+                    .ToList();
+
                 if (emptyDates.Any())
                 {
                     foreach (var emptyDate in emptyDates)
@@ -91,14 +110,36 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
                         // среднее значение есть в предыдущей записи в бд
                         // Вообще проверить как оно с пустыми данными работает
                         // в идеале наверное просто отдавать нет данных
-                        
+
                         // TODO: расставить сразу минусы для TotalOutlay и проставить их в коде
                         var prevItem = items.FirstOrDefault(x => emptyDate > x.Date);
-                    
+                        var averageBalance = prevItem?.AverageBalance;
+                        if (
+                            
+                            prevItem == null
+                            // Если это самая первая пустая дата
+                            && emptyDates.First() == emptyDate
+                            
+                            // и это первая дата совпадает с первой датой диапозона
+                            && emptyDate.Date == period.Item1.Date)
+                        {
+                            averageBalance = db.BaseFinancialTransactions
+                                .Where(x => accountIds.Contains(x.AccountId))
+                                .Where(x => emptyDate > x.CreatedAt)
+                                .OrderByDescending(x => x.CreatedAt)
+                                .Select(x => x.Balance)
+                                .FirstOrDefault();
+
+                            if (!averageBalance.HasValue)
+                            {
+                                averageBalance = account.Balance;
+                            }
+                        }
+
                         items.Add(new FinancialAccountChartItemModel()
                         {
                             Date = emptyDate,
-                            AverageBalance = prevItem?.AverageBalance ?? 0,
+                            AverageBalance = averageBalance ?? 0,
                             TotalIncome = 0,
                             TotalOutlay = 0,
                             Total = 0,
@@ -107,7 +148,7 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
 
                     items = items.OrderBy(x => x.Date).ToList();
                 }
-                
+
                 accountModel.Items = items;
             }
 
