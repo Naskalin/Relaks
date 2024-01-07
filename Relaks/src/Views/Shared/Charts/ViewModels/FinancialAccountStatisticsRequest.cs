@@ -14,7 +14,7 @@ public class FinancialAccountStatisticsRequest
         CustomByMonths,
     }
     
-    public TypeEnum Type { get; set; } = TypeEnum.MonthByDays;
+    public TypeEnum Type { get; set; } = TypeEnum.AllByMonths;
     
     /// <summary>
     /// Период от
@@ -25,4 +25,18 @@ public class FinancialAccountStatisticsRequest
     /// Период до
     /// </summary>
     public DateTime To { get; set; }
+    
+    public bool IsTypeByDays() => new[]
+    {
+        TypeEnum.YearByDays,
+        TypeEnum.MonthByDays,
+        TypeEnum.CustomByDays
+    }.Contains(Type);
+    
+    public bool IsTypeByMonths() => new[]
+    {
+        TypeEnum.AllByMonths,
+        TypeEnum.CustomByMonths,
+        TypeEnum.YearByMonths
+    }.Contains(Type);
 }

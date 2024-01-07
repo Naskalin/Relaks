@@ -6,8 +6,8 @@
 @inject IJSRuntime Js;
 @inject AppDbContext Db;
 
-<Dump Data="@AccountIds"/>
-@* <Dump Data="@Store.Req"/> *@
+@* <Dump Data="@AccountIds"/> *@
+@* <Dump Data="@Store.Calculated.Dates"/> *@
 @* <Dump Data="@Store.Calculate().Accounts.First()"/> *@
 <CascadingValue Value="@Store">
     @if (AccountIds.Any())

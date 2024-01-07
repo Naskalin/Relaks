@@ -6,6 +6,8 @@
 @inject AppDbContext Db;
 
 <Dump Data="@Store.Req"/>
+<Dump Data="@Store.Calculated.Dates"/>
+<p>dates: @Store.Calculated.Dates.Count</p>
 @* <Dump Data="@_requestYearsItems"/> *@
 <div class="d-flex gap-4">
     <div class="mb-3 col-3">

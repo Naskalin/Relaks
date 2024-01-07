@@ -33,27 +33,11 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
         return period;
     }
 
-    private void PeriodToDates(Tuple<DateTime, DateTime> period)
-    {
-        if (new[]
-            {
-                FinancialAccountStatisticsRequest.TypeEnum.YearByDays,
-                FinancialAccountStatisticsRequest.TypeEnum.MonthByDays,
-                FinancialAccountStatisticsRequest.TypeEnum.CustomByDays
-            }.Contains(Req.Type))
-        {
-            Calculated.Dates = period.ToDays();
-            return;
-        }
-        
-        Calculated.Dates = period.ToMonths();
-    }
-
     public void Calculate()
     {
         Calculated = new FinancialAccountLineChartModel();
         var period = GetPeriod();
-        PeriodToDates(period);
+        Calculated.Dates = Req.IsTypeByDays() ? period.ToDays() : period.ToMonths();
 
         var accounts = db.FinancialAccounts
             .Where(x => accountIds.Contains(x.Id))
@@ -82,8 +66,32 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
                 accountModel.TransactionsCount = query.Count();
                 // accountModel.AverageBalance = query.Last().Balance / accountModel.TransactionsCount;
 
-                var items = query
-                        .GroupBy(x => x.CreatedAt.Date)
+                // var itemsGroupQuery = Req.IsTypeByDays() ? query.GroupBy(x => x.CreatedAt.Date) : query.GroupBy(x => x.CreatedAt.Month);
+                // if (new[]
+                //     {
+                //         FinancialAccountStatisticsRequest.TypeEnum.AllByMonths,
+                //         FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths,
+                //         FinancialAccountStatisticsRequest.TypeEnum.YearByMonths
+                //     }.Contains(Req.Type))
+                // {
+                //     itemsGroupQuery = query.GroupBy(x => x.CreatedAt.Date.Month);
+                // }
+                
+                // var items2 = query.GroupBy(x => x.CreatedAt.Date.Month)
+                //         .Select(g => new FinancialAccountChartItemModel
+                //         {
+                //             Date = g.Min(x => x.CreatedAt),
+                //             AverageBalance = (decimal) g.Average(x => (double) x.Balance),
+                //             TotalIncome = (decimal) g.Where(x => x.IsPlus).Sum(x => (double) x.Total),
+                //             TotalOutlay = - (decimal) g.Where(x => !x.IsPlus).Sum(x => (double) x.Total),
+                //             Total = (decimal) (g.Where(x => x.IsPlus).Sum(x => (double) x.Total) -
+                //                                g.Where(x => !x.IsPlus).Sum(x => (double) x.Total))
+                //         })
+                //         .OrderBy(x => x.Date)
+                //         .ToList()
+                //     ;
+                
+                var items = query.GroupBy(x => x.CreatedAt.Date)
                         .Select(g => new FinancialAccountChartItemModel
                         {
                             Date = g.Min(x => x.CreatedAt),
