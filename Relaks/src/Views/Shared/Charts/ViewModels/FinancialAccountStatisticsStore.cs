@@ -128,16 +128,24 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
                             // и это первая дата совпадает с первой датой диапозона
                             && emptyDate.Date == period.Item1.Date)
                         {
-                            averageBalance = db.BaseFinancialTransactions
-                                .Where(x => accountIds.Contains(x.AccountId))
+                            var transactionQuery = db.BaseFinancialTransactions
+                                .Where(x => accountIds.Contains(x.AccountId));
+                            
+                            var dbPrevItem = transactionQuery
                                 .Where(x => emptyDate > x.CreatedAt)
                                 .OrderByDescending(x => x.CreatedAt)
-                                .Select(x => x.Balance)
                                 .FirstOrDefault();
+                            
+                            averageBalance = dbPrevItem?.Balance;
 
                             if (!averageBalance.HasValue)
                             {
-                                averageBalance = account.Balance;
+                                // Предшествующих данной транзакции тоже нет
+                                // значит берём начальный баланс из самой первой транзакции
+                                var firstTransaction = transactionQuery
+                                    .OrderBy(x => x.CreatedAt)
+                                    .FirstOrDefault();
+                                averageBalance = firstTransaction?.FromBalance();
                             }
                         }
 
