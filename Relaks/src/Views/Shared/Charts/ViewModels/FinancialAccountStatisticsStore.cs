@@ -77,10 +77,10 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
             if (query.Any())
             {
                 accountModel.TotalIncome = (decimal) query.Where(x => x.IsPlus == true).Sum(x => (double) x.Total);
-                accountModel.TotalOutlay = (decimal) query.Where(x => x.IsPlus == false).Sum(x => (double) x.Total);
-                accountModel.Total = accountModel.TotalIncome - accountModel.TotalOutlay;
+                accountModel.TotalOutlay = - (decimal) query.Where(x => x.IsPlus == false).Sum(x => (double) x.Total);
+                accountModel.Total = accountModel.TotalIncome + accountModel.TotalOutlay;
                 accountModel.TransactionsCount = query.Count();
-                accountModel.AverageBalance = query.Last().Balance / accountModel.TransactionsCount;
+                // accountModel.AverageBalance = query.Last().Balance / accountModel.TransactionsCount;
 
                 var items = query
                         .GroupBy(x => x.CreatedAt.Date)
@@ -89,7 +89,7 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
                             Date = g.Min(x => x.CreatedAt),
                             AverageBalance = (decimal) g.Average(x => (double) x.Balance),
                             TotalIncome = (decimal) g.Where(x => x.IsPlus).Sum(x => (double) x.Total),
-                            TotalOutlay = (decimal) g.Where(x => !x.IsPlus).Sum(x => (double) x.Total),
+                            TotalOutlay = - (decimal) g.Where(x => !x.IsPlus).Sum(x => (double) x.Total),
                             Total = (decimal) (g.Where(x => x.IsPlus).Sum(x => (double) x.Total) -
                                                g.Where(x => !x.IsPlus).Sum(x => (double) x.Total))
                         })
@@ -112,11 +112,16 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
                         // в идеале наверное просто отдавать нет данных
 
                         // TODO: расставить сразу минусы для TotalOutlay и проставить их в коде
-                        var prevItem = items.FirstOrDefault(x => emptyDate > x.Date);
+                        // var prevItem = items
+                        //     .Where(x => emptyDate > x.Date)
+                        //     .FirstOrDefault();
+                        var prevItem = items.Where(x => emptyDate > x.Date).MaxBy(x => x.Date);
                         var averageBalance = prevItem?.AverageBalance;
+                        
                         if (
+                            // Если нет среднего
+                            averageBalance == null
                             
-                            prevItem == null
                             // Если это самая первая пустая дата
                             && emptyDates.First() == emptyDate
                             
@@ -150,6 +155,7 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
                 }
 
                 accountModel.Items = items;
+                accountModel.AverageBalance = accountModel.Items.Average(x => x.AverageBalance);
             }
 
             Calculated.Accounts.Add(accountModel);

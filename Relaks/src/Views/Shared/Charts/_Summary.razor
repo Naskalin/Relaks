@@ -6,7 +6,7 @@
         <tr>
                 <th></th>
                 <th>Валюта</th>
-                <th>Средний баланс</th>
+                <th>Баланс</th>
                 <th>Сумма</th>
                 <th>Пополнения</th>
                 <th>Списания</th>
@@ -23,8 +23,8 @@
                 <td class="@(acc.Total > 0 ? "text-success" : "text-danger")">
                     @(acc.Total > 0 ? "+" : "")@acc.Total.ToString("N2") @Store.Calculated.CurrencySymbol
                 </td>
-                <td class="@(acc.Total > 0 ? "text-success" : "")">@(acc.Total > 0 ? "+" : "")@acc.TotalIncome.ToString("N2") @Store.Calculated.CurrencySymbol</td>
-                <td class="@(acc.Total > 0 ? "text-danger" : "")">@(acc.Total > 0 ? "-" : "")@acc.TotalOutlay.ToString("N2") @Store.Calculated.CurrencySymbol</td>
+                <td class="@(acc.TotalIncome > 0 ? "text-success" : "")">@(acc.TotalIncome > 0 ? "+" : "")@acc.TotalIncome.ToString("N2") @Store.Calculated.CurrencySymbol</td>
+                <td class="@(acc.TotalOutlay < 0 ? "text-danger" : "")">@acc.TotalOutlay.ToString("N2") @Store.Calculated.CurrencySymbol</td>
                 <td>@acc.TransactionsCount шт.</td>
             </tr>
         }

@@ -6,6 +6,7 @@
 @inject IJSRuntime Js;
 @inject AppDbContext Db;
 
+<Dump Data="@AccountIds"/>
 @* <Dump Data="@Store.Req"/> *@
 @* <Dump Data="@Store.Calculate().Accounts.First()"/> *@
 <CascadingValue Value="@Store">
@@ -43,7 +44,6 @@
 
     private Task OnFilterChange()
     {
-        // StateHasChanged();
         return InitializeChart();
     }
 
@@ -81,7 +81,7 @@
             {
                 firstDict[averageBalanceTitle].Add(item.AverageBalance);
                 secondDict[totalTitle].Add(item.Total);
-                secondDict[totalOutlayTitle].Add(-item.TotalOutlay);
+                secondDict[totalOutlayTitle].Add(item.TotalOutlay);
                 secondDict[totalIncomeTitle].Add(item.TotalIncome);
             }
         }
