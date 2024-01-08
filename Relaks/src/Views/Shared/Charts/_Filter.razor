@@ -5,9 +5,9 @@
 
 @inject AppDbContext Db;
 
-<Dump Data="@Store.Req"/>
-<Dump Data="@Store.Calculated.Dates"/>
-<p>dates: @Store.Calculated.Dates.Count</p>
+@* <Dump Data="@Store.Req"/> *@
+@* <Dump Data="@Store.Calculated.Dates"/> *@
+@* <p>dates: @Store.Calculated.Dates.Count</p> *@
 @* <Dump Data="@_requestYearsItems"/> *@
 <div class="d-flex gap-4">
     <div class="mb-3 col-3">
@@ -152,12 +152,12 @@
 
     private List<SelectedItem> _requestTypeItems = new()
     {
-        new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.AllByMonths.ToString(), "Всё по месяцам"),
+        // new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.AllByMonths.ToString(), "Всё по месяцам"),
         new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.MonthByDays.ToString(), "Месяц по дням"),
-        new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.YearByMonths.ToString(), "Год по месяцам"),
+        // new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.YearByMonths.ToString(), "Год по месяцам"),
         new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.YearByDays.ToString(), "Год по дням"),
         new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.CustomByDays.ToString(), "Произвольно по дням"),
-        new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths.ToString(), "Произвольно по месяцам"),
+        // new SelectedItem(FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths.ToString(), "Произвольно по месяцам"),
     };
 
 }

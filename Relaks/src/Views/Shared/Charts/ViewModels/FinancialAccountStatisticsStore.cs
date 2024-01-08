@@ -77,7 +77,7 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
                 //     itemsGroupQuery = query.GroupBy(x => x.CreatedAt.Date.Month);
                 // }
                 
-                // var items2 = query.GroupBy(x => x.CreatedAt.Date.Month)
+                // var items = query.GroupBy(x => x.CreatedAt.Month)
                 //         .Select(g => new FinancialAccountChartItemModel
                 //         {
                 //             Date = g.Min(x => x.CreatedAt),
@@ -98,8 +98,8 @@ public class FinancialAccountStatisticsStore(AppDbContext db, List<Guid> account
                             AverageBalance = (decimal) g.Average(x => (double) x.Balance),
                             TotalIncome = (decimal) g.Where(x => x.IsPlus).Sum(x => (double) x.Total),
                             TotalOutlay = - (decimal) g.Where(x => !x.IsPlus).Sum(x => (double) x.Total),
-                            Total = (decimal) (g.Where(x => x.IsPlus).Sum(x => (double) x.Total) -
-                                               g.Where(x => !x.IsPlus).Sum(x => (double) x.Total))
+                            Total = (decimal) g.Where(x => x.IsPlus).Sum(x => (double) x.Total)
+                                   + (- (decimal) g.Where(x => !x.IsPlus).Sum(x => (double) x.Total))
                         })
                         .OrderBy(x => x.Date)
                         .ToList()

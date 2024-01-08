@@ -13,7 +13,7 @@
     @if (AccountIds.Any())
     {
         <_Filter OnStateHasChanged="@OnFilterChange"/>
-        <_Summary/>
+        @* <_Summary/> *@
     }
     else
     {
@@ -29,16 +29,29 @@
 
     private FinancialAccountStatisticsStore Store { get; set; } = null!;
 
-    private string _id = Guid.NewGuid().ToString(); 
+    private string _id = Guid.NewGuid().ToString();
 
-    protected override void OnInitialized()
+    private bool IsAfterRenderCompleted { get; set; } = false;
+    // protected override void OnInitialized()
+    // {
+    //     Store = new(Db, AccountIds);
+    //     Store.Initialize();
+    // }
+    
+
+    protected override Task OnParametersSetAsync()
     {
         Store = new(Db, AccountIds);
         Store.Initialize();
+        return IsAfterRenderCompleted ? InitializeChart() : base.OnParametersSetAsync();
     }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
+        if (firstRender)
+        {
+            IsAfterRenderCompleted = true;
+        }
         return !firstRender ? Task.CompletedTask : InitializeChart();
     }
 
@@ -86,15 +99,7 @@
             }
         }
 
-        var datesFormat = "%d.%m.%Y";
-        if (new[]
-            {
-                FinancialAccountStatisticsRequest.TypeEnum.CustomByMonths,
-                FinancialAccountStatisticsRequest.TypeEnum.YearByMonths,
-            }.Contains(Store.Req.Type))
-        {
-            datesFormat = "%m.%Y";
-        }
+        var datesFormat = Store.Req.IsTypeByDays() ? "%d.%m.%Y" : "%m.%Y";
         
         var result = new
         {

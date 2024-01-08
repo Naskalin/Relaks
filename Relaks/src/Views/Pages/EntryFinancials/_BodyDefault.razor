@@ -57,7 +57,8 @@
                        FinancialAccountId="@Store.AccountId.Value"
                        FirstRow="@(new GuidRowView() {Th = FirstRowTh, Td = FirstRowTd})"
     />
-    <FinancialAccountChart AccountIds="@(new List<Guid>(){Store.AccountId.Value})"/>
+    <div class="my-4"></div>
+    <FinancialAccountChart AccountIds="@AccountIds()"/>
 }
 else
 {
@@ -80,6 +81,12 @@ else
     [Parameter]
     public EventCallback OnStateChanged { get; set; }
 
+    private List<Guid> AccountIds()
+    {
+        if (!Store.AccountId.HasValue) return new List<Guid>();
+        return new List<Guid>(){Store.AccountId.Value};
+    }
+    
     private Task HandleAddCategory()
     {
         TransactionCategoriesStore.SidebarState = FinancialTransactionCategoriesStore.SidebarStateEnum.New;
