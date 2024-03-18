@@ -76,19 +76,12 @@ public static class RegisterServices
 
     public static void RegisterLocalization(this IServiceCollection services)
     {
-        // var defaultCulture = "ru";
-        // var supportedCultures = new[]
-        // {
-        //     new CultureInfo(defaultCulture),
-        //     new CultureInfo("en")
-        // };
-
-        var supportedCultures = new[] {"ru", "en"};
         services.AddLocalization(options => options.ResourcesPath = Path.Combine("src", "Resources"));
         services.Configure<RequestLocalizationOptions>(options =>
         {
+            var supportedCultures = new[] {"ru-RU", "en-US"};
             options
-                .SetDefaultCulture(supportedCultures[0])
+                .SetDefaultCulture(supportedCultures.First())
                 .AddSupportedCultures(supportedCultures)
                 .AddSupportedUICultures(supportedCultures);
         });

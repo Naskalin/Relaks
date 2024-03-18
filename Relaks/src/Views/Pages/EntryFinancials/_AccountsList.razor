@@ -1,25 +1,34 @@
 ﻿@using Relaks.Database
 @using Relaks.Models.FinancialModels
 @using Microsoft.EntityFrameworkCore
+@using Relaks.Views.Pages.EntryFinancials.ViewModels
 
 @inject AppDbContext Db;
 
 @* <p>_AccountList EntryId: @EntryId</p> *@
 @* <p>_AccountList AccountId: @AccountId</p> *@
+<div class="mb-2 text-muted">
+    @FinancialAccountStatistic.Data.CurrencyBalancesToString()
+</div>
 <div class="d-flex flex-column gap-3">
     @foreach (var category in AccountCategories)
     {
         <div class="list-group border-0">
-            <div class="list-group-item group-show d-flex justify-content-between align-items-center gap-2 bg-dark bg-opacity-75">
-                <div class="col">
-                    <div class="fw-medium text-center text-uppercase text-white" style="letter-spacing: .15rem">@category.Title</div>
-                </div>
-                @if (AfterAccountCategory != null)
-                {
-                    <div class="col-auto group-show__item">
-                        @AfterAccountCategory(category.Id)
+            <div class="list-group-item group-show bg-dark bg-opacity-75">
+                <div class="d-flex justify-content-between align-items-center gap-2">
+                    <div class="col">
+                        <div class="fw-medium text-uppercase text-white" style="letter-spacing: .15rem">@category.Title</div>
                     </div>
-                }
+                    @if (EndOfCategoryTitle != null)
+                    {
+                        <div class="col-auto group-show__item">
+                            @EndOfCategoryTitle(category.Id)
+                        </div>
+                    }
+                </div>
+                <div class="text-white small">
+                    @FinancialAccountStatistic.Data.CategoryBalancesToString(category.Id)
+                </div>
             </div>
             @foreach (var account in category.Accounts)
             {
@@ -45,10 +54,10 @@
                             <div class="col-auto">@account.Balance.ToString("N2") @account.FinancialCurrency.Symbol</div>
                         </div>
                     </div>
-                    @if (AfterAccount != null)
+                    @if (EndOfItemTitle != null)
                     {
                         <div class="group-show__item pe-2 col-auto">
-                            @AfterAccount(account.Id)
+                            @EndOfItemTitle(account.Id)
                         </div>
                     }
                 </div>
@@ -72,12 +81,17 @@
     public EventCallback<Guid?> AccountIdChanged { get; set; }
 
     [Parameter]
-    public RenderFragment<Guid>? AfterAccountCategory { get; set; }
+    public RenderFragment<Guid>? EndOfCategoryTitle { get; set; }
+    
+    [Parameter]
+    public RenderFragment<Guid>? AfterCategoryTitle { get; set; }
 
     [Parameter]
-    public RenderFragment<Guid>? AfterAccount { get; set; }
+    public RenderFragment<Guid>? EndOfItemTitle { get; set; }
 
     private List<FinancialAccountCategory> AccountCategories { get; set; } = new();
+    private FinancialAccountStatistic FinancialAccountStatistic { get; set; } = null!;
+    
 
     private Task OnClickAccount(Guid accountId)
     {
@@ -92,6 +106,9 @@
             .Include(x => x.Accounts).ThenInclude(x => x.FinancialCurrency)
             .OrderBy(x => x.Title)
             .ToList();
+
+        FinancialAccountStatistic = new FinancialAccountStatistic(AccountCategories);
+        FinancialAccountStatistic.Calculate();
     }
 
 }

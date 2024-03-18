@@ -1,5 +1,6 @@
 ﻿@page "/test"
 @using System.Diagnostics.CodeAnalysis
+@using System.Globalization
 @using Microsoft.EntityFrameworkCore
 @using Relaks.Database
 
@@ -9,20 +10,26 @@
 <PageTemplate>
     <MyTitle>Test</MyTitle>
 
+    @Resources.Entity.BaseEntries
+    <p>@_cultureInfo.Name</p>
     <FinancialAccountChart AccountIds="@AccountIds"/>
 </PageTemplate>
 
 @code {
+    private CultureInfo _cultureInfo = Thread.CurrentThread.CurrentCulture;
     private List<Guid> AccountIds { get; set; } = new();
 
     protected override void OnInitialized()
     {
+        CultureInfo.CurrentCulture = new CultureInfo("ru-RU");
+        
         AccountIds = Db.BaseFinancialTransactions
             .Select(x => x.AccountId)
             .Distinct()
             .ToList();
     }
-
+    
+    
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender == false) return Task.CompletedTask;

@@ -21,20 +21,20 @@
 </div>
 
 <_AccountsList AccountIdChanged="@HandleClickAccount" AccountId="@Store.AccountId" EntryId="@Store.EntryId">
-    <AfterAccountCategory>
+    <EndOfCategoryTitle>
         <button type="button"
                 @onclick="@(() => HandleClickEditCategory(context))"
                 class="btn btn-circle btn-sm btn-outline-light" title="Изменить">
             <i class="las la-edit la-lg"></i>
         </button>
-    </AfterAccountCategory>
-    <AfterAccount>
+    </EndOfCategoryTitle>
+    <EndOfItemTitle>
         <button type="button"
                 @onclick="@(() => HandleClickEditAccount(context))"
                 class="btn btn-circle btn-sm @(context.Equals(Store.AccountId) ? "btn-outline-light" : "btn-outline-secondary")" title="Изменить">
             <i class="las la-edit la-lg"></i>
         </button>
-    </AfterAccount>
+    </EndOfItemTitle>
 </_AccountsList>
 
 @code {
