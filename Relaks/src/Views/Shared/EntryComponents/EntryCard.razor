@@ -61,7 +61,10 @@
                         <div class="col">
                             @if (Entry.StartAt != null)
                             {
-                                <small title="@Resources.Entity.ResourceManager.GetString(string.Format(Entry.Discriminator+"_StartAt"))">
+                             
+                                <small>
+                                    <span class="text-muted">@Resources.Entity.ResourceManager.GetString(string.Format(Entry.Discriminator+"_StartAt"))</span>
+                                    <br>
                                     @Entry.StartAt?.ToString(Entry.StartAtWithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy")
                                 </small>
                             }
@@ -69,7 +72,9 @@
                         <div class="col text-end">
                             @if (Entry.EndAt != null)
                             {
-                                <small title="@Resources.Entity.ResourceManager.GetString(string.Format(Entry.Discriminator + "_EndAt"))">
+                                <small>
+                                    <span class="text-muted">@Resources.Entity.ResourceManager.GetString(string.Format(Entry.Discriminator + "_EndAt"))</span>
+                                    <br>
                                     @Entry.EndAt?.ToString(Entry.EndAtWithTime ? "dd.MM.yyyy HH:mm" : "dd.MM.yyyy")
                                 </small>
                             }
