@@ -1,3 +1,4 @@
+using Relaks.Models;
 using Relaks.Models.FinancialModels;
 
 namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
@@ -17,28 +18,6 @@ public class FinancialAccountStatistic(IEnumerable<FinancialAccountCategory> fin
     {
         public List<CurrencyBalance> CurrencyBalances { get; set; } = new();
         public List<CategoryBalance> CategoryBalances { get; set; } = new();
-
-        public string CategoryBalancesToString(Guid categoryId)
-        {
-            var arr = new List<string>();
-            foreach (var categoryBalance in CategoryBalances.Where(x => x.AccountCategoryId.Equals(categoryId)))
-            {
-                arr.Add($"{categoryBalance.Balance:N2} {categoryBalance.FinancialCurrency.Symbol}");
-            }
-
-            return string.Join(", ", arr);
-        }
-        
-        public string CurrencyBalancesToString()
-        {
-            var arr = new List<string>();
-            foreach (var categoryBalance in CurrencyBalances)
-            {
-                arr.Add($"{categoryBalance.Balance:N2} {categoryBalance.FinancialCurrency.Symbol}");
-            }
-
-            return "Итого: " + string.Join(", ", arr);
-        }
     }
 
     public TotalBalance Data { get; set; } = new();

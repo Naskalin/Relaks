@@ -5,19 +5,19 @@
 
 @inject AppDbContext Db;
 
-@* <p>_AccountList EntryId: @EntryId</p> *@
-@* <p>_AccountList AccountId: @AccountId</p> *@
 <div class="mb-2 text-muted">
-    @FinancialAccountStatistic.Data.CurrencyBalancesToString()
+    @* @FinancialAccountStatistic.Data.CurrencyBalancesFragment() *@
+    Итого: @CurrencyBalances
 </div>
 <div class="d-flex flex-column gap-3">
     @foreach (var category in AccountCategories)
     {
         <div class="list-group border-0">
-            <div class="list-group-item group-show bg-dark bg-opacity-75">
+            <div class="list-group-item group-show bg-secondary bg-opacity-10">
                 <div class="d-flex justify-content-between align-items-center gap-2">
                     <div class="col">
-                        <div class="fw-medium text-uppercase text-white" style="letter-spacing: .15rem">@category.Title</div>
+                        <div class="fw-medium text-uppercase" style="letter-spacing: .15rem">@category.Title</div>
+                        <small class="text-muted">@CategoryBalances(category.Id)</small>
                     </div>
                     @if (EndOfCategoryTitle != null)
                     {
@@ -25,9 +25,6 @@
                             @EndOfCategoryTitle(category.Id)
                         </div>
                     }
-                </div>
-                <div class="text-white small">
-                    @FinancialAccountStatistic.Data.CategoryBalancesToString(category.Id)
                 </div>
             </div>
             @foreach (var account in category.Accounts)
@@ -93,8 +90,52 @@
 
     private List<FinancialAccountCategory> AccountCategories { get; set; } = new();
     private FinancialAccountStatistic FinancialAccountStatistic { get; set; } = null!;
-    
 
+    private RenderFragment CurrencyBalances => __builder =>
+    {
+        var items = FinancialAccountStatistic.Data.CurrencyBalances;
+        if (items.Any())
+        {
+            var i = 1;
+            
+            foreach (var categoryBalance in items)
+            {
+                <span class="@(categoryBalance.Balance > 0 ? "text-success" : "text-danger")">
+                    @categoryBalance.Balance.ToString("N2") @categoryBalance.FinancialCurrency.Symbol
+                </span>
+                if (!i.Equals(items.Count))
+                {
+                    <span>, </span>
+                }
+
+                i++;
+            }
+        }
+    };
+
+    private RenderFragment<Guid> CategoryBalances => categoryId => __builder =>
+    {
+
+        var items = FinancialAccountStatistic.Data.CategoryBalances.Where(x => x.AccountCategoryId.Equals(categoryId)).ToList();
+        if (items.Any())
+        {
+            var i = 1;
+
+            foreach (var categoryBalance in items)
+            {
+                <span class="fw-semibold @(categoryBalance.Balance > 0 ? "text-success" : "text-danger")">
+                    @categoryBalance.Balance.ToString("N2") @categoryBalance.FinancialCurrency.Symbol
+                </span>
+                if (!i.Equals(items.Count))
+                {
+                    <span>, </span>
+                }
+
+                i++;
+            }
+        }
+    };
+    
     private Task OnClickAccount(Guid accountId)
     {
         return DisabledReasonAccountIds.Keys.Contains(accountId) ? Task.CompletedTask : AccountIdChanged.InvokeAsync(accountId);
