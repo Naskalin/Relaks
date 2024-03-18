@@ -27,18 +27,20 @@
             }
             <div class="card-body">
                 <h5 class="card-title text-center">@Entry.Name</h5>
-                <div class="row gx-3 align-items-center text-muted mb-3 justify-content-center">
+                <div class="row gx-2 align-items-center text-muted mb-3 justify-content-center">
                     <div class="col-auto">
                         <div style="width: 30px; height: 28px;" title="@Resources.Entity.ResourceManager.GetString(Entry.Discriminator)">
                             <i class="@DataHelper.EntityIcon(Entry.Discriminator)" style="font-size: 1.8rem;"></i>
                         </div>
                     </div>
-                    @* <div class="col-auto"> *@
-                    @*     <div class="d-flex align-items-center gap-1"> *@
-                    @*         <i class="las la-star-half-alt" style="font-size: 1.7rem;"></i> *@
-                    @*         <span style="font-size: 1.2rem;">@Entry.Reputation</span> *@
-                    @*     </div> *@
-                    @* </div> *@
+                    <div class="col-auto">
+                        @Age()
+                        @* @ *@
+                        @* <div class="d-flex align-items-center gap-1"> *@
+                        @*     <i class="las la-star-half-alt" style="font-size: 1.7rem;"></i> *@
+                        @*     <span style="font-size: 1.2rem;">@Entry.Reputation</span> *@
+                        @* </div> *@
+                    </div>
                 </div>
 
                 @if (!string.IsNullOrEmpty(Entry.Description))
@@ -111,6 +113,30 @@
             .Include(x => x.EntryInfos)
             .First(x => x.Id.Equals(EntryId))
         ;
+    }
+
+    // https://stackoverflow.com/a/1595311/5638975
+    private int AgeInt(DateTime birthDate, DateTime now)
+    {
+        var age = now.Year - birthDate.Year;
+
+        if (now.Month < birthDate.Month || (now.Month == birthDate.Month && now.Day < birthDate.Day))
+            age--;
+
+        return age;
+    }
+    
+    private string? Age()
+    {
+        if (!Entry.StartAt.HasValue) return null;
+        var years = AgeInt(Entry.StartAt.Value, Entry.EndAt ?? DateTime.Now);
+        if (years <= 0) return null;
+        
+        // https://gist.github.com/xSANCHOSx/bea64a3b51247671811deccb5cc26480
+        var t1 = years % 10;
+        var t2 = years % 100;
+        var ending = t1 == 1 && t2 != 11 ? "год" : t1 is >= 2 and <= 4 && t2 is < 10 or >= 20 ? "года" : "лет";
+        return $"({years} {ending})";
     }
 
 }
