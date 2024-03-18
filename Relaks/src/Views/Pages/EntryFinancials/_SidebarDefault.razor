@@ -1,9 +1,12 @@
 ﻿@using Relaks.Views.Pages.EntryFinancials.ViewModels
+@using Relaks.Models.FinancialModels
+@using Relaks.Database
 
 @inject NavigationManager Navigation;
+@inject AppDbContext Db;
 
-<div class="d-flex align-items-center justify-content-between mb-3 gap-2">
-    <div class="col">
+<div class="d-flex align-items-center mb-3 gap-2">
+    <div class="col-auto">
         <span class="h5">Счета</span>
     </div>
     <div class="col-auto">
@@ -19,23 +22,6 @@
         </button>
     </div>
 </div>
-
-<_AccountsList AccountIdChanged="@HandleClickAccount" AccountId="@Store.AccountId" EntryId="@Store.EntryId">
-    <EndOfCategoryTitle>
-        <button type="button"
-                @onclick="@(() => HandleClickEditCategory(context))"
-                class="btn btn-circle btn-sm btn-outline-secondary" title="Изменить">
-            <i class="las la-edit la-lg"></i>
-        </button>
-    </EndOfCategoryTitle>
-    <EndOfItemTitle>
-        <button type="button"
-                @onclick="@(() => HandleClickEditAccount(context))"
-                class="btn btn-circle btn-sm btn-outline-secondary" title="Изменить">
-            <i class="las la-edit la-lg"></i>
-        </button>
-    </EndOfItemTitle>
-</_AccountsList>
 
 @code {
 
@@ -54,27 +40,6 @@
     private Task HandleAddAccount()
     {
         Store.SidebarState = FinancialsStore.SidebarEnum.AddAccount;
-        return OnStateChanged.InvokeAsync();
-    }
-
-    private Task HandleClickEditCategory(Guid categoryId)
-    {
-        Store.SidebarEditAccountCategoryId = categoryId;
-        Store.SidebarState = FinancialsStore.SidebarEnum.EditAccountCategory;
-        return OnStateChanged.InvokeAsync();
-    }
-
-    private Task HandleClickEditAccount(Guid accountId)
-    {
-        Store.SidebarEditAccountId = accountId;
-        Store.SidebarState = FinancialsStore.SidebarEnum.EditAccount;
-        return OnStateChanged.InvokeAsync();
-    }
-
-    private Task HandleClickAccount(Guid? accountId)
-    {
-        Navigation.NavigateTo($"/entries/{Store.EntryId}/financials/{accountId.ToString()}");
-        Store.AccountId = accountId;
         return OnStateChanged.InvokeAsync();
     }
 }

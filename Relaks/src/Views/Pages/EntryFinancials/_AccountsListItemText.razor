@@ -1,0 +1,34 @@
+@using Relaks.Models.FinancialModels
+
+<div class="d-flex gap-2 align-items-center @(FinancialAccount.Id.Equals(SelectedAccountId) ? "text-primary" : "")">
+    <div class="col">
+        <span>
+            <i class="las la-angle-right me-1"></i>
+            @FinancialAccount.Title
+            @if (DisabledReasonAccountIds.Keys.Contains(FinancialAccount.Id))
+            {
+                <Badge Color="Color.Danger" class="ms-1">@DisabledReasonAccountIds[FinancialAccount.Id]</Badge>
+            }
+        </span>
+        @if (!string.IsNullOrEmpty(FinancialAccount.Description))
+        {
+            <Popover Content="@FinancialAccount.Description">
+                <i class="las la-comment la-lg ms-2" style="opacity: .7"></i>
+            </Popover>
+        }
+    </div>
+    <div class="col-auto fw-semibold @(FinancialAccount.Balance > 0 ? "text-success" : "text-danger")">
+        @FinancialAccount.Balance.ToString("N2") @FinancialAccount.FinancialCurrency.Symbol
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public FinancialAccount FinancialAccount { get; set; } = null!;
+    
+    [Parameter]
+    public Guid? SelectedAccountId { get; set; }
+    
+    [Parameter]
+    public Dictionary<Guid, string> DisabledReasonAccountIds { get; set; } = new();
+}

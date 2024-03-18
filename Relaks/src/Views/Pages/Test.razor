@@ -10,12 +10,25 @@
 <PageTemplate>
     <MyTitle>Test</MyTitle>
 
+    @IsOpen
+    <button type="button" @onclick="@(() => IsOpen = true)">test</button>
+    <Drawer Placement="@Placement.Right" IsOpen="@IsOpen" IsBackdrop="@true" AllowResize="true">
+        <div class="d-flex justify-content-center align-items-center flex-column" style="height: 290px;">
+            <p>The layout, components, etc. in the drawer are fully customizable</p>
+            <button type="button" class="btn btn-primary" @onclick="@(() => IsOpen = false)">close the drawer</button>
+        </div>
+    </Drawer>
+    
     @Resources.Entity.BaseEntries
     <p>@_cultureInfo.Name</p>
     <FinancialAccountChart AccountIds="@AccountIds"/>
+    
+    
 </PageTemplate>
 
 @code {
+    private bool IsOpen { get; set; }
+    
     private CultureInfo _cultureInfo = Thread.CurrentThread.CurrentCulture;
     private List<Guid> AccountIds { get; set; } = new();
 

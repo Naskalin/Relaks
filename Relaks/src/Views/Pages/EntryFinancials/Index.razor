@@ -14,51 +14,57 @@
 
     <CascadingValue Value="@TransactionCategoriesStore">
         <CascadingValue Value="@Store">
+            <_SidebarDefault OnStateChanged="@StateHasChanged"/>
+            
+            
+            @switch (Store.SidebarState)
+            {
+                case FinancialsStore.SidebarEnum.EditAccountCategory:
+                case FinancialsStore.SidebarEnum.AddAccountCategory:
+                    <_AccountCategoryForm OnStateChanged="@StateHasChanged"/>
+                    break;
+                case FinancialsStore.SidebarEnum.EditAccount:
+                case FinancialsStore.SidebarEnum.AddAccount:
+                    <_AccountForm OnStateChanged="@StateHasChanged"/>
+                    break;
+                default:
 
-            <div class="row">
-                <div class="col-auto" style="width: 30%">
-                    <div>
-                        @switch (Store.SidebarState)
-                        {
-                            case FinancialsStore.SidebarEnum.EditAccountCategory:
-                            case FinancialsStore.SidebarEnum.AddAccountCategory:
-                                <_AccountCategoryForm OnStateChanged="@StateHasChanged"/>
-                                break;
-                            case FinancialsStore.SidebarEnum.EditAccount:
-                            case FinancialsStore.SidebarEnum.AddAccount:
-                                <_AccountForm OnStateChanged="@StateHasChanged"/>
-                                break;
-                            default:
-                                <_SidebarDefault OnStateChanged="@StateHasChanged"/>
-                                break;
-                        }
-                    </div>
-                </div>
-                <div class="col">
-                    @switch (Store.BodyState)
-                    {
-                        case FinancialsStore.BodyEnum.EditEntryTransaction:
-                        case FinancialsStore.BodyEnum.AddEntryTransaction:
-                            <_TransactionEntryForm OnStateChanged="@StateHasChanged"/>
-                            break;
-                        case FinancialsStore.BodyEnum.EditAccountTransaction:
-                        case FinancialsStore.BodyEnum.AddAccountTransaction:
-                            <_TransactionAccountForm OnStateChanged="@StateHasChanged"/>
-                            break;
-                        @*     case FinancialsStore.BodyEnum.EditTransactionCategory: *@
-                        @*     case FinancialsStore.BodyEnum.AddTransactionCategory: *@
-                        @*         <_TransactionCategoryForm OnStateChanged="@StateHasChanged"/> *@
-                        @*         break; *@
-                        @*     case FinancialsStore.BodyEnum.TransactionCategories: *@
-                        @*         <_TransactionCategoriesList OnStateChanged="@StateHasChanged"/> *@
-                        @*         break; *@
-                        default:
-                            <_BodyDefault OnStateChanged="@StateHasChanged"/>
-                            break;
-                    }
+                    break;
+            }
 
-                </div>
-            </div>
+            @switch (Store.BodyState)
+            {
+                case FinancialsStore.BodyEnum.EditEntryTransaction:
+                case FinancialsStore.BodyEnum.AddEntryTransaction:
+                    <_TransactionEntryForm OnStateChanged="@StateHasChanged"/>
+                    break;
+                case FinancialsStore.BodyEnum.EditAccountTransaction:
+                case FinancialsStore.BodyEnum.AddAccountTransaction:
+                    <_TransactionAccountForm OnStateChanged="@StateHasChanged"/>
+                    break;
+                @*     case FinancialsStore.BodyEnum.EditTransactionCategory: *@
+                @*     case FinancialsStore.BodyEnum.AddTransactionCategory: *@
+                @*         <_TransactionCategoryForm OnStateChanged="@StateHasChanged"/> *@
+                @*         break; *@
+                @*     case FinancialsStore.BodyEnum.TransactionCategories: *@
+                @*         <_TransactionCategoriesList OnStateChanged="@StateHasChanged"/> *@
+                @*         break; *@
+                default:
+                    <_BodyDefault OnStateChanged="@StateHasChanged"/>
+                    break;
+            }
+
+            <_SelectedAccount OnStateChanged="@StateHasChanged"/>
+
+            @if (!Store.AccountId.HasValue)
+            {
+                <ul class="ul-info">
+                    <li>Добавьте категории для счетов, они уникальны для каждого объединения</li>
+                    <li>Выберите счёт для добавления новой транзакции для этого счёта</li>
+                    <li>Выберите счёт для отображения последних транзакций и различной статистики</li>
+                    <li>[Общие данные &rarr; Категории финансовых транзакций] являются общими категориями транзакций для всех объединений</li>
+                </ul>
+            }
         </CascadingValue>
     </CascadingValue>
 </EntryProfileLayout>

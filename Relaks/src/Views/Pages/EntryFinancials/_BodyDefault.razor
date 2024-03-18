@@ -7,7 +7,7 @@
 @inject AppDbContext Db;
 
 <div class="d-flex align-items-center mb-3 gap-2">
-    <div class="col">
+    <div class="col-auto">
         <span class="h5">Транзакции</span>
     </div>
     @if (!Store.AccountId.HasValue)
@@ -43,31 +43,16 @@
             <i class="las la-plus-circle la-lg ms-1"></i>
         </button>
     </div>
-    @* <div class="col-auto"> *@
-    @*     <button type="button" class="btn btn-outline-secondary" @onclick="@HandleShowTransactionCategories"> *@
-    @*         Категории транзакций *@
-    @*         <i class="las la-angle-right la-lg ms-1"></i> *@
-    @*     </button> *@
-    @* </div> *@
 </div>
 
 @if (Store.AccountId.HasValue)
 {
+    <FinancialAccountChart AccountIds="@AccountIds()"/>
+    <div class="my-4"></div>
     <_TransactionsList OnStateChanged="@(() => OnStateChanged.InvokeAsync())"
                        FinancialAccountId="@Store.AccountId.Value"
                        FirstRow="@(new GuidRowView() {Th = FirstRowTh, Td = FirstRowTd})"
     />
-    <div class="my-4"></div>
-    <FinancialAccountChart AccountIds="@AccountIds()"/>
-}
-else
-{
-    <ul class="ul-info">
-        <li>Добавьте категории для счетов, они уникальны для каждого объединения</li>
-        <li>Выберите счёт для добавления новой транзакции для этого счёта</li>
-        <li>Выберите счёт для отображения последних транзакций и различной статистики</li>
-        <li>[Общие данные &rarr; Категории финансовых транзакций] являются общими категориями транзакций для всех объединений</li>
-    </ul>
 }
 
 @code {
