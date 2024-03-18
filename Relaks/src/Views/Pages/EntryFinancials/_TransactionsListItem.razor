@@ -11,15 +11,15 @@
     @* <td style="white-space: nowrap" class="fw-semibold @(Transaction.IsPlus ? "text-success" : "text-danger")"> *@
     @*     @(Transaction.IsPlus ? "+" : "-")@Transaction.Total.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol *@
     @* </td> *@
-    <td style="white-space: nowrap" class="text-center @(Transaction.IsPlus ? "text-success" : "text-danger")">
-        <div class="fw-semibold">
+    <td style="white-space: nowrap" class="text-center">
+        <div class="fw-semibold @(Transaction.IsPlus ? "text-success" : "text-danger")">
             @(Transaction.IsPlus ? "+" : "-")@Transaction.Total.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol
         </div>
         
         <small style="opacity: .9;">
-            @Transaction.FromBalance().ToString("N2") @Transaction.Account.FinancialCurrency.Symbol
+            <span class="@(Transaction.FromBalance() > 0 ? "text-success" : "text-danger")">@Transaction.FromBalance().ToString("N2") @Transaction.Account.FinancialCurrency.Symbol</span>
             <i class="las la-long-arrow-alt-right la-lg @(Transaction.IsPlus ? "text-success" : "text-danger")"></i>
-            @Transaction.Balance.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol
+            <span class="@(Transaction.Balance > 0 ? "text-success" : "text-danger")">@Transaction.Balance.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol</span>
         </small>
     </td>
     <td>
