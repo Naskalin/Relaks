@@ -7,7 +7,7 @@
 @inject NavigationManager Navigation;
 @inject AppDbContext Db;
 
-<div class="d-flex align-items-center justify-content-between mb-3 gap-3 position-relative">
+<div class="d-flex align-items-center justify-content-between mb-3 gap-2 position-relative">
     <div class="col">
         <div class="d-flex align-items-center gap-3">
             <button type="button" id="@_btnId" class="btn btn-outline-primary" @onclick="@(() => Store.IsOpenAccounts = !Store.IsOpenAccounts)">
@@ -52,7 +52,7 @@
                            AccountId="@Store.AccountId"
                            EntryId="@Store.EntryId"
                            AccountCategories="@Store.AccountCategories"
-                           FinancialAccountStatistic="@Store.FinancialAccountStatistic">
+                           FinancialAccountSummaryBalances="@Store.FinancialAccountSummaryBalances">
                 <EndOfCategoryTitle>
                     <button type="button"
                             @onclick="@(() => Store.ShowAccountCategoryFormModal(context))"

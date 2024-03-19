@@ -21,7 +21,17 @@
             </MyTitle>
 
             <_SelectedAccount OnStateChanged="@StateHasChanged"/>
-            
+            <_ChartFilter OnStateHasChanged="@Store.OnFilterChanged"/>
+            <div class="row">
+                <div class="col">
+                    pie chart
+                </div>
+                <div class="col-7">
+                    <div style="height: 500px; overflow-y: scroll">
+                        <_TransactionsList/>
+                    </div>
+                </div>
+            </div>
 
             @* @switch (Store.SidebarState) *@
             @* { *@
@@ -92,7 +102,7 @@
     
     private RenderFragment CurrencyBalances => __builder =>
     {
-        var items = Store.FinancialAccountStatistic.Data.CurrencyBalances;
+        var items = Store.FinancialAccountSummaryBalances.Data.CurrencyBalances;
         if (items.Any())
         {
             var i = 1;
@@ -122,8 +132,7 @@
             Store.AccountId = AccountId;
         }
 
-        Store.FindAccountCategories();
-        Store.FindAccount();
+        Store.OnChangeAccount();
         
         if (!Store.AccountId.HasValue && Store.FinancialAccounts.Any())
         {

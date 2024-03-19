@@ -1,9 +1,8 @@
-using Relaks.Models;
 using Relaks.Models.FinancialModels;
 
 namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
 
-public class FinancialAccountStatistic(IEnumerable<FinancialAccountCategory> financialAccountCategories)
+public class FinancialAccountSummaryBalances(IEnumerable<FinancialAccountCategory> financialAccountCategories)
 {
     public class CurrencyBalance
     {

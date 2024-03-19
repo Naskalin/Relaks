@@ -2,13 +2,15 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using Relaks.Database;
+using Relaks.Database.Repositories;
 using Relaks.Models.FinancialModels;
+using Relaks.Models.Misc;
 using Relaks.src.Views.Pages.Countries;
 using Relaks.src.Views.Pages.EntryFinancials;
 
 namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
 
-public class FinancialsStore(AppDbContext db, Guid entryId, DialogService dialogService)
+public partial class FinancialsStore(AppDbContext db, Guid entryId, DialogService dialogService)
 {
     public Guid EntryId { get; } = entryId;
     public bool IsOpenAccounts { get; set; }
@@ -41,15 +43,30 @@ public class FinancialsStore(AppDbContext db, Guid entryId, DialogService dialog
     // public Guid? SidebarEditAccountId { get; set; }
     public List<FinancialCurrency> Currencies { get; set; } = new();
     public List<FinancialAccountCategory> AccountCategories { get; set; } = new();
-    public FinancialAccountStatistic FinancialAccountStatistic { get; set; } = null!;
+    public FinancialAccountSummaryBalances FinancialAccountSummaryBalances { get; set; } = null!;
     
     public Guid? AccountId { get; set; }
     public FinancialAccount? Account { get; set; }
     public List<FinancialAccount> FinancialAccounts { get; set; } = new();
+    public List<BaseFinancialTransaction> Transactions { get; set; } = new();
 
+    /// <summary>
+    /// Общие данные для всех счетов объединения
+    /// </summary>
     public void Initialize()
     {
         FindCurrencies();
+    }
+
+    /// <summary>
+    /// Действия при смене счёта
+    /// </summary>
+    public void OnChangeAccount()
+    {
+        FindAccountCategories();
+        FindAccount();
+        InitializeChartFilter();
+        FindTransactions();
     }
 
     private void FindCurrencies()
@@ -72,8 +89,8 @@ public class FinancialsStore(AppDbContext db, Guid entryId, DialogService dialog
 
         FinancialAccounts = AccountCategories.SelectMany(x => x.Accounts).ToList();
         
-        FinancialAccountStatistic = new FinancialAccountStatistic(AccountCategories);
-        FinancialAccountStatistic.Calculate();
+        FinancialAccountSummaryBalances = new FinancialAccountSummaryBalances(AccountCategories);
+        FinancialAccountSummaryBalances.Calculate();
     }
 
     public void FindAccount()
@@ -111,6 +128,19 @@ public class FinancialsStore(AppDbContext db, Guid entryId, DialogService dialog
     //     // EditAccountCategoryId = null;
     //     return Task.CompletedTask;
     // }
+    
+    public void FindTransactions()
+    {
+        if (!AccountId.HasValue) return;
+        Transactions = db.BaseFinancialTransactions
+                .Include(x => x.Account).ThenInclude(a => a.FinancialCurrency)
+                .Include(x => x.Items).ThenInclude(item => item.Category)
+                .Where(x => x.AccountId.Equals(AccountId.Value))
+                .Where(x => x.CreatedAt >= FilterReq.From && x.CreatedAt < FilterReq.To)
+                .OrderByDescending(x => x.CreatedAt)
+                .ToList()
+            ;
+    }
     
     public Task ShowAccountFormModal(Guid? accountId = null)
     {

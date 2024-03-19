@@ -1,6 +1,4 @@
-﻿using Relaks.Interfaces;
-
-namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
+﻿namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
 
 public abstract class BaseFinancialTransactionRequest
 {

@@ -1,76 +1,76 @@
-﻿@* @using Relaks.Interfaces *@
-@* @using Relaks.Models.FinancialModels *@
-@* @using Relaks.Utils.Extensions *@
-@* *@
-@* <tr class="group-show"> *@
-@*     @if (FirstRow != null) *@
-@*     { *@
-@*         @FirstRow.Td(Transaction.Id) *@
-@*     } *@
-@*     <td>@Transaction.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td> *@
-@*     $1$ <td style="white-space: nowrap" class="fw-medium @(Transaction.IsPlus ? "text-success" : "text-danger")"> #1# *@
-@*     $1$     @(Transaction.IsPlus ? "+" : "-")@Transaction.Total.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol #1# *@
-@*     $1$ </td> #1# *@
-@*     <td style="white-space: nowrap" class="text-center"> *@
-@*         <div class="fw-medium @(Transaction.IsPlus ? "text-success" : "text-danger")"> *@
-@*             @(Transaction.IsPlus ? "+" : "-")@Transaction.Total.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol *@
-@*         </div> *@
-@*          *@
-@*         <small style="opacity: .9;"> *@
-@*             <span class="@(Transaction.FromBalance() > 0 ? "text-success" : "text-danger")">@Transaction.FromBalance().ToString("N2") @Transaction.Account.FinancialCurrency.Symbol</span> *@
-@*             <i class="las la-long-arrow-alt-right la-lg @(Transaction.IsPlus ? "text-success" : "text-danger")"></i> *@
-@*             <span class="@(Transaction.Balance > 0 ? "text-success" : "text-danger")">@Transaction.Balance.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol</span> *@
-@*         </small> *@
-@*     </td> *@
-@*     <td> *@
-@*         <small>@(string.Join(", ", Categories).Truncate(40))</small> *@
-@*         @if (!string.IsNullOrEmpty(Transaction.Description)) *@
-@*         { *@
-@*             <Popover Content="@Transaction.Description"> *@
-@*                 <i class="las la-comment text-success ms-1" style="font-size: 1.2rem;"></i> *@
-@*             </Popover> *@
-@*         } *@
-@*     </td> *@
-@*     <td> *@
-@*          *@
-@*         <EntryInlineItem EntryId="@EntryId"> *@
-@*             <AfterBody> *@
-@*                 @if (Transaction is AccountFinancialTransaction accountTransaction) *@
-@*                 { *@
-@*                     <span class="text-success"> *@
-@*                         @accountTransaction.SecondAccount.Category.Title / @accountTransaction.SecondAccount.TitleWithCurrencyAndBalance() *@
-@*                     </span> *@
-@*                 } *@
-@*             </AfterBody> *@
-@*         </EntryInlineItem> *@
-@*     </td> *@
-@* </tr> *@
-@* *@
-@* @code { *@
-@*     [Parameter] *@
-@*     public IGuidRowView? FirstRow { get; set; } *@
-@* *@
-@*     [Parameter] *@
-@*     public BaseFinancialTransaction Transaction { get; set; } = null!; *@
-@*      *@
-@*     [Parameter] *@
-@*     public Guid FinancialAccountId { get; set; } *@
-@*      *@
-@*     private Guid EntryId { get; set; } *@
-@*     private List<string> Categories { get; set; } = new(); *@
-@* *@
-@*     protected override void OnParametersSet() *@
-@*     { *@
-@*         Categories = Transaction.Items.Select(x => x.Category.Title).Distinct().ToList(); *@
-@*         if (Transaction is EntryFinancialTransaction entryTransaction) *@
-@*         { *@
-@*             EntryId = entryTransaction.EntryId; *@
-@*             return; *@
-@*         } *@
-@*       *@
-@*         var accountTransaction = (AccountFinancialTransaction) Transaction; *@
-@*         var secondAccount = accountTransaction.SecondAccount; *@
-@*         EntryId = secondAccount.Category.EntryId; *@
-@*     } *@
-@*      *@
-@* } *@
+﻿@using Relaks.Interfaces
+@using Relaks.Models.FinancialModels
+@using Relaks.Utils.Extensions
+
+<tr class="group-show">
+    <td>
+        <button type="button" 
+                class="btn btn-circle btn-outline-secondary btn-sm group-show__item" 
+                @onclick="@(() => OnClickTransaction.InvokeAsync(Transaction.Id))">
+            <i class="las la-edit la-lg"></i>
+        </button>
+    </td>
+    <td>@Transaction.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+    @* <td style="white-space: nowrap" class="fw-medium @(Transaction.IsPlus ? "text-success" : "text-danger")"> *@
+    @*     @(Transaction.IsPlus ? "+" : "-")@Transaction.Total.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol *@
+    @* </td> *@
+    <td style="white-space: nowrap" class="text-center">
+        <div class="fw-medium @(Transaction.IsPlus ? "text-success" : "text-danger")">
+            @(Transaction.IsPlus ? "+" : "-")@Transaction.Total.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol
+        </div>
+
+        <small style="opacity: .9;">
+            <span class="@(Transaction.FromBalance() > 0 ? "text-success" : "text-danger")">@Transaction.FromBalance().ToString("N2") @Transaction.Account.FinancialCurrency.Symbol</span>
+            <i class="las la-long-arrow-alt-right la-lg @(Transaction.IsPlus ? "text-success" : "text-danger")"></i>
+            <span class="@(Transaction.Balance > 0 ? "text-success" : "text-danger")">@Transaction.Balance.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol</span>
+        </small>
+    </td>
+    <td>
+        <small>@(string.Join(", ", Categories).Truncate(40))</small>
+        @if (!string.IsNullOrEmpty(Transaction.Description))
+        {
+            <Popover Content="@Transaction.Description">
+                <i class="las la-comment text-success ms-1" style="font-size: 1.2rem;"></i>
+            </Popover>
+        }
+    </td>
+    <td>
+
+        <EntryInlineItem EntryId="@EntryId">
+            <AfterBody>
+                @if (Transaction is AccountFinancialTransaction accountTransaction)
+                {
+                    <span class="text-success">
+                        @accountTransaction.SecondAccount.Category.Title / @accountTransaction.SecondAccount.TitleWithCurrencyAndBalance()
+                    </span>
+                }
+            </AfterBody>
+        </EntryInlineItem>
+    </td>
+</tr>
+
+@code {
+    [Parameter]
+    public BaseFinancialTransaction Transaction { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback<Guid> OnClickTransaction { get; set; }
+
+    private Guid EntryId { get; set; }
+    private List<string> Categories { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        Categories = Transaction.Items.Select(x => x.Category.Title).Distinct().ToList();
+        if (Transaction is EntryFinancialTransaction entryTransaction)
+        {
+            EntryId = entryTransaction.EntryId;
+            return;
+        }
+
+        var accountTransaction = (AccountFinancialTransaction) Transaction;
+        var secondAccount = accountTransaction.SecondAccount;
+        EntryId = secondAccount.Category.EntryId;
+    }
+
+}

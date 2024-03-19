@@ -90,19 +90,19 @@
 @*         return OnStateChanged.InvokeAsync(); *@
 @*     } *@
 @* *@
-@*     private RenderFragment<Guid> FirstRowTd => guid => __builder => *@
-@*     { *@
-@*         <td> *@
-@*             <button type="button" class="btn btn-circle btn-outline-secondary btn-sm group-show__item" @onclick="@(() => HandleEditTransaction(guid))"> *@
-@*                 <i class="las la-edit la-lg"></i> *@
-@*             </button> *@
-@*         </td> *@
-@*     }; *@
-@* *@
-@*     private RenderFragment FirstRowTh => __builder => *@
-@*     { *@
-@*         <th style="width: 50px"></th> *@
-@*     }; *@
+@*     $1$ private RenderFragment<Guid> FirstRowTd => guid => __builder => #1# *@
+@*     $1$ { #1# *@
+@*     $1$     <td> #1# *@
+@*     $1$         <button type="button" class="btn btn-circle btn-outline-secondary btn-sm group-show__item" @onclick="@(() => HandleEditTransaction(guid))"> #1# *@
+@*     $1$             <i class="las la-edit la-lg"></i> #1# *@
+@*     $1$         </button> #1# *@
+@*     $1$     </td> #1# *@
+@*     $1$ }; #1# *@
+@*     $1$ #1# *@
+@*     $1$ private RenderFragment FirstRowTh => __builder => #1# *@
+@*     $1$ { #1# *@
+@*     $1$     <th style="width: 50px"></th> #1# *@
+@*     $1$ }; #1# *@
 @* *@
 @*     private Task HandleEditTransaction(Guid transactionId) *@
 @*     { *@

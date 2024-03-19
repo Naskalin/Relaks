@@ -1,0 +1,175 @@
+﻿@using Relaks.Views.Pages.EntryFinancials.ViewModels
+@using Relaks.Database
+@using Relaks.Utils.Extensions
+
+@inject AppDbContext Db;
+
+<Dump Data="@Store.FilterReq"/>
+<div class="d-flex gap-4">
+    <div class="mb-3 col-3">
+        <label class="form-label">Тип отображения данных</label>
+        <Select TValue="@ChartFilterRequest.TypeEnum"
+                @bind-Value="@Store.FilterReq.Type"
+                OnValueChanged="@(type => OnTypeChanged(type))"
+                Items="@_requestTypeItems">
+        </Select>
+    </div>
+    @if (Store.FilterReq.Type != ChartFilterRequest.TypeEnum.AllByMonths)
+    {
+        if (IsMonthDate())
+        {
+            <div class="mb-3">
+                <label class="form-label">Месяц</label>
+                <div class="input-group">
+                    <button class="btn btn-outline-secondary" type="button" @onclick="@HandlePrevMonth">
+                        <i class="las la-long-arrow-alt-left la-lg"></i>
+                    </button>
+                    <InputDate Type="@InputDateType.Month"
+                               @bind-Value="@TempDate"
+                               @bind-Value:after="@OnMonthChanged"
+                               class="form-control"/>
+                    <button class="btn btn-outline-secondary" type="button" @onclick="@HandleNextMonth">
+                        <i class="las la-long-arrow-alt-right la-lg"></i>
+                    </button>
+                </div>
+            </div>
+        }
+        else if (IsYearDate())
+        {
+            <div class="mb-3">
+                <label class="form-label">Год</label>
+                <Select TValue="@int"
+                        @bind-Value="@RequestYear"
+                        OnValueChanged="@(year => OnYearChanged(year))"
+                        Items="@_requestYearsItems">
+                </Select>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex gap-2">
+                <div class="mb-3">
+                    <label class="form-label">Дата начала</label>
+                    <InputDate Type="@(Store.FilterReq.Type == ChartFilterRequest.TypeEnum.CustomByMonths ? InputDateType.Month : InputDateType.Date)"
+                               @bind-Value="@Store.FilterReq.From"
+                               @bind-Value:after="@OnDateFromChanged"
+                               class="form-control"/>
+                          
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Дата окончания</label>
+                    <InputDate Type="@(Store.FilterReq.Type == ChartFilterRequest.TypeEnum.CustomByMonths ? InputDateType.Month : InputDateType.Date)"
+                               @bind-Value="@Store.FilterReq.To"
+                               @bind-Value:after="@OnDateToChanged"
+                               class="form-control"/>
+                </div>
+            </div>
+        }   
+    }
+</div>
+
+@code {
+    [CascadingParameter]
+    public FinancialsStore Store { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback OnStateHasChanged { get; set; }
+
+    private DateTime TempDate { get; set; } = DateTime.Now;
+    private bool IsMonthDate() => new[]
+    {
+        ChartFilterRequest.TypeEnum.MonthByDays,
+    }.Contains(Store.FilterReq.Type);
+
+    private bool IsCustomDate() => new[]
+    {
+        ChartFilterRequest.TypeEnum.CustomByDays,
+        ChartFilterRequest.TypeEnum.CustomByMonths,
+    }.Contains(Store.FilterReq.Type);
+
+    private bool IsYearDate() => new[]
+    {
+        ChartFilterRequest.TypeEnum.YearByMonths,
+    }.Contains(Store.FilterReq.Type);
+
+    protected override void OnParametersSet()
+    {
+        var years = Db.BaseFinancialTransactions.Select(x => x.CreatedAt.Year).Distinct().OrderByDescending(x => x).ToList();
+        _requestYearsItems = years.Select(x => new SelectedItem(x.ToString(), x.ToString())).ToList();
+    }
+
+    private int RequestYear { get; set; }
+    private List<SelectedItem> _requestYearsItems = new();
+
+    private Task HandlePrevMonth()
+    {
+        TempDate = TempDate.AddMonths(-1);
+        return OnMonthChanged();
+    }
+    private Task HandleNextMonth()
+    {
+        TempDate = TempDate.AddMonths(1);
+        return OnMonthChanged();
+    }
+    
+    private Task OnMonthChanged()
+    {
+        var date = TempDate;
+        Store.FilterReq.From = date.StartOfMonth();
+        Store.FilterReq.To = date.EndOfMonth();
+        return OnStateHasChanged.InvokeAsync();
+    }
+
+    private Task OnDateFromChanged()
+    {
+        Store.FilterReq.From = Store.FilterReq.Type == ChartFilterRequest.TypeEnum.CustomByMonths
+            ? Store.FilterReq.From.StartOfMonth()
+            : Store.FilterReq.From.StartOfDay();
+        
+        return OnStateHasChanged.InvokeAsync();
+    }
+    
+    private Task OnDateToChanged()
+    {
+        Store.FilterReq.To = Store.FilterReq.Type == ChartFilterRequest.TypeEnum.CustomByMonths
+            ? Store.FilterReq.To.EndOfMonth()
+            : Store.FilterReq.To.EndOfDay();
+        
+        return OnStateHasChanged.InvokeAsync();
+    }
+    
+    private Task OnYearChanged(int year)
+    {
+        RequestYear = year;
+        var now = new DateTime();
+        var date = new DateTime(year, now.Month, now.Day);
+        Store.FilterReq.From = date.StartOfYear();
+        Store.FilterReq.To = date.EndOfYear();
+        return OnStateHasChanged.InvokeAsync();
+    }
+
+    private Task OnTypeChanged(ChartFilterRequest.TypeEnum type)
+    {
+        if (new[]
+            {
+                ChartFilterRequest.TypeEnum.YearByMonths,
+                ChartFilterRequest.TypeEnum.CustomByMonths,
+            }.Contains(Store.FilterReq.Type))
+        {
+            return OnYearChanged(DateTime.Now.Year);
+        }
+        
+        TempDate = DateTime.Now;
+        return OnMonthChanged();
+    }
+
+    private List<SelectedItem> _requestTypeItems = new()
+    {
+        new SelectedItem(ChartFilterRequest.TypeEnum.AllByMonths.ToString(), "Всё по месяцам"),
+        new SelectedItem(ChartFilterRequest.TypeEnum.MonthByDays.ToString(), "Месяц по дням"),
+        new SelectedItem(ChartFilterRequest.TypeEnum.YearByMonths.ToString(), "Год по месяцам"),
+        new SelectedItem(ChartFilterRequest.TypeEnum.CustomByDays.ToString(), "Произвольно по дням"),
+        new SelectedItem(ChartFilterRequest.TypeEnum.CustomByMonths.ToString(), "Произвольно по месяцам"),
+    };
+
+}

@@ -69,12 +69,12 @@
     public List<FinancialAccountCategory> AccountCategories { get; set; } = new();
     
     [Parameter]
-    public FinancialAccountStatistic FinancialAccountStatistic { get; set; } = null!;
+    public FinancialAccountSummaryBalances FinancialAccountSummaryBalances { get; set; } = null!;
 
     private RenderFragment<Guid> CategoryBalances => categoryId => __builder =>
     {
 
-        var items = FinancialAccountStatistic.Data.CategoryBalances.Where(x => x.AccountCategoryId.Equals(categoryId)).ToList();
+        var items = FinancialAccountSummaryBalances.Data.CategoryBalances.Where(x => x.AccountCategoryId.Equals(categoryId)).ToList();
         if (items.Any())
         {
             var i = 1;

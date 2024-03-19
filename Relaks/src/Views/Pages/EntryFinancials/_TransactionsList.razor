@@ -1,85 +1,81 @@
-﻿@* @using Relaks.Views.Pages.EntryFinancials.ViewModels *@
-@* @using Relaks.Models.FinancialModels *@
-@* @using Relaks.Database *@
-@* @using Relaks.Database.Repositories *@
-@* @using Microsoft.EntityFrameworkCore *@
-@* @using Relaks.Interfaces *@
-@* @using Relaks.Models.Misc *@
-@* *@
+﻿@using Relaks.Views.Pages.EntryFinancials.ViewModels
+@using Relaks.Models.FinancialModels
+@using Relaks.Database
+@using Relaks.Database.Repositories
+@using Microsoft.EntityFrameworkCore
+@using Relaks.Interfaces
+@using Relaks.Models.Misc
+
 @* @inject AppDbContext Db; *@
-@* *@
+
 @* <MyPagination TotalPages="@Transactions.TotalPages" *@
 @*               TotalItems="@Transactions.TotalItems" *@
 @*               ActivePage="@TransactionListRequest.Page" *@
-@*               OnPageChanged="@HandlePageChanged" *@
-@* /> *@
-@* *@
-@* <table class="table table-hover table-striped align-middle my-3"> *@
-@*     <thead> *@
-@*     <tr> *@
-@*         @if (FirstRow != null) *@
-@*         { *@
-@*             @FirstRow.Th *@
-@*         } *@
-@*         <th style="width: 125px" class="text-center">Дата</th> *@
-@*         <th style="width: 180px" class="text-center"> *@
-@*             Сумма и баланс *@
-@*             <Tooltip Title="Сумма и баланс в момент осуществления транзакции"> *@
-@*                 <i class="las la-info-circle la-lg ms-1"></i> *@
-@*             </Tooltip> *@
-@*         </th> *@
-@*         <th style="width: 140px">Описание</th> *@
-@*         <th>Объединение/Счёт</th> *@
-@*     </tr> *@
-@*     </thead> *@
-@*     <tbody> *@
-@*     @foreach (var transaction in Transactions.Items) *@
-@*     { *@
-@*         <_TransactionsListItem FirstRow="@FirstRow" Transaction="@transaction" FinancialAccountId="@FinancialAccountId"/> *@
-@*     } *@
-@*     </tbody> *@
-@* </table> *@
-@* *@
+@*               OnPageChanged="@HandlePageChanged"/> *@
+@* @Store.Transactions.Count *@
+<table class="table table-hover table-striped align-middle my-3">
+    <thead>
+    <tr>
+        <th style="width: 50px"></th>
+        <th style="width: 125px" class="text-center">Дата</th>
+        <th style="width: 180px" class="text-center">
+            Сумма и баланс
+            <Tooltip Title="Сумма и баланс в момент осуществления транзакции">
+                <i class="las la-info-circle la-lg ms-1"></i>
+            </Tooltip>
+        </th>
+        <th style="width: 140px">Описание</th>
+        <th>Объединение/Счёт</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var transaction in Store.Transactions)
+    {
+        <_TransactionsListItem OnClickTransaction="@OnClickTransaction" Transaction="@transaction"/>
+    }
+    </tbody>
+</table>
+
 @* <MyPagination TotalPages="@Transactions.TotalPages" *@
 @*               TotalItems="@Transactions.TotalItems" *@
 @*               ActivePage="@TransactionListRequest.Page" *@
-@*               OnPageChanged="@HandlePageChanged" *@
-@*               /> *@
-@* *@
-@* @code { *@
-@*     [Parameter] *@
-@*     public EventCallback OnStateChanged { get; set; } *@
-@* *@
-@*     [Parameter] *@
-@*     public IGuidRowView? FirstRow { get; set; } *@
-@* *@
-@*     [Parameter] *@
-@*     public Guid FinancialAccountId { get; set; } *@
-@* *@
-@*     private FinancialTransactionListRequest TransactionListRequest { get; set; } = new() {Page = 1, PerPage = 10}; *@
-@*     private PaginatableResult<BaseFinancialTransaction> Transactions { get; set; } = new(); *@
-@* *@
-@* *@
-@*     private void FindTransactions() *@
-@*     { *@
-@*         Transactions = Db.BaseFinancialTransactions *@
-@*             .Where(x => x.AccountId.Equals(FinancialAccountId)) *@
-@*             .Include(x => x.Account).ThenInclude(a => a.FinancialCurrency) *@
-@*             .Include(x => x.Items).ThenInclude(item => item.Category) *@
-@*             .OrderByDescending(x => x.CreatedAt) *@
-@*             .ToPaginatedResult(TransactionListRequest) *@
-@*         ; *@
-@*     } *@
-@* *@
-@*     private Task HandlePageChanged(int page) *@
-@*     { *@
-@*         TransactionListRequest.Page = page; *@
-@*         FindTransactions(); *@
-@*         return OnStateChanged.InvokeAsync(); *@
-@*     } *@
-@* *@
-@*     protected override void OnParametersSet() *@
-@*     { *@
-@*         FindTransactions(); *@
-@*     } *@
-@* } *@
+@*               OnPageChanged="@HandlePageChanged"/> *@
+
+@code {
+    [CascadingParameter] 
+    public FinancialsStore Store { get; set; } = null!;
+    
+    [Parameter]
+    public EventCallback<Guid> OnClickTransaction { get; set; }
+
+    // [Parameter] 
+    // public EventCallback OnStateChanged { get; set; }
+
+    // private FinancialTransactionListRequest TransactionListRequest { get; set; } = new() { Page = 1, PerPage = 10 };
+    // private PaginatableResult<BaseFinancialTransaction> Transactions { get; set; } = new();
+
+    // private void FindTransactions()
+    // {
+    //     if (Store.AccountId == null) return;
+    //     Transactions = Db.BaseFinancialTransactions
+    //             .Where(x => x.AccountId.Equals(FinancialAccountId))
+    //             .Include(x => x.Account).ThenInclude(a => a.FinancialCurrency)
+    //             .Include(x => x.Items).ThenInclude(item => item.Category)
+    //             .OrderByDescending(x => x.CreatedAt)
+    //             .ToPaginatedResult(TransactionListRequest)
+    //         ;
+    // }
+
+    // private Task HandlePageChanged(int page)
+    // {
+    //     TransactionListRequest.Page = page;
+    //     FindTransactions();
+    //     return OnStateChanged.InvokeAsync();
+    // }
+
+    // protected override void OnParametersSet()
+    // {
+    //     FindTransactions();
+    // }
+
+}

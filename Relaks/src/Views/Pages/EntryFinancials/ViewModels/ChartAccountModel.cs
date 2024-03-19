@@ -1,6 +1,6 @@
-﻿namespace Relaks.Views.Shared.Charts.ViewModels;
+﻿namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
 
-public class FinancialAccountLineChartModel
+public class ChartLineModel
 {
     public string? CurrencySymbol { get; set; }
     
@@ -9,10 +9,10 @@ public class FinancialAccountLineChartModel
     /// </summary>
     public string? CurrencyId { get; set; }
     public List<DateTime> Dates { get; set; } = new(); 
-    public List<FinancialAccountChartModel> Accounts { get; set; } = new();
+    public List<ChartAccountModel> Accounts { get; set; } = new();
 }
 
-public class FinancialAccountChartModel
+public class ChartAccountModel
 {
     
     public decimal Total { get; set; }
@@ -42,10 +42,10 @@ public class FinancialAccountChartModel
     /// </summary>
     public string Title { get; set; } = "???";
 
-    public List<FinancialAccountChartItemModel> Items { get; set; } = new();
+    public List<ChartItemModel> Items { get; set; } = new();
 }
 
-public class FinancialAccountChartItemModel
+public class ChartItemModel
 {
     public DateTime Date { get; set; }
     public decimal Total { get; set; }

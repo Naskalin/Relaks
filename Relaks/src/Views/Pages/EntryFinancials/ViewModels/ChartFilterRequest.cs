@@ -1,20 +1,17 @@
-﻿using System.ComponentModel;
+﻿namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
 
-namespace Relaks.Views.Shared.Charts.ViewModels;
-
-public class FinancialAccountStatisticsRequest
+public class ChartFilterRequest
 {
     public enum TypeEnum
     {
         AllByMonths,
         MonthByDays,
         YearByMonths,
-        YearByDays,
         CustomByDays,
         CustomByMonths,
     }
     
-    public TypeEnum Type { get; set; } = TypeEnum.MonthByDays;
+    public TypeEnum Type { get; set; }
     
     /// <summary>
     /// Период от
@@ -28,7 +25,6 @@ public class FinancialAccountStatisticsRequest
     
     public bool IsTypeByDays() => new[]
     {
-        TypeEnum.YearByDays,
         TypeEnum.MonthByDays,
         TypeEnum.CustomByDays
     }.Contains(Type);
