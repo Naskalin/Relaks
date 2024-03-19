@@ -1,237 +1,237 @@
-﻿@using Relaks.Views.Pages.EntryFinancials.ViewModels
-@using Relaks.Database
-@using Relaks.Mappers
-@using Relaks.Models.FinancialModels
-@using Microsoft.EntityFrameworkCore
-@using Relaks.Managers
-@using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels
-
-@inject AppDbContext Db;
-@inject FinancialManager FinManager;
-@inject IJSRuntime JsRuntime;
-
-<div class="row align-items-center mb-3">
-    <div class="col-auto">
-        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@HandleReturn" title="Вернуться">
-            <i class="las la-arrow-left la-lg"></i>
-        </button>
-    </div>
-    <div class="col">
-        <h5 class="mb-0">@(IsEdit ? "Изменить перевод" : "Добавить перевод") между счетами</h5>
-    </div>
-    <div class="col-auto">
-        <button type="button" class="btn btn-outline-primary" @onclick="@HandleAddCategory">
-            Категория транзакции
-            <i class="las la-plus-circle la-lg ms-1"></i>
-        </button>
-    </div>
-</div>
-
-<EditForm Model="@Req" OnValidSubmit="@HandleSubmit">
-    <FluentValidationValidator DisableAssemblyScanning="@true"/>
-    <ValidationSummary/>
-
-    <div class="row">
-        <div class="col-5">
-            <Divider Text="Описание" class="mb-4"/>
-            <div class="mb-3">
-                <label class="form-label">Тип *</label>
-                <div class="btn-group w-100">
-                    @foreach (var t in ArithmeticTypes)
-                    {
-                        <button type="button"
-                                @onclick="@(() => Req.IsPlus = t.Val)"
-                                class="btn w-50 @(Req.IsPlus.HasValue && Req.IsPlus.Value == t.Val ? $"btn-{t.Color}" : "btn-outline-secondary")">
-                            <i class="@t.Icon la-lg me-2"></i>
-                            @t.Name
-                        </button>
-                    }
-                </div>
-                @if (Req.IsPlus.HasValue)
-                {
-                    <div class="form-text">
-                        @(Req.IsPlus == true ? "Пополнить этот счёт суммой, которая будет списана с другого выбранного счёта" : "Перевести сумму на другой выбранный счёт, которая будет списана с этого счёта")
-                    </div>
-                }
-                <ValidationMessage For="@(() => Req.IsPlus)"/>
-            </div>
-            
-            <div class="mb-3">
-                <SelectEntryFinancialAccount @bind-AccountId="@Req.SecondAccountId"
-                                             DisabledReasonAccountIds="@DisabledReasonAccountIds"/>
-                <ValidationMessage For="@(() => Req.SecondAccountId)"/>
-            </div>
-
-            <div class="mb-3">
-                <label for="financial-transaction-desc" class="form-label">Описание транзакции</label>
-                <MyTextarea @bind-Value="@Req.Description" id="financial-transaction-desc" maxlength="500"/>
-                <ValidationMessage For="@(() => Req.Description)"/>
-            </div>
-
-            <div class="mb-3">
-                <label for="financial-transaction-createdAt" class="form-label">Дата и время *</label>
-                <InputDate Type="InputDateType.DateTimeLocal"
-                           @bind-Value="@Req.CreatedAt"
-                           id="financial-transaction-createdAt"
-                           class="form-control"/>
-                <ValidationMessage For="@(() => Req.CreatedAt)"/>
-            </div>
-
-            <div class="mb-3">
-                <button class="btn btn-primary">
-                    <i class="las la-lg me-1 @(IsEdit ? "la-edit" : "la-plus-circle")"></i>
-                    @(IsEdit ? Resources.Action.SaveChanges : $"{Resources.Action.Add} перевод между счетами")
-                </button>
-            </div>
-        </div>
-        <div class="col-7">
-            <Divider Text="Состав" class="mb-4"/>
-            <div class="mb-3">
-                @foreach (var itemReq in Req.Items)
-                {
-                    <_TransactionItemFormFields Req="@itemReq"
-                                                Currency="@Account.FinancialCurrency"
-                                                OnStateChanged="@StateHasChanged"
-                                                CanDelete="@(Req.Items.Count > 1)"
-                                                OnDelete="@HandleDeleteItem"/>
-                }
-            </div>
-            <button type="button" class="btn btn-outline-dark btn-sm" @onclick="@HandleAddItem">
-                Добавить ещё <i class="las la-plus ms-1 la-lg"></i>
-            </button>
-
-            <div class="h3 mt-5 text-secondary">
-                <span class="border-top border-secondary border-4 pt-2 px-4" style="--bs-border-opacity: .4;">Сумма: @Total()</span>
-            </div>
-        </div>
-    </div>
-</EditForm>
-
-@if (IsEdit)
-{
-    <hr>
-    <div class="text-end">
-        <button type="button" class="btn btn-link text-danger" @onclick="@HandleDelete">
-            <i class="las la-trash la-lg"></i>
-            @Resources.Action.Delete
-        </button>
-    </div>
-}
-
-@code {
-
-    [CascadingParameter]
-    public FinancialsStore Store { get; set; } = null!;
-    
-    [CascadingParameter]
-    public FinancialTransactionCategoriesStore TransactionCategoriesStore { get; set; } = null!;
-
-    [Parameter]
-    public EventCallback OnStateChanged { get; set; }
-
-    private bool IsEdit { get; set; }
-    private AccountFinancialTransactionRequest Req { get; set; } = new();
-    private FinancialAccount Account { get; set; } = null!;
-    private AccountFinancialTransaction? EditingTransaction { get; set; }
-    private Dictionary<Guid, string> DisabledReasonAccountIds { get; set; } = new();
-
-    private List<(string Name, bool Val, string Icon, string Color)> ArithmeticTypes { get; set; } = new()
-    {
-        ("Пополнение", true, "las la-plus-circle", "success"),
-        ("Перевод", false, "las la-minus-circle", "danger"),
-    };
-
-    protected override void OnParametersSet()
-    {
-        ArgumentNullException.ThrowIfNull(Store.AccountId);
-        
-        IsEdit = Store is {BodyState: FinancialsStore.BodyEnum.EditAccountTransaction,BodyEditTransactionId: not null};
-        if (IsEdit)
-        {
-            EditingTransaction = Db
-                .AccountFinancialTransactions
-                .Include(x => x.Items)
-                .First(x => x.Id.Equals(Store.BodyEditTransactionId));
-            
-            EditingTransaction.MapTo(Req);
-            Req.Items = EditingTransaction.Items.Select(x =>
-            {
-                var itemReq = new FinancialTransactionItemRequest();
-                x.MapTo(itemReq);
-                itemReq.Id = x.Id;
-                return itemReq;
-            }).ToList();
-        }
-        else
-        {
-            Req.Items = new() {new()};
-            Req.AccountId = Store.AccountId.Value;
-        }
-
-        Account = Db.FinancialAccounts
-            .Include(x => x.FinancialCurrency)
-            .Include(x => x.Category)
-            .First(x => x.Id.Equals(Req.AccountId));
-
-        DisabledReasonAccountIds = Db.FinancialAccounts
-            .Where(x => !x.FinancialCurrencyId.Equals(Account.FinancialCurrencyId))
-            .Select(x => x.Id)
-            .ToDictionary(x => x, _ => "Другая валюта");
-        DisabledReasonAccountIds.Add(Store.AccountId.Value, "Текущий счёт");
-    }
-    
-    private Task HandleAddCategory()
-    {
-        // TransactionCategoriesStore.SidebarState = FinancialTransactionCategoriesStore.SidebarStateEnum.New;
-        return TransactionCategoriesStore.ShowFormModal();
-    }
-
-    private void HandleAddItem()
-    {
-        Req.Items.Add(new());
-        StateHasChanged();
-    }
-
-    private void HandleDeleteItem(FinancialTransactionItemRequest item)
-    {
-        if (Req.Items.Count > 1) Req.Items.Remove(item);
-    }
-
-    private Task HandleReturn()
-    {
-        Store.BodyState = FinancialsStore.BodyEnum.Default;
-        return OnStateChanged.InvokeAsync();
-    }
-
-    private string Total()
-    {
-        return $"{Req.Items.Sum(x => x.Amount):N2} {Account.FinancialCurrency.Symbol}";
-    }
-
-    private Task HandleSubmit()
-    {
-        if (IsEdit && EditingTransaction != null)
-        {
-            FinManager.UpdateTransaction(EditingTransaction, Req);
-        }
-        else
-        {
-            FinManager.CreateTransaction(Req);
-        }
-
-        Db.SaveChanges();
-
-        return HandleReturn();
-    }
-
-    private async Task HandleDelete()
-    {
-        if (EditingTransaction == null) return;
-        var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation);
-        if (!isConfirmed) return;
-
-        FinManager.DeleteTransaction(EditingTransaction);
-        await Db.SaveChangesAsync();
-        await HandleReturn();
-    }
-}
+﻿@* @using Relaks.Views.Pages.EntryFinancials.ViewModels *@
+@* @using Relaks.Database *@
+@* @using Relaks.Mappers *@
+@* @using Relaks.Models.FinancialModels *@
+@* @using Microsoft.EntityFrameworkCore *@
+@* @using Relaks.Managers *@
+@* @using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels *@
+@* *@
+@* @inject AppDbContext Db; *@
+@* @inject FinancialManager FinManager; *@
+@* @inject IJSRuntime JsRuntime; *@
+@* *@
+@* <div class="row align-items-center mb-3"> *@
+@*     <div class="col-auto"> *@
+@*         <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@HandleReturn" title="Вернуться"> *@
+@*             <i class="las la-arrow-left la-lg"></i> *@
+@*         </button> *@
+@*     </div> *@
+@*     <div class="col"> *@
+@*         <h5 class="mb-0">@(IsEdit ? "Изменить перевод" : "Добавить перевод") между счетами</h5> *@
+@*     </div> *@
+@*     <div class="col-auto"> *@
+@*         <button type="button" class="btn btn-outline-primary" @onclick="@HandleAddCategory"> *@
+@*             Категория транзакции *@
+@*             <i class="las la-plus-circle la-lg ms-1"></i> *@
+@*         </button> *@
+@*     </div> *@
+@* </div> *@
+@* *@
+@* <EditForm Model="@Req" OnValidSubmit="@HandleSubmit"> *@
+@*     <FluentValidationValidator DisableAssemblyScanning="@true"/> *@
+@*     <ValidationSummary/> *@
+@* *@
+@*     <div class="row"> *@
+@*         <div class="col-5"> *@
+@*             <Divider Text="Описание" class="mb-4"/> *@
+@*             <div class="mb-3"> *@
+@*                 <label class="form-label">Тип *</label> *@
+@*                 <div class="btn-group w-100"> *@
+@*                     @foreach (var t in ArithmeticTypes) *@
+@*                     { *@
+@*                         <button type="button" *@
+@*                                 @onclick="@(() => Req.IsPlus = t.Val)" *@
+@*                                 class="btn w-50 @(Req.IsPlus.HasValue && Req.IsPlus.Value == t.Val ? $"btn-{t.Color}" : "btn-outline-secondary")"> *@
+@*                             <i class="@t.Icon la-lg me-2"></i> *@
+@*                             @t.Name *@
+@*                         </button> *@
+@*                     } *@
+@*                 </div> *@
+@*                 @if (Req.IsPlus.HasValue) *@
+@*                 { *@
+@*                     <div class="form-text"> *@
+@*                         @(Req.IsPlus == true ? "Пополнить этот счёт суммой, которая будет списана с другого выбранного счёта" : "Перевести сумму на другой выбранный счёт, которая будет списана с этого счёта") *@
+@*                     </div> *@
+@*                 } *@
+@*                 <ValidationMessage For="@(() => Req.IsPlus)"/> *@
+@*             </div> *@
+@*              *@
+@*             <div class="mb-3"> *@
+@*                 <SelectEntryFinancialAccount @bind-AccountId="@Req.SecondAccountId" *@
+@*                                              DisabledReasonAccountIds="@DisabledReasonAccountIds"/> *@
+@*                 <ValidationMessage For="@(() => Req.SecondAccountId)"/> *@
+@*             </div> *@
+@* *@
+@*             <div class="mb-3"> *@
+@*                 <label for="financial-transaction-desc" class="form-label">Описание транзакции</label> *@
+@*                 <MyTextarea @bind-Value="@Req.Description" id="financial-transaction-desc" maxlength="500"/> *@
+@*                 <ValidationMessage For="@(() => Req.Description)"/> *@
+@*             </div> *@
+@* *@
+@*             <div class="mb-3"> *@
+@*                 <label for="financial-transaction-createdAt" class="form-label">Дата и время *</label> *@
+@*                 <InputDate Type="InputDateType.DateTimeLocal" *@
+@*                            @bind-Value="@Req.CreatedAt" *@
+@*                            id="financial-transaction-createdAt" *@
+@*                            class="form-control"/> *@
+@*                 <ValidationMessage For="@(() => Req.CreatedAt)"/> *@
+@*             </div> *@
+@* *@
+@*             <div class="mb-3"> *@
+@*                 <button class="btn btn-primary"> *@
+@*                     <i class="las la-lg me-1 @(IsEdit ? "la-edit" : "la-plus-circle")"></i> *@
+@*                     @(IsEdit ? Resources.Action.SaveChanges : $"{Resources.Action.Add} перевод между счетами") *@
+@*                 </button> *@
+@*             </div> *@
+@*         </div> *@
+@*         <div class="col-7"> *@
+@*             <Divider Text="Состав" class="mb-4"/> *@
+@*             <div class="mb-3"> *@
+@*                 @foreach (var itemReq in Req.Items) *@
+@*                 { *@
+@*                     <_TransactionItemFormFields Req="@itemReq" *@
+@*                                                 Currency="@Account.FinancialCurrency" *@
+@*                                                 OnStateChanged="@StateHasChanged" *@
+@*                                                 CanDelete="@(Req.Items.Count > 1)" *@
+@*                                                 OnDelete="@HandleDeleteItem"/> *@
+@*                 } *@
+@*             </div> *@
+@*             <button type="button" class="btn btn-outline-dark btn-sm" @onclick="@HandleAddItem"> *@
+@*                 Добавить ещё <i class="las la-plus ms-1 la-lg"></i> *@
+@*             </button> *@
+@* *@
+@*             <div class="h3 mt-5 text-secondary"> *@
+@*                 <span class="border-top border-secondary border-4 pt-2 px-4" style="--bs-border-opacity: .4;">Сумма: @Total()</span> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </EditForm> *@
+@* *@
+@* @if (IsEdit) *@
+@* { *@
+@*     <hr> *@
+@*     <div class="text-end"> *@
+@*         <button type="button" class="btn btn-link text-danger" @onclick="@HandleDelete"> *@
+@*             <i class="las la-trash la-lg"></i> *@
+@*             @Resources.Action.Delete *@
+@*         </button> *@
+@*     </div> *@
+@* } *@
+@* *@
+@* @code { *@
+@* *@
+@*     [CascadingParameter] *@
+@*     public FinancialsStore Store { get; set; } = null!; *@
+@*      *@
+@*     [CascadingParameter] *@
+@*     public FinancialTransactionCategoriesStore TransactionCategoriesStore { get; set; } = null!; *@
+@* *@
+@*     [Parameter] *@
+@*     public EventCallback OnStateChanged { get; set; } *@
+@* *@
+@*     private bool IsEdit { get; set; } *@
+@*     private AccountFinancialTransactionRequest Req { get; set; } = new(); *@
+@*     private FinancialAccount Account { get; set; } = null!; *@
+@*     private AccountFinancialTransaction? EditingTransaction { get; set; } *@
+@*     private Dictionary<Guid, string> DisabledReasonAccountIds { get; set; } = new(); *@
+@* *@
+@*     private List<(string Name, bool Val, string Icon, string Color)> ArithmeticTypes { get; set; } = new() *@
+@*     { *@
+@*         ("Пополнение", true, "las la-plus-circle", "success"), *@
+@*         ("Перевод", false, "las la-minus-circle", "danger"), *@
+@*     }; *@
+@* *@
+@*     protected override void OnParametersSet() *@
+@*     { *@
+@*         ArgumentNullException.ThrowIfNull(Store.AccountId); *@
+@*          *@
+@*         IsEdit = Store is {BodyState: FinancialsStore.BodyEnum.EditAccountTransaction,BodyEditTransactionId: not null}; *@
+@*         if (IsEdit) *@
+@*         { *@
+@*             EditingTransaction = Db *@
+@*                 .AccountFinancialTransactions *@
+@*                 .Include(x => x.Items) *@
+@*                 .First(x => x.Id.Equals(Store.BodyEditTransactionId)); *@
+@*              *@
+@*             EditingTransaction.MapTo(Req); *@
+@*             Req.Items = EditingTransaction.Items.Select(x => *@
+@*             { *@
+@*                 var itemReq = new FinancialTransactionItemRequest(); *@
+@*                 x.MapTo(itemReq); *@
+@*                 itemReq.Id = x.Id; *@
+@*                 return itemReq; *@
+@*             }).ToList(); *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             Req.Items = new() {new()}; *@
+@*             Req.AccountId = Store.AccountId.Value; *@
+@*         } *@
+@* *@
+@*         Account = Db.FinancialAccounts *@
+@*             .Include(x => x.FinancialCurrency) *@
+@*             .Include(x => x.Category) *@
+@*             .First(x => x.Id.Equals(Req.AccountId)); *@
+@* *@
+@*         DisabledReasonAccountIds = Db.FinancialAccounts *@
+@*             .Where(x => !x.FinancialCurrencyId.Equals(Account.FinancialCurrencyId)) *@
+@*             .Select(x => x.Id) *@
+@*             .ToDictionary(x => x, _ => "Другая валюта"); *@
+@*         DisabledReasonAccountIds.Add(Store.AccountId.Value, "Текущий счёт"); *@
+@*     } *@
+@*      *@
+@*     private Task HandleAddCategory() *@
+@*     { *@
+@*         // TransactionCategoriesStore.SidebarState = FinancialTransactionCategoriesStore.SidebarStateEnum.New; *@
+@*         return TransactionCategoriesStore.ShowFormModal(); *@
+@*     } *@
+@* *@
+@*     private void HandleAddItem() *@
+@*     { *@
+@*         Req.Items.Add(new()); *@
+@*         StateHasChanged(); *@
+@*     } *@
+@* *@
+@*     private void HandleDeleteItem(FinancialTransactionItemRequest item) *@
+@*     { *@
+@*         if (Req.Items.Count > 1) Req.Items.Remove(item); *@
+@*     } *@
+@* *@
+@*     private Task HandleReturn() *@
+@*     { *@
+@*         Store.BodyState = FinancialsStore.BodyEnum.Default; *@
+@*         return OnStateChanged.InvokeAsync(); *@
+@*     } *@
+@* *@
+@*     private string Total() *@
+@*     { *@
+@*         return $"{Req.Items.Sum(x => x.Amount):N2} {Account.FinancialCurrency.Symbol}"; *@
+@*     } *@
+@* *@
+@*     private Task HandleSubmit() *@
+@*     { *@
+@*         if (IsEdit && EditingTransaction != null) *@
+@*         { *@
+@*             FinManager.UpdateTransaction(EditingTransaction, Req); *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             FinManager.CreateTransaction(Req); *@
+@*         } *@
+@* *@
+@*         Db.SaveChanges(); *@
+@* *@
+@*         return HandleReturn(); *@
+@*     } *@
+@* *@
+@*     private async Task HandleDelete() *@
+@*     { *@
+@*         if (EditingTransaction == null) return; *@
+@*         var isConfirmed = await JsRuntime.InvokeAsync<bool>("confirm", Resources.Action.Delete_Confirmation); *@
+@*         if (!isConfirmed) return; *@
+@* *@
+@*         FinManager.DeleteTransaction(EditingTransaction); *@
+@*         await Db.SaveChangesAsync(); *@
+@*         await HandleReturn(); *@
+@*     } *@
+@* } *@

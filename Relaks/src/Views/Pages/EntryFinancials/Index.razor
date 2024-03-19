@@ -7,54 +7,58 @@
 
 @inject AppDbContext Db;
 @inject DialogService DialogService;
+@inject NavigationManager Navigation;
 
 <EntryProfileLayout EntryId="@EntryId">
     <EntryProfileTabs EntryId="@EntryId"/>
-    <MyTitle>Финансы</MyTitle>
 
     <CascadingValue Value="@TransactionCategoriesStore">
         <CascadingValue Value="@Store">
-            <_SidebarDefault OnStateChanged="@StateHasChanged"/>
-            
-            
-            @switch (Store.SidebarState)
-            {
-                case FinancialsStore.SidebarEnum.EditAccountCategory:
-                case FinancialsStore.SidebarEnum.AddAccountCategory:
-                    <_AccountCategoryForm OnStateChanged="@StateHasChanged"/>
-                    break;
-                case FinancialsStore.SidebarEnum.EditAccount:
-                case FinancialsStore.SidebarEnum.AddAccount:
-                    <_AccountForm OnStateChanged="@StateHasChanged"/>
-                    break;
-                default:
-
-                    break;
-            }
-
-            @switch (Store.BodyState)
-            {
-                case FinancialsStore.BodyEnum.EditEntryTransaction:
-                case FinancialsStore.BodyEnum.AddEntryTransaction:
-                    <_TransactionEntryForm OnStateChanged="@StateHasChanged"/>
-                    break;
-                case FinancialsStore.BodyEnum.EditAccountTransaction:
-                case FinancialsStore.BodyEnum.AddAccountTransaction:
-                    <_TransactionAccountForm OnStateChanged="@StateHasChanged"/>
-                    break;
-                @*     case FinancialsStore.BodyEnum.EditTransactionCategory: *@
-                @*     case FinancialsStore.BodyEnum.AddTransactionCategory: *@
-                @*         <_TransactionCategoryForm OnStateChanged="@StateHasChanged"/> *@
-                @*         break; *@
-                @*     case FinancialsStore.BodyEnum.TransactionCategories: *@
-                @*         <_TransactionCategoriesList OnStateChanged="@StateHasChanged"/> *@
-                @*         break; *@
-                default:
-                    <_BodyDefault OnStateChanged="@StateHasChanged"/>
-                    break;
-            }
+            <MyTitle ShowEndTitle="@true">
+                <ChildContent>Финансы <span class="ms-2" style="font-size: 1.4rem; opacity: .9">@CurrencyBalances</span></ChildContent>
+                <EndTitle><_Actions/></EndTitle>
+            </MyTitle>
 
             <_SelectedAccount OnStateChanged="@StateHasChanged"/>
+            
+
+            @* @switch (Store.SidebarState) *@
+            @* { *@
+            @*     case FinancialsStore.SidebarEnum.EditAccountCategory: *@
+            @*     case FinancialsStore.SidebarEnum.AddAccountCategory: *@
+            @*         <_AccountCategoryForm OnStateChanged="@StateHasChanged"/> *@
+            @*         break; *@
+            @*     case FinancialsStore.SidebarEnum.EditAccount: *@
+            @*     case FinancialsStore.SidebarEnum.AddAccount: *@
+            @*         <_AccountForm OnStateChanged="@StateHasChanged"/> *@
+            @*         break; *@
+            @*     default: *@
+            @* *@
+            @*         break; *@
+            @* } *@
+
+            @* @switch (Store.BodyState) *@
+            @* { *@
+            @*     case FinancialsStore.BodyEnum.EditEntryTransaction: *@
+            @*     case FinancialsStore.BodyEnum.AddEntryTransaction: *@
+            @*         <_TransactionEntryForm OnStateChanged="@StateHasChanged"/> *@
+            @*         break; *@
+            @*     case FinancialsStore.BodyEnum.EditAccountTransaction: *@
+            @*     case FinancialsStore.BodyEnum.AddAccountTransaction: *@
+            @*         <_TransactionAccountForm OnStateChanged="@StateHasChanged"/> *@
+            @*         break; *@
+            @*     $1$     case FinancialsStore.BodyEnum.EditTransactionCategory: #1# *@
+            @*     $1$     case FinancialsStore.BodyEnum.AddTransactionCategory: #1# *@
+            @*     $1$         <_TransactionCategoryForm OnStateChanged="@StateHasChanged"/> #1# *@
+            @*     $1$         break; #1# *@
+            @*     $1$     case FinancialsStore.BodyEnum.TransactionCategories: #1# *@
+            @*     $1$         <_TransactionCategoriesList OnStateChanged="@StateHasChanged"/> #1# *@
+            @*     $1$         break; #1# *@
+            @*     default: *@
+            @*         <_BodyDefault OnStateChanged="@StateHasChanged"/> *@
+            @*         break; *@
+            @* } *@
+
 
             @if (!Store.AccountId.HasValue)
             {
@@ -81,9 +85,31 @@
 
     protected override void OnInitialized()
     {
-        Store = new(Db, EntryId);
+        Store = new(Db, EntryId, DialogService);
         Store.Initialize();
     }
+    
+    private RenderFragment CurrencyBalances => __builder =>
+    {
+        var items = Store.FinancialAccountStatistic.Data.CurrencyBalances;
+        if (items.Any())
+        {
+            var i = 1;
+
+            foreach (var categoryBalance in items)
+            {
+                <span class="@(categoryBalance.Balance > 0 ? "text-success" : "text-danger")">
+                    @categoryBalance.Balance.ToString("N2") @categoryBalance.FinancialCurrency.Symbol
+                </span>
+                if (!i.Equals(items.Count))
+                {
+                    <span>, </span>
+                }
+
+                i++;
+            }
+        }
+    };
 
     protected override void OnParametersSet()
     {
@@ -93,7 +119,16 @@
         if (!Store.AccountId.Equals(AccountId))
         {
             Store.AccountId = AccountId;
-            Store.BodyState = FinancialsStore.BodyEnum.Default;   
         }
+
+        Store.FindAccountCategories();
+        Store.FindAccount();
+        
+        // if (!Store.AccountId.HasValue && Store.FinancialAccounts.Any())
+        // {
+        //     var first = Store.FinancialAccounts.First();
+        //     Navigation.NavigateTo($"/entries/{EntryId.ToString()}/financials/{Store.AccountId.ToString()}");
+        //     AccountId = first.Id;
+        // }
     }
 }

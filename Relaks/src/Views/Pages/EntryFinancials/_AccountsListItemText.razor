@@ -17,7 +17,7 @@
             </Popover>
         }
     </div>
-    <div class="col-auto fw-semibold @(FinancialAccount.Balance > 0 ? "text-success" : "text-danger")">
+    <div class="col-auto @(FinancialAccount.Balance > 0 ? "text-success" : "text-danger")">
         @FinancialAccount.Balance.ToString("N2") @FinancialAccount.FinancialCurrency.Symbol
     </div>
 </div>
@@ -25,10 +25,10 @@
 @code {
     [Parameter]
     public FinancialAccount FinancialAccount { get; set; } = null!;
-    
+
     [Parameter]
     public Guid? SelectedAccountId { get; set; }
-    
+
     [Parameter]
     public Dictionary<Guid, string> DisabledReasonAccountIds { get; set; } = new();
 }

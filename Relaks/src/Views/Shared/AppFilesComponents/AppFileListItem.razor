@@ -49,13 +49,13 @@
           @if (IsRelationOwnerFile())
                 {
                     <div class="text-center" title="Файл используется в других объединениях">
-                        <span class="badge text-bg-warning fw-semibold text-uppercase">общий файл (владелец)</span>
+                        <span class="badge text-bg-warning fw-medium text-uppercase">общий файл (владелец)</span>
                     </div>
                 }
         @if (IsRelationFileIsNotOwner())
         {
             <div class="text-center" title="Файл используется в других объединениях">
-                <span class="badge text-bg-warning fw-semibold text-uppercase">общий файл</span>
+                <span class="badge text-bg-warning fw-medium text-uppercase">общий файл</span>
             </div>
         }
         @if (AppFile.BaseFile.Category != null)

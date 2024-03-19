@@ -5,9 +5,6 @@
 
 @inject AppDbContext Db;
 
-<div class="mb-2 text-muted">
-    Итого: @CurrencyBalances
-</div>
 <div class="d-flex flex-column gap-3">
     @foreach (var category in AccountCategories)
     {
@@ -16,7 +13,7 @@
                 <div class="d-flex justify-content-between align-items-center gap-2">
                     <div class="col">
                         <div class="fw-medium text-uppercase" style="letter-spacing: .15rem">@category.Title</div>
-                        <small class="text-muted">@CategoryBalances(category.Id)</small>
+                        <span class="text-muted" style="opacity: .9">@CategoryBalances(category.Id)</span>
                     </div>
                     @if (EndOfCategoryTitle != null)
                     {
@@ -48,49 +45,30 @@
 
     [Parameter]
     public Guid EntryId { get; set; }
-    
+
     [Parameter]
     public Guid? AccountId { get; set; }
 
     [Parameter]
     public Dictionary<Guid, string> DisabledReasonAccountIds { get; set; } = new();
-    
+
     [Parameter]
     public EventCallback<Guid?> AccountIdChanged { get; set; }
 
     [Parameter]
     public RenderFragment<Guid>? EndOfCategoryTitle { get; set; }
-    
+
     [Parameter]
     public RenderFragment<Guid>? AfterCategoryTitle { get; set; }
 
     [Parameter]
     public RenderFragment<Guid>? EndOfItemTitle { get; set; }
 
-    private List<FinancialAccountCategory> AccountCategories { get; set; } = new();
-    private FinancialAccountStatistic FinancialAccountStatistic { get; set; } = null!;
-
-    private RenderFragment CurrencyBalances => __builder =>
-    {
-        var items = FinancialAccountStatistic.Data.CurrencyBalances;
-        if (items.Any())
-        {
-            var i = 1;
-            
-            foreach (var categoryBalance in items)
-            {
-                <span class="@(categoryBalance.Balance > 0 ? "text-success" : "text-danger")">
-                    @categoryBalance.Balance.ToString("N2") @categoryBalance.FinancialCurrency.Symbol
-                </span>
-                if (!i.Equals(items.Count))
-                {
-                    <span>, </span>
-                }
-
-                i++;
-            }
-        }
-    };
+    [Parameter]
+    public List<FinancialAccountCategory> AccountCategories { get; set; } = new();
+    
+    [Parameter]
+    public FinancialAccountStatistic FinancialAccountStatistic { get; set; } = null!;
 
     private RenderFragment<Guid> CategoryBalances => categoryId => __builder =>
     {
@@ -102,7 +80,7 @@
 
             foreach (var categoryBalance in items)
             {
-                <span class="fw-semibold @(categoryBalance.Balance > 0 ? "text-success" : "text-danger")">
+                <span class="fw-medium @(categoryBalance.Balance > 0 ? "text-success" : "text-danger")">
                     @categoryBalance.Balance.ToString("N2") @categoryBalance.FinancialCurrency.Symbol
                 </span>
                 if (!i.Equals(items.Count))
@@ -114,24 +92,24 @@
             }
         }
     };
-    
+
     private Task OnClickAccount(Guid accountId)
     {
         return DisabledReasonAccountIds.Keys.Contains(accountId) ? Task.CompletedTask : AccountIdChanged.InvokeAsync(accountId);
     }
 
-    protected override void OnParametersSet()
-    {
-        AccountCategories = Db
-            .FinancialAccountCategories
-            .Where(x => x.EntryId.Equals(EntryId))
-            .Include(x => x.Accounts).ThenInclude(x => x.FinancialCurrency)
-            .OrderBy(x => x.Title)
-            .ToList();
-
-        FinancialAccountStatistic = new FinancialAccountStatistic(AccountCategories);
-        FinancialAccountStatistic.Calculate();
-    }
+    // protected override void OnParametersSet()
+    // {
+    //     AccountCategories = Db
+    //         .FinancialAccountCategories
+    //         .Where(x => x.EntryId.Equals(EntryId))
+    //         .Include(x => x.Accounts).ThenInclude(x => x.FinancialCurrency)
+    //         .OrderBy(x => x.Title)
+    //         .ToList();
+    //
+    //     FinancialAccountStatistic = new FinancialAccountStatistic(AccountCategories);
+    //     FinancialAccountStatistic.Calculate();
+    // }
 
 }
 

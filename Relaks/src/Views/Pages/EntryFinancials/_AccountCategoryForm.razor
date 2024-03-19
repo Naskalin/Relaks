@@ -5,17 +5,17 @@
 
 @inject AppDbContext Db;
 
-<div class="row align-items-center mb-3">
-    <div class="col-auto">
-        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@HandleReturn" title="Вернуться">
-            <i class="las la-arrow-left la-lg"></i>
-        </button>
-    </div>
-    <div class="col">
-        <h5 class="mb-0">@(IsEdit ? "Изменить категорию" : "Добавить категорию")</h5>
-    </div>
-</div>
-
+@* <div class="row align-items-center mb-3"> *@
+@*     <div class="col-auto"> *@
+@*         <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@HandleReturn" title="Вернуться"> *@
+@*             <i class="las la-arrow-left la-lg"></i> *@
+@*         </button> *@
+@*     </div> *@
+@*     <div class="col"> *@
+@*     </div> *@
+@* </div> *@
+@* *@
+@*         <h5 class="mb-0">@(IsEdit ? "Изменить категорию" : "Добавить категорию")</h5> *@
 <EditForm Model="@Req" OnValidSubmit="@HandleSubmit">
     <FluentValidationValidator DisableAssemblyScanning="@true"/>
     <ValidationSummary/>
@@ -27,43 +27,36 @@
 
     <div class="mb-3">
         <button class="btn btn-primary">
-            <i class="las la-lg me-1 @(IsEdit ? "la-edit" : "la-plus-circle")"></i>
-            @(IsEdit ? Resources.Action.SaveChanges : Resources.Action.Add)
+            <i class="las la-lg me-1 @(AccountCategoryId.HasValue ? "la-edit" : "la-plus-circle")"></i>
+            @(AccountCategoryId.HasValue ? Resources.Action.SaveChanges : Resources.Action.Add)
         </button>
     </div>
 </EditForm>
 
 @code {
-
-    [CascadingParameter]
-    public FinancialsStore Store { get; set; } = null!;
+    [Parameter]
+    public Guid EntryId { get; set; }
+    
+    [Parameter]
+    public Guid? AccountCategoryId { get; set; }
 
     [Parameter]
-    public EventCallback OnStateChanged { get; set; }
+    public EventCallback OnFormSubmit { get; set; }
     private FinancialAccountCategory? Category { get; set; }
 
     protected override void OnParametersSet()
     {
-        Req.EntryId = Store.EntryId;
-        IsEdit = Store is {SidebarState: FinancialsStore.SidebarEnum.EditAccountCategory,SidebarEditAccountCategoryId: not null};
-        if (!IsEdit) return;
-        Category = Db.FinancialAccountCategories.First(x => x.Id.Equals(Store.SidebarEditAccountCategoryId));
+        Req.EntryId = EntryId;
+        if (!AccountCategoryId.HasValue) return;
+        Category = Db.FinancialAccountCategories.First(x => x.Id.Equals(AccountCategoryId.Value));
         Category.MapTo(Req);
     }
 
-    private bool IsEdit { get; set; }
-
     private FinancialAccountCategoryRequest Req { get; set; } = new();
-
-    private async Task HandleReturn()
-    {
-        Store.SidebarState = FinancialsStore.SidebarEnum.Default;
-        await OnStateChanged.InvokeAsync();
-    }
 
     private Task HandleSubmit()
     {
-        if (IsEdit && Category != null)
+        if (AccountCategoryId.HasValue && Category != null)
         {
             Req.MapTo(Category);
         }
@@ -76,7 +69,6 @@
 
         Db.SaveChanges();
 
-        Store.SidebarState = FinancialsStore.SidebarEnum.Default;
-        return OnStateChanged.InvokeAsync();
+        return OnFormSubmit.InvokeAsync();
     }
 }

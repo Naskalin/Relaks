@@ -9,16 +9,6 @@
 @inject NavigationManager Navigation;
 @inject FinancialManager FinManager;
 
-<div class="row align-items-center mb-3">
-    <div class="col-auto">
-        <button type="button" class="btn btn-circle btn-outline-secondary" @onclick="@HandleReturn" title="Вернуться">
-            <i class="las la-arrow-left la-lg"></i>
-        </button>
-    </div>
-    <div class="col">
-        <h5 class="mb-0">@(IsEdit ? "Изменить счёт" : "Добавить счёт")</h5>
-    </div>
-</div>
 
 <EditForm Model="@Req" OnValidSubmit="@HandleSubmit">
     <FluentValidationValidator DisableAssemblyScanning="@true"/>
@@ -32,17 +22,17 @@
 
     <div class="mb-3">
         <label for="financial-category" class="form-label">Категория счёта *</label>
-        <Select id="financial-category" @bind-Value="@Req.CategoryId" Items="@Store.AccountCategoriesSelectOptions()" ShowSearch="true"></Select>
+        <Select id="financial-category" @bind-Value="@Req.CategoryId" Items="@CategoryOptions" ShowSearch="true"></Select>
         <ValidationMessage For="@(() => Req.CategoryId)"/>
     </div>
 
     <div class="mb-3">
         <label for="financial-currency" class="form-label">Валюта *</label>
-        <Select id="financial-currency" @bind-Value="@Req.FinancialCurrencyId" Items="@Store.CurrenciesSelectOptions()" ShowSearch="true"></Select>
+        <Select id="financial-currency" @bind-Value="@Req.FinancialCurrencyId" Items="@CurrencyOptions" ShowSearch="true"></Select>
         <ValidationMessage For="@(() => Req.FinancialCurrencyId)"/>
     </div>
 
-    @if (!IsEdit)
+    @if (!AccountId.HasValue)
     {
         <div class="mb-3">
             <label for="financial-initial-balance" class="form-label">Начальный баланс</label>
@@ -51,7 +41,7 @@
                                       IsSelectAllTextOnFocus="true"
                                       Step="0.01"
                                       Id="financial-initial-balance"/>
-                <BootstrapInputGroupLabel DisplayText="@(Store.Currencies.FirstOrDefault(x => x.Id.Equals(Req.FinancialCurrencyId))?.Symbol)"/>
+                <BootstrapInputGroupLabel DisplayText="@(Currencies.FirstOrDefault(x => x.Id.Equals(Req.FinancialCurrencyId))?.Symbol)"/>
             </BootstrapInputGroup>
             <ValidationMessage For="@(() => Req.InitialBalance)"/>
             <div class="form-text">Начальный баланс можно задать только при создании счёта.</div>
@@ -89,13 +79,13 @@
 
     <div class="mb-3">
         <button class="btn btn-primary">
-            <i class="las la-lg me-1 @(IsEdit ? "la-edit" : "la-plus-circle")"></i>
-            @(IsEdit ? Resources.Action.SaveChanges : Resources.Action.Add)
+            <i class="las la-lg me-1 @(AccountId.HasValue ? "la-edit" : "la-plus-circle")"></i>
+            @(AccountId.HasValue ? Resources.Action.SaveChanges : Resources.Action.Add)
         </button>
     </div>
 </EditForm>
 
-@if (IsEdit)
+@if (AccountId.HasValue)
 {
     <hr>
     <div class="text-end">
@@ -108,34 +98,61 @@
 
 @code {
 
-    [CascadingParameter]
-    public FinancialsStore Store { get; set; } = null!;
+    [Parameter]
+    public Guid? AccountId { get; set; }
+    
+    [Parameter]
+    public Guid EntryId { get; set; }
 
     [Parameter]
-    public EventCallback OnStateChanged { get; set; }
+    public EventCallback OnFormSubmit { get; set; }
+    
     private FinancialAccount? Account { get; set; }
+    private List<FinancialCurrency> Currencies { get; set; } = new();
+    private List<SelectedItem> CategoryOptions { get; set; } = new();
+    private List<SelectedItem> CurrencyOptions { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        Currencies = Db.FinancialCurrencies
+            .OrderByDescending(x => x.Id.Equals("RUB"))
+            .ThenByDescending(x => x.Id.Equals("USD"))
+            .ThenByDescending(x => x.Id.Equals("EUR"))
+            .ToList();
+    }
+
+    private void GetCategoryOptions() =>
+        CategoryOptions = Db.FinancialAccountCategories
+            .Where(x => x.EntryId.Equals(EntryId))
+            .Select(x => new SelectedItem(x.Id.ToString(), x.Title))
+            .ToList();
+
+    private void CurrenciesSelectOptions() =>
+        CurrencyOptions = Currencies
+            .Select(x => new SelectedItem(x.Id, x.ToString()))
+            .ToList();
 
     protected override void OnParametersSet()
     {
-        IsEdit = Store is {SidebarState: FinancialsStore.SidebarEnum.EditAccount,SidebarEditAccountId: not null};
-        if (!IsEdit) return;
-        Account = Db.FinancialAccounts.First(x => x.Id.Equals(Store.SidebarEditAccountId));
+        GetCategoryOptions();
+        CurrenciesSelectOptions();
+        
+        if (!AccountId.HasValue) return;
+        Account = Db.FinancialAccounts.First(x => x.Id.Equals(AccountId.Value));
         Account.MapTo(Req);
     }
 
-    private bool IsEdit { get; set; }
-
     private FinancialAccountRequest Req { get; set; } = new();
 
-    private Task HandleReturn()
-    {
-        Store.SidebarState = FinancialsStore.SidebarEnum.Default;
-        return OnStateChanged.InvokeAsync();
-    }
+    // private Task HandleReturn()
+    // {
+    //     Store.SidebarState = FinancialsStore.SidebarEnum.Default;
+    //     return OnStateChanged.InvokeAsync();
+    // }
 
     private Task HandleSubmit()
     {
-        if (IsEdit && Account != null)
+        if (AccountId.HasValue && Account != null)
         {
             Req.MapTo(Account);
         }
@@ -151,7 +168,7 @@
 
         Db.SaveChanges();
 
-        return HandleReturn();
+        return OnFormSubmit.InvokeAsync();
     }
 
     private async Task HandleDelete()
@@ -172,11 +189,11 @@
             FinManager.BaseDeleteTransaction(reverseTransaction);
             await Db.SaveChangesAsync();
         }
-        
-        if (!reverseTransactions.Any()) await Db.SaveChangesAsync();
-        
-        Navigation.NavigateTo($"/entries/{Store.EntryId}/financials");
 
-        await HandleReturn();
+        if (!reverseTransactions.Any()) await Db.SaveChangesAsync();
+
+        Navigation.NavigateTo($"/entries/{EntryId}/financials");
+
+        await OnFormSubmit.InvokeAsync();
     }
 }

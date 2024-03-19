@@ -1,122 +1,122 @@
-﻿@using Relaks.Views.Pages.EntryFinancials.ViewModels
-@using Relaks.Interfaces
-@using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels
-@using Relaks.Database
-@using Relaks.Models.FinancialModels
-
-@inject AppDbContext Db;
-
-<div class="d-flex align-items-center mb-3 gap-2">
-    <div class="col-auto">
-        <span class="h5">Транзакции</span>
-    </div>
-    @if (!Store.AccountId.HasValue)
-    {
-        <div class="col-auto">
-            <Tooltip Title="Выберите счёт, чтобы добавить для него транзакцию">
-                <i class="las la-info-circle text-secondary" style="font-size: 1.8rem"></i>
-            </Tooltip>
-        </div>
-    }
-    <div class="col-auto">
-        <button type="button"
-                class="btn btn-outline-primary"
-                disabled="@(!Store.AccountId.HasValue)"
-                title="@(!Store.AccountId.HasValue ? "Выберите счёт" : "")"
-                @onclick="@HandleAddEntryTransaction">
-            Для объединения
-            <i class="las la-coins la-lg ms-1"></i>
-        </button>
-    </div>
-    <div class="col-auto">
-        <button type="button"
-                class="btn btn-outline-primary"
-                disabled="@(!Store.AccountId.HasValue)"
-                @onclick="@HandleAddAccountTransaction">
-            Между счетами
-            <i class="las la-exchange-alt la-lg ms-1"></i>
-        </button>
-    </div>
-    <div class="col-auto">
-        <button type="button" class="btn btn-outline-primary" @onclick="@HandleAddCategory">
-            Категория транзакции
-            <i class="las la-plus-circle la-lg ms-1"></i>
-        </button>
-    </div>
-</div>
-
-@if (Store.AccountId.HasValue)
-{
-    <FinancialAccountChart AccountIds="@AccountIds()"/>
-    <div class="my-4"></div>
-    <_TransactionsList OnStateChanged="@(() => OnStateChanged.InvokeAsync())"
-                       FinancialAccountId="@Store.AccountId.Value"
-                       FirstRow="@(new GuidRowView() {Th = FirstRowTh, Td = FirstRowTd})"
-    />
-}
-
-@code {
-
-    [CascadingParameter]
-    public FinancialsStore Store { get; set; } = null!;
-    
-    [CascadingParameter]
-    public FinancialTransactionCategoriesStore TransactionCategoriesStore { get; set; } = null!;
-
-    [Parameter]
-    public EventCallback OnStateChanged { get; set; }
-
-    private List<Guid> AccountIds()
-    {
-        if (!Store.AccountId.HasValue) return new List<Guid>();
-        return new List<Guid>(){Store.AccountId.Value};
-    }
-    
-    private Task HandleAddCategory()
-    {
-        TransactionCategoriesStore.SidebarState = FinancialTransactionCategoriesStore.SidebarStateEnum.New;
-        return TransactionCategoriesStore.ShowFormModal();
-    }
-
-    private Task HandleAddEntryTransaction()
-    {
-        Store.BodyState = FinancialsStore.BodyEnum.AddEntryTransaction;
-        return OnStateChanged.InvokeAsync();
-    }
-    
-    private Task HandleAddAccountTransaction()
-    {
-        Store.BodyState = FinancialsStore.BodyEnum.AddAccountTransaction;
-        return OnStateChanged.InvokeAsync();
-    }
-
-    private RenderFragment<Guid> FirstRowTd => guid => __builder =>
-    {
-        <td>
-            <button type="button" class="btn btn-circle btn-outline-secondary btn-sm group-show__item" @onclick="@(() => HandleEditTransaction(guid))">
-                <i class="las la-edit la-lg"></i>
-            </button>
-        </td>
-    };
-
-    private RenderFragment FirstRowTh => __builder =>
-    {
-        <th style="width: 50px"></th>
-    };
-
-    private Task HandleEditTransaction(Guid transactionId)
-    {
-        var transaction = Db.BaseFinancialTransactions.First(x => x.Id.Equals(transactionId));
-        Store.BodyEditTransactionId = transactionId;
-        Store.BodyState = transaction is EntryFinancialTransaction 
-            ? FinancialsStore.BodyEnum.EditEntryTransaction 
-            : FinancialsStore.BodyEnum.EditAccountTransaction;
-        return OnStateChanged.InvokeAsync();
-    }
-
-    private Task HandleShowTransactionCategories()
-    {
-        Store.BodyState = FinancialsStore.BodyEnum.TransactionCategories;
-        return OnStateChanged.InvokeAsync();
-    }
-}
+﻿@* @using Relaks.Views.Pages.EntryFinancials.ViewModels *@
+@* @using Relaks.Interfaces *@
+@* @using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels *@
+@* @using Relaks.Database *@
+@* @using Relaks.Models.FinancialModels *@
+@* *@
+@* @inject AppDbContext Db; *@
+@* *@
+@* <div class="d-flex align-items-center mb-3 gap-2"> *@
+@*     <div class="col-auto"> *@
+@*         <span class="h5">Транзакции</span> *@
+@*     </div> *@
+@*     @if (!Store.AccountId.HasValue) *@
+@*     { *@
+@*         <div class="col-auto"> *@
+@*             <Tooltip Title="Выберите счёт, чтобы добавить для него транзакцию"> *@
+@*                 <i class="las la-info-circle text-secondary" style="font-size: 1.8rem"></i> *@
+@*             </Tooltip> *@
+@*         </div> *@
+@*     } *@
+@*     <div class="col-auto"> *@
+@*         <button type="button" *@
+@*                 class="btn btn-outline-primary" *@
+@*                 disabled="@(!Store.AccountId.HasValue)" *@
+@*                 title="@(!Store.AccountId.HasValue ? "Выберите счёт" : "")" *@
+@*                 @onclick="@HandleAddEntryTransaction"> *@
+@*             Для объединения *@
+@*             <i class="las la-coins la-lg ms-1"></i> *@
+@*         </button> *@
+@*     </div> *@
+@*     <div class="col-auto"> *@
+@*         <button type="button" *@
+@*                 class="btn btn-outline-primary" *@
+@*                 disabled="@(!Store.AccountId.HasValue)" *@
+@*                 @onclick="@HandleAddAccountTransaction"> *@
+@*             Между счетами *@
+@*             <i class="las la-exchange-alt la-lg ms-1"></i> *@
+@*         </button> *@
+@*     </div> *@
+@*     <div class="col-auto"> *@
+@*         <button type="button" class="btn btn-outline-primary" @onclick="@HandleAddCategory"> *@
+@*             Категория транзакции *@
+@*             <i class="las la-plus-circle la-lg ms-1"></i> *@
+@*         </button> *@
+@*     </div> *@
+@* </div> *@
+@* *@
+@* @if (Store.AccountId.HasValue) *@
+@* { *@
+@*     <FinancialAccountChart AccountIds="@AccountIds()"/> *@
+@*     <div class="my-4"></div> *@
+@*     <_TransactionsList OnStateChanged="@(() => OnStateChanged.InvokeAsync())" *@
+@*                        FinancialAccountId="@Store.AccountId.Value" *@
+@*                        FirstRow="@(new GuidRowView() {Th = FirstRowTh, Td = FirstRowTd})" *@
+@*     /> *@
+@* } *@
+@* *@
+@* @code { *@
+@* *@
+@*     [CascadingParameter] *@
+@*     public FinancialsStore Store { get; set; } = null!; *@
+@*      *@
+@*     [CascadingParameter] *@
+@*     public FinancialTransactionCategoriesStore TransactionCategoriesStore { get; set; } = null!; *@
+@* *@
+@*     [Parameter] *@
+@*     public EventCallback OnStateChanged { get; set; } *@
+@* *@
+@*     private List<Guid> AccountIds() *@
+@*     { *@
+@*         if (!Store.AccountId.HasValue) return new List<Guid>(); *@
+@*         return new List<Guid>(){Store.AccountId.Value}; *@
+@*     } *@
+@*      *@
+@*     private Task HandleAddCategory() *@
+@*     { *@
+@*         TransactionCategoriesStore.SidebarState = FinancialTransactionCategoriesStore.SidebarStateEnum.New; *@
+@*         return TransactionCategoriesStore.ShowFormModal(); *@
+@*     } *@
+@* *@
+@*     private Task HandleAddEntryTransaction() *@
+@*     { *@
+@*         Store.BodyState = FinancialsStore.BodyEnum.AddEntryTransaction; *@
+@*         return OnStateChanged.InvokeAsync(); *@
+@*     } *@
+@*      *@
+@*     private Task HandleAddAccountTransaction() *@
+@*     { *@
+@*         Store.BodyState = FinancialsStore.BodyEnum.AddAccountTransaction; *@
+@*         return OnStateChanged.InvokeAsync(); *@
+@*     } *@
+@* *@
+@*     private RenderFragment<Guid> FirstRowTd => guid => __builder => *@
+@*     { *@
+@*         <td> *@
+@*             <button type="button" class="btn btn-circle btn-outline-secondary btn-sm group-show__item" @onclick="@(() => HandleEditTransaction(guid))"> *@
+@*                 <i class="las la-edit la-lg"></i> *@
+@*             </button> *@
+@*         </td> *@
+@*     }; *@
+@* *@
+@*     private RenderFragment FirstRowTh => __builder => *@
+@*     { *@
+@*         <th style="width: 50px"></th> *@
+@*     }; *@
+@* *@
+@*     private Task HandleEditTransaction(Guid transactionId) *@
+@*     { *@
+@*         var transaction = Db.BaseFinancialTransactions.First(x => x.Id.Equals(transactionId)); *@
+@*         Store.BodyEditTransactionId = transactionId; *@
+@*         Store.BodyState = transaction is EntryFinancialTransaction  *@
+@*             ? FinancialsStore.BodyEnum.EditEntryTransaction  *@
+@*             : FinancialsStore.BodyEnum.EditAccountTransaction; *@
+@*         return OnStateChanged.InvokeAsync(); *@
+@*     } *@
+@* *@
+@*     private Task HandleShowTransactionCategories() *@
+@*     { *@
+@*         Store.BodyState = FinancialsStore.BodyEnum.TransactionCategories; *@
+@*         return OnStateChanged.InvokeAsync(); *@
+@*     } *@
+@* } *@

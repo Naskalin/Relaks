@@ -1,0 +1,55 @@
+﻿@using Relaks.Views.Pages.EntryFinancials.ViewModels
+@using Relaks.Models.FinancialModels
+@using Relaks.Database
+@using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels
+
+@inject NavigationManager Navigation;
+@inject AppDbContext Db;
+
+<div class="d-flex align-items-center mb-3 gap-2">
+    <button type="button" class="btn btn-outline-primary" @onclick="@HandleAddAccount">
+        Счёт
+        <i class="las la-plus-circle la-lg ms-1"></i>
+    </button>
+    <button type="button" class="btn btn-outline-primary" @onclick="@(() => Store.ShowAccountCategoryFormModal())">
+        Категория счёта
+        <i class="las la-plus-circle la-lg ms-1"></i>
+    </button>
+    <button type="button" class="btn btn-outline-primary" @onclick="@HandleAddTransactionCategory">
+        Категория транзакции
+        <i class="las la-plus-circle la-lg ms-1"></i>
+    </button>
+</div>
+
+@code {
+
+    [CascadingParameter]
+    public FinancialsStore Store { get; set; } = null!;
+    
+    [CascadingParameter]
+    public FinancialTransactionCategoriesStore TransactionCategoriesStore { get; set; } = null!;
+
+    // [Parameter]
+    // public EventCallback OnStateChanged { get; set; }
+
+    private Task HandleAddCategory() => Store.ShowAccountCategoryFormModal();
+    // {
+        // Store.SidebarState = FinancialsStore.SidebarEnum.AddAccountCategory;
+        // return OnStateChanged.InvokeAsync();
+        // return Task.CompletedTask;
+    @* } *@
+
+    private Task HandleAddAccount() => Store.ShowAccountFormModal();
+    // {
+        // Store.SidebarState = FinancialsStore.SidebarEnum.AddAccount;
+        // Store.ShowAccountCategoryFormModal();
+        // return OnStateChanged.InvokeAsync();
+        // return Store.ShowAccountCategoryFormModal();
+    // }
+
+    private async Task HandleAddTransactionCategory()
+    {
+        TransactionCategoriesStore.SidebarState = FinancialTransactionCategoriesStore.SidebarStateEnum.New;
+        await TransactionCategoriesStore.ShowFormModal();
+    }
+}

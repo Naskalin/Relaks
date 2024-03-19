@@ -1,86 +1,86 @@
-﻿@using Relaks.Database
-
-@inject AppDbContext Db;
-
-@if (EntryId.HasValue)
-{
-    <div class="mb-3">
-        <label class="form-label">Объединение</label>
-        <div class="d-flex align-items-center mb-3 gap-2">
-            <div>
-                <i class="las la-hand-point-right text-secondary" style="font-size: 1.8rem;"></i>
-            </div>
-            <div>
-                <Select TValue="Guid?"
-                        Items="EntrySelectItems"
-                        @bind-Value="@EntryId"
-                        ShowSearch="@true"
-                        OnSelectedItemChanged="@OnEntryIdChanged">
-                    <DisplayTemplate>
-                        @if (Guid.TryParse(context?.Value, out var entryId))
-                        {
-                            <EntryInlineItem EntryId="@entryId"/>
-                        }
-                        else
-                        {
-                            <div>@("<Объединение не выбрано>")</div>
-                        }
-                    </DisplayTemplate>
-                </Select>
-            </div>
-        </div>
-    </div>
-
-    <label class="form-label">Финансовые счета объединения</label>
-    <_AccountsList
-        AccountId="@AccountId" 
-        AccountIdChanged="@AccountIdChanged"
-        DisabledReasonAccountIds="@DisabledReasonAccountIds"
-        EntryId="@EntryId.Value"/>
-}
-else
-{
-    <p>Не найдено объединений с наличием финансовых счетов.</p>   
-}
-
-@code {
-    [Parameter]
-    public Guid? EntryId { get; set; }
-    
-    [Parameter]
-    public EventCallback<Guid?> EntryIdChanged { get; set; }
-    
-    [Parameter]
-    public Guid? AccountId { get; set; }
-    
-    [Parameter]
-    public EventCallback<Guid?> AccountIdChanged { get; set; }
-    
-    [Parameter]
-    public EventCallback OnStateChanged { get; set; }
-    
-    [Parameter]
-    public Dictionary<Guid, string> DisabledReasonAccountIds { get; set; } = new();
-    
-    protected override void OnParametersSet()
-    {
-        var entryIds = Db.FinancialAccountCategories.Select(x => x.EntryId).Distinct();
-        if (!entryIds.Any()) return;
-        
-        EntrySelectItems = Db.BaseEntries
-            .Where(x => entryIds.Contains(x.Id))
-            .Select(x => new SelectedItem(x.Id.ToString(), x.Name))
-            .ToList();
-
-        EntryId ??= entryIds.First();
-    }
-    
-    
-    private List<SelectedItem> EntrySelectItems { get; set; } = new();
-    
-    private Task OnEntryIdChanged(SelectedItem item)
-    {
-        EntryId = Guid.TryParse(item.Value, out var guid) ? guid : null;
-        return EntryIdChanged.InvokeAsync(EntryId);
-    }
-}
+﻿@* @using Relaks.Database *@
+@* *@
+@* @inject AppDbContext Db; *@
+@* *@
+@* @if (EntryId.HasValue) *@
+@* { *@
+@*     <div class="mb-3"> *@
+@*         <label class="form-label">Объединение</label> *@
+@*         <div class="d-flex align-items-center mb-3 gap-2"> *@
+@*             <div> *@
+@*                 <i class="las la-hand-point-right text-secondary" style="font-size: 1.8rem;"></i> *@
+@*             </div> *@
+@*             <div> *@
+@*                 <Select TValue="Guid?" *@
+@*                         Items="EntrySelectItems" *@
+@*                         @bind-Value="@EntryId" *@
+@*                         ShowSearch="@true" *@
+@*                         OnSelectedItemChanged="@OnEntryIdChanged"> *@
+@*                     <DisplayTemplate> *@
+@*                         @if (Guid.TryParse(context?.Value, out var entryId)) *@
+@*                         { *@
+@*                             <EntryInlineItem EntryId="@entryId"/> *@
+@*                         } *@
+@*                         else *@
+@*                         { *@
+@*                             <div>@("<Объединение не выбрано>")</div> *@
+@*                         } *@
+@*                     </DisplayTemplate> *@
+@*                 </Select> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* *@
+@*     <label class="form-label">Финансовые счета объединения</label> *@
+@*     <_AccountsList *@
+@*         AccountId="@AccountId"  *@
+@*         AccountIdChanged="@AccountIdChanged" *@
+@*         DisabledReasonAccountIds="@DisabledReasonAccountIds" *@
+@*         EntryId="@EntryId.Value"/> *@
+@* } *@
+@* else *@
+@* { *@
+@*     <p>Не найдено объединений с наличием финансовых счетов.</p>    *@
+@* } *@
+@* *@
+@* @code { *@
+@*     [Parameter] *@
+@*     public Guid? EntryId { get; set; } *@
+@*      *@
+@*     [Parameter] *@
+@*     public EventCallback<Guid?> EntryIdChanged { get; set; } *@
+@*      *@
+@*     [Parameter] *@
+@*     public Guid? AccountId { get; set; } *@
+@*      *@
+@*     [Parameter] *@
+@*     public EventCallback<Guid?> AccountIdChanged { get; set; } *@
+@*      *@
+@*     [Parameter] *@
+@*     public EventCallback OnStateChanged { get; set; } *@
+@*      *@
+@*     [Parameter] *@
+@*     public Dictionary<Guid, string> DisabledReasonAccountIds { get; set; } = new(); *@
+@*      *@
+@*     protected override void OnParametersSet() *@
+@*     { *@
+@*         var entryIds = Db.FinancialAccountCategories.Select(x => x.EntryId).Distinct(); *@
+@*         if (!entryIds.Any()) return; *@
+@*          *@
+@*         EntrySelectItems = Db.BaseEntries *@
+@*             .Where(x => entryIds.Contains(x.Id)) *@
+@*             .Select(x => new SelectedItem(x.Id.ToString(), x.Name)) *@
+@*             .ToList(); *@
+@* *@
+@*         EntryId ??= entryIds.First(); *@
+@*     } *@
+@*      *@
+@*      *@
+@*     private List<SelectedItem> EntrySelectItems { get; set; } = new(); *@
+@*      *@
+@*     private Task OnEntryIdChanged(SelectedItem item) *@
+@*     { *@
+@*         EntryId = Guid.TryParse(item.Value, out var guid) ? guid : null; *@
+@*         return EntryIdChanged.InvokeAsync(EntryId); *@
+@*     } *@
+@* } *@

@@ -16,7 +16,7 @@
                     {
                         <div><small class="form-text">@BreadCrumbs</small></div>
                     }
-                    <span class="fw-semibold text-secondary">@StructureItem.Group.Title</span>
+                    <span class="fw-medium text-secondary">@StructureItem.Group.Title</span>
                     @if (!string.IsNullOrEmpty(StructureItem.Group.Description))
                     {
                         <Popover Content="@StructureItem.Group.Description">
@@ -44,7 +44,7 @@
         </div>
         @if (!string.IsNullOrEmpty(StructureItem.Title))
         {
-            <span class="fw-semibold">@StructureItem.Title</span>
+            <span class="fw-medium">@StructureItem.Title</span>
         }
         @if (!string.IsNullOrEmpty(StructureItem.Description))
         {

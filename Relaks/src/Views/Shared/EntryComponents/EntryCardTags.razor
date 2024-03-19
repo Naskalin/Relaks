@@ -8,7 +8,7 @@
 @foreach (var rootCategoryIdTagId in RootCategoryIdTagIds)
 {
     <div>
-        <div class="fw-semibold text-center mb-2" style="opacity: .5">@CategoryIdTitle[rootCategoryIdTagId.Key]</div>
+        <div class="fw-medium text-center mb-2" style="opacity: .5">@CategoryIdTitle[rootCategoryIdTagId.Key]</div>
         <div class="mb-3 d-flex gap-1 flex-wrap justify-content-center">
             @foreach (var tagId in rootCategoryIdTagId.Value)
             {
@@ -54,7 +54,7 @@
         var categoryIds = TagIdCategoryPathIds[tagId];
         var titles = new List<string>();
         categoryIds.ForEach(id => titles.Add(CategoryIdTitle[id]));
-        var result = new StringBuilder($"<div class='fw-semibold'>{string.Join(" > ", titles)}</div>");
+        var result = new StringBuilder($"<div class='fw-medium'>{string.Join(" > ", titles)}</div>");
         if (!string.IsNullOrEmpty(TagsById[tagId].Item2))
         {
             result.AppendLine($"<div class='mt-2'><i class='las la-comment la-lg'></i> {TagsById[tagId].Item2}</div>");
