@@ -20,9 +20,9 @@
         </div>
 
         <small style="opacity: .9;">
-            <span class="@(Transaction.FromBalance() > 0 ? "text-success" : "text-danger")">@Transaction.FromBalance().ToString("N2") @Transaction.Account.FinancialCurrency.Symbol</span>
+            <span class="@Transaction.FromBalance().ToCssColorClass()">@Transaction.FromBalance().ToString("N2") @Transaction.Account.FinancialCurrency.Symbol</span>
             <i class="las la-long-arrow-alt-right la-lg @(Transaction.IsPlus ? "text-success" : "text-danger")"></i>
-            <span class="@(Transaction.Balance > 0 ? "text-success" : "text-danger")">@Transaction.Balance.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol</span>
+            <span class="@Transaction.Balance.ToCssColorClass()">@Transaction.Balance.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol</span>
         </small>
     </td>
     <td>
