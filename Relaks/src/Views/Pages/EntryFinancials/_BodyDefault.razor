@@ -59,7 +59,7 @@
 @* *@
 @*     [CascadingParameter] *@
 @*     public FinancialsStore Store { get; set; } = null!; *@
-@*      *@
+@* *@
 @*     [CascadingParameter] *@
 @*     public FinancialTransactionCategoriesStore TransactionCategoriesStore { get; set; } = null!; *@
 @* *@
@@ -71,7 +71,7 @@
 @*         if (!Store.AccountId.HasValue) return new List<Guid>(); *@
 @*         return new List<Guid>(){Store.AccountId.Value}; *@
 @*     } *@
-@*      *@
+@* *@
 @*     private Task HandleAddCategory() *@
 @*     { *@
 @*         TransactionCategoriesStore.SidebarState = FinancialTransactionCategoriesStore.SidebarStateEnum.New; *@
@@ -83,7 +83,7 @@
 @*         Store.BodyState = FinancialsStore.BodyEnum.AddEntryTransaction; *@
 @*         return OnStateChanged.InvokeAsync(); *@
 @*     } *@
-@*      *@
+@* *@
 @*     private Task HandleAddAccountTransaction() *@
 @*     { *@
 @*         Store.BodyState = FinancialsStore.BodyEnum.AddAccountTransaction; *@
@@ -108,8 +108,8 @@
 @*     { *@
 @*         var transaction = Db.BaseFinancialTransactions.First(x => x.Id.Equals(transactionId)); *@
 @*         Store.BodyEditTransactionId = transactionId; *@
-@*         Store.BodyState = transaction is EntryFinancialTransaction  *@
-@*             ? FinancialsStore.BodyEnum.EditEntryTransaction  *@
+@*         Store.BodyState = transaction is EntryFinancialTransaction *@
+@*             ? FinancialsStore.BodyEnum.EditEntryTransaction *@
 @*             : FinancialsStore.BodyEnum.EditAccountTransaction; *@
 @*         return OnStateChanged.InvokeAsync(); *@
 @*     } *@

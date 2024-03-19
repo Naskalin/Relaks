@@ -1,0 +1,45 @@
+@inject IJSRuntime Js;
+@implements IDisposable
+
+<div id="@_id">@ChildContent</div>
+
+@code{
+    [Parameter] 
+    public EventCallback OnClickOutside { get; set; }
+
+    [Parameter] 
+    public RenderFragment? ChildContent { get; set; }
+    
+    [Parameter]
+    public string? ExcludedId { get; set; }
+
+    private readonly string _id = "a" + Guid.NewGuid();
+    private DotNetObjectReference<OutsideHandleContainer>? ObjectReference { get; set; }
+    
+    protected override void OnInitialized()
+    {
+        ObjectReference = DotNetObjectReference.Create(this);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        await Js.InvokeAsync<object>("OutsideClickHandler", ObjectReference, new
+        {
+            id = _id,
+            excludedId = ExcludedId
+        });
+    }
+
+    [JSInvokable]
+    public Task InvokeClickOutside()
+    {
+        return OnClickOutside.InvokeAsync();
+    }
+
+    public void Dispose()
+    {
+        ObjectReference?.Dispose();
+    }
+
+}

@@ -1,4 +1,5 @@
 @using Relaks.Models.FinancialModels
+@using Relaks.Utils.Extensions
 
 <div class="d-flex gap-2 align-items-center @(FinancialAccount.Id.Equals(SelectedAccountId) ? "text-primary" : "")">
     <div class="col">
@@ -17,7 +18,7 @@
             </Popover>
         }
     </div>
-    <div class="col-auto @(FinancialAccount.Balance > 0 ? "text-success" : "text-danger")">
+    <div class="col-auto @FinancialAccount.Balance.ToCssColorClass()">
         @FinancialAccount.Balance.ToString("N2") @FinancialAccount.FinancialCurrency.Symbol
     </div>
 </div>

@@ -1,6 +1,7 @@
 ﻿@using Relaks.Database
 @using Relaks.Models.FinancialModels
 @using Microsoft.EntityFrameworkCore
+@using Relaks.Utils.Extensions
 @using Relaks.Views.Pages.EntryFinancials.ViewModels
 
 @inject AppDbContext Db;
@@ -80,7 +81,7 @@
 
             foreach (var categoryBalance in items)
             {
-                <span class="fw-medium @(categoryBalance.Balance > 0 ? "text-success" : "text-danger")">
+                <span class="fw-medium @categoryBalance.Balance.ToCssColorClass()">
                     @categoryBalance.Balance.ToString("N2") @categoryBalance.FinancialCurrency.Symbol
                 </span>
                 if (!i.Equals(items.Count))

@@ -6,7 +6,8 @@ import './_dataset_sortable.js';
 import './_textarea_autosize.js';
 import './_scroll_to.js';
 import './_draggable_zone.js';
-import './charts/index.js'
+import './charts/index.js';
+import './_outside_handle_container_js_interop.js';
 
 window.SetThemeColorMode = (modeName) => {
     try {

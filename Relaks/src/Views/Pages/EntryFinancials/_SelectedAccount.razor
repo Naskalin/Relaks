@@ -2,17 +2,52 @@
 @using Relaks.Views.Pages.EntryFinancials.ViewModels
 @using Relaks.Database
 @using Microsoft.EntityFrameworkCore
+@using Relaks.Utils.Extensions
 
 @inject NavigationManager Navigation;
 @inject AppDbContext Db;
 
-<div class="d-flex align-items-center mb-3 gap-3 position-relative">
-    <button type="button" class="btn btn-outline-primary" @onclick="@(() => Store.IsOpenAccounts = !Store.IsOpenAccounts)">
-        <div class="text-center">Выберите счёт <i class="las la-angle-down ms-2"></i></div>
-    </button>
-    @if (Store.IsOpenAccounts)
+<div class="d-flex align-items-center justify-content-between mb-3 gap-3 position-relative">
+    <div class="col">
+        <div class="d-flex align-items-center gap-3">
+            <button type="button" id="@_btnId" class="btn btn-outline-primary" @onclick="@(() => Store.IsOpenAccounts = !Store.IsOpenAccounts)">
+                <div class="text-center">Выберите счёт <i class="las la-angle-down ms-2"></i></div>
+            </button>
+            @if (Store.Account != null)
+            {
+                <div>
+                    <span class="h5">@Store.Account.Title</span>
+                    @if (!string.IsNullOrEmpty(Store.Account.Description))
+                    {
+                        <Popover Content="@Store.Account.Description">
+                            <i class="las la-comment la-lg ms-2" style="opacity: .7"></i>
+                        </Popover>
+                    }
+                    <span class="ms-2 fw-medium @Store.Account.Balance.ToCssColorClass()" style="font-size: 1.2rem; opacity: .9">
+                        @Store.Account.Balance.ToString("N2") @Store.Account.FinancialCurrency.Symbol
+                    </span>
+                </div>
+            }
+        </div>
+    </div>
+    @if (Store.AccountId.HasValue)
     {
-        <div class="position-absolute start-0 z-3 p-1 border border-2 rounded" style="top: 40px;background-color: var(--bs-body-bg)">
+        <div class="col-auto">
+            <button type="button" class="btn btn-outline-primary" @onclick="@HandleAddEntryTransaction">
+                Перевести объединению
+                <i class="las la-coins la-lg ms-1"></i>
+            </button>
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-outline-primary" @onclick="@HandleAddAccountTransaction">
+                Перевести между счетами
+                <i class="las la-exchange-alt la-lg ms-1"></i>
+            </button>
+        </div>
+    }
+
+    <div class="position-absolute start-0 z-3 p-1 border border-2 rounded @(!Store.IsOpenAccounts ? "d-none" : "")" style="top: 40px;background-color: var(--bs-body-bg); width: 400px">
+        <OutsideHandleContainer OnClickOutside="@HandleClickOutside" ExcludedId="@_btnId">
             <_AccountsList AccountIdChanged="@HandleClickAccount"
                            AccountId="@Store.AccountId"
                            EntryId="@Store.EntryId"
@@ -33,31 +68,23 @@
                     </button>
                 </EndOfItemTitle>
             </_AccountsList>
-        </div>
-    }
+        </OutsideHandleContainer>
+    </div>
 
-    @if (Store.Account != null)
-    {
-        <div>
-                <span class="h5">@Store.Account.Title</span>
-                @if (!string.IsNullOrEmpty(Store.Account.Description))
-                {
-                    <Popover Content="@Store.Account.Description">
-                        <i class="las la-comment la-lg ms-2" style="opacity: .7"></i>
-                    </Popover>
-                }
-            <span class="ms-2 fw-medium @(Store.Account.Balance > 0 ? "text-success" : "text-danger")" style="font-size: 1.2rem; opacity: .9">
-                @Store.Account.Balance.ToString("N2") @Store.Account.FinancialCurrency.Symbol
-            </span>
-        </div>
-    }
+
 </div>
-@code {
-    [CascadingParameter]
-    public FinancialsStore Store { get; set; } = null!;
 
-    [Parameter]
-    public EventCallback OnStateChanged { get; set; }
+@code {
+    [CascadingParameter] public FinancialsStore Store { get; set; } = null!;
+
+    [Parameter] public EventCallback OnStateChanged { get; set; }
+
+    private readonly string _btnId = "a" + Guid.NewGuid();
+
+    private void HandleClickOutside()
+    {
+        if (Store.IsOpenAccounts) Store.IsOpenAccounts = false;
+    }
 
     private Task HandleClickAccount(Guid? accountId)
     {
@@ -66,6 +93,18 @@
         Store.FindAccount();
 
         Store.IsOpenAccounts = false;
+        return OnStateChanged.InvokeAsync();
+    }
+
+    private Task HandleAddEntryTransaction()
+    {
+        // Store.BodyState = FinancialsStore.BodyEnum.AddEntryTransaction;
+        return OnStateChanged.InvokeAsync();
+    }
+    
+    private Task HandleAddAccountTransaction()
+    {
+        // Store.BodyState = FinancialsStore.BodyEnum.AddAccountTransaction;
         return OnStateChanged.InvokeAsync();
     }
 }

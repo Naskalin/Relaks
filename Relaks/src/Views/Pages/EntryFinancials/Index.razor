@@ -3,6 +3,7 @@
 
 @using Relaks.Views.Pages.EntryFinancials.ViewModels
 @using Relaks.Database
+@using Relaks.Utils.Extensions
 @using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels
 
 @inject AppDbContext Db;
@@ -98,7 +99,7 @@
 
             foreach (var categoryBalance in items)
             {
-                <span class="@(categoryBalance.Balance > 0 ? "text-success" : "text-danger")">
+                <span class="@categoryBalance.Balance.ToCssColorClass()">
                     @categoryBalance.Balance.ToString("N2") @categoryBalance.FinancialCurrency.Symbol
                 </span>
                 if (!i.Equals(items.Count))
@@ -124,11 +125,11 @@
         Store.FindAccountCategories();
         Store.FindAccount();
         
-        // if (!Store.AccountId.HasValue && Store.FinancialAccounts.Any())
-        // {
-        //     var first = Store.FinancialAccounts.First();
-        //     Navigation.NavigateTo($"/entries/{EntryId.ToString()}/financials/{Store.AccountId.ToString()}");
-        //     AccountId = first.Id;
-        // }
+        if (!Store.AccountId.HasValue && Store.FinancialAccounts.Any())
+        {
+            var first = Store.FinancialAccounts.First();
+            Navigation.NavigateTo($"/entries/{EntryId.ToString()}/financials/{first.Id.ToString()}");
+            AccountId = first.Id;
+        }
     }
 }
