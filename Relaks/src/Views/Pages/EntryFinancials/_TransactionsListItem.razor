@@ -1,5 +1,4 @@
-﻿@using Relaks.Interfaces
-@using Relaks.Models.FinancialModels
+﻿@using Relaks.Models.FinancialModels
 @using Relaks.Utils.Extensions
 
 <tr class="group-show">
@@ -11,9 +10,6 @@
         </button>
     </td>
     <td>@Transaction.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
-    @* <td style="white-space: nowrap" class="fw-medium @(Transaction.IsPlus ? "text-success" : "text-danger")"> *@
-    @*     @(Transaction.IsPlus ? "+" : "-")@Transaction.Total.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol *@
-    @* </td> *@
     <td style="white-space: nowrap" class="text-center">
         <div class="fw-medium @(Transaction.IsPlus ? "text-success" : "text-danger")">
             @(Transaction.IsPlus ? "+" : "-")@Transaction.Total.ToString("N2") @Transaction.Account.FinancialCurrency.Symbol

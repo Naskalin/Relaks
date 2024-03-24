@@ -1,4 +1,6 @@
-﻿namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
+﻿using Relaks.Models.FinancialModels;
+
+namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
 
 public class ChartLineModel
 {
@@ -9,13 +11,11 @@ public class ChartLineModel
     /// </summary>
     public string? CurrencyId { get; set; }
     public List<DateTime> Dates { get; set; } = new(); 
-    public List<ChartAccountModel> Accounts { get; set; } = new();
-}
-
-public class ChartAccountModel
-{
     
-    public decimal Total { get; set; }
+    /// <summary>
+    /// Изменение баланса за этот период
+    /// </summary>
+    public decimal BalanceChanges { get; set; }
     
     /// <summary>
     /// Пополнений за этот период
@@ -35,7 +35,9 @@ public class ChartAccountModel
     /// <summary>
     /// Кол-во транзакций
     /// </summary>
-    public int TransactionsCount { get; set; }
+    public int PlusTransactionsCount { get; set; }
+    
+    public int MinusTransactionsCount { get; set; }
 
     /// <summary>
     /// Название
@@ -48,7 +50,7 @@ public class ChartAccountModel
 public class ChartItemModel
 {
     public DateTime Date { get; set; }
-    public decimal Total { get; set; }
+    public decimal BalanceChanges { get; set; }
     /// <summary>
     /// Пополнений в эту дату
     /// </summary>

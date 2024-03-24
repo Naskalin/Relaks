@@ -67,6 +67,7 @@ public partial class FinancialsStore(AppDbContext db, Guid entryId, DialogServic
         FindAccount();
         InitializeChartFilter();
         FindTransactions();
+        Calculate();
     }
 
     private void FindCurrencies()

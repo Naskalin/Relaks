@@ -1,7 +1,14 @@
 ﻿@using Relaks.Views.Pages.EntryFinancials.ViewModels
+@using Relaks.Models.FinancialModels
 
 @if (Store.Transactions.Any())
 {
+    @* <MyPagination TotalPages="@Transactions.TotalPages" *@
+    @*               TotalItems="@Transactions.TotalItems" *@
+    @*               ActivePage="@TransactionListRequest.Page" *@
+    @*               OnPageChanged="@HandlePageChanged"/> *@
+
+    // TODO: Постраничка
     <table class="table table-hover table-striped align-middle my-3">
         <thead>
         <tr>
@@ -20,10 +27,10 @@
         <tbody>
         @foreach (var transaction in Store.Transactions)
         {
-            <_TransactionsListItem OnClickTransaction="@OnClickTransaction" Transaction="@transaction"/>
+    <_TransactionsListItem OnClickTransaction="@OnClickTransaction" Transaction="@transaction"/>
         }
         </tbody>
-    </table>   
+    </table>
 }
 else
 {
