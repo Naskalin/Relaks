@@ -5,7 +5,6 @@ using Relaks.Database;
 using Relaks.Database.Repositories;
 using Relaks.Models.FinancialModels;
 using Relaks.Models.Misc;
-using Relaks.src.Views.Pages.Countries;
 using Relaks.src.Views.Pages.EntryFinancials;
 
 namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
@@ -66,8 +65,7 @@ public partial class FinancialsStore(AppDbContext db, Guid entryId, DialogServic
         FindAccountCategories();
         FindAccount();
         InitializeChartFilter();
-        FindTransactions();
-        Calculate();
+        OnFilterChanged();
     }
 
     private void FindCurrencies()

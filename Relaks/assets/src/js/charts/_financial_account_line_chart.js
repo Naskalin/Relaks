@@ -25,32 +25,33 @@ window.InitializeFinancialChart = async (data) => {
             }
         }
     };
-    // bb.generate({
-    //     boost: {
-    //         useCssRule: true
-    //     },
-    //     data: {
-    //         x: "x",
-    //         json: {
-    //           x: dates,
-    //           ...json.Data.First,
-    //         },
-    //         type: line(),
-    //     },
-    //     axis: axisConfig,
-    //     tooltip: {
-    //         linked: true,
-    //         format: {
-    //             value: function(val) {
-    //                 return new Intl.NumberFormat('ru-RU', { style: 'currency', currency: json.Currency }).format(val)
-    //             }
-    //         }
-    //     },
-    //     zoom: {
-    //         enabled: zoom(), // for ESM specify as: zoom()
-    //     },
-    //     bindto: chartEl1,
-    // });
+    
+    bb.generate({
+        boost: {
+            useCssRule: true
+        },
+        data: {
+            x: "x",
+            json: {
+              x: dates,
+              ...json.Data.First,
+            },
+            type: line(),
+        },
+        axis: axisConfig,
+        tooltip: {
+            linked: true,
+            format: {
+                value: function(val) {
+                    return new Intl.NumberFormat('ru-RU', { style: 'currency', currency: json.Currency }).format(val)
+                }
+            }
+        },
+        zoom: {
+            enabled: zoom(), // for ESM specify as: zoom()
+        },
+        bindto: chartEl1,
+    });
 
 
     const secondTypes = {};

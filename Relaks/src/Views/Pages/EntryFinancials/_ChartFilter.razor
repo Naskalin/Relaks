@@ -150,26 +150,30 @@
 
     private Task OnTypeChanged(ChartFilterRequest.TypeEnum type)
     {
-        if (new[]
-            {
-                ChartFilterRequest.TypeEnum.YearByMonths,
-                ChartFilterRequest.TypeEnum.CustomByMonths,
-            }.Contains(Store.FilterReq.Type))
+        switch (type)
         {
-            return OnYearChanged(DateTime.Now.Year);
-        }
-
-        if (Store.AccountId.HasValue && type == ChartFilterRequest.TypeEnum.AllByMonths)
-        {
-            var q = Db.BaseFinancialTransactions
-                .Where(x => x.AccountId.Equals(Store.AccountId.Value))
-                .OrderBy(x => x.CreatedAt)
-            ;
-            var from = q.FirstOrDefault();
-            var to = q.LastOrDefault();
-            Store.FilterReq.From = (from?.CreatedAt ?? DateTime.Now).StartOfDay();
-            Store.FilterReq.To = (to?.CreatedAt ?? DateTime.Now).EndOfDay();
-            return OnStateHasChanged.InvokeAsync();
+            case ChartFilterRequest.TypeEnum.YearByMonths:
+                return OnYearChanged(DateTime.Now.Year);
+            case ChartFilterRequest.TypeEnum.CustomByDays:
+                Store.FilterReq.To = DateTime.Now.EndOfDay();
+                Store.FilterReq.From = DateTime.Now.AddDays(-30).StartOfDay();
+                return OnStateHasChanged.InvokeAsync();
+            case ChartFilterRequest.TypeEnum.CustomByMonths:
+                Store.FilterReq.To = DateTime.Now.EndOfMonth();
+                Store.FilterReq.From = DateTime.Now.AddMonths(-6).StartOfMonth();
+                return OnStateHasChanged.InvokeAsync();
+            case ChartFilterRequest.TypeEnum.AllByMonths:
+                ArgumentNullException.ThrowIfNull(Store.AccountId);
+                
+                var q = Db.BaseFinancialTransactions
+                        .Where(x => x.AccountId.Equals(Store.AccountId.Value))
+                        .OrderBy(x => x.CreatedAt)
+                    ;
+                var from = q.FirstOrDefault();
+                var to = q.LastOrDefault();
+                Store.FilterReq.From = (from?.CreatedAt ?? DateTime.Now).StartOfDay();
+                Store.FilterReq.To = (to?.CreatedAt ?? DateTime.Now).EndOfDay();
+                return OnStateHasChanged.InvokeAsync();
         }
         
         TempDate = DateTime.Now;

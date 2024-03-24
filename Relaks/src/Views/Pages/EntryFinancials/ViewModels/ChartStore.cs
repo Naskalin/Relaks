@@ -8,6 +8,11 @@ public partial class FinancialsStore
 {
     public ChartFilterRequest FilterReq { get; set; } = null!;
     public ChartLineModel AccountStatistic { get; set; } = new();
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    public bool IsNeedReloadCharts { get; set; }
 
     private void InitializeChartFilter()
     {
@@ -24,6 +29,7 @@ public partial class FinancialsStore
     {
         FindTransactions();
         Calculate();
+        IsNeedReloadCharts = true;
     }
 
     // private Tuple<DateTime, DateTime> GetPeriod()

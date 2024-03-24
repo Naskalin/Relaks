@@ -20,23 +20,35 @@
                 <EndTitle><_Actions/></EndTitle>
             </MyTitle>
 
+            @* <Dump Data="@Store.AccountStatistic.Dates"/> *@
+            
             <_SelectedAccount OnStateChanged="@StateHasChanged"/>
             <_ChartFilter OnStateHasChanged="@Store.OnFilterChanged"/>
             
-            line chart 
-            
             <div class="row">
-                <div class="col">
-                    pie chart
+                <div class="col-5">
                     <_ChartSummary/>
                 </div>
                 <div class="col-7">
+                    <_ChartLine/>
+
                     <div style="height: 500px; overflow-y: scroll">
                         <_TransactionsList/>
                     </div>
                 </div>
             </div>
-
+            @* *@
+            @* <div class="row"> *@
+            @*     <div class="col"> *@
+            @*         pie chart *@
+            @*         *@
+            @*     </div> *@
+            @*     <div class="col-7"> *@
+            @*          *@
+            @*     </div> *@
+            @* </div> *@
+            
+            
             @* @switch (Store.SidebarState) *@
             @* { *@
             @*     case FinancialsStore.SidebarEnum.EditAccountCategory: *@

@@ -3,13 +3,8 @@
 
 @if (Store.Transactions.Any())
 {
-    @* <MyPagination TotalPages="@Transactions.TotalPages" *@
-    @*               TotalItems="@Transactions.TotalItems" *@
-    @*               ActivePage="@TransactionListRequest.Page" *@
-    @*               OnPageChanged="@HandlePageChanged"/> *@
-
     // TODO: Постраничка
-    <table class="table table-hover table-striped align-middle my-3">
+    <table class="table table-hover table-striped align-middle my-3" style="height: 700px; overflow-y: scroll">
         <thead>
         <tr>
             <th style="width: 50px"></th>
@@ -25,10 +20,9 @@
         </tr>
         </thead>
         <tbody>
-        @foreach (var transaction in Store.Transactions)
-        {
-    <_TransactionsListItem OnClickTransaction="@OnClickTransaction" Transaction="@transaction"/>
-        }
+        <Virtualize Items="@Store.Transactions" Context="transaction">
+            <_TransactionsListItem OnClickTransaction="@OnClickTransaction" @key="transaction.Id" Transaction="@transaction"/>
+        </Virtualize>
         </tbody>
     </table>
 }

@@ -5,33 +5,39 @@
     <table class="table mb-3">
         <tbody>
         <tr>
-            <th>Валюта</th>
+            <td class="opacity-75">Период</td>
+            <td>@Store.FilterReq.From.ToString("dd.MM.yyyy HH:mm") - @Store.FilterReq.To.ToString("dd.MM.yyyy HH:mm")</td>
+        </tr>
+        <tr>
+            <td class="opacity-75">Валюта</td>
             <td>@Store.AccountStatistic.CurrencyId</td>
         </tr>
         <tr>
-            <th>Средний баланс</th>
-            <td>@Store.AccountStatistic.AverageBalance.ToString("N2") @Store.AccountStatistic.CurrencySymbol</td>
+            <td class="opacity-75">Средний баланс</td>
+            <td class="@Store.AccountStatistic.AverageBalance.ToCssColorClass()">
+                @Store.AccountStatistic.AverageBalance.ToString("N2") @Store.AccountStatistic.CurrencySymbol
+            </td>
         </tr>
         <tr>
-            <th>Изменения</th>
+            <td class="opacity-75">Изменения баланса</td>
             <td class="@Store.AccountStatistic.BalanceChanges.ToCssColorClass()">
                 @(Store.AccountStatistic.BalanceChanges > 0 ? "+" : "")@Store.AccountStatistic.BalanceChanges.ToString("N2") @Store.AccountStatistic.CurrencySymbol
-            </td>    
+            </td>
         </tr>
         <tr>
-            <th>Суммы</th>
+            <td class="opacity-75">Сумма пополнений / списаний</td>
             <td>
-                <span class="text-success">
-                    @Store.AccountStatistic.TotalIncome.ToString("N2") @Store.AccountStatistic.CurrencySymbol
+                <span class="@Store.AccountStatistic.TotalIncome.ToCssColorClass()">
+                    @(Store.AccountStatistic.TotalIncome > 0 ? "+" : "")@Store.AccountStatistic.TotalIncome.ToString("N2") @Store.AccountStatistic.CurrencySymbol
                 </span>
                 <span class="text-muted opacity-50">/</span>
-                <span class="text-danger">
+                <span class="@Store.AccountStatistic.TotalOutlay.ToCssColorClass()">
                     @Store.AccountStatistic.TotalOutlay.ToString("N2") @Store.AccountStatistic.CurrencySymbol
                 </span>
             </td>
         </tr>
         <tr>
-            <th>Транзакции (шт.)</th>
+            <td class="opacity-75">Транзакции (шт.)</td>
             <td>
                 <span class="text-success">@Store.AccountStatistic.PlusTransactionsCount</span>
                 <span class="text-muted opacity-50">/</span>
