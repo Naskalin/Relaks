@@ -25,8 +25,6 @@ window.InitializeFinancialLineChart = async (data) => {
     if (!json) throw new Error('chart data model not found');
     const chartEl1 = document.getElementById(json.HtmlElementIds[0]);
     const chartEl2 = document.getElementById(json.HtmlElementIds[1]);
-    // if (!chartEl1 || !chartEl2) throw new Error(`js chart id ${chartEl1} or ${chartEl2} not found`)
-    // console.log(chartEl1, chartEl2);
     
     const dates = json.Dates;
     const axisConfig = {
@@ -44,7 +42,8 @@ window.InitializeFinancialLineChart = async (data) => {
             }
         }
     };
-    
+
+    const firstTitle = Object.keys(json.Data.First)[0];
     bb.generate({
         boost: {
             useCssRule: true
@@ -55,7 +54,10 @@ window.InitializeFinancialLineChart = async (data) => {
               x: dates,
               ...json.Data.First,
             },
-            type: areaSpline(),
+            types: {
+                [firstTitle]: areaSpline(),
+            },
+            type: line(),
         },
         axis: axisConfig,
         tooltip: {
