@@ -5,27 +5,27 @@
     <table class="table mb-3">
         <tbody>
         <tr>
-            <td class="opacity-75">Период</td>
+            <td class="opacity-75 text-end">Период</td>
             <td>@Store.FilterReq.From.ToString("dd.MM.yyyy HH:mm") - @Store.FilterReq.To.ToString("dd.MM.yyyy HH:mm")</td>
         </tr>
         <tr>
-            <td class="opacity-75">Валюта</td>
+            <td class="opacity-75 text-end">Валюта</td>
             <td>@Store.AccountStatistic.CurrencyId</td>
         </tr>
         <tr>
-            <td class="opacity-75">Средний баланс</td>
+            <td class="opacity-75 text-end">Средний баланс</td>
             <td class="@Store.AccountStatistic.AverageBalance.ToCssColorClass()">
                 @Store.AccountStatistic.AverageBalance.ToString("N2") @Store.AccountStatistic.CurrencySymbol
             </td>
         </tr>
         <tr>
-            <td class="opacity-75">Изменения баланса</td>
+            <td class="opacity-75 text-end">Изменения баланса</td>
             <td class="@Store.AccountStatistic.BalanceChanges.ToCssColorClass()">
                 @(Store.AccountStatistic.BalanceChanges > 0 ? "+" : "")@Store.AccountStatistic.BalanceChanges.ToString("N2") @Store.AccountStatistic.CurrencySymbol
             </td>
         </tr>
         <tr>
-            <td class="opacity-75">Сумма пополнений / списаний</td>
+            <td class="opacity-75 text-end">Сумма пополнений / списаний</td>
             <td>
                 <span class="@Store.AccountStatistic.TotalIncome.ToCssColorClass()">
                     @(Store.AccountStatistic.TotalIncome > 0 ? "+" : "")@Store.AccountStatistic.TotalIncome.ToString("N2") @Store.AccountStatistic.CurrencySymbol
@@ -37,7 +37,7 @@
             </td>
         </tr>
         <tr>
-            <td class="opacity-75">Транзакции (шт.)</td>
+            <td class="opacity-75 text-end">Транзакции (шт.)</td>
             <td>
                 <span class="text-success">@Store.AccountStatistic.PlusTransactionsCount</span>
                 <span class="text-muted opacity-50">/</span>

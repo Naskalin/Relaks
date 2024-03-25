@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Relaks.Database;
+using Relaks.Models.FinancialModels;
 using Relaks.Utils.Extensions;
 
 namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
@@ -10,7 +11,7 @@ public partial class FinancialsStore
     public ChartLineModel AccountStatistic { get; set; } = new();
     
     /// <summary>
-    /// 
+    /// Нужно ли перезагрузить визуальное отображение графиков при изменении данных
     /// </summary>
     public bool IsNeedReloadCharts { get; set; }
 
@@ -47,8 +48,8 @@ public partial class FinancialsStore
     //     }
     //     return period;
     // }
-    //
-    public void Calculate()
+    
+    private void Calculate()
     {
         if (Account == null) return;
         var period = new Tuple<DateTime, DateTime>(FilterReq.From, FilterReq.To);
@@ -61,6 +62,7 @@ public partial class FinancialsStore
         };
 
         var q = FindTransactionsQuery(Account.Id).OrderBy(x => x.CreatedAt);
+        
 
         if (q.Any())
         {
@@ -71,7 +73,45 @@ public partial class FinancialsStore
             AccountStatistic.MinusTransactionsCount = q.Count(x => !x.IsPlus);
             AccountStatistic.AverageBalance = (decimal) q.Average(x => (double) x.Balance);
 
-            var items = q.GroupBy(x => x.CreatedAt.Date)
+            List<ChartItemModel> items;
+            List<DateTime> emptyDates; // добавляем пустые даты
+            
+            if (FilterReq.IsTypeByDays())
+            {
+                items = q.GroupBy(x => x.CreatedAt.Date)
+                        .Select(g => new ChartItemModel
+                        {
+                            Date = g.Min(x => x.CreatedAt),
+                            AverageBalance = (decimal)g.Average(x => (double)x.Balance),
+                            TotalIncome = (decimal)g.Where(x => x.IsPlus).Sum(x => (double)x.Total),
+                            TotalOutlay = -(decimal)g.Where(x => !x.IsPlus).Sum(x => (double)x.Total),
+                            BalanceChanges = (decimal)
+                                             g.Where(x => x.IsPlus).Sum(x => (double)x.Total)
+                                             -(decimal)g.Where(x => !x.IsPlus).Sum(x => (double)x.Total),
+                        })
+                        .OrderBy(x => x.Date)
+                        .ToList()
+                    ;
+                var endOfDateBalances = q.GroupBy(x => x.CreatedAt.Date)
+                    .Select(g => g.OrderByDescending(y => y.CreatedAt).First())
+                    .ToDictionary(x => x.CreatedAt.Date, x => x.Balance)
+                    ;
+
+                foreach (var item in items)
+                {
+                    if (endOfDateBalances.TryGetValue(item.Date.Date, out var endOf))
+                    {
+                        item.EndOfDateBalance = endOf;
+                    }
+                }
+                
+                emptyDates = AccountStatistic.Dates.Except(items.Select(x => x.Date.Date))
+                    .OrderBy(x => x.Date)
+                    .ToList();
+            }
+            else
+            {
+                items = q.GroupBy(x => new { x.CreatedAt.Year, x.CreatedAt.Month })
                     .Select(g => new ChartItemModel
                     {
                         Date = g.Min(x => x.CreatedAt),
@@ -79,31 +119,39 @@ public partial class FinancialsStore
                         TotalIncome = (decimal)g.Where(x => x.IsPlus).Sum(x => (double)x.Total),
                         TotalOutlay = -(decimal)g.Where(x => !x.IsPlus).Sum(x => (double)x.Total),
                         BalanceChanges = (decimal)
-                                g.Where(x => x.IsPlus).Sum(x => (double)x.Total)
-                                -(decimal)g.Where(x => !x.IsPlus).Sum(x => (double)x.Total)
+                                         g.Where(x => x.IsPlus).Sum(x => (double)x.Total)
+                                         -(decimal)g.Where(x => !x.IsPlus).Sum(x => (double)x.Total)
                     })
+                    .AsEnumerable()
                     .OrderBy(x => x.Date)
                     .ToList()
-                ;
+                    ;
+                
+                var endOfDateBalances = q.GroupBy(x => new { x.CreatedAt.Year, x.CreatedAt.Month })
+                        .Select(g => g.OrderByDescending(y => y.CreatedAt).First())
+                        .ToDictionary(x => x.CreatedAt.Date.ToString("MM.yyyy"), x => x.Balance)
+                    ;
 
-            // добавляем пустые данные
-            var emptyDates = AccountStatistic.Dates.Except(items.Select(x => x.Date.Date))
-                .OrderBy(x => x.Date)
-                .ToList();
+                foreach (var item in items)
+                {
+                    if (endOfDateBalances.TryGetValue(item.Date.ToString("MM.yyyy"), out var endOf))
+                    {
+                        item.EndOfDateBalance = endOf;
+                    }
+                }
+                
+                emptyDates = AccountStatistic.Dates.Where(x => 
+                        !items.Select(i => i.Date.Year).Contains(x.Year)
+                        && !items.Select(i => i.Date.Month).Contains(x.Month)
+                    )
+                    .OrderBy(x => x.Date)
+                    .ToList();
+            }
 
             if (emptyDates.Any())
             {
                 foreach (var emptyDate in emptyDates)
                 {
-                    //TODO: если это первая дата в диапозоне, то получается нуль это не правильно
-                    // среднее значение есть в предыдущей записи в бд
-                    // Вообще проверить как оно с пустыми данными работает
-                    // в идеале наверное просто отдавать нет данных
-
-                    // TODO: расставить сразу минусы для TotalOutlay и проставить их в коде
-                    // var prevItem = items
-                    //     .Where(x => emptyDate > x.Date)
-                    //     .FirstOrDefault();
                     var prevItem = items.Where(x => emptyDate > x.Date).MaxBy(x => x.Date);
                     var averageBalance = prevItem?.AverageBalance;
 
@@ -144,6 +192,7 @@ public partial class FinancialsStore
                         TotalIncome = 0,
                         TotalOutlay = 0,
                         BalanceChanges = 0,
+                        EndOfDateBalance = prevItem?.EndOfDateBalance ?? 0,
                     });
                 }
 

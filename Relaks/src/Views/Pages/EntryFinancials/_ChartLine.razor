@@ -62,6 +62,7 @@
         var barChartGroups = new List<List<string>>();
         
         var averageBalanceTitle = "Средний баланс";
+        var endOfDateBalanceTitle = "Баланс (последний)";
         var totalOutlayTitle = "Списания";
         var totalIncomeTitle = "Пополнения";
         var balanceChanges = "Изменения баланса";
@@ -74,6 +75,7 @@
         //     totalTitle += $" ({account.Title})";
         // }
 
+        lineChartData[endOfDateBalanceTitle] = new List<decimal>();
         lineChartData[averageBalanceTitle] = new List<decimal>();
         barChartData[balanceChanges] = new List<decimal>();
         barChartData[totalOutlayTitle] = new List<decimal>();
@@ -83,6 +85,7 @@
 
         foreach (var item in Store.AccountStatistic.Items)
         {
+            lineChartData[endOfDateBalanceTitle].Add(item.EndOfDateBalance);
             lineChartData[averageBalanceTitle].Add(item.AverageBalance);
             barChartData[balanceChanges].Add(item.BalanceChanges);
             barChartData[totalOutlayTitle].Add(item.TotalOutlay);

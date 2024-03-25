@@ -37,7 +37,7 @@ public static class DatetimeExtensions
             from = from.AddMonths(1);
             result.Add(from);
         }
-
+        
         return result;
     }
 

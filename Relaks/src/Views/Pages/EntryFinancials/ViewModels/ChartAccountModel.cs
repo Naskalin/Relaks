@@ -50,6 +50,14 @@ public class ChartLineModel
 public class ChartItemModel
 {
     public DateTime Date { get; set; }
+    
+    /// <summary>
+    /// Баланс в последний момент даты
+    /// Например для дня, - это баланс последней транзакции этого дня
+    /// Для месяца, - баланс последнего дня последней транзакции
+    /// </summary>
+    public decimal EndOfDateBalance { get; set; }
+    
     public decimal BalanceChanges { get; set; }
     /// <summary>
     /// Пополнений в эту дату
