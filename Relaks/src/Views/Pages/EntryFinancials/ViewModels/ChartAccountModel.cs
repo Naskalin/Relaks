@@ -46,7 +46,7 @@ public class ChartLineModel
 
     public List<ChartItemModel> Items { get; set; } = new();
     public List<ChartCategoryItem> CategoryItems { get; set; } = new();
-
+    
 }
 
 public class ChartCategoryItem
@@ -66,8 +66,28 @@ public class ChartCategoryItem
     /// Количество операций в этой категории
     /// </summary>
     public int Count { get; set; }
+    
+    /// <summary>
+    /// Сумма пополнений
+    /// </summary>
+    public decimal TotalIncome { get; set; }
+    
+    /// <summary>
+    /// Сумма пополнений
+    /// </summary>
+    public decimal TotalOutcome { get; set; }
+    
+    /// <summary>
+    /// Процент использвания
+    /// </summary>
+    public double Percent { get; set; }
 
-    public string TreePath { get; set; } = "";
+    public string? TreePath { get; set; }
+    
+    /// <summary>
+    /// Категория не использовалась напрямую, была чьим то родителем
+    /// </summary>
+    public bool IsNotUsedDirectly  { get; set; }
 }
 
 public class ChartItemModel

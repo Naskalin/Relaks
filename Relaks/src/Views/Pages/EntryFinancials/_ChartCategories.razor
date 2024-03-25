@@ -30,17 +30,17 @@
     {
         if (Store.Account == null) return Task.CompletedTask;
 
-        var data = new Dictionary<string, int>();
+        // var data = new Dictionary<string, double>();
 
-        foreach (var item in Store.AccountStatistic.CategoryItems)
-        {
-            data[item.Title] = item.Count;
-        }
+        // foreach (var item in Store.AccountStatistic.CategoryItems)
+        // {
+        //     data[item.Title] = item.Percent;
+        // }
 
         var result = new
         {
             HtmlElementId = _id,
-            Data = data
+            Data = Store.AccountStatistic
         };
 
         return Task.FromResult(Js.InvokeVoidAsync("InitializeFinancialPercentageChart", JsonSerializer.Serialize(result)));

@@ -133,11 +133,15 @@ public partial class FinancialsStore(AppDbContext db, Guid entryId, DialogServic
         .Where(x => x.AccountId.Equals(accountId))
         .Where(x => x.CreatedAt >= FilterReq.From && x.CreatedAt < FilterReq.To);
     
-    public void FindTransactions()
+    private void FindTransactions()
     {
         if (!AccountId.HasValue) return;
-        var q = FindTransactionsQuery(AccountId.Value);
-        Transactions = q.OrderByDescending(x => x.CreatedAt).ToList();
+        Transactions = db.BaseFinancialTransactions
+            .Include(x => x.Account).ThenInclude(a => a.FinancialCurrency)
+            .Include(x => x.Items).ThenInclude(item => item.Category)
+            .Where(x => x.AccountId.Equals(AccountId.Value))
+            .Where(x => x.CreatedAt >= FilterReq.From && x.CreatedAt < FilterReq.To)
+            .OrderByDescending(x => x.CreatedAt).ToList();
     }
     
     public Task ShowAccountFormModal(Guid? accountId = null)

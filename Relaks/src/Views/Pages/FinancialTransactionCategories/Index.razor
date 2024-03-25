@@ -42,14 +42,12 @@
 
     private Task HandleAddCategory()
     {
-        Store.SidebarState = FinancialTransactionCategoriesStore.SidebarStateEnum.New;
         return Store.ShowFormModal();
     }
 
     private Task HandleClickNode(Guid transactionCategoryId)
     {
         Store.CategoryId = transactionCategoryId;
-        Store.SidebarState = FinancialTransactionCategoriesStore.SidebarStateEnum.Edit;
         return Store.ShowFormModal();
     }
 }

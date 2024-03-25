@@ -9,15 +9,8 @@ namespace Relaks.Views.Pages.FinancialTransactionCategories.ViewModels;
 
 public class FinancialTransactionCategoriesStore(AppDbContext db, DialogService dialogService)
 {
-    public enum SidebarStateEnum
-    {
-        New,
-        Edit,
-    }
-    
     public Guid? CategoryId { get; set; }
     public List<FinancialTransactionCategory> TransactionCategories { get; set; } = new();
-    public SidebarStateEnum SidebarState { get; set; } = SidebarStateEnum.New;
 
     public void FindCategories()
     {

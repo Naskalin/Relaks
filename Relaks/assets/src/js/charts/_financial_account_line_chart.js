@@ -4,18 +4,87 @@ window.InitializeFinancialPercentageChart = async (data) => {
     const json = JSON.parse(data);
     if (!json) throw new Error('chart data model not found');
     const chartEl = document.getElementById(json.HtmlElementId);
-    const columns = [];
-    Object.keys(json.Data).forEach(title => {
-        columns.push([title, json.Data[title]]); 
+    const currencyId = json.Data.CurrencyId;
+    
+    const percents = ['Проценты'];
+    const counts = ['Количество'];
+    const totalIncome = ['Пополнения'];
+    const totalOutcome = ['Списания'];
+    const titles = ['x'];
+    json.Data.CategoryItems.forEach(item => {
+        
+        titles.push(item.IsNotUsedDirectly ? item.Title : `* ${item.Title}`);
+        percents.push(item.Percent);
+        counts.push(item.Count);
+        totalIncome.push(item.TotalIncome);
+        totalOutcome.push(Math.abs(item.TotalOutcome));
     });
+    
+    console.log(percents, counts, titles);
     bb.generate({
         data: {
-            columns,
-            type: pie(),
+            x: 'x',
+            columns: [
+                titles,
+                percents,
+                counts,
+                totalIncome,
+                totalOutcome,
+            ],
+            types: {
+                [percents[0]]: line(),
+                [counts[0]]: bar(),
+                [totalIncome[0]]: bar(),
+                [totalOutcome[0]]: bar(),
+            },
+            axes: {
+                [totalIncome[0]]: 'y2',
+                [totalOutcome[0]]: 'y2',
+            }
         },
-        legend: {
-            position: "right"
+        axis: {
+            rotated: true,
+            x: {
+                type: 'category',
+                tick: {
+                    multiline: false,
+                    tooltip: true,
+                    format: function(index, categoryName) {
+                        return categoryName.substring(0, 25);
+                    },
+                }
+            },
+            y: {
+                label: {
+                    text: 'Количество',
+                    position: 'outer-middle',
+                }
+            },
+            y2: {
+                show: true,
+                label: {
+                    text: 'Сумма',
+                    position: 'outer-middle',
+                },
+            },
         },
+        tooltip: {
+            format: {
+                value: function(value, ratio, id) {
+                    // var format = id === "data1" ? d3.format(',') : d3.format('$');
+                    if (id === percents[0]) {
+                        return value.toFixed(2) + '%';
+                    } else if (id === totalIncome[0] || id === totalOutcome[0]) {
+                        return new Intl.NumberFormat('ru-RU', {style: 'currency', currency: currencyId}).format(value);
+                    }
+
+                    return value;
+                }
+            }
+        },
+        // legend: {
+        //     position: "right"
+        // },
         bindto: chartEl
     });
 }
@@ -106,7 +175,7 @@ window.InitializeFinancialLineChart = async (data) => {
             }
         },
         zoom: {
-            enabled: zoom(), // for ESM specify as: zoom()
+            enabled: zoom(),
         },
         bindto: chartEl2,
     });
