@@ -1,8 +1,27 @@
-﻿import bb, {line, bar, zoom} from "billboard.js";
+﻿import bb, {line, bar, areaSpline, pie, zoom} from "billboard.js";
 
-window.InitializeFinancialChart = async (data) => {
+window.InitializeFinancialPercentageChart = async (data) => {
     const json = JSON.parse(data);
-    // console.log(json);
+    if (!json) throw new Error('chart data model not found');
+    const chartEl = document.getElementById(json.HtmlElementId);
+    const columns = [];
+    Object.keys(json.Data).forEach(title => {
+        columns.push([title, json.Data[title]]); 
+    });
+    bb.generate({
+        data: {
+            columns,
+            type: pie(),
+        },
+        legend: {
+            position: "right"
+        },
+        bindto: chartEl
+    });
+}
+
+window.InitializeFinancialLineChart = async (data) => {
+    const json = JSON.parse(data);
     if (!json) throw new Error('chart data model not found');
     const chartEl1 = document.getElementById(json.HtmlElementIds[0]);
     const chartEl2 = document.getElementById(json.HtmlElementIds[1]);
@@ -36,7 +55,7 @@ window.InitializeFinancialChart = async (data) => {
               x: dates,
               ...json.Data.First,
             },
-            type: line(),
+            type: areaSpline(),
         },
         axis: axisConfig,
         tooltip: {
@@ -73,7 +92,7 @@ window.InitializeFinancialChart = async (data) => {
             },
             groups: json.Data.SecondBarGroups,
             types: secondTypes,
-            type: line(),
+            type: areaSpline(),
         },
         axis: axisConfig,
         tooltip: {

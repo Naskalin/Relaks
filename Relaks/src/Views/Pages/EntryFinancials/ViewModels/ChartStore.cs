@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BootstrapBlazor.Components;
+using Microsoft.EntityFrameworkCore;
 using Relaks.Database;
 using Relaks.Models.FinancialModels;
 using Relaks.Utils.Extensions;
@@ -13,7 +14,8 @@ public partial class FinancialsStore
     /// <summary>
     /// Нужно ли перезагрузить визуальное отображение графиков при изменении данных
     /// </summary>
-    public bool IsNeedReloadCharts { get; set; }
+    public bool IsNeedReloadLineCharts { get; set; }
+    public bool IsNeedReloadCategoryCharts { get; set; }
 
     private void InitializeChartFilter()
     {
@@ -30,7 +32,8 @@ public partial class FinancialsStore
     {
         FindTransactions();
         Calculate();
-        IsNeedReloadCharts = true;
+        IsNeedReloadLineCharts = true;
+        IsNeedReloadCategoryCharts = true;
     }
 
     // private Tuple<DateTime, DateTime> GetPeriod()
@@ -63,7 +66,6 @@ public partial class FinancialsStore
 
         var q = FindTransactionsQuery(Account.Id).OrderBy(x => x.CreatedAt);
         
-
         if (q.Any())
         {
             AccountStatistic.TotalIncome = (decimal)q.Where(x => x.IsPlus == true).Sum(x => (double)x.Total);
@@ -72,6 +74,31 @@ public partial class FinancialsStore
             AccountStatistic.PlusTransactionsCount = q.Count(x => x.IsPlus);
             AccountStatistic.MinusTransactionsCount = q.Count(x => !x.IsPlus);
             AccountStatistic.AverageBalance = (decimal) q.Average(x => (double) x.Balance);
+            AccountStatistic.CategoryItems = db.FinancialTransactionItems
+                .Include(x => x.Transaction)
+                .Include(x => x.Category)
+                .Where(x => x.Transaction.AccountId.Equals(Account.Id))
+                .Where(x => x.Transaction.CreatedAt >= FilterReq.From && x.Transaction.CreatedAt < FilterReq.To)
+                .GroupBy(x => x.CategoryId)
+                .Select(g => new ChartCategoryItem()
+                {
+                    Id = g.Key,
+                    Title = g.First().Category.Title,
+                    Count = g.Count(),
+                    TreePath = g.First().Category.TreePath
+                })
+                .OrderByDescending(x => x.Count)
+                .ToList()
+                ;
+            // var otherCategories = new List<Guid>();
+            // AccountStatistic.CategoryItems.ForEach(x => otherCategories.AddRange(
+            //     x.TreePath.Split("/")
+            //         .Where(str => !string.IsNullOrEmpty(str))
+            //         .Select(Guid.Parse)
+            // ));
+            // otherCategories = otherCategories.Distinct().ToList();
+            
+            
 
             List<ChartItemModel> items;
             List<DateTime> emptyDates; // добавляем пустые даты
@@ -92,6 +119,7 @@ public partial class FinancialsStore
                         .OrderBy(x => x.Date)
                         .ToList()
                     ;
+                
                 var endOfDateBalances = q.GroupBy(x => x.CreatedAt.Date)
                     .Select(g => g.OrderByDescending(y => y.CreatedAt).First())
                     .ToDictionary(x => x.CreatedAt.Date, x => x.Balance)

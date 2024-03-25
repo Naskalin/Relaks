@@ -3,15 +3,10 @@
 @using Relaks.Views.Pages.EntryFinancials.ViewModels
 
 @inject IJSRuntime Js;
-@inject AppDbContext Db;
-
-@* <Dump Data="@AccountIds"/> *@
-@* <Dump Data="@Store.Calculated.Dates"/> *@
-@* <Dump Data="@Store.Calculate().Accounts.First()"/> *@
 
 @if (!Store.AccountId.HasValue)
 {
-    <p>Выберите один или несколько счетов для отображения статистики</p>
+    <p>Выберите счёт для отображения статистики</p>
 }
 <div id="@(_id + 1)"></div><div id="@(_id + 2)"></div>
 
@@ -19,39 +14,18 @@
     [CascadingParameter]
     public FinancialsStore Store { get; set; } = null!;
 
-    private string _id = "a" + Guid.NewGuid();
-
-    // private bool IsAfterRenderCompleted { get; set; } = false;
-    // protected override void OnInitialized()
-    // {
-    //     Store = new(Db, AccountIds);
-    //     Store.Initialize();
-    // }
-
-
-    // protected override Task OnParametersSetAsync()
-    // {
-    //     // Store = new(Db, AccountIds);
-    //     // Store.Initialize();
-    //     // if (IsAfterRenderCompleted)
-    //     // return IsAfterRenderCompleted ? InitializeChart() : base.OnParametersSetAsync();
-    // }
+    private string _id = "lines_" + Guid.NewGuid();
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
-        if (Store.IsNeedReloadCharts)
+        if (Store.IsNeedReloadLineCharts)
         {
-            Store.IsNeedReloadCharts = false;
+            Store.IsNeedReloadLineCharts = false;
             return InitializeChart();
         }
 
         return Task.CompletedTask;
     }
-
-    // private Task OnFilterChange()
-    // {
-    //     return InitializeChart();
-    // }
 
     private Task InitializeChart()
     {
@@ -113,6 +87,6 @@
             }
         };
 
-        return Task.FromResult(Js.InvokeVoidAsync("InitializeFinancialChart", JsonSerializer.Serialize(result)));
+        return Task.FromResult(Js.InvokeVoidAsync("InitializeFinancialLineChart", JsonSerializer.Serialize(result)));
     }
 }

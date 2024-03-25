@@ -1,0 +1,48 @@
+@using Relaks.Views.Pages.EntryFinancials.ViewModels
+@using System.Text.Json
+
+@inject IJSRuntime Js;
+
+@if (!Store.AccountId.HasValue)
+{
+    <p>Выберите счёт для отображения статистики</p>
+}
+<div id="@(_id)"></div>
+
+@code {
+    [CascadingParameter]
+    public FinancialsStore Store { get; set; } = null!;
+
+    private string _id = "percentage_" + Guid.NewGuid();
+    
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (Store.IsNeedReloadCategoryCharts)
+        {
+            Store.IsNeedReloadCategoryCharts = false;
+            return InitializeChart();
+        }
+
+        return Task.CompletedTask;
+    }
+    
+    private Task InitializeChart()
+    {
+        if (Store.Account == null) return Task.CompletedTask;
+
+        var data = new Dictionary<string, int>();
+
+        foreach (var item in Store.AccountStatistic.CategoryItems)
+        {
+            data[item.Title] = item.Count;
+        }
+
+        var result = new
+        {
+            HtmlElementId = _id,
+            Data = data
+        };
+
+        return Task.FromResult(Js.InvokeVoidAsync("InitializeFinancialPercentageChart", JsonSerializer.Serialize(result)));
+    }
+}

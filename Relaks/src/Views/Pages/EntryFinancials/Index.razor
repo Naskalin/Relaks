@@ -20,7 +20,7 @@
                 <EndTitle><_Actions/></EndTitle>
             </MyTitle>
 
-            @* <Dump Data="@Store.AccountStatistic.Dates"/> *@
+            <Dump Data="@Store.AccountStatistic.CategoryItems"/>
             
             <_SelectedAccount OnStateChanged="@StateHasChanged"/>
             <_ChartFilter OnStateHasChanged="@Store.OnFilterChanged"/>
@@ -28,13 +28,13 @@
             <div class="row">
                 <div class="col-5">
                     <_ChartSummary/>
+                    <div class="my-3"></div>
+                    <_ChartCategories/>
                 </div>
                 <div class="col-7">
                     <_ChartLine/>
-
-                    <div style="height: 500px; overflow-y: scroll">
-                        <_TransactionsList/>
-                    </div>
+                    <div class="my-3"></div>
+                    <_TransactionsList/>
                 </div>
             </div>
             @* *@

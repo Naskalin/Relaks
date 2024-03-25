@@ -4,27 +4,29 @@
 @if (Store.Transactions.Any())
 {
     // TODO: Постраничка
-    <table class="table table-hover table-striped align-middle my-3" style="height: 700px; overflow-y: scroll">
-        <thead>
-        <tr>
-            <th style="width: 50px"></th>
-            <th style="width: 125px" class="text-center">Дата</th>
-            <th style="width: 180px" class="text-center">
-                Сумма и баланс
-                <Tooltip Title="Сумма и баланс в момент осуществления транзакции">
-                    <i class="las la-info-circle la-lg ms-1"></i>
-                </Tooltip>
-            </th>
-            <th style="width: 140px">Описание</th>
-            <th>Объединение/Счёт</th>
-        </tr>
-        </thead>
-        <tbody>
-        <Virtualize Items="@Store.Transactions" Context="transaction">
-            <_TransactionsListItem OnClickTransaction="@OnClickTransaction" @key="transaction.Id" Transaction="@transaction"/>
-        </Virtualize>
-        </tbody>
-    </table>
+    <div style="height: 500px; overflow-y: scroll">
+        <table class="table table-hover table-striped align-middle my-3">
+            <thead>
+            <tr>
+                <th style="width: 50px"></th>
+                <th style="width: 125px" class="text-center">Дата</th>
+                <th style="width: 180px" class="text-center">
+                    Сумма и баланс
+                    <Tooltip Title="Сумма и баланс в момент осуществления транзакции">
+                        <i class="las la-info-circle la-lg ms-1"></i>
+                    </Tooltip>
+                </th>
+                <th style="width: 140px">Описание</th>
+                <th>Объединение/Счёт</th>
+            </tr>
+            </thead>
+            <tbody>
+            <Virtualize Items="@Store.Transactions" Context="transaction">
+                <_TransactionsListItem OnClickTransaction="@OnClickTransaction" @key="transaction.Id" Transaction="@transaction"/>
+            </Virtualize>
+            </tbody>
+        </table>
+    </div>
 }
 else
 {

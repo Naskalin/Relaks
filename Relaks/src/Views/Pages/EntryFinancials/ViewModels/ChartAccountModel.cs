@@ -45,6 +45,29 @@ public class ChartLineModel
     public string Title { get; set; } = "???";
 
     public List<ChartItemModel> Items { get; set; } = new();
+    public List<ChartCategoryItem> CategoryItems { get; set; } = new();
+
+}
+
+public class ChartCategoryItem
+{
+    /// <summary>
+    /// Идентификатор категории
+    /// </summary>
+    public Guid Id { get; set; }
+    
+    /// <summary>
+    /// Название категории
+    /// </summary>
+    /// 
+    public string Title { get; set; } = "";
+    
+    /// <summary>
+    /// Количество операций в этой категории
+    /// </summary>
+    public int Count { get; set; }
+
+    public string TreePath { get; set; } = "";
 }
 
 public class ChartItemModel
@@ -73,4 +96,10 @@ public class ChartItemModel
     /// Средний баланс в эту дату
     /// </summary>
     public decimal AverageBalance { get; set; }
+
+    /// <summary>
+    /// Использование категорий
+    /// category id, category usage percent
+    /// </summary>
+    public Dictionary<Guid, double> CategoryUsage { get; set; } = new();
 }
