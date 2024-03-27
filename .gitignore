@@ -5,7 +5,6 @@ old/*
 relaks_store/*
 Relaks/relaks.yaml
 Relaks/wwwroot/assets
-Relaks/wwwroot/libs
 node_modules
 
 ## Ignore Visual Studio temporary files, build results, and

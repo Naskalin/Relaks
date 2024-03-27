@@ -31,4 +31,14 @@
         <Content Remove="assets\**" />
         <Content Remove="appsettings.Development.json" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\libs\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="wwwroot\favicon.ico">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 </Project>
