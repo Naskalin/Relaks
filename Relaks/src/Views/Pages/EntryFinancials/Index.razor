@@ -7,6 +7,7 @@
 @using Relaks.Models.FinancialModels
 @using Relaks.Utils.Extensions
 @using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels
+@using Microsoft.EntityFrameworkCore
 
 @inject AppDbContext Db;
 @inject DialogService DialogService;
@@ -103,9 +104,16 @@
 
         if (!Store.AccountId.HasValue && Store.FinancialAccounts.Any())
         {
-            var first = Store.FinancialAccounts.First();
-            Navigation.NavigateTo($"/entries/{EntryId.ToString()}/financials/{first.Id.ToString()}");
-            AccountId = first.Id;
+            var lastUpdated = Db.BaseFinancialTransactions.Include(x => x.Account)
+                    .ThenInclude(a => a.Category)
+                    .OrderByDescending(x => x.CreatedAt)
+                    .FirstOrDefault(x => x.Account.Category.EntryId.Equals(EntryId))
+                ;
+            if (lastUpdated != null)
+            {
+                Navigation.NavigateTo($"/entries/{EntryId.ToString()}/financials/{lastUpdated.AccountId.ToString()}");
+                AccountId = lastUpdated.Id;   
+            }
         }
     }
     
