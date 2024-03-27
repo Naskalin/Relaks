@@ -1,6 +1,7 @@
 ﻿    @using Relaks.Database
 @using Microsoft.EntityFrameworkCore
 @using Relaks.Models.FinancialModels
+@using Relaks.Views.Pages.EntryFinancials.ViewModels
 
 @inject AppDbContext Db;
 @inject DialogService DialogService;
@@ -50,6 +51,12 @@
     [Parameter]
     public Dictionary<Guid, string> DisabledReasonAccountIds { get; set; } = new();
     
+    [Parameter]
+    public List<FinancialAccountCategory> AccountCategories { get; set; } = new();
+    
+    [Parameter]
+    public FinancialAccountSummaryBalances FinancialAccountSummaryBalances { get; set; } = null!;
+    
     private Guid? EntryId { get; set; }
     private FinancialAccount? Account { get; set; }
     
@@ -95,15 +102,17 @@
             IsBackdrop = true,
             IsCentered = true,
             Title = "Выберите финансовый счёт",
-            IsScrolling = true,
+            IsScrolling = false,
             CloseButtonText = "Закрыть",
             Size = Size.Medium,
         };
-    
+        
         option.Component = BootstrapDynamicComponent.CreateComponent<_EntryFinancialAccountsList>(new Dictionary<string, object?>()
         {
             ["AccountId"] = AccountId,
             ["DisabledReasonAccountIds"] = DisabledReasonAccountIds,
+            ["AccountCategories"] = AccountCategories,
+            ["FinancialAccountSummaryBalances"] = FinancialAccountSummaryBalances,
             ["AccountIdChanged"] = EventCallback.Factory.Create<Guid?>(this, async guid =>
             {
                 await OnAccountIdChanged(guid);

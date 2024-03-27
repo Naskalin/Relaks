@@ -5,7 +5,7 @@
     <td>
         <button type="button" 
                 class="btn btn-circle btn-outline-secondary btn-sm group-show__item" 
-                @onclick="@(() => OnClickTransaction.InvokeAsync(Transaction.Id))">
+                @onclick="@HandleClickTransaction">
             <i class="las la-edit la-lg"></i>
         </button>
     </td>
@@ -50,7 +50,7 @@
     public BaseFinancialTransaction Transaction { get; set; } = null!;
     
     [Parameter]
-    public EventCallback<Guid> OnClickTransaction { get; set; }
+    public EventCallback<Tuple<Type, Guid?>> OnClickTransaction { get; set; }
 
     private Guid EntryId { get; set; }
     private List<string> Categories { get; set; } = new();
@@ -68,5 +68,7 @@
         var secondAccount = accountTransaction.SecondAccount;
         EntryId = secondAccount.Category.EntryId;
     }
+
+    private Task HandleClickTransaction() => OnClickTransaction.InvokeAsync(new Tuple<Type, Guid?>(Transaction.GetType(), Transaction.Id));
 
 }

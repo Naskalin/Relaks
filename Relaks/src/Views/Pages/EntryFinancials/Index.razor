@@ -3,6 +3,8 @@
 
 @using Relaks.Views.Pages.EntryFinancials.ViewModels
 @using Relaks.Database
+@using Relaks.Database.Repositories
+@using Relaks.Models.FinancialModels
 @using Relaks.Utils.Extensions
 @using Relaks.Views.Pages.FinancialTransactionCategories.ViewModels
 
@@ -12,7 +14,7 @@
 
 <EntryProfileLayout EntryId="@EntryId">
     <EntryProfileTabs EntryId="@EntryId"/>
-
+    
     <CascadingValue Value="@TransactionCategoriesStore">
         <CascadingValue Value="@Store">
             <MyTitle ShowEndTitle="@true">
@@ -22,7 +24,7 @@
                 </EndTitle>
             </MyTitle>
 
-            <_SelectedAccount OnStateChanged="@StateHasChanged"/>
+            <_SelectedAccount OnStateChanged="@StateHasChanged" OnClickTransactionBtn="@ShowTransactionFormModal"/>
             <_ChartFilter OnStateHasChanged="@Store.OnFilterChanged"/>
 
             <div class="row">
@@ -34,58 +36,9 @@
                 <div class="col-7">
                     <_ChartLine/>
                     <div class="my-3"></div>
-                    <_TransactionsList OnClickTransaction="@(guid => Store.ShowEntryTransactionFormModal(guid))"/>
+                    <_TransactionsList OnClickTransaction="@ShowTransactionFormModal"/>
                 </div>
             </div>
-            @* *@
-            @* <div class="row"> *@
-            @*     <div class="col"> *@
-            @*         pie chart *@
-            @*         *@
-            @*     </div> *@
-            @*     <div class="col-7"> *@
-            @*          *@
-            @*     </div> *@
-            @* </div> *@
-
-
-            @* @switch (Store.SidebarState) *@
-            @* { *@
-            @*     case FinancialsStore.SidebarEnum.EditAccountCategory: *@
-            @*     case FinancialsStore.SidebarEnum.AddAccountCategory: *@
-            @*         <_AccountCategoryForm OnStateChanged="@StateHasChanged"/> *@
-            @*         break; *@
-            @*     case FinancialsStore.SidebarEnum.EditAccount: *@
-            @*     case FinancialsStore.SidebarEnum.AddAccount: *@
-            @*         <_AccountForm OnStateChanged="@StateHasChanged"/> *@
-            @*         break; *@
-            @*     default: *@
-            @* *@
-            @*         break; *@
-            @* } *@
-
-            @* @switch (Store.BodyState) *@
-            @* { *@
-            @*     case FinancialsStore.BodyEnum.EditEntryTransaction: *@
-            @*     case FinancialsStore.BodyEnum.AddEntryTransaction: *@
-            @*         <_TransactionEntryForm OnStateChanged="@StateHasChanged"/> *@
-            @*         break; *@
-            @*     case FinancialsStore.BodyEnum.EditAccountTransaction: *@
-            @*     case FinancialsStore.BodyEnum.AddAccountTransaction: *@
-            @*         <_TransactionAccountForm OnStateChanged="@StateHasChanged"/> *@
-            @*         break; *@
-            @*     $1$     case FinancialsStore.BodyEnum.EditTransactionCategory: #1# *@
-            @*     $1$     case FinancialsStore.BodyEnum.AddTransactionCategory: #1# *@
-            @*     $1$         <_TransactionCategoryForm OnStateChanged="@StateHasChanged"/> #1# *@
-            @*     $1$         break; #1# *@
-            @*     $1$     case FinancialsStore.BodyEnum.TransactionCategories: #1# *@
-            @*     $1$         <_TransactionCategoriesList OnStateChanged="@StateHasChanged"/> #1# *@
-            @*     $1$         break; #1# *@
-            @*     default: *@
-            @*         <_BodyDefault OnStateChanged="@StateHasChanged"/> *@
-            @*         break; *@
-            @* } *@
-
 
             @if (!Store.AccountId.HasValue)
             {
@@ -155,5 +108,46 @@
             AccountId = first.Id;
         }
     }
+    
+    private Task ShowTransactionFormModal(Tuple<Type, Guid?> typeAndTransactionId)
+    {
+        ArgumentNullException.ThrowIfNull(Store.Account);
+        var type = typeAndTransactionId.Item1;
+        var transactionId = typeAndTransactionId.Item2;
+        
+        Store.IsOpenAccounts = false;
+        var option = new DialogOption
+        {
+            IsKeyboard = true,
+            IsBackdrop = true,
+            Title = transactionId.HasValue ? "Изменить транзакцию" : "Добавить транзакцию",
+            IsScrolling = false,
+            CloseButtonText = "Закрыть",
+            Size = Size.Large
+        };
+        
+        var componentConfig = new Dictionary<string, object?>()
+        {
+            ["Account"] = Store.Account,
+            ["TransactionCategories"] = Db.FinancialTransactionCategories.ToBaseTree(),
+            ["TransactionId"] = transactionId,
+            ["OnFormSubmit"] = EventCallback.Factory.Create(this, async _ =>
+            {
+                Store.OnFilterChanged();
+                await option.CloseDialogAsync();
+            }),
+        };
 
+        if (type == typeof(AccountFinancialTransaction))
+        {
+            componentConfig["AccountCategories"] = Store.AccountCategories;
+            componentConfig["FinancialAccountSummaryBalances"] = Store.FinancialAccountSummaryBalances;
+        }
+        
+        option.Component = type == typeof(EntryFinancialTransaction) 
+            ? BootstrapDynamicComponent.CreateComponent<_TransactionEntryForm>(componentConfig) 
+            : BootstrapDynamicComponent.CreateComponent<_TransactionAccountForm>(componentConfig);
+        
+        return DialogService.Show(option);
+    }
 }

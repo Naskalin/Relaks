@@ -13,74 +13,74 @@
     <FluentValidationValidator DisableAssemblyScanning="@true"/>
     <ValidationSummary/>
 
-    <div class="row">
-        <div class="col-4">
-            <Divider Text="Описание" class="mb-4"/>
-            <div class="mb-3">
-                <label class="form-label">Тип *</label>
-                <div class="btn-group w-100">
-                    @foreach (var t in ArithmeticTypes)
-                    {
-                        <button type="button"
-                                @onclick="@(() => Req.IsPlus = t.Val)"
-                                class="btn w-50 @(Req.IsPlus.HasValue && Req.IsPlus.Value == t.Val ? $"btn-{t.Color}" : "btn-outline-secondary")">
-                            <i class="@t.Icon la-lg me-2"></i>
-                            @t.Name
-                        </button>
-                    }
-                </div>
-                <ValidationMessage For="@(() => Req.IsPlus)"/>
-            </div>
-
-            <div class="mb-3">
-                <SelectEntry EntryIds="@EntryIds" EntryIdsChanged="@HandleEntryChanged" IsMultiple="@false" Label="Объединение *"/>
-                <ValidationMessage For="@(() => Req.EntryId)"/>
-            </div>
-
-            <div class="mb-3">
-                <label for="financial-transaction-desc" class="form-label">Описание транзакции</label>
-                <MyTextarea @bind-Value="@Req.Description" id="financial-transaction-desc" maxlength="500"/>
-                <ValidationMessage For="@(() => Req.Description)"/>
-            </div>
-
-            <div class="mb-3">
-                <label for="financial-transaction-createdAt" class="form-label">Дата и время *</label>
-                <InputDate Type="InputDateType.DateTimeLocal"
-                           @bind-Value="@Req.CreatedAt"
-                           id="financial-transaction-createdAt"
-                           class="form-control"/>
-                <ValidationMessage For="@(() => Req.CreatedAt)"/>
-            </div>
-
-            <div class="mb-3">
-                <button class="btn btn-primary">
-                    <i class="las la-lg me-1 @(EditingTransaction != null ? "la-edit" : "la-plus-circle")"></i>
-                    @(EditingTransaction != null ? Resources.Action.SaveChanges : $"{Resources.Action.Add} транзакцию")
+    <div class="mb-3">
+        <label class="form-label">Тип *</label>
+        <div class="btn-group w-100">
+            @foreach (var t in ArithmeticTypes)
+            {
+                <button type="button"
+                        @onclick="@(() => Req.IsPlus = t.Val)"
+                        class="btn w-50 @(Req.IsPlus.HasValue && Req.IsPlus.Value == t.Val ? $"btn-{t.Color}" : "btn-outline-secondary")">
+                    <i class="@t.Icon la-lg me-2"></i>
+                    @t.Name
                 </button>
-            </div>
+            }
         </div>
-        <div class="col-8 ps-4">
-            <Divider Text="Состав" class="mb-4"/>
-            <div class="mb-3">
-                @foreach (var itemReq in Req.Items)
-                {
-                    <_TransactionItemFormFields @key="@Guid.NewGuid()"
-                                                Req="@itemReq"
-                                                TransactionCategories="@TransactionCategories"
-                                                OnStateChanged="@HandleStateHasChanged"
-                                                Currency="@Account.FinancialCurrency"
-                                                CanDelete="@(Req.Items.Count > 1)"
-                                                OnDelete="@HandleDeleteItem"/>
-                }
-            </div>
-            <button type="button" class="btn btn-outline-dark btn-sm" @onclick="@HandleAddItem">
-                Добавить ещё <i class="las la-plus ms-1 la-lg"></i>
-            </button>
+        <ValidationMessage For="@(() => Req.IsPlus)"/>
+    </div>
 
-            <div class="h3 mt-5 text-secondary">
-                <span class="border-top border-secondary border-4 pt-2 px-4" style="--bs-border-opacity: .4;">Сумма: @Total()</span>
-            </div>
-        </div>
+    <div class="mb-3">
+        <SelectEntry EntryIds="@EntryIds" EntryIdsChanged="@HandleEntryChanged" IsMultiple="@false" Label="Объединение *"/>
+        <ValidationMessage For="@(() => Req.EntryId)"/>
+    </div>
+
+    <div class="mb-3">
+        <label for="financial-transaction-desc" class="form-label">Описание транзакции</label>
+        <MyTextarea @bind-Value="@Req.Description" id="financial-transaction-desc" maxlength="500"/>
+        <ValidationMessage For="@(() => Req.Description)"/>
+    </div>
+
+    <div class="mb-3">
+        <label for="financial-transaction-createdAt" class="form-label">Дата и время *</label>
+        <InputDate Type="InputDateType.DateTimeLocal"
+                   @bind-Value="@Req.CreatedAt"
+                   id="financial-transaction-createdAt"
+                   class="form-control"/>
+        <ValidationMessage For="@(() => Req.CreatedAt)"/>
+    </div>
+
+    <hr class="border-2 my-4">
+    
+    <div class="mb-3">
+        @foreach (var itemReq in Req.Items)
+        {
+            <_TransactionItemFormFields @key="@Guid.NewGuid()"
+                                        Req="@itemReq"
+                                        TransactionCategories="@TransactionCategories"
+                                        OnStateChanged="@HandleStateHasChanged"
+                                        Currency="@Account.FinancialCurrency"
+                                        CanDelete="@(Req.Items.Count > 1)"
+                                        OnDelete="@HandleDeleteItem"/>
+        }
+    </div>
+     <div class="row align-items-center mb-3">
+         <div class="col">
+             <button type="button" class="btn btn-outline-dark btn-sm" @onclick="@HandleAddItem">
+                     Добавить ещё <i class="las la-plus ms-1 la-lg"></i>
+                 </button>
+         </div>
+         <div class="col text-end h6">
+             <div class="text-secondary">
+                 <span class="border-secondary border-4 pt-2 px-4" style="--bs-border-opacity: .4;">Сумма: @Total()</span>
+             </div>
+         </div>
+     </div>
+    
+    <div class="mt-4">
+        <button class="btn btn-primary">
+            <i class="las la-lg me-1 @(EditingTransaction != null ? "la-edit" : "la-plus-circle")"></i>
+            @(EditingTransaction != null ? Resources.Action.SaveChanges : $"{Resources.Action.Add} транзакцию")
+        </button>
     </div>
 </EditForm>
 
@@ -164,6 +164,7 @@
         int index = Req.Items.IndexOf(item);
         if (index < 0) return;
         Req.Items[index] = item;
+        StateHasChanged();
     }
     
     private void HandleEntryChanged(List<Guid> entryIds)
@@ -203,13 +204,5 @@
         FinManager.DeleteTransaction(EditingTransaction);
         await Db.SaveChangesAsync();
         await OnFormSubmit.InvokeAsync();
-        StateHasChanged();
     }
-
-    // private void OnItemReqChanged(int index, FinancialTransactionItemRequest req)
-    // {
-    //     var item = Req.Items.ElementAtOrDefault(index);
-    //     if (item != null) Req.Items[index] = req;
-    //     StateHasChanged();
-    // }
 }

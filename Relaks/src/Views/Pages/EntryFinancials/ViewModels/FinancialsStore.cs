@@ -5,6 +5,7 @@ using Relaks.Database;
 using Relaks.Database.Repositories;
 using Relaks.Models.FinancialModels;
 using Relaks.src.Views.Pages.EntryFinancials;
+using Size = BootstrapBlazor.Components.Size;
 
 namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
 
@@ -125,7 +126,7 @@ public partial class FinancialsStore(AppDbContext db, Guid entryId, DialogServic
             IsKeyboard = true,
             IsBackdrop = true,
             Title = accountId.HasValue ? "Изменить счёт" : "Добавить счёт",
-            IsScrolling = true,
+            IsScrolling = false,
             CloseButtonText = "Закрыть",
             Size = BootstrapBlazor.Components.Size.Large,
         };
@@ -152,7 +153,7 @@ public partial class FinancialsStore(AppDbContext db, Guid entryId, DialogServic
             IsKeyboard = true,
             IsBackdrop = true,
             Title = editAccountCategoryId.HasValue ? "Изменить категорию счёта" : "Добавить категорию счёта",
-            IsScrolling = true,
+            IsScrolling = false,
             CloseButtonText = "Закрыть",
             Size = BootstrapBlazor.Components.Size.Large,
         };
@@ -170,35 +171,46 @@ public partial class FinancialsStore(AppDbContext db, Guid entryId, DialogServic
         
         return dialogService.Show(option);
     }
-    
-    public Task ShowEntryTransactionFormModal(Guid? editTransactionId = null)
-    {
-        ArgumentNullException.ThrowIfNull(Account);
-        IsOpenAccounts = false;
-        var option = new DialogOption
-        {
-            IsKeyboard = true,
-            IsBackdrop = true,
-            Title = editTransactionId.HasValue ? "Изменить транзакцию" : "Добавить транзакцию",
-            IsScrolling = true,
-            CloseButtonText = "Закрыть",
-            Size = BootstrapBlazor.Components.Size.ExtraExtraLarge,
-        };
-        
-        option.Component = BootstrapDynamicComponent.CreateComponent<_TransactionEntryForm>(new Dictionary<string, object?>()
-        {
-            ["Account"] = Account,
-            ["TransactionCategories"] = db.FinancialTransactionCategories.ToBaseTree(),
-            ["TransactionId"] = editTransactionId,
-            ["OnFormSubmit"] = EventCallback.Factory.Create(this, async _ =>
-            {
-                // HandleFormSubmit();
-                // FindAccountCategories();
-                OnFilterChanged();
-                await option.CloseDialogAsync();
-            }),
-        });
-        
-        return dialogService.Show(option);
-    }
+    // public Task ShowTransactionFormModal(Tuple<Type, Guid?> typeAndTransactionId)
+    // {
+    //     ArgumentNullException.ThrowIfNull(Account);
+    //     var type = typeAndTransactionId.Item1;
+    //     var transactionId = typeAndTransactionId.Item2;
+    //     
+    //     IsOpenAccounts = false;
+    //     var option = new DialogOption
+    //     {
+    //         IsKeyboard = true,
+    //         IsBackdrop = true,
+    //         Title = transactionId.HasValue ? "Изменить транзакцию" : "Добавить транзакцию",
+    //         IsScrolling = false,
+    //         CloseButtonText = "Закрыть",
+    //         Size = Size.Large
+    //         // FullScreenSize = FullScreenSize.Always
+    //     };
+    //     
+    //     var componentConfig = new Dictionary<string, object?>()
+    //     {
+    //         ["Account"] = Account,
+    //         ["TransactionCategories"] = db.FinancialTransactionCategories.ToBaseTree(),
+    //         ["TransactionId"] = transactionId,
+    //         ["OnFormSubmit"] = EventCallback.Factory.Create(this, async _ =>
+    //         {
+    //             OnFilterChanged();
+    //             await option.CloseDialogAsync();
+    //         }),
+    //     };
+    //
+    //     if (type == typeof(AccountFinancialTransaction))
+    //     {
+    //         componentConfig["AccountCategories"] = AccountCategories;
+    //         componentConfig["FinancialAccountSummaryBalances"] = FinancialAccountSummaryBalances;
+    //     }
+    //     
+    //     option.Component = type == typeof(EntryFinancialTransaction) 
+    //         ? BootstrapDynamicComponent.CreateComponent<_TransactionEntryForm>(componentConfig) 
+    //         : BootstrapDynamicComponent.CreateComponent<_TransactionAccountForm>(componentConfig);
+    //     
+    //     return dialogService.Show(option);
+    // }
 }

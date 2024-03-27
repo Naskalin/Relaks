@@ -33,13 +33,13 @@
     @if (Store.AccountId.HasValue)
     {
         <div class="col-auto">
-            <button type="button" class="btn btn-outline-primary" @onclick="@(() => Store.ShowEntryTransactionFormModal())">
+            <button type="button" class="btn btn-outline-primary" @onclick="@(() => OnClickTransactionBtn.InvokeAsync(new Tuple<Type, Guid?>(typeof(EntryFinancialTransaction), null)))">
                 Перевести объединению
                 <i class="las la-coins la-lg ms-1"></i>
             </button>
         </div>
         <div class="col-auto">
-            <button type="button" class="btn btn-outline-primary" @onclick="@HandleAddAccountTransaction">
+            <button type="button" class="btn btn-outline-primary" @onclick="@(() => OnClickTransactionBtn.InvokeAsync(new Tuple<Type, Guid?>(typeof(AccountFinancialTransaction), null)))">
                 Перевести между счетами
                 <i class="las la-exchange-alt la-lg ms-1"></i>
             </button>
@@ -78,6 +78,7 @@
     [CascadingParameter] public FinancialsStore Store { get; set; } = null!;
 
     [Parameter] public EventCallback OnStateChanged { get; set; }
+    [Parameter] public EventCallback<Tuple<Type, Guid?>> OnClickTransactionBtn { get; set; }
 
     private readonly string _btnId = "a" + Guid.NewGuid();
 
@@ -102,9 +103,9 @@
     //     return OnStateChanged.InvokeAsync();
     // }
     
-    private Task HandleAddAccountTransaction()
-    {
-        // Store.BodyState = FinancialsStore.BodyEnum.AddAccountTransaction;
-        return OnStateChanged.InvokeAsync();
-    }
+    // private Task HandleAddAccountTransaction()
+    // {
+    //     // Store.BodyState = FinancialsStore.BodyEnum.AddAccountTransaction;
+    //     return OnStateChanged.InvokeAsync();
+    // }
 }

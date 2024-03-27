@@ -37,5 +37,5 @@ else
     public FinancialsStore Store { get; set; } = null!;
     
     [Parameter]
-    public EventCallback<Guid> OnClickTransaction { get; set; }
+    public EventCallback<Tuple<Type, Guid?>> OnClickTransaction { get; set; }
 }

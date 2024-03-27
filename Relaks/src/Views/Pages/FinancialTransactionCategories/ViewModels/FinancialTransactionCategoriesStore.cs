@@ -36,7 +36,7 @@ public class FinancialTransactionCategoriesStore(AppDbContext db, DialogService 
             IsKeyboard = true,
             IsBackdrop = true,
             Title = CategoryId.HasValue ? "Изменить категорию транзакций" : "Добавить категорию для транзакций",
-            IsScrolling = true,
+            IsScrolling = false,
             CloseButtonText = "Закрыть",
             Size = BootstrapBlazor.Components.Size.Large,
             OnCloseAsync = OnCloseAsync
