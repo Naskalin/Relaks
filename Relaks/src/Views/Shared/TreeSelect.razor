@@ -1,6 +1,8 @@
 ﻿@using Relaks.Interfaces
 @using Relaks.Managers
+
 @typeparam TNode where TNode : class, ITree<TNode>;
+
 @inject DialogService DialogService;
 
 <div class="input-group cursor-pointer">
@@ -12,7 +14,7 @@
     {
         <button class="btn btn-outline-secondary" type="button" @onclick="@HandleClear">
             <i class="las la-times la-lg"></i>
-        </button>   
+        </button>
     }
 </div>
 
@@ -30,29 +32,29 @@
     public EventCallback<Guid> OnClickNode { get; set; }
 
     private Dictionary<Guid, TNode> FlatNodes { get; set; } = new();
-
+    
     private string Title()
     {
-        if (NodeId.HasValue && NodeId.Value != default && FlatNodes.TryGetValue(NodeId.Value, out var node))
+        if (NodeId.HasValue && FlatNodes.TryGetValue(NodeId.Value, out var node))
         {
             return node.Title;
         }
         
         return "<Не выбрано>";
     }
-
+    
     private Task HandleClear()
     {
         NodeId = null;
         StateHasChanged();
         return Task.CompletedTask;
     }
-
+    
     protected override void OnParametersSet()
     {
         FlatNodes = Nodes.ToFlatById();
     }
-
+    
     private Task HandleSelectClick()
     {
         var option = new DialogOption
@@ -65,7 +67,7 @@
             CloseButtonText = "Закрыть",
             Size = Size.ExtraLarge
         };
-
+    
         option.Component = BootstrapDynamicComponent.CreateComponent<TreeSelectList<TNode>>(new Dictionary<string, object?>()
         {
             ["Nodes"] = Nodes,

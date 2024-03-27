@@ -144,12 +144,6 @@
 
     private FinancialAccountRequest Req { get; set; } = new();
 
-    // private Task HandleReturn()
-    // {
-    //     Store.SidebarState = FinancialsStore.SidebarEnum.Default;
-    //     return OnStateChanged.InvokeAsync();
-    // }
-
     private Task HandleSubmit()
     {
         if (AccountId.HasValue && Account != null)
@@ -178,6 +172,9 @@
         if (!isConfirmed) return;
 
         Db.FinancialAccounts.Remove(Account);
+        
+        // Реверс: "тут прибавили, там убавили и наоборот"
+        // Надо пересчитывать [баланс в моменте] для связанного аккаунта.
         var reverseTransactions = Db
             .AccountFinancialTransactions
             .Where(x => x.SecondAccountId.Equals(Account.Id))
@@ -185,7 +182,6 @@
         ;
         foreach (var reverseTransaction in reverseTransactions)
         {
-            // ужасный костыль, ибо надо пересчитывать баланс в моменте для другого связанного аккаунта
             FinManager.BaseDeleteTransaction(reverseTransaction);
             await Db.SaveChangesAsync();
         }

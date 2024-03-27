@@ -17,14 +17,14 @@
         <CascadingValue Value="@Store">
             <MyTitle ShowEndTitle="@true">
                 <ChildContent>Финансы <span class="ms-2" style="font-size: 1.4rem; opacity: .9">@CurrencyBalances</span></ChildContent>
-                <EndTitle><_Actions/></EndTitle>
+                <EndTitle>
+                    <_Actions/>
+                </EndTitle>
             </MyTitle>
 
-            @* <Dump Data="@Store.AccountStatistic.CategoryItems"/> *@
-            
             <_SelectedAccount OnStateChanged="@StateHasChanged"/>
             <_ChartFilter OnStateHasChanged="@Store.OnFilterChanged"/>
-            
+
             <div class="row">
                 <div class="col-5">
                     <_ChartSummary/>
@@ -34,7 +34,7 @@
                 <div class="col-7">
                     <_ChartLine/>
                     <div class="my-3"></div>
-                    <_TransactionsList/>
+                    <_TransactionsList OnClickTransaction="@(guid => Store.ShowEntryTransactionFormModal(guid))"/>
                 </div>
             </div>
             @* *@
@@ -47,8 +47,8 @@
             @*          *@
             @*     </div> *@
             @* </div> *@
-            
-            
+
+
             @* @switch (Store.SidebarState) *@
             @* { *@
             @*     case FinancialsStore.SidebarEnum.EditAccountCategory: *@
@@ -104,18 +104,16 @@
     private FinancialsStore Store { get; set; } = null!;
     private FinancialTransactionCategoriesStore TransactionCategoriesStore { get; set; } = null!;
 
-    [Parameter]
-    public Guid EntryId { get; set; }
+    [Parameter] public Guid EntryId { get; set; }
 
-    [Parameter]
-    public Guid? AccountId { get; set; }
+    [Parameter] public Guid? AccountId { get; set; }
 
     protected override void OnInitialized()
     {
         Store = new(Db, EntryId, DialogService);
         Store.Initialize();
     }
-    
+
     private RenderFragment CurrencyBalances => __builder =>
     {
         var items = Store.FinancialAccountSummaryBalances.Data.CurrencyBalances;
@@ -142,14 +140,14 @@
     {
         TransactionCategoriesStore = new FinancialTransactionCategoriesStore(Db, DialogService);
         TransactionCategoriesStore.FindCategories();
-        
+
         if (!Store.AccountId.Equals(AccountId))
         {
             Store.AccountId = AccountId;
         }
 
         Store.OnChangeAccount();
-        
+
         if (!Store.AccountId.HasValue && Store.FinancialAccounts.Any())
         {
             var first = Store.FinancialAccounts.First();
@@ -157,4 +155,5 @@
             AccountId = first.Id;
         }
     }
+
 }

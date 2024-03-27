@@ -52,6 +52,8 @@ public partial class FinancialsStore
 
     private void CalculateCategories()
     {
+        ArgumentNullException.ThrowIfNull(Account);
+        
         AccountStatistic.CategoryItems = db.FinancialTransactionItems
                 .Include(x => x.Transaction)
                 .Include(x => x.Category)

@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Relaks.Database;
 using Relaks.Database.Repositories;
 using Relaks.Models.FinancialModels;
-using Relaks.Models.Misc;
 using Relaks.src.Views.Pages.EntryFinancials;
 
 namespace Relaks.Views.Pages.EntryFinancials.ViewModels;
@@ -14,32 +13,6 @@ public partial class FinancialsStore(AppDbContext db, Guid entryId, DialogServic
     public Guid EntryId { get; } = entryId;
     public bool IsOpenAccounts { get; set; }
 
-    // public enum SidebarEnum
-    // {
-    //     Default,
-    //     AddAccount,
-    //     EditAccount,
-    //     AddAccountCategory,
-    //     EditAccountCategory,
-    // }
-    //
-    // public enum BodyEnum
-    // {
-    //     Default,
-    //     AddTransactionCategory,
-    //     EditTransactionCategory,
-    //     AddAccountTransaction,
-    //     EditAccountTransaction,
-    //     AddEntryTransaction,
-    //     EditEntryTransaction,
-    //     TransactionCategories,
-    // }
-
-    // public BodyEnum BodyState { get; set; } = BodyEnum.Default;
-    // public SidebarEnum SidebarState { get; set; } = SidebarEnum.Default;
-    // public Guid? BodyEditTransactionId { get; set; }
-    // public Guid? EditAccountCategoryId { get; set; }
-    // public Guid? SidebarEditAccountId { get; set; }
     public List<FinancialCurrency> Currencies { get; set; } = new();
     public List<FinancialAccountCategory> AccountCategories { get; set; } = new();
     public FinancialAccountSummaryBalances FinancialAccountSummaryBalances { get; set; } = null!;
@@ -48,7 +21,7 @@ public partial class FinancialsStore(AppDbContext db, Guid entryId, DialogServic
     public FinancialAccount? Account { get; set; }
     public List<FinancialAccount> FinancialAccounts { get; set; } = new();
     public List<BaseFinancialTransaction> Transactions { get; set; } = new();
-
+    
     /// <summary>
     /// Общие данные для всех счетов объединения
     /// </summary>
@@ -127,11 +100,11 @@ public partial class FinancialsStore(AppDbContext db, Guid entryId, DialogServic
     //     // EditAccountCategoryId = null;
     //     return Task.CompletedTask;
     // }
-    private IQueryable<BaseFinancialTransaction> FindTransactionsQuery(Guid accountId) => db.BaseFinancialTransactions
-        .Include(x => x.Account).ThenInclude(a => a.FinancialCurrency)
-        .Include(x => x.Items).ThenInclude(item => item.Category)
-        .Where(x => x.AccountId.Equals(accountId))
-        .Where(x => x.CreatedAt >= FilterReq.From && x.CreatedAt < FilterReq.To);
+    // private IQueryable<BaseFinancialTransaction> FindTransactionsQuery(Guid accountId) => db.BaseFinancialTransactions
+    //     .Include(x => x.Account).ThenInclude(a => a.FinancialCurrency)
+    //     .Include(x => x.Items).ThenInclude(item => item.Category)
+    //     .Where(x => x.AccountId.Equals(accountId))
+    //     .Where(x => x.CreatedAt >= FilterReq.From && x.CreatedAt < FilterReq.To);
     
     private void FindTransactions()
     {
@@ -155,7 +128,6 @@ public partial class FinancialsStore(AppDbContext db, Guid entryId, DialogServic
             IsScrolling = true,
             CloseButtonText = "Закрыть",
             Size = BootstrapBlazor.Components.Size.Large,
-            // OnCloseAsync = OnCloseAsync
         };
         
         option.Component = BootstrapDynamicComponent.CreateComponent<_AccountForm>(new Dictionary<string, object?>()
@@ -164,7 +136,6 @@ public partial class FinancialsStore(AppDbContext db, Guid entryId, DialogServic
             ["AccountId"] = accountId,
             ["OnFormSubmit"] = EventCallback.Factory.Create(this, async _ =>
             {
-                // HandleFormSubmit();
                 FindAccountCategories();
                 await option.CloseDialogAsync();
             }),
@@ -184,7 +155,6 @@ public partial class FinancialsStore(AppDbContext db, Guid entryId, DialogServic
             IsScrolling = true,
             CloseButtonText = "Закрыть",
             Size = BootstrapBlazor.Components.Size.Large,
-            // OnCloseAsync = OnCloseAsync
         };
         
         option.Component = BootstrapDynamicComponent.CreateComponent<_AccountCategoryForm>(new Dictionary<string, object?>()
@@ -193,8 +163,38 @@ public partial class FinancialsStore(AppDbContext db, Guid entryId, DialogServic
             ["AccountCategoryId"] = editAccountCategoryId,
             ["OnFormSubmit"] = EventCallback.Factory.Create(this, async _ =>
             {
-                // HandleFormSubmit();
                 FindAccountCategories();
+                await option.CloseDialogAsync();
+            }),
+        });
+        
+        return dialogService.Show(option);
+    }
+    
+    public Task ShowEntryTransactionFormModal(Guid? editTransactionId = null)
+    {
+        ArgumentNullException.ThrowIfNull(Account);
+        IsOpenAccounts = false;
+        var option = new DialogOption
+        {
+            IsKeyboard = true,
+            IsBackdrop = true,
+            Title = editTransactionId.HasValue ? "Изменить транзакцию" : "Добавить транзакцию",
+            IsScrolling = true,
+            CloseButtonText = "Закрыть",
+            Size = BootstrapBlazor.Components.Size.ExtraExtraLarge,
+        };
+        
+        option.Component = BootstrapDynamicComponent.CreateComponent<_TransactionEntryForm>(new Dictionary<string, object?>()
+        {
+            ["Account"] = Account,
+            ["TransactionCategories"] = db.FinancialTransactionCategories.ToBaseTree(),
+            ["TransactionId"] = editTransactionId,
+            ["OnFormSubmit"] = EventCallback.Factory.Create(this, async _ =>
+            {
+                // HandleFormSubmit();
+                // FindAccountCategories();
+                OnFilterChanged();
                 await option.CloseDialogAsync();
             }),
         });

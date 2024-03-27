@@ -62,7 +62,7 @@ public abstract class BaseFinancialTransaction
         Total = Items.Sum(x => x.Amount);
     }
     
-    public string BalanceInMoment() => @$"{FromBalance()} → {Total}";
+    // public string BalanceInMoment() => @$"{FromBalance()} → {Total}";
 }
 
 public class EntryFinancialTransaction : BaseFinancialTransaction
